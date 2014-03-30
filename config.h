@@ -19,27 +19,29 @@ static const char *dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
 					"'Droid Sans Mono-10'"};
 
 static const Key keys[] = {
-	{MODKEY, XK_Return, spawn, {.cmd = term_cmd} },
-	{MODKEY, XK_r, spawn, {.cmd = dmenu_cmd} },
+	{MODKEY, NORMAL, XK_Return, spawn, {.cmd = term_cmd} },
+	{MODKEY, NORMAL, XK_r, spawn, {.cmd = dmenu_cmd} },
 
-	{MODKEY, XK_s, change_layout, {.i = VSTACK} },
-	{MODKEY | ShiftMask, XK_s, change_layout, {.i = HSTACK} },
-	{MODKEY, XK_g, change_layout, {.i = GRID} },
-	{MODKEY, XK_s, change_layout, {.i = ZOOM} },
-	{MODKEY, XK_f, next_layout, {} },
-	{MODKEY, XK_d, previous_layout, {} },
+	{MODKEY, NORMAL, XK_s, change_layout, {.i = VSTACK} },
+	{MODKEY | ShiftMask, NORMAL, XK_s, change_layout, {.i = HSTACK} },
+	{MODKEY, NORMAL, XK_g, change_layout, {.i = GRID} },
+	{MODKEY, NORMAL, XK_s, change_layout, {.i = ZOOM} },
+	{MODKEY, NORMAL, XK_j, next_layout, {} },
+	{MODKEY, NORMAL, XK_k, previous_layout, {} },
+    {MODKEY, NORMAL, XK_f, change_mode, {.i = FOCUS} },
 
-	{MODKEY, XK_k, focus_prev, {} },
-	{MODKEY, XK_j, focus_next, {} },
-	{MODKEY | ShiftMask, XK_k, move_up, {} },
-	{MODKEY | ShiftMask, XK_j, move_down, {} },
+	{MODKEY, FOCUS, XK_k, focus_prev, {} },
+	{MODKEY, FOCUS, XK_j, focus_next, {} },
+	{MODKEY | ShiftMask, FOCUS, XK_k, move_up, {} },
+	{MODKEY | ShiftMask, FOCUS, XK_j, move_down, {} },
+    {MODKEY, FOCUS, XK_Escape, change_mode, {.i = NORMAL} },
 
-	{MODKEY, XK_space, next_workspace, {} },
-	{MODKEY | ShiftMask, XK_space, previous_workspace, {} },
+	{MODKEY, FOCUS, XK_space, next_workspace, {} },
+	{MODKEY | ShiftMask, FOCUS, XK_space, previous_workspace, {} },
 
-	{MODKEY, XK_1, change_workspace, {.i = 0} },
-	{MODKEY, XK_2, change_workspace, {.i = 1} },
-	{MODKEY, XK_3, change_workspace, {.i = 2} }
+	{MODKEY, FOCUS, XK_1, change_workspace, {.i = 0} },
+	{MODKEY, FOCUS, XK_2, change_workspace, {.i = 1} },
+	{MODKEY, FOCUS, XK_3, change_workspace, {.i = 2} }
 };
 
 static Workspace workspaces[] = {

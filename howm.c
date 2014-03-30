@@ -24,6 +24,7 @@ typedef union {
 
 typedef struct {
 	unsigned int mod;
+	unsigned int mode;
 	xcb_keysym_t sym;
 	void (*func)(const Arg *);
 	const Arg arg;
@@ -48,6 +49,7 @@ typedef struct {
 	Client *head, *prev_foc, *current;
 } Workspace;
 
+static void change_mode(const Arg *arg);
 static void change_layout(const Arg *arg);
 static void next_layout(void);
 static void previous_layout(void);
@@ -61,7 +63,7 @@ static void focus_next(void);
 static void focus_prev(void);
 static void move_up(void);
 static void enter_event(xcb_generic_event_t *ev);
-static void workspace_info(void);
+static void howm_info(void);
 static void grab_keys(void);
 static void destroy_event(xcb_generic_event_t *ev);
 static int get_non_tff_count(void);
@@ -112,6 +114,8 @@ static void(*layout_handler[])(void) = {
 	[FIBONACCI] = fibonacci
 };
 
+static enum {NORMAL, FOCUS, RESIZE, END_MODES};
+
 #include "config.h"
 
 #ifdef DEBUG_ENABLE
@@ -135,8 +139,10 @@ static xcb_screen_t *screen;
 static xcb_generic_event_t *ev;
 static int numlockmask;
 static Client *head, *prev_foc, *current;
-static unsigned int current_workspace, prev_workspace, layout, prev_layout;
+/* We don't need the range of unsigned, so this prevents a conversion later. */
+static int cur_workspace, prev_workspace, cur_layout, prev_layout;
 static unsigned int screen_height, screen_width, border_focus, border_unfocus;
+static unsigned int cur_mode;
 
 static void setup(void)
 {
@@ -231,7 +237,8 @@ static void key_press_event(xcb_generic_event_t *ev)
 	xcb_keysym_t keysym = xcb_keycode_to_keysym(ke->detail);
 	for (i = 0; i < LENGTH(keys); i++)
 		if (keysym == keys[i].sym && CLEANMASK(keys[i].mod)
-				== CLEANMASK(ke->state) && keys[i].func)
+				== CLEANMASK(ke->state) && keys[i].func
+				&& keys[i].mode == cur_mode)
 			keys[i].func(&keys[i].arg);
 }
 
@@ -296,7 +303,7 @@ static void save_workspace(int i)
 {
 	if (i < 0 || i >= WORKSPACES)
 		return;
-	workspaces[i].layout = layout;
+	workspaces[i].layout = cur_layout;
 	workspaces[i].current = current;
 	workspaces[i].head = head;
 	workspaces[i].prev_foc = prev_foc;
@@ -304,18 +311,18 @@ static void save_workspace(int i)
 
 static void select_workspace(int i)
 {
-	save_workspace(current_workspace);
-	layout = workspaces[i].layout;
+	save_workspace(cur_workspace);
+	cur_layout = workspaces[i].layout;
 	current = workspaces[i].current;
 	head = workspaces[i].head;
 	prev_foc = workspaces[i].prev_foc;
-	current_workspace = i;
+	cur_workspace = i;
 }
 
 static Client *win_to_client(xcb_window_t win)
 {
 	bool found;
-	int w = 0, cw = current_workspace;
+	int w = 0, cw = cur_workspace;
 	Client *c = NULL;
 	for (found = false; w < WORKSPACES && !found; ++w)
 		for (select_workspace(w), c = head; c && !(found = (win == c->win)); c = c->next)
@@ -370,8 +377,8 @@ static void arrange_windows(void)
 	if (!head)
 		return;
 	DEBUG("Arranging");
-	layout_handler[head->next ? layout : ZOOM]();
-	workspace_info();
+	layout_handler[head->next ? cur_layout : ZOOM]();
+	howm_info();
 }
 
 static void grid(void)
@@ -449,6 +456,9 @@ static void update_focused_client(Client *c)
 
 static void grab_keys(void)
 {
+	/* TODO: optimise this so that it doesn't call xcb_grab_key for all
+	 * keys, as some are repeated due to modes. Perhaps XCB does this
+	 * already? */
 	DEBUG("Grabbing keys.");
 	xcb_keycode_t *keycode;
 	unsigned int mods[] = {0, XCB_MOD_MASK_LOCK};
@@ -499,7 +509,7 @@ static void xcb_get_atoms(char **names, xcb_atom_t *atoms, unsigned int cnt)
 static void stack(void)
 {
 	Client *c = NULL;
-	bool vert = (layout == VSTACK);
+	bool vert = (cur_layout == VSTACK);
 	int span = vert ? screen_height :  screen_width;
 	int client_span, i, n, client_y = 0, client_x = 0, client_h = 0;
 
@@ -566,7 +576,7 @@ static void destroy_event(xcb_generic_event_t *ev)
 static void remove_client(Client *c)
 {
 	Client **temp = NULL;
-	int w = 0, cw = current_workspace;
+	int w = 0, cw = cur_workspace;
 	bool found;
 	for (found = false; w < WORKSPACES && !found; w++)
 		for (temp = &head, select_workspace(cw); temp &&
@@ -585,21 +595,20 @@ static void remove_client(Client *c)
 		arrange_windows();
 	else
 		select_workspace(cw);
-	workspace_info();
+	howm_info();
 }
 
-static void workspace_info(void)
+static void howm_info(void)
 {
-	int cw = current_workspace;
+	int cw = cur_workspace;
 	int w, n;
 	Client *c;
 	for (w = 0; w < WORKSPACES; w++) {
 		for (select_workspace(w), c = head, n = 0; c; c = c->next, n++)
 			;
-		fprintf(stdout, "w:%d n:%d l:%d cw:%d\n", w, n, layout,
-				current_workspace == cw);
+		printf("m:%d l:%d n:%d w:%d cw:%d\n", cur_mode, cur_layout, n, w,
+			cur_workspace == cw);
 	}
-	fflush(stdout);
 	if (cw != w - 1)
 		select_workspace(cw);
 }
@@ -684,9 +693,9 @@ void focus_prev(void)
 
 void change_workspace(const Arg *arg)
 {
-	if (arg->i >= WORKSPACES || arg->i < 0 || arg->i == current_workspace)
+	if (arg->i >= WORKSPACES || arg->i < 0 || arg->i == cur_workspace)
 		return;
-	prev_workspace = current_workspace;
+	prev_workspace = cur_workspace;
 	select_workspace(arg->i);
 	for (Client *c = head; c; c = c->next)
 		xcb_map_window(dpy, c->win);
@@ -696,13 +705,13 @@ void change_workspace(const Arg *arg)
 	select_workspace(arg->i);
 	arrange_windows();
 	update_focused_client(current);
-	workspace_info();
+	howm_info();
 }
 
 void previous_workspace(void)
 {
-	const Arg arg = {.i = current_workspace < 1 ? WORKSPACES - 1 :
-				current_workspace - 1};
+	const Arg arg = {.i = cur_workspace < 1 ? WORKSPACES - 1 :
+				cur_workspace - 1};
 	change_workspace(&arg);
 }
 
@@ -714,31 +723,31 @@ void last_workspace(void)
 
 void next_workspace(void)
 {
-	const Arg arg = {.i = (current_workspace + 1) % WORKSPACES};
+	const Arg arg = {.i = (cur_workspace + 1) % WORKSPACES};
 	change_workspace(&arg);
 }
 
 void change_layout(const Arg *arg)
 {
-	if (arg->i == layout || arg->i >= END_LAYOUT || arg->i < 0)
+	if (arg->i == cur_layout || arg->i >= END_LAYOUT || arg->i < 0)
 		return;
-	prev_layout = layout;
-	layout = arg->i;
+	prev_layout = cur_layout;
+	cur_layout = arg->i;
 	arrange_windows();
 	update_focused_client(current);
-	DEBUGP("Changed layout to %d\n", layout);
-	workspace_info();
+	DEBUGP("Changed layout to %d\n", cur_layout);
+	howm_info();
 }
 
 void previous_layout(void)
 {
-	const Arg arg = {.i =  layout < 1 ? END_LAYOUT - 1 : layout - 1};
+	const Arg arg = {.i =  cur_layout < 1 ? END_LAYOUT - 1 : cur_layout - 1};
 	change_layout(&arg);
 }
 
 void next_layout(void)
 {
-	const Arg arg = {.i = (layout + 1) % END_LAYOUT};
+	const Arg arg = {.i = (cur_layout + 1) % END_LAYOUT};
 	change_layout(&arg);
 }
 
@@ -746,4 +755,12 @@ void last_layout(void)
 {
 	const Arg arg = {.i = prev_layout};
 	change_layout(&arg);
+}
+
+void change_mode(const Arg *arg)
+{
+	if (arg->i >= END_MODES || arg->i == cur_mode)
+		return;
+	cur_mode = arg->i;
+	DEBUGP("Changed mode to %d\n", cur_mode);
 }
