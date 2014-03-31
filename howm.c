@@ -9,10 +9,12 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #define XCB_MOVE_RESIZE (XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y | \
 			XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT)
 #define CLEANMASK(mask) (mask & ~(numlockmask | XCB_MOD_MASK_LOCK))
+#define EQUALMODS(mask, omask) (CLEANMASK(mask) == CLEANMASK(omask))
 #define LENGTH(x) (sizeof(x) / sizeof(*x))
 #define FFT(client) (c->is_transient || c->is_floating || c->is_fullscreen)
 
@@ -29,6 +31,18 @@ typedef struct {
 	void (*func)(const Arg *);
 	const Arg arg;
 } Key;
+
+typedef struct {
+	unsigned int mod;
+	xcb_keysym_t sym;
+	void (*func)(const int type, ...);
+} Operator;
+
+typedef struct {
+	unsigned int mod;
+	xcb_keysym_t sym;
+	unsigned int type;
+} Motion;
 
 typedef struct {
 	unsigned int mod;
@@ -49,6 +63,8 @@ typedef struct {
 	Client *head, *prev_foc, *current;
 } Workspace;
 
+static void op_kill(const int type, const int count);
+static int handle_states(Key *key);
 static void change_mode(const Arg *arg);
 static void change_layout(const Arg *arg);
 static void next_layout(void);
@@ -69,6 +85,7 @@ static void destroy_event(xcb_generic_event_t *ev);
 static int get_non_tff_count(void);
 static void stack(void);
 static xcb_keycode_t *xcb_keysym_to_keycode(xcb_keysym_t sym);
+static void grab_keycode(xcb_keycode_t *keycode, const int mod);
 static void xcb_elevate_window(xcb_window_t win);
 static void xcb_move_resize(xcb_connection_t *con, xcb_window_t win,
 				bool draw_gap, int x, int y, int w, int h);
@@ -105,6 +122,10 @@ static void (*handler[XCB_NO_OPERATION])(xcb_generic_event_t *) = {
 };
 
 enum {ZOOM, GRID, HSTACK, VSTACK, FIBONACCI, END_LAYOUT};
+enum {OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE};
+enum {NORMAL, FOCUS, RESIZE, END_MODES};
+enum {COMMAND, OPERATOR, MOTION, END_TYPE};
+enum {CLIENT, WORKSPACE};
 
 static void(*layout_handler[])(void) = {
 	[GRID] = grid,
@@ -114,7 +135,7 @@ static void(*layout_handler[])(void) = {
 	[FIBONACCI] = fibonacci
 };
 
-static enum {NORMAL, FOCUS, RESIZE, END_MODES};
+static void (*operator_func)(const int type, const int count);
 
 #include "config.h"
 
@@ -142,7 +163,7 @@ static Client *head, *prev_foc, *current;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
 static int cur_workspace, prev_workspace, cur_layout, prev_layout;
 static unsigned int screen_height, screen_width, border_focus, border_unfocus;
-static unsigned int cur_mode;
+static unsigned int cur_mode, cur_count, cur_state = OPERATOR_STATE;
 
 static void setup(void)
 {
@@ -235,10 +256,37 @@ static void key_press_event(xcb_generic_event_t *ev)
 	xcb_key_press_event_t *ke = (xcb_key_press_event_t *)ev;
 	DEBUGP("[+] Keypress code:%d mod:%d\n", ke->detail, ke->state);
 	xcb_keysym_t keysym = xcb_keycode_to_keysym(ke->detail);
+	
+	switch(cur_state) {
+	case OPERATOR_STATE:
+		for (i = 0; i < LENGTH(operators); i++) {
+			if (keysym == operators[i].sym && EQUALMODS(operators[i].mod, ke->state)) {
+				operator_func = operators[i].func;
+				cur_state = COUNT_STATE;
+				break;
+			}
+		}
+		break;
+	case COUNT_STATE:
+		if (EQUALMODS(count_mod, ke->state) && XK_1 <= keysym <= XK_9) {
+			/* Get a value between 0 and 1.  */
+			cur_count = keysym - XK_0;
+			cur_state = MOTION_STATE;
+			break;
+		}
+	case MOTION_STATE:
+		for (i = 0; i < LENGTH(motions); i++) {
+			if (keysym == motions[i].sym && EQUALMODS(motions[i].mod, ke->state)) {
+				operator_func(motions[i].type, cur_count);
+				cur_state = OPERATOR_STATE;
+				/* Reset so that kc is equivalent to k1c. */
+				cur_count = 1;
+			}
+		}
+	}
 	for (i = 0; i < LENGTH(keys); i++)
-		if (keysym == keys[i].sym && CLEANMASK(keys[i].mod)
-				== CLEANMASK(ke->state) && keys[i].func
-				&& keys[i].mode == cur_mode)
+		if (keysym == keys[i].sym && EQUALMODS(keys[i].mod, ke->state)
+				&& keys[i].func && keys[i].mode == cur_mode)
 			keys[i].func(&keys[i].arg);
 }
 
@@ -466,13 +514,30 @@ static void grab_keys(void)
 	xcb_ungrab_key(dpy, XCB_GRAB_ANY, screen->root, XCB_MOD_MASK_ANY);
 	for (i = 0; i < LENGTH(keys); i++) {
 		keycode = xcb_keysym_to_keycode(keys[i].sym);
-		for (j = 0; keycode[j] != XCB_NO_SYMBOL; j++)
-			for (k = 0; k < LENGTH(mods); k++)
-				xcb_grab_key(dpy, 1, screen->root, keys[i].mod |
-					mods[k], keycode[j], XCB_GRAB_MODE_ASYNC,
-					XCB_GRAB_MODE_ASYNC);
-
+		grab_keycode(keycode, keys[i].mod);
 	}
+
+	for (i = 0; i < LENGTH(operators); i++) {
+		keycode = xcb_keysym_to_keycode(operators[i].sym);
+		grab_keycode(keycode, operators[i].mod);
+	}
+
+	for (i = 0; i < LENGTH(motions); i++) {
+		keycode = xcb_keysym_to_keycode(motions[i].sym);
+		grab_keycode(keycode, motions[i].mod);
+	}
+}
+
+static void grab_keycode(xcb_keycode_t *keycode, const int mod)
+{
+	int j, k;
+	unsigned int mods[] = {0, XCB_MOD_MASK_LOCK};
+	for (j = 0; keycode[j] != XCB_NO_SYMBOL; j++)
+		for (k = 0; k < LENGTH(mods); k++)
+			xcb_grab_key(dpy, 1, screen->root, mod |
+				mods[k], keycode[j], XCB_GRAB_MODE_ASYNC,
+				XCB_GRAB_MODE_ASYNC);
+
 }
 
 static void xcb_set_border_width(xcb_connection_t *con, xcb_window_t win, int w)
@@ -763,4 +828,13 @@ void change_mode(const Arg *arg)
 		return;
 	cur_mode = arg->i;
 	DEBUGP("Changed mode to %d\n", cur_mode);
+}
+
+static void op_kill(const int type, const int count)
+{
+	if (type == WORKSPACE) {
+		DEBUGP("Killing %d workspaces.\n", count);
+	} else if (type == CLIENT) {
+		DEBUGP("Killing %d clients.\n", count);
+	}
 }

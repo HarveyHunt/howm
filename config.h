@@ -18,12 +18,13 @@ static const char *dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
 					"-sf", "#74718e", "-fn",
 					"'Droid Sans Mono-10'"};
 
+static count_mod = MODKEY;
+
 static const Key keys[] = {
 	{MODKEY, NORMAL, XK_Return, spawn, {.cmd = term_cmd} },
 	{MODKEY, NORMAL, XK_r, spawn, {.cmd = dmenu_cmd} },
 
 	{MODKEY, NORMAL, XK_s, change_layout, {.i = VSTACK} },
-	{MODKEY | ShiftMask, NORMAL, XK_s, change_layout, {.i = HSTACK} },
 	{MODKEY, NORMAL, XK_g, change_layout, {.i = GRID} },
 	{MODKEY, NORMAL, XK_s, change_layout, {.i = ZOOM} },
 	{MODKEY, NORMAL, XK_j, next_layout, {} },
@@ -42,6 +43,14 @@ static const Key keys[] = {
 	{MODKEY, FOCUS, XK_1, change_workspace, {.i = 0} },
 	{MODKEY, FOCUS, XK_2, change_workspace, {.i = 1} },
 	{MODKEY, FOCUS, XK_3, change_workspace, {.i = 2} }
+};
+
+static const Operator operators[] = {
+    {MODKEY, XK_k, op_kill}
+};
+
+static const Motion motions[] = {
+    {MODKEY, XK_c, CLIENT}
 };
 
 static Workspace workspaces[] = {
