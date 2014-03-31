@@ -29,13 +29,13 @@ static const Key keys[] = {
 	{MODKEY, NORMAL, XK_s, change_layout, {.i = ZOOM} },
 	{MODKEY, NORMAL, XK_j, next_layout, {} },
 	{MODKEY, NORMAL, XK_k, previous_layout, {} },
-    {MODKEY, NORMAL, XK_f, change_mode, {.i = FOCUS} },
+	{MODKEY, NORMAL, XK_f, change_mode, {.i = FOCUS} },
 
 	{MODKEY, FOCUS, XK_k, focus_prev, {} },
 	{MODKEY, FOCUS, XK_j, focus_next, {} },
 	{MODKEY | ShiftMask, FOCUS, XK_k, move_up, {} },
 	{MODKEY | ShiftMask, FOCUS, XK_j, move_down, {} },
-    {MODKEY, FOCUS, XK_Escape, change_mode, {.i = NORMAL} },
+	{MODKEY, FOCUS, XK_Escape, change_mode, {.i = NORMAL} },
 
 	{MODKEY, FOCUS, XK_space, next_workspace, {} },
 	{MODKEY | ShiftMask, FOCUS, XK_space, previous_workspace, {} },
@@ -46,11 +46,11 @@ static const Key keys[] = {
 };
 
 static const Operator operators[] = {
-    {MODKEY, XK_k, op_kill}
+	{MODKEY, XK_k, op_kill}
 };
 
 static const Motion motions[] = {
-    {MODKEY, XK_c, CLIENT}
+	{MODKEY, XK_c, CLIENT}
 };
 
 static Workspace workspaces[] = {

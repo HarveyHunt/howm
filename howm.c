@@ -34,7 +34,7 @@ typedef struct {
 typedef struct {
 	unsigned int mod;
 	xcb_keysym_t sym;
-	void (*func)(const int type, ...);
+	void (*func)(const int type, const int count);
 } Operator;
 
 typedef struct {
@@ -62,6 +62,7 @@ typedef struct {
 	Client *head, *prev_foc, *current;
 } Workspace;
 
+static Client *next_client(Client *c);
 static void op_kill(const int type, const int count);
 static void change_mode(const Arg *arg);
 static void change_layout(const Arg *arg);
@@ -124,6 +125,9 @@ enum {OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE};
 enum {NORMAL, FOCUS, RESIZE, END_MODES};
 enum {COMMAND, OPERATOR, MOTION, END_TYPE};
 enum {CLIENT, WORKSPACE};
+enum {NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
+		NET_ACTIVE_WINDOW};
+enum {WM_DELETE_WINDOW, WM_PROTOCOLS};
 
 static void(*layout_handler[])(void) = {
 	[GRID] = grid,
@@ -134,21 +138,7 @@ static void(*layout_handler[])(void) = {
 };
 
 static void (*operator_func)(const int type, const int count);
-
-#include "config.h"
-
-#ifdef DEBUG_ENABLE
-#	define DEBUG(x) puts(x);
-#	define DEBUGP(x, ...) printf(x, ##__VA_ARGS__);
-#else
-#	define DEBUG(x) do {} while (0)
-#	define DEBUGP(x, ...) do {} while (0)
-#endif
-
 static xcb_connection_t *dpy;
-static enum {NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
-		NET_ACTIVE_WINDOW};
-static enum {WM_DELETE_WINDOW, WM_PROTOCOLS};
 static char *WM_ATOM_NAMES[] = {"WM_DELETE_WINDOW", "WM_PROTOCOLS"};
 static char *NET_ATOM_NAMES[] = {"_NET_WM_STATE_FULLSCREEN", "_NET_SUPPORTED",
 				"_NET_WM_STATE", "_NET_ACTIVE_WINDOW"};
@@ -162,6 +152,16 @@ static Client *head, *prev_foc, *current;
 static int cur_workspace, prev_workspace, cur_layout, prev_layout;
 static unsigned int screen_height, screen_width, border_focus, border_unfocus;
 static unsigned int cur_mode, cur_count, cur_state = OPERATOR_STATE;
+
+#include "config.h"
+
+#ifdef DEBUG_ENABLE
+#	define DEBUG(x) puts(x);
+#	define DEBUGP(x, ...) printf(x, ##__VA_ARGS__);
+#else
+#	define DEBUG(x) do {} while (0)
+#	define DEBUGP(x, ...) do {} while (0)
+#endif
 
 static void setup(void)
 {
@@ -409,6 +409,15 @@ static Client *prev_client(Client *c)
 	for (p = head; p->next && p->next != c; p = p->next)
 		;
 	return p;
+}
+
+static Client *next_client(Client *c)
+{
+	if (!c || !head->next)
+		return NULL;
+	if (c->next)
+		return c->next;
+	return head;
 }
 
 static void remove_from_workspace(Client *c)
@@ -669,8 +678,8 @@ static void howm_info(void)
 	for (w = 0; w < WORKSPACES; w++) {
 		for (select_workspace(w), c = head, n = 0; c; c = c->next, n++)
 			;
-		printf("m:%d l:%d n:%d w:%d cw:%d\n", cur_mode, cur_layout, n, w,
-			cur_workspace == cw);
+		printf("m:%d l:%d n:%d w:%d cw:%d s:%d\n", cur_mode, cur_layout, n, w,
+			cur_workspace == cw, cur_state);
 	}
 	if (cw != w - 1)
 		select_workspace(cw);
