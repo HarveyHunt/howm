@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <stdarg.h>
 
 #define XCB_MOVE_RESIZE (XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y | \
 			XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT)
@@ -64,7 +63,6 @@ typedef struct {
 } Workspace;
 
 static void op_kill(const int type, const int count);
-static int handle_states(Key *key);
 static void change_mode(const Arg *arg);
 static void change_layout(const Arg *arg);
 static void next_layout(void);
@@ -256,8 +254,8 @@ static void key_press_event(xcb_generic_event_t *ev)
 	xcb_key_press_event_t *ke = (xcb_key_press_event_t *)ev;
 	DEBUGP("[+] Keypress code:%d mod:%d\n", ke->detail, ke->state);
 	xcb_keysym_t keysym = xcb_keycode_to_keysym(ke->detail);
-	
-	switch(cur_state) {
+
+	switch (cur_state) {
 	case OPERATOR_STATE:
 		for (i = 0; i < LENGTH(operators); i++) {
 			if (keysym == operators[i].sym && EQUALMODS(operators[i].mod, ke->state)) {
@@ -268,7 +266,8 @@ static void key_press_event(xcb_generic_event_t *ev)
 		}
 		break;
 	case COUNT_STATE:
-		if (EQUALMODS(count_mod, ke->state) && XK_1 <= keysym <= XK_9) {
+		if (EQUALMODS(count_mod, ke->state) && XK_1 <= keysym &&
+				keysym <= XK_9) {
 			/* Get a value between 0 and 1.  */
 			cur_count = keysym - XK_0;
 			cur_state = MOTION_STATE;
@@ -509,8 +508,7 @@ static void grab_keys(void)
 	 * already? */
 	DEBUG("Grabbing keys.");
 	xcb_keycode_t *keycode;
-	unsigned int mods[] = {0, XCB_MOD_MASK_LOCK};
-	unsigned int i, j, k;
+	unsigned int i;
 	xcb_ungrab_key(dpy, XCB_GRAB_ANY, screen->root, XCB_MOD_MASK_ANY);
 	for (i = 0; i < LENGTH(keys); i++) {
 		keycode = xcb_keysym_to_keycode(keys[i].sym);
@@ -530,7 +528,7 @@ static void grab_keys(void)
 
 static void grab_keycode(xcb_keycode_t *keycode, const int mod)
 {
-	int j, k;
+	unsigned int j, k;
 	unsigned int mods[] = {0, XCB_MOD_MASK_LOCK};
 	for (j = 0; keycode[j] != XCB_NO_SYMBOL; j++)
 		for (k = 0; k < LENGTH(mods); k++)
@@ -576,7 +574,7 @@ static void stack(void)
 	Client *c = NULL;
 	bool vert = (cur_layout == VSTACK);
 	int span = vert ? screen_height :  screen_width;
-	int client_span, i, n, client_y = 0, client_x = 0, client_h = 0;
+	int client_span, i, n, client_y = 0, client_x = 0;
 
 	n = get_non_tff_count();
 	/* TODO: Need to take into account when this has remainders. */
