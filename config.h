@@ -27,8 +27,8 @@ static const Key keys[] = {
 	{MODKEY, NORMAL, XK_s, change_layout, {.i = VSTACK} },
 	{MODKEY, NORMAL, XK_g, change_layout, {.i = GRID} },
 	{MODKEY, NORMAL, XK_s, change_layout, {.i = ZOOM} },
-	{MODKEY, NORMAL, XK_j, next_layout, {} },
-	{MODKEY, NORMAL, XK_k, previous_layout, {} },
+	{MODKEY, NORMAL, XK_n, next_layout, {} },
+	{MODKEY | ShiftMask, NORMAL, XK_n, previous_layout, {} },
 	{MODKEY, NORMAL, XK_f, change_mode, {.i = FOCUS} },
 
 	{MODKEY, FOCUS, XK_k, focus_prev, {} },
@@ -54,9 +54,9 @@ static const Motion motions[] = {
 };
 
 static Workspace workspaces[] = {
-	{.layout = 0},
-	{.layout = 1},
-	{.layout = 2}
+	{.layout = HSTACK},
+	{.layout = HSTACK},
+	{.layout = HSTACK}
 };
 
 #endif

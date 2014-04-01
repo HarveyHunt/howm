@@ -62,8 +62,8 @@ typedef struct {
 	Client *head, *prev_foc, *current;
 } Workspace;
 
-static Client *next_client(Client *c);
-static void op_kill(const int type, const int count);
+static void kill_client(void);
+static void op_kill(const int type, int count);
 static void change_mode(const Arg *arg);
 static void change_layout(const Arg *arg);
 static void next_layout(void);
@@ -137,7 +137,7 @@ static void(*layout_handler[])(void) = {
 	[FIBONACCI] = fibonacci
 };
 
-static void (*operator_func)(const int type, const int count);
+static void (*operator_func)(const int type, int count);
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = {"WM_DELETE_WINDOW", "WM_PROTOCOLS"};
 static char *NET_ATOM_NAMES[] = {"_NET_WM_STATE_FULLSCREEN", "_NET_SUPPORTED",
@@ -473,7 +473,8 @@ static void update_focused_client(Client *c)
 		xcb_delete_property(dpy, screen->root, net_atoms[NET_ACTIVE_WINDOW]);
 		return;
 	} else if (c == prev_foc) {
-		prev_foc = prev_client(current = (prev_foc ? prev_foc : head));
+		current = (prev_foc ? prev_foc : head);
+		prev_foc = prev_client(current);
 	} else if (c != current) {
 		prev_foc = current;
 		current = c;
@@ -667,7 +668,6 @@ static void remove_client(Client *c)
 		arrange_windows();
 	else
 		select_workspace(cw);
-	howm_info();
 }
 
 static void howm_info(void)
@@ -808,7 +808,6 @@ void change_layout(const Arg *arg)
 	arrange_windows();
 	update_focused_client(current);
 	DEBUGP("Changed layout to %d\n", cur_layout);
-	howm_info();
 }
 
 void previous_layout(void)
@@ -837,11 +836,26 @@ void change_mode(const Arg *arg)
 	DEBUGP("Changed mode to %d\n", cur_mode);
 }
 
-static void op_kill(const int type, const int count)
+void op_kill(const int type, int count)
 {
 	if (type == WORKSPACE) {
 		DEBUGP("Killing %d workspaces.\n", count);
 	} else if (type == CLIENT) {
 		DEBUGP("Killing %d clients.\n", count);
+		Client *c;
+		while (count > 0) {
+			kill_client();
+			count--;
+		}
 	}
+}
+
+void kill_client()
+{
+	if (!current)
+		return;
+	/* TODO: Kill the window in a nicer way and get it to consistently die. */
+	xcb_kill_client(dpy, current->win);
+	DEBUG("Killing Client");
+	remove_client(current);
 }
