@@ -18,7 +18,7 @@ static const char *dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
 					"-sf", "#74718e", "-fn",
 					"'Droid Sans Mono-10'"};
 
-static count_mod = MODKEY;
+static int count_mod = MODKEY;
 
 static const Key keys[] = {
 	{MODKEY, NORMAL, XK_Return, spawn, {.cmd = term_cmd} },

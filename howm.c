@@ -65,6 +65,8 @@ typedef struct {
 static void kill_workspace(const int ws);
 static void kill_client(void);
 static void op_kill(const int type, int count);
+static void op_move_up(const int type, int count);
+static void op_move_down(const int type, int count);
 static void change_mode(const Arg *arg);
 static void change_layout(const Arg *arg);
 static void next_layout(void);
@@ -695,7 +697,6 @@ static void enter_event(xcb_generic_event_t *ev)
 	c = win_to_client(ee->event);
 	if (c)
 		update_focused_client(c);
-
 }
 
 static void fibonacci(void)
@@ -873,3 +874,22 @@ void kill_workspace(const int ws)
 	while (head != NULL)
 		kill_client();
 }
+
+void op_move_down(const int type, int count)
+{
+	if (type == WORKSPACE)
+		/* TODO: Make this so that an entire desktop(s) can be moved. */
+		return;
+	else if (type == CLIENT)
+		return;
+}
+
+void op_move_up(const int type, int count)
+{
+	if (type == WORKSPACE)
+		/* TODO: Make this so that an entire desktop(s) can be moved. */
+		return;
+	else if (type == CLIENT)
+		return;
+}
+
