@@ -50,7 +50,8 @@ static const Operator operators[] = {
 };
 
 static const Motion motions[] = {
-	{MODKEY, XK_c, CLIENT}
+	{MODKEY, XK_c, CLIENT},
+	{MODKEY, XK_w, WORKSPACE}
 };
 
 static Workspace workspaces[] = {

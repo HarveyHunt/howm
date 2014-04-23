@@ -62,6 +62,7 @@ typedef struct {
 	Client *head, *prev_foc, *current;
 } Workspace;
 
+static void kill_workspace(const int ws);
 static void kill_client(void);
 static void op_kill(const int type, int count);
 static void change_mode(const Arg *arg);
@@ -217,7 +218,6 @@ int main(int argc, char *argv[])
 	check_other_wm();
 	while (!xcb_connection_has_error(dpy)) {
 		xcb_flush(dpy);
-		DEBUG("Flushed");
 		ev = xcb_wait_for_event(dpy);
 		if (handler[ev->response_type])
 			handler[ev->response_type](ev);
@@ -840,9 +840,15 @@ void op_kill(const int type, int count)
 {
 	if (type == WORKSPACE) {
 		DEBUGP("Killing %d workspaces.\n", count);
+		while (count > 0) {
+			/* Count being here is intentional as workspaces are
+			 * zero indexed. */
+			count--;
+			kill_workspace((cur_workspace + count) % WORKSPACES);
+		}
+
 	} else if (type == CLIENT) {
 		DEBUGP("Killing %d clients.\n", count);
-		Client *c;
 		while (count > 0) {
 			kill_client();
 			count--;
@@ -850,7 +856,7 @@ void op_kill(const int type, int count)
 	}
 }
 
-void kill_client()
+void kill_client(void)
 {
 	if (!current)
 		return;
@@ -858,4 +864,12 @@ void kill_client()
 	xcb_kill_client(dpy, current->win);
 	DEBUG("Killing Client");
 	remove_client(current);
+}
+
+void kill_workspace(const int ws)
+{
+	Arg arg = {.i = ws};
+	change_workspace(&arg);
+	while (head != NULL)
+		kill_client();
 }
