@@ -62,6 +62,8 @@ typedef struct {
 	Client *head, *prev_foc, *current;
 } Workspace;
 
+static void move_current_down(void);
+static void move_current_up(void);
 static void kill_workspace(const int ws);
 static void kill_client(void);
 static void op_kill(const int type, int count);
@@ -76,10 +78,10 @@ static void next_workspace(void);
 static void previous_workspace(void);
 static void last_workspace(void);
 static void change_workspace(const Arg *arg);
-static void move_down(void);
+static void move_down(Client *c);
 static void focus_next(void);
 static void focus_prev(void);
-static void move_up(void);
+static void move_up(Client *c);
 static void enter_event(xcb_generic_event_t *ev);
 static void howm_info(void);
 static void grab_keys(void);
@@ -166,7 +168,7 @@ static unsigned int cur_mode, cur_count, cur_state = OPERATOR_STATE;
 #	define DEBUGP(x, ...) do {} while (0)
 #endif
 
-static void setup(void)
+void setup(void)
 {
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (screen == NULL)
@@ -186,7 +188,7 @@ static void setup(void)
 	border_unfocus = get_colour(BORDER_UNFOCUS);
 }
 
-static unsigned int get_colour(char *colour)
+unsigned int get_colour(char *colour)
 {
 	unsigned int r, g, b, pixel;
 	xcb_alloc_color_reply_t *rep;
@@ -227,7 +229,7 @@ int main(int argc, char *argv[])
 	return 1;
 }
 
-static void check_other_wm(void)
+void check_other_wm(void)
 {
 	xcb_generic_error_t *e;
 	unsigned int values[1] = {XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
@@ -245,12 +247,12 @@ static void check_other_wm(void)
 	free(e);
 }
 
-static void button_press_event(xcb_generic_event_t *ev)
+void button_press_event(xcb_generic_event_t *ev)
 {
 	DEBUG("Button was pressed.");
 }
 
-static void key_press_event(xcb_generic_event_t *ev)
+void key_press_event(xcb_generic_event_t *ev)
 {
 	unsigned int i = 0;
 	xcb_key_press_event_t *ke = (xcb_key_press_event_t *)ev;
@@ -291,7 +293,7 @@ static void key_press_event(xcb_generic_event_t *ev)
 			keys[i].func(&keys[i].arg);
 }
 
-static void spawn(const Arg *arg)
+void spawn(const Arg *arg)
 {
 	if (fork())
 		return;
@@ -305,7 +307,7 @@ static void spawn(const Arg *arg)
 	exit(EXIT_SUCCESS);
 }
 
-static void map_request_event(xcb_generic_event_t *ev)
+void map_request_event(xcb_generic_event_t *ev)
 {
 	xcb_window_t transient = 0;
 	xcb_get_window_attributes_reply_t *wa;
@@ -328,7 +330,7 @@ static void map_request_event(xcb_generic_event_t *ev)
 	update_focused_client(c);
 }
 
-static Client *client_from_window(xcb_window_t w)
+Client *client_from_window(xcb_window_t w)
 {
 	Client *c = (Client *)calloc(1, sizeof(Client));
 	Client *t = prev_client(head); /* Get the last element. */
@@ -348,7 +350,7 @@ static Client *client_from_window(xcb_window_t w)
 	return c;
 }
 
-static void save_workspace(int i)
+void save_workspace(int i)
 {
 	if (i < 0 || i >= WORKSPACES)
 		return;
@@ -358,7 +360,7 @@ static void save_workspace(int i)
 	workspaces[i].prev_foc = prev_foc;
 }
 
-static void select_workspace(int i)
+void select_workspace(int i)
 {
 	save_workspace(cur_workspace);
 	cur_layout = workspaces[i].layout;
@@ -368,7 +370,7 @@ static void select_workspace(int i)
 	cur_workspace = i;
 }
 
-static Client *win_to_client(xcb_window_t win)
+Client *win_to_client(xcb_window_t win)
 {
 	bool found;
 	int w = 0, cw = cur_workspace;
@@ -381,7 +383,7 @@ static Client *win_to_client(xcb_window_t win)
 	return c;
 }
 
-static xcb_keysym_t xcb_keycode_to_keysym(xcb_keycode_t code)
+xcb_keysym_t xcb_keycode_to_keysym(xcb_keycode_t code)
 {
 	xcb_keysym_t sym;
 	xcb_key_symbols_t *syms = xcb_key_symbols_alloc(dpy);
@@ -392,7 +394,7 @@ static xcb_keysym_t xcb_keycode_to_keysym(xcb_keycode_t code)
 	return sym;
 }
 
-static xcb_keycode_t *xcb_keysym_to_keycode(xcb_keysym_t sym)
+xcb_keycode_t *xcb_keysym_to_keycode(xcb_keysym_t sym)
 {
 	xcb_keycode_t *code;
 	xcb_key_symbols_t *syms = xcb_key_symbols_alloc(dpy);
@@ -403,7 +405,7 @@ static xcb_keycode_t *xcb_keysym_to_keycode(xcb_keysym_t sym)
 	return code;
 }
 
-static Client *prev_client(Client *c)
+Client *prev_client(Client *c)
 {
 	if (!c || !head->next)
 		return NULL;
@@ -413,7 +415,7 @@ static Client *prev_client(Client *c)
 	return p;
 }
 
-static Client *next_client(Client *c)
+Client *next_client(Client *c)
 {
 	if (!c || !head->next)
 		return NULL;
@@ -422,7 +424,7 @@ static Client *next_client(Client *c)
 	return head;
 }
 
-static void remove_from_workspace(Client *c)
+void remove_from_workspace(Client *c)
 {
 	if (head == c)
 		head = NULL;
@@ -430,7 +432,7 @@ static void remove_from_workspace(Client *c)
 	p->next = c->next;
 }
 
-static void arrange_windows(void)
+void arrange_windows(void)
 {
 	if (!head)
 		return;
@@ -439,12 +441,12 @@ static void arrange_windows(void)
 	howm_info();
 }
 
-static void grid(void)
+void grid(void)
 {
 	DEBUG("GRID");
 }
 
-static void zoom(void)
+void zoom(void)
 {
 	DEBUG("ZOOM");
 	Client *c;
@@ -454,7 +456,7 @@ static void zoom(void)
 					0, 0, screen_width, screen_height);
 }
 
-static void xcb_move_resize(xcb_connection_t *con, xcb_window_t win, bool draw_gap,
+void xcb_move_resize(xcb_connection_t *con, xcb_window_t win, bool draw_gap,
 		int x, int y, int w, int h)
 {
 	unsigned int position[] = {x, y, w, h};
@@ -468,7 +470,7 @@ static void xcb_move_resize(xcb_connection_t *con, xcb_window_t win, bool draw_g
 	xcb_configure_window(con, win, XCB_MOVE_RESIZE, position);
 }
 
-static void update_focused_client(Client *c)
+void update_focused_client(Client *c)
 {
 	if (!head) {
 		prev_foc = current = NULL;
@@ -513,7 +515,7 @@ static void update_focused_client(Client *c)
 	arrange_windows();
 }
 
-static void grab_keys(void)
+void grab_keys(void)
 {
 	/* TODO: optimise this so that it doesn't call xcb_grab_key for all
 	 * keys, as some are repeated due to modes. Perhaps XCB does this
@@ -538,7 +540,7 @@ static void grab_keys(void)
 	}
 }
 
-static void grab_keycode(xcb_keycode_t *keycode, const int mod)
+void grab_keycode(xcb_keycode_t *keycode, const int mod)
 {
 	unsigned int j, k;
 	unsigned int mods[] = {0, XCB_MOD_MASK_LOCK};
@@ -550,19 +552,19 @@ static void grab_keycode(xcb_keycode_t *keycode, const int mod)
 
 }
 
-static void xcb_set_border_width(xcb_connection_t *con, xcb_window_t win, int w)
+void xcb_set_border_width(xcb_connection_t *con, xcb_window_t win, int w)
 {
 	unsigned int width[1] = {w};
 	xcb_configure_window(con, win, XCB_CONFIG_WINDOW_BORDER_WIDTH, width);
 }
 
-static void xcb_elevate_window(xcb_window_t win)
+void xcb_elevate_window(xcb_window_t win)
 {
 	unsigned int stack_mode[1] = {XCB_STACK_MODE_ABOVE};
 	xcb_configure_window(dpy, win, XCB_CONFIG_WINDOW_STACK_MODE, stack_mode);
 }
 
-static void xcb_get_atoms(char **names, xcb_atom_t *atoms, unsigned int cnt)
+void xcb_get_atoms(char **names, xcb_atom_t *atoms, unsigned int cnt)
 {
 	xcb_intern_atom_reply_t *reply;
 	xcb_intern_atom_cookie_t cookies[cnt];
@@ -581,7 +583,7 @@ static void xcb_get_atoms(char **names, xcb_atom_t *atoms, unsigned int cnt)
 	}
 }
 
-static void stack(void)
+void stack(void)
 {
 	Client *c = NULL;
 	bool vert = (cur_layout == VSTACK);
@@ -625,7 +627,7 @@ static void stack(void)
 	}
 }
 
-static int get_non_tff_count(void)
+int get_non_tff_count(void)
 {
 	int n = 0;
 	Client *c = NULL;
@@ -639,7 +641,7 @@ static int get_non_tff_count(void)
 
 }
 
-static void destroy_event(xcb_generic_event_t *ev)
+void destroy_event(xcb_generic_event_t *ev)
 {
 	DEBUG("DESTROY");
 	xcb_destroy_notify_event_t *de = (xcb_destroy_notify_event_t *) ev;
@@ -648,7 +650,7 @@ static void destroy_event(xcb_generic_event_t *ev)
 		remove_client(c);
 }
 
-static void remove_client(Client *c)
+void remove_client(Client *c)
 {
 	Client **temp = NULL;
 	int w = 0, cw = cur_workspace;
@@ -672,7 +674,7 @@ static void remove_client(Client *c)
 		select_workspace(cw);
 }
 
-static void howm_info(void)
+void howm_info(void)
 {
 	int cw = cur_workspace;
 	int w, n;
@@ -687,7 +689,7 @@ static void howm_info(void)
 		select_workspace(cw);
 }
 
-static void enter_event(xcb_generic_event_t *ev)
+void enter_event(xcb_generic_event_t *ev)
 {
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *) ev;
 	Client *c = NULL;
@@ -699,7 +701,7 @@ static void enter_event(xcb_generic_event_t *ev)
 		update_focused_client(c);
 }
 
-static void fibonacci(void)
+void fibonacci(void)
 {
 	Client *c = NULL;
 	int ch = screen_height - (BORDER_PX + GAP);
@@ -711,27 +713,27 @@ static void fibonacci(void)
 	}
 }
 
-static void move_down(void)
+void move_down(Client *c)
 {
-	Client *prev = prev_client(current);
-	Client *n = (current->next) ? current->next : head;
+	Client *prev = prev_client(c);
+	Client *n = (c->next) ? current->next : head;
 	if (!prev)
 		return;
-	if (head == current)
+	if (head == c)
 		head = n;
 	else
-		prev->next = current->next;
-	current->next = (current->next) ? n->next : n;
-	if (n->next == current->next)
-		n->next = current;
+		prev->next = c->next;
+	c->next = (c->next) ? n->next : n;
+	if (n->next == c->next)
+		n->next = c;
 	else
-		head = current;
+		head = c;
 	arrange_windows();
 }
 
-void move_up(void)
+void move_up(Client *c)
 {
-	Client *p = prev_client(current);
+	Client *p = prev_client(c);
 	Client *pp = NULL;
 	if (!p)
 		return;
@@ -739,11 +741,11 @@ void move_up(void)
 		for (pp = head; pp && pp->next != p; pp = pp->next)
 			;
 	if (pp)
-		pp->next = current;
+		pp->next = c;
 	else
-		head = (head == current) ? current->next : current;
-	p->next = (current->next == head) ? current : current->next;
-	current->next = (current->next == head) ? NULL : p;
+		head = (head == c) ? c->next : c;
+	p->next = (c->next == head) ? c: c->next;
+	c->next = (c->next == head) ? NULL : p;
 	arrange_windows();
 }
 
@@ -893,3 +895,12 @@ void op_move_up(const int type, int count)
 		return;
 }
 
+void move_current_down(void)
+{
+	move_down(current);
+}
+
+void move_current_up(void)
+{
+	move_up(current);
+}

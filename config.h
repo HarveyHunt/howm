@@ -33,8 +33,8 @@ static const Key keys[] = {
 
 	{MODKEY, FOCUS, XK_k, focus_prev, {} },
 	{MODKEY, FOCUS, XK_j, focus_next, {} },
-	{MODKEY | ShiftMask, FOCUS, XK_k, move_up, {} },
-	{MODKEY | ShiftMask, FOCUS, XK_j, move_down, {} },
+	{MODKEY | ShiftMask, FOCUS, XK_k, move_current_up, {} },
+	{MODKEY | ShiftMask, FOCUS, XK_j, move_current_down, {} },
 	{MODKEY, FOCUS, XK_Escape, change_mode, {.i = NORMAL} },
 
 	{MODKEY, FOCUS, XK_space, next_workspace, {} },
