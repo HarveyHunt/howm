@@ -46,7 +46,9 @@ static const Key keys[] = {
 };
 
 static const Operator operators[] = {
-	{MODKEY, XK_k, op_kill}
+	{MODKEY, XK_q, op_kill},
+    {MODKEY, XK_j, op_move_down},
+    {MODKEY, XK_k, op_move_up}
 };
 
 static const Motion motions[] = {

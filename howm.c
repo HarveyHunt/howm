@@ -716,7 +716,7 @@ void fibonacci(void)
 void move_down(Client *c)
 {
 	Client *prev = prev_client(c);
-	Client *n = (c->next) ? current->next : head;
+	Client *n = (c->next) ? c->next : head;
 	if (!prev)
 		return;
 	if (head == c)
@@ -879,20 +879,32 @@ void kill_workspace(const int ws)
 
 void op_move_down(const int type, int count)
 {
-	if (type == WORKSPACE)
+	if (type == WORKSPACE) {
 		/* TODO: Make this so that an entire desktop(s) can be moved. */
 		return;
-	else if (type == CLIENT)
-		return;
+	} else if (type == CLIENT) {
+		Client *c = current;
+		while (count > 0) {
+			move_down(c);
+			c = next_client(c);
+			count--;
+		}
+	}
 }
 
 void op_move_up(const int type, int count)
 {
-	if (type == WORKSPACE)
+	if (type == WORKSPACE) {
 		/* TODO: Make this so that an entire desktop(s) can be moved. */
 		return;
-	else if (type == CLIENT)
-		return;
+	} else if (type == CLIENT) {
+		Client *c = current;
+		while (count > 0) {
+			move_up(c);
+			c = prev_client(c);
+			count--;
+		}
+	}
 }
 
 void move_current_down(void)
