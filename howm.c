@@ -901,6 +901,14 @@ void op_move_down(const int type, int count)
 {
 	if (type == WORKSPACE) {
 		/* TODO: Make this so that an entire desktop(s) can be moved. */
+		while (count > 0) {
+			Client *c;
+			Arg arg = {.i = ((2 * cur_workspace) - 1) % WORKSPACES}; 
+			change_workspace(&arg);
+			for (c = head; c; c = c->next)
+				client_to_workspace(c, ((2 * cur_workspace) - 1) % WORKSPACES);
+			count--;
+		}
 		return;
 	} else if (type == CLIENT) {
 		Client *c = current;
