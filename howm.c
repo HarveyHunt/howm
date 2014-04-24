@@ -1,4 +1,5 @@
 #include <xcb/xcb.h>
+
 #include <xcb/xcb_keysyms.h>
 #include <xcb/xcb_icccm.h>
 #include <X11/X.h>
@@ -10,7 +11,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define XCB_MOVE_RESIZE (XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y | \
+#define MOVE_RESIZE_MASK (XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y | \
 			XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT)
 #define CLEANMASK(mask) (mask & ~(numlockmask | XCB_MOD_MASK_LOCK))
 #define EQUALMODS(mask, omask) (CLEANMASK(mask) == CLEANMASK(omask))
@@ -62,68 +63,75 @@ typedef struct {
 	Client *head, *prev_foc, *current;
 } Workspace;
 
-static void move_current_down(void);
-static void move_current_up(void);
-static void kill_workspace(const int ws);
-static void kill_client(void);
+/* Operators */
 static void op_kill(const int type, int count);
 static void op_move_up(const int type, int count);
 static void op_move_down(const int type, int count);
-static void change_mode(const Arg *arg);
-static void change_layout(const Arg *arg);
-static void next_layout(void);
-static void previous_layout(void);
-static void last_layout(void);
-static void next_workspace(void);
-static void previous_workspace(void);
-static void last_workspace(void);
-static void change_workspace(const Arg *arg);
+
+/* Clients */
+static void move_current_down(void);
+static void move_current_up(void);
+static void kill_client(void);
 static void move_down(Client *c);
 static void focus_next(void);
 static void focus_prev(void);
 static void move_up(Client *c);
-static void enter_event(xcb_generic_event_t *ev);
-static void howm_info(void);
-static void grab_keys(void);
-static void destroy_event(xcb_generic_event_t *ev);
-static int get_non_tff_count(void);
-static void stack(void);
-static xcb_keycode_t *xcb_keysym_to_keycode(xcb_keysym_t sym);
-static void grab_keycode(xcb_keycode_t *keycode, const int mod);
-static void xcb_elevate_window(xcb_window_t win);
-static void xcb_move_resize(xcb_connection_t *con, xcb_window_t win,
-				bool draw_gap, int x, int y, int w, int h);
-static void xcb_set_border_width(xcb_connection_t *con, xcb_window_t win,
-				int w);
-static unsigned int get_colour(char *colour);
-static void xcb_get_atoms(char **names, xcb_atom_t *atoms, unsigned int cnt);
 static void update_focused_client(Client *c);
-static void grid(void);
-static void zoom(void);
-static void fibonacci(void);
-static void arrange_windows(void);
-static void check_other_wm(void);
 static Client *prev_client(Client *c);
 static Client *client_from_window(xcb_window_t w);
 static void remove_from_workspace(Client *c);
 static void remove_client(Client *c);
-static void spawn(const Arg *arg);
+static Client *win_to_client(xcb_window_t w);
+
+/* Workspaces */
+static void kill_workspace(const int ws);
+static void next_workspace(void);
+static void previous_workspace(void);
+static void last_workspace(void);
+static void change_workspace(const Arg *arg);
+static void save_workspace(int i);
+static void select_workspace(int i);
+
+/* Layouts */
+static void change_layout(const Arg *arg);
+static void next_layout(void);
+static void previous_layout(void);
+static void last_layout(void);
+static void stack(void);
+static void grid(void);
+static void zoom(void);
+static void fibonacci(void);
+static void arrange_windows(void);
+
+/* Modes */
+static void change_mode(const Arg *arg);
+
+/* Events */
+static void enter_event(xcb_generic_event_t *ev);
+static void destroy_event(xcb_generic_event_t *ev);
 static void button_press_event(xcb_generic_event_t *ev);
 static void key_press_event(xcb_generic_event_t *ev);
 static void map_request_event(xcb_generic_event_t *ev);
-static void save_workspace(int i);
-static void select_workspace(int i);
-static void setup(void);
-static Client *win_to_client(xcb_window_t w);
-static xcb_keysym_t xcb_keycode_to_keysym(xcb_keycode_t keycode);
 
-static void (*handler[XCB_NO_OPERATION])(xcb_generic_event_t *) = {
-	[XCB_BUTTON_PRESS] = button_press_event,
-	[XCB_KEY_PRESS] = key_press_event,
-	[XCB_MAP_REQUEST] = map_request_event,
-	[XCB_DESTROY_NOTIFY] = destroy_event,
-	[XCB_ENTER_NOTIFY] = enter_event
-};
+/* XCB */
+static void grab_keys(void);
+static xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym);
+static void grab_keycode(xcb_keycode_t *keycode, const int mod);
+static void elevate_window(xcb_window_t win);
+static void move_resize(xcb_connection_t *con, xcb_window_t win,
+				bool draw_gap, int x, int y, int w, int h);
+static void set_border_width(xcb_connection_t *con, xcb_window_t win,
+				int w);
+static void get_atoms(char **names, xcb_atom_t *atoms, unsigned int cnt);
+static void check_other_wm(void);
+static xcb_keysym_t keycode_to_keysym(xcb_keycode_t keycode);
+
+/* Misc */
+static void howm_info(void);
+static int get_non_tff_count(void);
+static unsigned int get_colour(char *colour);
+static void spawn(const Arg *arg);
+static void setup(void);
 
 enum {ZOOM, GRID, HSTACK, VSTACK, FIBONACCI, END_LAYOUT};
 enum {OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE};
@@ -134,6 +142,15 @@ enum {NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
 		NET_ACTIVE_WINDOW};
 enum {WM_DELETE_WINDOW, WM_PROTOCOLS};
 
+/* Handlers */
+static void (*handler[XCB_NO_OPERATION])(xcb_generic_event_t *) = {
+	[XCB_BUTTON_PRESS] = button_press_event,
+	[XCB_KEY_PRESS] = key_press_event,
+	[XCB_MAP_REQUEST] = map_request_event,
+	[XCB_DESTROY_NOTIFY] = destroy_event,
+	[XCB_ENTER_NOTIFY] = enter_event
+};
+
 static void(*layout_handler[])(void) = {
 	[GRID] = grid,
 	[ZOOM] = zoom,
@@ -143,6 +160,7 @@ static void(*layout_handler[])(void) = {
 };
 
 static void (*operator_func)(const int type, int count);
+
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = {"WM_DELETE_WINDOW", "WM_PROTOCOLS"};
 static char *NET_ATOM_NAMES[] = {"_NET_WM_STATE_FULLSCREEN", "_NET_SUPPORTED",
@@ -181,8 +199,8 @@ void setup(void)
 
 	grab_keys();
 
-	xcb_get_atoms(NET_ATOM_NAMES, net_atoms, LENGTH(NET_ATOM_NAMES));
-	xcb_get_atoms(WM_ATOM_NAMES, wm_atoms, LENGTH(WM_ATOM_NAMES));
+	get_atoms(NET_ATOM_NAMES, net_atoms, LENGTH(NET_ATOM_NAMES));
+	get_atoms(WM_ATOM_NAMES, wm_atoms, LENGTH(WM_ATOM_NAMES));
 
 	border_focus = get_colour(BORDER_FOCUS);
 	border_unfocus = get_colour(BORDER_UNFOCUS);
@@ -257,7 +275,7 @@ void key_press_event(xcb_generic_event_t *ev)
 	unsigned int i = 0;
 	xcb_key_press_event_t *ke = (xcb_key_press_event_t *)ev;
 	DEBUGP("[+] Keypress code:%d mod:%d\n", ke->detail, ke->state);
-	xcb_keysym_t keysym = xcb_keycode_to_keysym(ke->detail);
+	xcb_keysym_t keysym = keycode_to_keysym(ke->detail);
 
 	switch (cur_state) {
 	case OPERATOR_STATE:
@@ -383,7 +401,7 @@ Client *win_to_client(xcb_window_t win)
 	return c;
 }
 
-xcb_keysym_t xcb_keycode_to_keysym(xcb_keycode_t code)
+xcb_keysym_t keycode_to_keysym(xcb_keycode_t code)
 {
 	xcb_keysym_t sym;
 	xcb_key_symbols_t *syms = xcb_key_symbols_alloc(dpy);
@@ -394,7 +412,7 @@ xcb_keysym_t xcb_keycode_to_keysym(xcb_keycode_t code)
 	return sym;
 }
 
-xcb_keycode_t *xcb_keysym_to_keycode(xcb_keysym_t sym)
+xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym)
 {
 	xcb_keycode_t *code;
 	xcb_key_symbols_t *syms = xcb_key_symbols_alloc(dpy);
@@ -452,11 +470,11 @@ void zoom(void)
 	Client *c;
 	for (c = head; c; c = c->next)
 		if (!FFT(c))
-			xcb_move_resize(dpy, c->win, ZOOM_GAP ? true : false,
+			move_resize(dpy, c->win, ZOOM_GAP ? true : false,
 					0, 0, screen_width, screen_height);
 }
 
-void xcb_move_resize(xcb_connection_t *con, xcb_window_t win, bool draw_gap,
+void move_resize(xcb_connection_t *con, xcb_window_t win, bool draw_gap,
 		int x, int y, int w, int h)
 {
 	unsigned int position[] = {x, y, w, h};
@@ -467,7 +485,7 @@ void xcb_move_resize(xcb_connection_t *con, xcb_window_t win, bool draw_gap,
 		position[3] -= 2 * GAP;
 	}
 
-	xcb_configure_window(con, win, XCB_MOVE_RESIZE, position);
+	xcb_configure_window(con, win, MOVE_RESIZE_MASK, position);
 }
 
 void update_focused_client(Client *c)
@@ -496,7 +514,7 @@ void update_focused_client(Client *c)
 	windows[(current->is_floating || current->is_transient) ? 0 : fullscreen] = current->win;
 	c = head;
 	for (fullscreen += FFT(current) ? 1 : 0; c; c = c->next) {
-		xcb_set_border_width(dpy, c->win, (c->is_fullscreen ||
+		set_border_width(dpy, c->win, (c->is_fullscreen ||
 					!head->next) ? 0 : BORDER_PX);
 		xcb_change_window_attributes(dpy, c->win, XCB_CW_BORDER_PIXEL,
 			(c == current ? &border_focus : &border_unfocus));
@@ -506,7 +524,7 @@ void update_focused_client(Client *c)
 	}
 
 	for (float_trans = 0; float_trans <= all; ++float_trans)
-		xcb_elevate_window(windows[all - float_trans]);
+		elevate_window(windows[all - float_trans]);
 
 	xcb_change_property(dpy, XCB_PROP_MODE_REPLACE, screen->root,
 			net_atoms[NET_ACTIVE_WINDOW], XCB_ATOM_WINDOW, 32, 1, &current->win);
@@ -525,17 +543,17 @@ void grab_keys(void)
 	unsigned int i;
 	xcb_ungrab_key(dpy, XCB_GRAB_ANY, screen->root, XCB_MOD_MASK_ANY);
 	for (i = 0; i < LENGTH(keys); i++) {
-		keycode = xcb_keysym_to_keycode(keys[i].sym);
+		keycode = keysym_to_keycode(keys[i].sym);
 		grab_keycode(keycode, keys[i].mod);
 	}
 
 	for (i = 0; i < LENGTH(operators); i++) {
-		keycode = xcb_keysym_to_keycode(operators[i].sym);
+		keycode = keysym_to_keycode(operators[i].sym);
 		grab_keycode(keycode, operators[i].mod);
 	}
 
 	for (i = 0; i < LENGTH(motions); i++) {
-		keycode = xcb_keysym_to_keycode(motions[i].sym);
+		keycode = keysym_to_keycode(motions[i].sym);
 		grab_keycode(keycode, motions[i].mod);
 	}
 }
@@ -552,19 +570,19 @@ void grab_keycode(xcb_keycode_t *keycode, const int mod)
 
 }
 
-void xcb_set_border_width(xcb_connection_t *con, xcb_window_t win, int w)
+void set_border_width(xcb_connection_t *con, xcb_window_t win, int w)
 {
 	unsigned int width[1] = {w};
 	xcb_configure_window(con, win, XCB_CONFIG_WINDOW_BORDER_WIDTH, width);
 }
 
-void xcb_elevate_window(xcb_window_t win)
+void elevate_window(xcb_window_t win)
 {
 	unsigned int stack_mode[1] = {XCB_STACK_MODE_ABOVE};
 	xcb_configure_window(dpy, win, XCB_CONFIG_WINDOW_STACK_MODE, stack_mode);
 }
 
-void xcb_get_atoms(char **names, xcb_atom_t *atoms, unsigned int cnt)
+void get_atoms(char **names, xcb_atom_t *atoms, unsigned int cnt)
 {
 	xcb_intern_atom_reply_t *reply;
 	xcb_intern_atom_cookie_t cookies[cnt];
@@ -599,11 +617,11 @@ void stack(void)
 	DEBUGP("client_span: %d\n", client_span);
 
 	if (vert) {
-		xcb_move_resize(dpy, head->win, BORDER_PX, client_y,
+		move_resize(dpy, head->win, BORDER_PX, client_y,
 			true, screen_width - (2 * BORDER_PX), client_span);
 		client_y += (BORDER_PX + (span / n));
 	} else {
-		xcb_move_resize(dpy, head->win, client_x, BORDER_PX,
+		move_resize(dpy, head->win, client_x, BORDER_PX,
 			true, client_span, screen_height - (2 * BORDER_PX));
 		client_x += (BORDER_PX + (span / n));
 	}
@@ -614,12 +632,12 @@ void stack(void)
 	for (c = head->next, i = 0; i < n - 1; c = c->next, i++) {
 		if (vert) {
 			DEBUGP("client_y: %d\n", client_y);
-			xcb_move_resize(dpy, c->win, false, GAP, client_y,
+			move_resize(dpy, c->win, false, GAP, client_y,
 					screen_width - (2 * (BORDER_PX + GAP)),
 					client_span - GAP - BORDER_PX);
 			client_y += (BORDER_PX + client_span);
 		} else {
-			xcb_move_resize(dpy, c->win, false, client_x, GAP,
+			move_resize(dpy, c->win, false, client_x, GAP,
 					client_span - GAP - BORDER_PX,
 					screen_height - (2 * (BORDER_PX + GAP)));
 			client_x += (BORDER_PX + client_span);
@@ -744,7 +762,7 @@ void move_up(Client *c)
 		pp->next = c;
 	else
 		head = (head == c) ? c->next : c;
-	p->next = (c->next == head) ? c: c->next;
+	p->next = (c->next == head) ? c : c->next;
 	c->next = (c->next == head) ? NULL : p;
 	arrange_windows();
 }
