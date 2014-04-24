@@ -83,6 +83,7 @@ static void remove_from_workspace(Client *c);
 static void remove_client(Client *c);
 static Client *win_to_client(xcb_window_t w);
 static void client_to_workspace(Client *c, const int ws);
+static void current_to_workspace(const Arg *arg);
 
 /* Workspaces */
 static void kill_workspace(const int ws);
@@ -942,9 +943,37 @@ void client_to_workspace(Client *c, const int ws)
 		return;
 	Client *last;
 	Client *prev = prev_client(c);
-	int cw = ws;
-	prev->next = next_client(c);
-	change_workspace(ws);
-	last = prev_client(head);
+	int cw = cur_workspace;
+	Arg arg = {.i = ws};
+
+	change_workspace(&arg);
+	if (!head) {
+		head = c;
+	} else {
+		last = prev_client(head);
+		/* Assume that last is a real client, else head would be NULL
+		 * and we wouldn't be here... */
+		last->next = c;
+	}
+	
+	arg.i = cw;
+	change_workspace(&arg);
+	if (c == head || !prev)
+		head = next_client(c);
+	else
+		prev->next = next_client(c);
+	c->next = NULL;
+	xcb_unmap_window(dpy, c->win);
+	update_focused_client(prev_foc);
+	if (FOLLOW_MOVE) {
+		arg.i = ws;
+		change_workspace(&arg);
+	} else {
+		arrange_windows();
+	}
 }
 
+void current_to_workspace(const Arg *arg)
+{
+	client_to_workspace(current, arg->i);	
+}
