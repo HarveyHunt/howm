@@ -82,6 +82,7 @@ static Client *client_from_window(xcb_window_t w);
 static void remove_from_workspace(Client *c);
 static void remove_client(Client *c);
 static Client *win_to_client(xcb_window_t w);
+static void client_to_workspace(Client *c, const int ws);
 
 /* Workspaces */
 static void kill_workspace(const int ws);
@@ -934,3 +935,16 @@ void move_current_up(void)
 {
 	move_up(current);
 }
+
+void client_to_workspace(Client *c, const int ws)
+{
+	if (!c || ws == cur_workspace)
+		return;
+	Client *last;
+	Client *prev = prev_client(c);
+	int cw = ws;
+	prev->next = next_client(c);
+	change_workspace(ws);
+	last = prev_client(head);
+}
+
