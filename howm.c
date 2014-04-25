@@ -174,7 +174,8 @@ static xcb_generic_event_t *ev;
 static int numlockmask;
 static Client *head, *prev_foc, *current;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
-static int cur_workspace, prev_workspace, cur_layout, prev_layout;
+static int prev_workspace, cur_layout, prev_layout;
+static int cur_workspace = 1;
 static unsigned int screen_height, screen_width, border_focus, border_unfocus;
 static unsigned int cur_mode, cur_count, cur_state = OPERATOR_STATE;
 
@@ -292,7 +293,7 @@ void key_press_event(xcb_generic_event_t *ev)
 	case COUNT_STATE:
 		if (EQUALMODS(count_mod, ke->state) && XK_1 <= keysym &&
 				keysym <= XK_9) {
-			/* Get a value between 0 and 1.  */
+			/* Get a value between 1 and 9 inclusive.  */
 			cur_count = keysym - XK_0;
 			cur_state = MOTION_STATE;
 			break;
@@ -302,7 +303,7 @@ void key_press_event(xcb_generic_event_t *ev)
 			if (keysym == motions[i].sym && EQUALMODS(motions[i].mod, ke->state)) {
 				operator_func(motions[i].type, cur_count);
 				cur_state = OPERATOR_STATE;
-				/* Reset so that kc is equivalent to k1c. */
+				/* Reset so that qc is equivalent to q1c. */
 				cur_count = 1;
 			}
 		}
@@ -372,7 +373,7 @@ Client *client_from_window(xcb_window_t w)
 
 void save_workspace(int i)
 {
-	if (i < 0 || i >= WORKSPACES)
+	if (i < 1 || i > WORKSPACES)
 		return;
 	workspaces[i].layout = cur_layout;
 	workspaces[i].current = current;
@@ -393,12 +394,12 @@ void select_workspace(int i)
 Client *win_to_client(xcb_window_t win)
 {
 	bool found;
-	int w = 0, cw = cur_workspace;
+	int w = 1, cw = cur_workspace;
 	Client *c = NULL;
 	for (found = false; w < WORKSPACES && !found; ++w)
 		for (select_workspace(w), c = head; c && !(found = (win == c->win)); c = c->next)
 			;
-	if (cw != w-1)
+	if (cw != w)
 		select_workspace(cw);
 	return c;
 }
@@ -673,7 +674,7 @@ void destroy_event(xcb_generic_event_t *ev)
 void remove_client(Client *c)
 {
 	Client **temp = NULL;
-	int w = 0, cw = cur_workspace;
+	int w = 1, cw = cur_workspace;
 	bool found;
 	for (found = false; w < WORKSPACES && !found; w++)
 		for (temp = &head, select_workspace(cw); temp &&
@@ -688,7 +689,7 @@ void remove_client(Client *c)
 		update_focused_client(prev_foc);
 	free(c);
 	c = NULL;
-	if (cw == w - 1)
+	if (cw == w)
 		arrange_windows();
 	else
 		select_workspace(cw);
@@ -699,13 +700,13 @@ void howm_info(void)
 	int cw = cur_workspace;
 	int w, n;
 	Client *c;
-	for (w = 0; w < WORKSPACES; w++) {
+	for (w = 1; w <= WORKSPACES; w++) {
 		for (select_workspace(w), c = head, n = 0; c; c = c->next, n++)
 			;
-		printf("m:%d l:%d n:%d w:%d cw:%d s:%d\n", cur_mode, cur_layout, n, w,
-			cur_workspace == cw, cur_state);
+		printf("m:%d l:%d n:%d w:%d cw:%d s:%d\n", cur_mode,
+				cur_layout, n, w, cur_workspace == cw, cur_state);
 	}
-	if (cw != w - 1)
+	if (cw != w)
 		select_workspace(cw);
 }
 
@@ -735,6 +736,8 @@ void fibonacci(void)
 
 void move_down(Client *c)
 {
+	if (!c)
+		return;
 	Client *prev = prev_client(c);
 	Client *n = (c->next) ? c->next : head;
 	if (!prev)
@@ -753,6 +756,8 @@ void move_down(Client *c)
 
 void move_up(Client *c)
 {
+	if (!c)
+		return;
 	Client *p = prev_client(c);
 	Client *pp = NULL;
 	if (!p)
@@ -788,7 +793,7 @@ void focus_prev(void)
 
 void change_workspace(const Arg *arg)
 {
-	if (arg->i >= WORKSPACES || arg->i < 0 || arg->i == cur_workspace)
+	if (arg->i > WORKSPACES || arg->i <= 0 || arg->i == cur_workspace)
 		return;
 	prev_workspace = cur_workspace;
 	select_workspace(arg->i);
@@ -805,7 +810,7 @@ void change_workspace(const Arg *arg)
 
 void previous_workspace(void)
 {
-	const Arg arg = {.i = cur_workspace < 1 ? WORKSPACES - 1 :
+	const Arg arg = {.i = cur_workspace < 2 ? WORKSPACES :
 				cur_workspace - 1};
 	change_workspace(&arg);
 }
@@ -864,10 +869,8 @@ void op_kill(const int type, int count)
 	if (type == WORKSPACE) {
 		DEBUGP("Killing %d workspaces.\n", count);
 		while (count > 0) {
-			/* Count being here is intentional as workspaces are
-			 * zero indexed. */
-			count--;
 			kill_workspace((cur_workspace + count) % WORKSPACES);
+			count--;
 		}
 
 	} else if (type == CLIENT) {
@@ -902,12 +905,13 @@ void op_move_down(const int type, int count)
 	if (type == WORKSPACE) {
 		/* TODO: Make this so that an entire desktop(s) can be moved. */
 		while (count > 0) {
-			Client *c;
-			Arg arg = {.i = ((2 * cur_workspace) - 1) % WORKSPACES}; 
-			change_workspace(&arg);
-			for (c = head; c; c = c->next)
-				client_to_workspace(c, ((2 * cur_workspace) - 1) % WORKSPACES);
 			count--;
+			/* The source workspace. */
+			Arg arg = {.i = cur_workspace <= WORKSPACES + count ? cur_workspace + count : 1};
+			change_workspace(&arg);
+			while (head)
+				/* The target workspace. */
+				client_to_workspace(head, cur_workspace == 1 ? WORKSPACES : cur_workspace - 1);
 		}
 		return;
 	} else if (type == CLIENT) {
@@ -947,24 +951,26 @@ void move_current_up(void)
 
 void client_to_workspace(Client *c, const int ws)
 {
+	/* Performed for the current workspace. */
 	if (!c || ws == cur_workspace)
 		return;
 	Client *last;
 	Client *prev = prev_client(c);
 	int cw = cur_workspace;
 	Arg arg = {.i = ws};
-
+	/* Target workspace. */
 	change_workspace(&arg);
+	last = prev_client(head);
 	if (!head) {
 		head = c;
-	} else {
-		last = prev_client(head);
-		/* Assume that last is a real client, else head would be NULL
-		 * and we wouldn't be here... */
+	} else if (last) {
 		last->next = c;
+	} else {
+		head->next = c;
 	}
-	
+
 	arg.i = cw;
+	/* Current workspace. */
 	change_workspace(&arg);
 	if (c == head || !prev)
 		head = next_client(c);
@@ -983,5 +989,5 @@ void client_to_workspace(Client *c, const int ws)
 
 void current_to_workspace(const Arg *arg)
 {
-	client_to_workspace(current, arg->i);	
+	client_to_workspace(current, arg->i);
 }

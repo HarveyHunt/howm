@@ -40,12 +40,12 @@ static const Key keys[] = {
 
 	{MODKEY, FOCUS, XK_space, next_workspace, {} },
 	{MODKEY | ShiftMask, FOCUS, XK_space, previous_workspace, {} },
-	{MODKEY, FOCUS, XK_1, change_workspace, {.i = 0} },
-    {MODKEY, FOCUS, XK_2, change_workspace, {.i = 1} },
-    {MODKEY, FOCUS, XK_3, change_workspace, {.i = 2} },
-    {MODKEY | ShiftMask, FOCUS, XK_1, current_to_workspace, {.i = 0} },
-    {MODKEY | ShiftMask, FOCUS, XK_2, current_to_workspace, {.i = 1} },
-    {MODKEY | ShiftMask, FOCUS, XK_3, current_to_workspace, {.i = 2} }
+	{MODKEY, FOCUS, XK_1, change_workspace, {.i = 1} },
+    {MODKEY, FOCUS, XK_2, change_workspace, {.i = 2} },
+    {MODKEY, FOCUS, XK_3, change_workspace, {.i = 3} },
+    {MODKEY | ShiftMask, FOCUS, XK_1, current_to_workspace, {.i = 1} },
+    {MODKEY | ShiftMask, FOCUS, XK_2, current_to_workspace, {.i = 2} },
+    {MODKEY | ShiftMask, FOCUS, XK_3, current_to_workspace, {.i = 3} }
 };
 
 static const Operator operators[] = {
@@ -60,6 +60,7 @@ static const Motion motions[] = {
 };
 
 static Workspace workspaces[] = {
+    {NULL},
 	{.layout = HSTACK},
 	{.layout = HSTACK},
 	{.layout = HSTACK}
