@@ -929,15 +929,19 @@ void move_ws_or_client(const int type, int cnt, bool up)
 		return;
 	} else if (type == CLIENT) {
 		if (up) {
+			if (current == head)
+				return;
 			Client *c = prev_client(current);
 			/* TODO optimise this by inserting the client only once
 			 * and in the correct location.*/
-			for (c; cnt > 0; move_down(c), cnt--);
+			for (; cnt > 0; move_down(c), cnt--);
 		} else {
+			if (current == prev_client(head))
+				return;
 			int cntcopy = cnt;
 			Client *c;
 			for (c = current; cntcopy > 0; c = next_client(c), cntcopy--);
-			for (; cnt + 1 > 0; move_up(c), cnt--);
+			for (; cnt > 0; move_up(c), cnt--);
 		}
 	}
 }
