@@ -13,7 +13,7 @@
 #define BORDER_FOCUS "#FF00FF"
 #define BORDER_UNFOCUS "#00FF00"
 
-static const char *term_cmd[] = {"urxvt", "-e", "sleep", "100", NULL};
+static const char *term_cmd[] = {"urxvt", "-e", "sleep", "300", NULL};
 static const char *dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
 					"-nb", "#70898f", "-nf", "black",
 					"-sf", "#74718e", "-fn",
@@ -32,20 +32,20 @@ static const Key keys[] = {
 	{MODKEY | ShiftMask, NORMAL, XK_n, previous_layout, {} },
 	{MODKEY, NORMAL, XK_f, change_mode, {.i = FOCUS} },
 
-	{MODKEY, FOCUS, XK_k, focus_prev, {} },
-	{MODKEY, FOCUS, XK_j, focus_next, {} },
+	{MODKEY, FOCUS, XK_k, focus_prev_client, {} },
+	{MODKEY, FOCUS, XK_j, focus_next_client, {} },
 	{MODKEY | ShiftMask, FOCUS, XK_k, move_current_up, {} },
 	{MODKEY | ShiftMask, FOCUS, XK_j, move_current_down, {} },
 	{MODKEY, FOCUS, XK_Escape, change_mode, {.i = NORMAL} },
 
-	{MODKEY, FOCUS, XK_space, next_workspace, {} },
-	{MODKEY | ShiftMask, FOCUS, XK_space, previous_workspace, {} },
-	{MODKEY, FOCUS, XK_1, change_workspace, {.i = 1} },
-    {MODKEY, FOCUS, XK_2, change_workspace, {.i = 2} },
-    {MODKEY, FOCUS, XK_3, change_workspace, {.i = 3} },
-    {MODKEY | ShiftMask, FOCUS, XK_1, current_to_workspace, {.i = 1} },
-    {MODKEY | ShiftMask, FOCUS, XK_2, current_to_workspace, {.i = 2} },
-    {MODKEY | ShiftMask, FOCUS, XK_3, current_to_workspace, {.i = 3} }
+	{MODKEY, FOCUS, XK_space, focus_next_ws, {} },
+	{MODKEY | ShiftMask, FOCUS, XK_space, focus_prev_ws, {} },
+	{MODKEY, FOCUS, XK_1, change_ws, {.i = 1} },
+    {MODKEY, FOCUS, XK_2, change_ws, {.i = 2} },
+    {MODKEY, FOCUS, XK_3, change_ws, {.i = 3} },
+    {MODKEY | ShiftMask, FOCUS, XK_1, current_to_ws, {.i = 1} },
+    {MODKEY | ShiftMask, FOCUS, XK_2, current_to_ws, {.i = 2} },
+    {MODKEY | ShiftMask, FOCUS, XK_3, current_to_ws, {.i = 3} }
 };
 
 static const Operator operators[] = {

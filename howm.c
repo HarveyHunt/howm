@@ -35,7 +35,7 @@ typedef struct {
 typedef struct {
 	unsigned int mod;
 	xcb_keysym_t sym;
-	void (*func)(const int type, const int count);
+	void (*func)(const int type, const int cnt);
 } Operator;
 
 typedef struct {
@@ -64,35 +64,38 @@ typedef struct {
 } Workspace;
 
 /* Operators */
-static void op_kill(const int type, int count);
-static void op_move_up(const int type, int count);
-static void op_move_down(const int type, int count);
+static void op_kill(const int type, int cnt);
+static void op_move_up(const int type, int cnt);
+static void op_move_down(const int type, int cnt);
 
 /* Clients */
 static void move_current_down(void);
 static void move_current_up(void);
 static void kill_client(void);
 static void move_down(Client *c);
-static void focus_next(void);
-static void focus_prev(void);
 static void move_up(Client *c);
+static void focus_next_client(void);
+static void focus_prev_client(void);
 static void update_focused_client(Client *c);
 static Client *prev_client(Client *c);
 static Client *client_from_window(xcb_window_t w);
-static void remove_from_workspace(Client *c);
+static void remove_from_ws(Client *c);
 static void remove_client(Client *c);
 static Client *win_to_client(xcb_window_t w);
-static void client_to_workspace(Client *c, const int ws);
-static void current_to_workspace(const Arg *arg);
+static void client_to_ws(Client *c, const int ws);
+static void current_to_ws(const Arg *arg);
 
 /* Workspaces */
-static void kill_workspace(const int ws);
-static void next_workspace(void);
-static void previous_workspace(void);
-static void last_workspace(void);
-static void change_workspace(const Arg *arg);
-static void save_workspace(int i);
-static void select_workspace(int i);
+static void kill_ws(const int ws);
+static void focus_next_ws(void);
+static void focus_prev_ws(void);
+static void focus_last_ws(void);
+static void change_ws(const Arg *arg);
+static void save_ws(int i);
+static void select_ws(int i);
+static int prev_ws(int ws);
+static int next_ws(int ws);
+static int correct_ws(int ws);
 
 /* Layouts */
 static void change_layout(const Arg *arg);
@@ -134,6 +137,7 @@ static int get_non_tff_count(void);
 static unsigned int get_colour(char *colour);
 static void spawn(const Arg *arg);
 static void setup(void);
+static void move_ws_or_client(const int type, int cnt, bool up);
 
 enum {ZOOM, GRID, HSTACK, VSTACK, FIBONACCI, END_LAYOUT};
 enum {OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE};
@@ -161,7 +165,7 @@ static void(*layout_handler[])(void) = {
 	[FIBONACCI] = fibonacci
 };
 
-static void (*operator_func)(const int type, int count);
+static void (*operator_func)(const int type, int cnt);
 
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = {"WM_DELETE_WINDOW", "WM_PROTOCOLS"};
@@ -174,10 +178,10 @@ static xcb_generic_event_t *ev;
 static int numlockmask;
 static Client *head, *prev_foc, *current;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
-static int prev_workspace, cur_layout, prev_layout;
-static int cur_workspace = 1;
+static int last_ws, cur_layout, prev_layout;
+static int cur_ws = 1;
 static unsigned int screen_height, screen_width, border_focus, border_unfocus;
-static unsigned int cur_mode, cur_count, cur_state = OPERATOR_STATE;
+static unsigned int cur_mode, cur_cnt, cur_state = OPERATOR_STATE;
 
 #include "config.h"
 
@@ -294,17 +298,17 @@ void key_press_event(xcb_generic_event_t *ev)
 		if (EQUALMODS(count_mod, ke->state) && XK_1 <= keysym &&
 				keysym <= XK_9) {
 			/* Get a value between 1 and 9 inclusive.  */
-			cur_count = keysym - XK_0;
+			cur_cnt = keysym - XK_0;
 			cur_state = MOTION_STATE;
 			break;
 		}
 	case MOTION_STATE:
 		for (i = 0; i < LENGTH(motions); i++) {
 			if (keysym == motions[i].sym && EQUALMODS(motions[i].mod, ke->state)) {
-				operator_func(motions[i].type, cur_count);
+				operator_func(motions[i].type, cur_cnt);
 				cur_state = OPERATOR_STATE;
 				/* Reset so that qc is equivalent to q1c. */
-				cur_count = 1;
+				cur_cnt = 1;
 			}
 		}
 	}
@@ -371,7 +375,7 @@ Client *client_from_window(xcb_window_t w)
 	return c;
 }
 
-void save_workspace(int i)
+void save_ws(int i)
 {
 	if (i < 1 || i > WORKSPACES)
 		return;
@@ -381,26 +385,26 @@ void save_workspace(int i)
 	workspaces[i].prev_foc = prev_foc;
 }
 
-void select_workspace(int i)
+void select_ws(int i)
 {
-	save_workspace(cur_workspace);
+	save_ws(cur_ws);
 	cur_layout = workspaces[i].layout;
 	current = workspaces[i].current;
 	head = workspaces[i].head;
 	prev_foc = workspaces[i].prev_foc;
-	cur_workspace = i;
+	cur_ws = i;
 }
 
 Client *win_to_client(xcb_window_t win)
 {
 	bool found;
-	int w = 1, cw = cur_workspace;
+	int w = 1, cw = cur_ws;
 	Client *c = NULL;
 	for (found = false; w < WORKSPACES && !found; ++w)
-		for (select_workspace(w), c = head; c && !(found = (win == c->win)); c = c->next)
+		for (select_ws(w), c = head; c && !(found = (win == c->win)); c = c->next)
 			;
 	if (cw != w)
-		select_workspace(cw);
+		select_ws(cw);
 	return c;
 }
 
@@ -445,7 +449,7 @@ Client *next_client(Client *c)
 	return head;
 }
 
-void remove_from_workspace(Client *c)
+void remove_from_ws(Client *c)
 {
 	if (head == c)
 		head = NULL;
@@ -674,10 +678,10 @@ void destroy_event(xcb_generic_event_t *ev)
 void remove_client(Client *c)
 {
 	Client **temp = NULL;
-	int w = 1, cw = cur_workspace;
+	int w = 1, cw = cur_ws;
 	bool found;
 	for (found = false; w < WORKSPACES && !found; w++)
-		for (temp = &head, select_workspace(cw); temp &&
+		for (temp = &head, select_ws(cw); temp &&
 				!(found = *temp == c); temp = &(*temp)->next)
 			;
 	*temp = c->next;
@@ -692,22 +696,22 @@ void remove_client(Client *c)
 	if (cw == w)
 		arrange_windows();
 	else
-		select_workspace(cw);
+		select_ws(cw);
 }
 
 void howm_info(void)
 {
-	int cw = cur_workspace;
+	int cw = cur_ws;
 	int w, n;
 	Client *c;
 	for (w = 1; w <= WORKSPACES; w++) {
-		for (select_workspace(w), c = head, n = 0; c; c = c->next, n++)
+		for (select_ws(w), c = head, n = 0; c; c = c->next, n++)
 			;
 		printf("m:%d l:%d n:%d w:%d cw:%d s:%d\n", cur_mode,
-				cur_layout, n, w, cur_workspace == cw, cur_state);
+				cur_layout, n, w, cur_ws == cw, cur_state);
 	}
 	if (cw != w)
-		select_workspace(cw);
+		select_ws(cw);
 }
 
 void enter_event(xcb_generic_event_t *ev)
@@ -774,7 +778,7 @@ void move_up(Client *c)
 	arrange_windows();
 }
 
-void focus_next(void)
+void focus_next_client(void)
 {
 	if (!current || !head->next)
 		return;
@@ -782,7 +786,7 @@ void focus_next(void)
 	update_focused_client(current->next ? current->next : head);
 }
 
-void focus_prev(void)
+void focus_prev_client(void)
 {
 	if (!current || !head->next)
 		return;
@@ -791,40 +795,40 @@ void focus_prev(void)
 	update_focused_client(prev_client(prev_foc));
 }
 
-void change_workspace(const Arg *arg)
+void change_ws(const Arg *arg)
 {
-	if (arg->i > WORKSPACES || arg->i <= 0 || arg->i == cur_workspace)
+	if (arg->i > WORKSPACES || arg->i <= 0 || arg->i == cur_ws)
 		return;
-	prev_workspace = cur_workspace;
-	select_workspace(arg->i);
+	last_ws = cur_ws;
+	select_ws(arg->i);
 	for (Client *c = head; c; c = c->next)
 		xcb_map_window(dpy, c->win);
-	select_workspace(prev_workspace);
+	select_ws(last_ws);
 	for (Client *c = head; c; c = c->next)
 		xcb_unmap_window(dpy, c->win);
-	select_workspace(arg->i);
+	select_ws(arg->i);
 	arrange_windows();
 	update_focused_client(current);
 	howm_info();
 }
 
-void previous_workspace(void)
+void focus_prev_ws(void)
 {
-	const Arg arg = {.i = cur_workspace < 2 ? WORKSPACES :
-				cur_workspace - 1};
-	change_workspace(&arg);
+	const Arg arg = {.i = cur_ws < 2 ? WORKSPACES :
+				cur_ws - 1};
+	change_ws(&arg);
 }
 
-void last_workspace(void)
+void focus_last_ws(void)
 {
-	const Arg arg = {.i = prev_workspace};
-	change_workspace(&arg);
+	const Arg arg = {.i = last_ws};
+	change_ws(&arg);
 }
 
-void next_workspace(void)
+void focus_next_ws(void)
 {
-	const Arg arg = {.i = (cur_workspace + 1) % WORKSPACES};
-	change_workspace(&arg);
+	const Arg arg = {.i = (cur_ws + 1) % WORKSPACES};
+	change_ws(&arg);
 }
 
 void change_layout(const Arg *arg)
@@ -864,20 +868,20 @@ void change_mode(const Arg *arg)
 	DEBUGP("Changed mode to %d\n", cur_mode);
 }
 
-void op_kill(const int type, int count)
+void op_kill(const int type, int cnt)
 {
 	if (type == WORKSPACE) {
-		DEBUGP("Killing %d workspaces.\n", count);
-		while (count > 0) {
-			kill_workspace((cur_workspace + count) % WORKSPACES);
-			count--;
+		DEBUGP("Killing %d workspaces.\n", cnt);
+		while (cnt > 0) {
+			kill_ws((cur_ws + cnt) % WORKSPACES);
+			cnt--;
 		}
 
 	} else if (type == CLIENT) {
-		DEBUGP("Killing %d clients.\n", count);
-		while (count > 0) {
+		DEBUGP("Killing %d clients.\n", cnt);
+		while (cnt > 0) {
 			kill_client();
-			count--;
+			cnt--;
 		}
 	}
 }
@@ -892,49 +896,48 @@ void kill_client(void)
 	remove_client(current);
 }
 
-void kill_workspace(const int ws)
+void kill_ws(const int ws)
 {
 	Arg arg = {.i = ws};
-	change_workspace(&arg);
-	while (head != NULL)
+	change_ws(&arg);
+	while (head)
 		kill_client();
 }
 
-void op_move_down(const int type, int count)
+void op_move_down(const int type, int cnt)
 {
-	if (type == WORKSPACE) {
-		/* TODO: Make this so that an entire desktop(s) can be moved. */
-		while (count > 0) {
-			count--;
-			/* The source workspace. */
-			Arg arg = {.i = cur_workspace <= WORKSPACES + count ? cur_workspace + count : 1};
-			change_workspace(&arg);
-			while (head)
-				/* The target workspace. */
-				client_to_workspace(head, cur_workspace == 1 ? WORKSPACES : cur_workspace - 1);
-		}
-		return;
-	} else if (type == CLIENT) {
-		Client *c = current;
-		while (count > 0) {
-			move_down(c);
-			c = next_client(c);
-			count--;
-		}
-	}
+	move_ws_or_client(type, cnt, false);
 }
 
-void op_move_up(const int type, int count)
+void op_move_up(const int type, int cnt)
+{
+	move_ws_or_client(type, cnt, true);
+}
+
+void move_ws_or_client(const int type, int cnt, bool up)
 {
 	if (type == WORKSPACE) {
-		/* TODO: Make this so that an entire desktop(s) can be moved. */
+		Arg arg;
+		for (; cnt > 0; --cnt) {
+			/* The source workspace. */
+			arg.i = up ? correct_ws(cur_ws - cnt) : correct_ws(cur_ws + cnt);
+			change_ws(&arg);
+			while (head)
+				/* The target workspace. */
+				client_to_ws(head, up ? prev_ws(cur_ws) : next_ws(cur_ws));
+		}
 		return;
 	} else if (type == CLIENT) {
-		Client *c = current;
-		while (count > 0) {
-			move_up(c);
-			c = prev_client(c);
-			count--;
+		if (up) {
+			Client *c = prev_client(current);
+			/* TODO optimise this by inserting the client only once
+			 * and in the correct location.*/
+			for (c; cnt > 0; move_down(c), cnt--);
+		} else {
+			int cntcopy = cnt;
+			Client *c;
+			for (c = current; cntcopy > 0; c = next_client(c), cntcopy--);
+			for (; cnt + 1 > 0; move_up(c), cnt--);
 		}
 	}
 }
@@ -949,17 +952,17 @@ void move_current_up(void)
 	move_up(current);
 }
 
-void client_to_workspace(Client *c, const int ws)
+void client_to_ws(Client *c, const int ws)
 {
 	/* Performed for the current workspace. */
-	if (!c || ws == cur_workspace)
+	if (!c || ws == cur_ws)
 		return;
 	Client *last;
 	Client *prev = prev_client(c);
-	int cw = cur_workspace;
+	int cw = cur_ws;
 	Arg arg = {.i = ws};
 	/* Target workspace. */
-	change_workspace(&arg);
+	change_ws(&arg);
 	last = prev_client(head);
 	if (!head) {
 		head = c;
@@ -971,7 +974,7 @@ void client_to_workspace(Client *c, const int ws)
 
 	arg.i = cw;
 	/* Current workspace. */
-	change_workspace(&arg);
+	change_ws(&arg);
 	if (c == head || !prev)
 		head = next_client(c);
 	else
@@ -981,13 +984,33 @@ void client_to_workspace(Client *c, const int ws)
 	update_focused_client(prev_foc);
 	if (FOLLOW_MOVE) {
 		arg.i = ws;
-		change_workspace(&arg);
+		change_ws(&arg);
 	} else {
 		arrange_windows();
 	}
 }
 
-void current_to_workspace(const Arg *arg)
+void current_to_ws(const Arg *arg)
 {
-	client_to_workspace(current, arg->i);
+	client_to_ws(current, arg->i);
+}
+
+int prev_ws(int ws)
+{
+	return correct_ws(correct_ws(ws) - 1);
+}
+
+int next_ws(int ws)
+{
+	return correct_ws(correct_ws(ws) + 1);
+}
+
+int correct_ws(int ws)
+{
+	if (ws > WORKSPACES)
+		return ws - WORKSPACES;
+	else if (ws < 1)
+		return ws + WORKSPACES;
+	else
+		return ws;
 }
