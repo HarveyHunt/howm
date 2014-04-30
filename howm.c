@@ -96,6 +96,9 @@ static void select_ws(int i);
 static int prev_ws(int ws);
 static int next_ws(int ws);
 static int correct_ws(int ws);
+static void move_ws_down(int ws);
+static void move_ws_up(int ws);
+static void move_ws(int s_ws, int d_ws);
 
 /* Layouts */
 static void change_layout(const Arg *arg);
@@ -917,16 +920,15 @@ void op_move_up(const int type, int cnt)
 void move_ws_or_client(const int type, int cnt, bool up)
 {
 	if (type == WORKSPACE) {
-		Arg arg;
-		for (; cnt > 0; --cnt) {
-			/* The source workspace. */
-			arg.i = up ? correct_ws(cur_ws - cnt) : correct_ws(cur_ws + cnt);
-			change_ws(&arg);
-			while (head)
-				/* The target workspace. */
-				client_to_ws(head, up ? prev_ws(cur_ws) : next_ws(cur_ws));
+		Arg a = {.i = cur_ws};
+		for (; cnt > 0; cnt--) {
+			if (up)
+				/* TODO: Change the order in which workspaces
+				 * are moved to prevent them from merging. */
+				move_ws_up(correct_ws(cur_ws + cnt - 1));
+			else
+				move_ws_down(correct_ws(cur_ws + cnt - 1));
 		}
-		return;
 	} else if (type == CLIENT) {
 		if (up) {
 			if (current == head)
@@ -1017,4 +1019,25 @@ int correct_ws(int ws)
 		return ws + WORKSPACES;
 	else
 		return ws;
+}
+
+void move_ws(int s_ws, int d_ws)
+{
+		/* Source workspace. */
+		Arg arg = {.i = s_ws};
+		change_ws(&arg);
+		while (head)
+			/* The destination workspace. */
+			client_to_ws(head, d_ws);
+		change_ws(&arg);
+}
+
+void move_ws_down(int ws)
+{
+	move_ws(ws, correct_ws(prev_ws(ws)));
+}
+
+void move_ws_up(int ws)
+{
+	move_ws(ws, correct_ws(next_ws(ws)));
 }
