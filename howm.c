@@ -921,14 +921,13 @@ void move_ws_or_client(const int type, int cnt, bool up)
 {
 	if (type == WORKSPACE) {
 		Arg a = {.i = cur_ws};
-		for (; cnt > 0; cnt--) {
-			if (up)
-				/* TODO: Change the order in which workspaces
-				 * are moved to prevent them from merging. */
+		if (up)
+			for (; cnt > 0; cnt--)
 				move_ws_up(correct_ws(cur_ws + cnt - 1));
-			else
-				move_ws_down(correct_ws(cur_ws + cnt - 1));
-		}
+		else
+			for (int i = 0; i < cnt; i++)
+				move_ws_down(correct_ws(cur_ws + i));
+
 	} else if (type == CLIENT) {
 		if (up) {
 			if (current == head)
