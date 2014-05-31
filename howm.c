@@ -19,9 +19,9 @@
 #define FFT(client) (c->is_transient || c->is_floating || c->is_fullscreen)
 
 typedef union {
+	const char **cmd;
 	float f;
 	int i;
-	const char **cmd;
 } Arg;
 
 typedef struct {
@@ -69,13 +69,13 @@ static void op_move_up(const int type, int cnt);
 static void op_move_down(const int type, int cnt);
 
 /* Clients */
-static void move_current_down(void);
-static void move_current_up(void);
+static void move_current_down();
+static void move_current_up();
 static void kill_client(void);
 static void move_down(Client *c);
 static void move_up(Client *c);
-static void focus_next_client(void);
-static void focus_prev_client(void);
+static void focus_next_client();
+static void focus_prev_client();
 static void update_focused_client(Client *c);
 static Client *prev_client(Client *c);
 static Client *client_from_window(xcb_window_t w);
@@ -87,9 +87,9 @@ static void current_to_ws(const Arg *arg);
 
 /* Workspaces */
 static void kill_ws(const int ws);
-static void focus_next_ws(void);
-static void focus_prev_ws(void);
-static void focus_last_ws(void);
+static void focus_next_ws();
+static void focus_prev_ws();
+static void focus_last_ws();
 static void change_ws(const Arg *arg);
 static void save_ws(int i);
 static void select_ws(int i);
@@ -102,9 +102,9 @@ static void move_ws(int s_ws, int d_ws);
 
 /* Layouts */
 static void change_layout(const Arg *arg);
-static void next_layout(void);
-static void previous_layout(void);
-static void last_layout(void);
+static void next_layout();
+static void previous_layout();
+static void last_layout();
 static void stack(void);
 static void grid(void);
 static void zoom(void);
@@ -781,7 +781,7 @@ void move_up(Client *c)
 	arrange_windows();
 }
 
-void focus_next_client(void)
+void focus_next_client()
 {
 	if (!current || !head->next)
 		return;
@@ -789,7 +789,7 @@ void focus_next_client(void)
 	update_focused_client(current->next ? current->next : head);
 }
 
-void focus_prev_client(void)
+void focus_prev_client()
 {
 	if (!current || !head->next)
 		return;
@@ -815,20 +815,20 @@ void change_ws(const Arg *arg)
 	howm_info();
 }
 
-void focus_prev_ws(void)
+void focus_prev_ws()
 {
 	const Arg arg = {.i = cur_ws < 2 ? WORKSPACES :
 				cur_ws - 1};
 	change_ws(&arg);
 }
 
-void focus_last_ws(void)
+void focus_last_ws()
 {
 	const Arg arg = {.i = last_ws};
 	change_ws(&arg);
 }
 
-void focus_next_ws(void)
+void focus_next_ws()
 {
 	const Arg arg = {.i = (cur_ws + 1) % WORKSPACES};
 	change_ws(&arg);
@@ -845,13 +845,13 @@ void change_layout(const Arg *arg)
 	DEBUGP("Changed layout to %d\n", cur_layout);
 }
 
-void previous_layout(void)
+void previous_layout()
 {
 	const Arg arg = {.i =  cur_layout < 1 ? END_LAYOUT - 1 : cur_layout - 1};
 	change_layout(&arg);
 }
 
-void next_layout(void)
+void next_layout()
 {
 	const Arg arg = {.i = (cur_layout + 1) % END_LAYOUT};
 	change_layout(&arg);
@@ -947,12 +947,12 @@ void move_ws_or_client(const int type, int cnt, bool up)
 	}
 }
 
-void move_current_down(void)
+void move_current_down()
 {
 	move_down(current);
 }
 
-void move_current_up(void)
+void move_current_up()
 {
 	move_up(current);
 }
