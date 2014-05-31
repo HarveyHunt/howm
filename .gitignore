@@ -18,3 +18,5 @@
 *.app
 /checkpatch.pl
 /cleanfile
+/html/
+/latex/

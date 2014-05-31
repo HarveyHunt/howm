@@ -11,6 +11,14 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+/**
+ * @file howm.c
+ */
+
+/**
+ * @brief A minimal X11 tiling WM that mimics vi. Uses the modern XCB library.
+ */
+
 #define MOVE_RESIZE_MASK (XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y | \
 			XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT)
 #define CLEANMASK(mask) (mask & ~(numlockmask | XCB_MOD_MASK_LOCK))
@@ -18,49 +26,101 @@
 #define LENGTH(x) (sizeof(x) / sizeof(*x))
 #define FFT(client) (c->is_transient || c->is_floating || c->is_fullscreen)
 
+/**
+ * @brief Represents an argument.
+ *
+ * Used to hold data that is sent as a parameter to a function when called as a
+ * result of a keypress.
+ */
 typedef union {
-	const char **cmd;
-	float f;
-	int i;
+	const char **cmd; /**< Represents a command that will be called by a shell.  */
+	float f; /**< Commonly used for scaling operations. */
+	int i; /**< Usually used for specifying workspaces or clients. */
 } Arg;
 
+/**
+ * @brief Represents a key.
+ *
+ * Holds information relative to a key, such as keysym and the mode during
+ * which the keypress can be seen as valid.
+ */
 typedef struct {
-	unsigned int mod;
-	unsigned int mode;
-	xcb_keysym_t sym;
-	void (*func)(const Arg *);
-	const Arg arg;
+	unsigned int mod; /**< The mask of the modifiers pressed. */
+	unsigned int mode; /**< The mode within which this keypress is valid. */
+	xcb_keysym_t sym; /**< The keysym of the pressed key. */
+	void (*func)(const Arg *); /**< The function to be called when this key is pressed. */
+	const Arg arg; /**< The argument passed to the above function. */
 } Key;
 
+/**
+ * @brief Represents an operator.
+ *
+ * Operators perform an action upon one or more targets (identified by
+ * motions).
+ */
 typedef struct {
-	unsigned int mod;
-	xcb_keysym_t sym;
-	void (*func)(const int type, const int cnt);
+	unsigned int mod; /**< The mask of the modifiers pressed. */
+	xcb_keysym_t sym; /**< The keysym of the pressed key. */
+	void (*func)(const int type, const int cnt); /**< The function to be
+						       called when the key is pressed. */
 } Operator;
 
+/**
+ * @brief Represents a motion.
+ *
+ * A motion can be used to target an operation at something specific- such as a
+ * client or workspace.
+ *
+ * For example:
+ *
+ * q4c (Kill, 4, Clients).
+ */
 typedef struct {
-	unsigned int mod;
-	xcb_keysym_t sym;
-	unsigned int type;
+	unsigned int mod; /**< The mask of the modifiers pressed. */
+	xcb_keysym_t sym; /**< The keysym of the pressed key. */
+	unsigned int type; /**< Represents whether the motion is for clients, WS etc. */
 } Motion;
 
+/**
+ * @brief Represents a button.
+ *
+ * Allows the mapping of a button to a function, as is done with the Key struct
+ * for keys.
+ */
 typedef struct {
-	unsigned int mod;
-	short int button;
-	void (*func)(const Arg *);
+	unsigned int mod; /**< The mask of the modifiers pressed.  */
+	short int button; /**< The button that was pressed. */
+	void (*func)(const Arg *); /**< The function to be called when the
+				     button is pressed. */
 	const Arg arg;
 } Button;
 
+/**
+ * @brief Represents a client that is being handled by howm.
+ *
+ * All the attributes that are needed by howm for a client are stored here.
+ */
 typedef struct Client {
-	struct Client *next;
-	short int x, y, w, h;
-	bool is_fullscreen, is_floating, is_transient;
-	xcb_window_t win;
+	struct Client *next; /**< Clients are stored in a linked list-
+			       this represents the client after this one. */
+	short int x, y, w, h;  /**< The dimensions of the client. */
+	bool is_fullscreen, is_floating, is_transient;  /**< Properties of the client. */
+	xcb_window_t win; /**< The window that this client represents. */
 } Client;
 
+/**
+ * @brief Represents a workspace, which stores clients.
+ *
+ * Clients are stored as a linked list. Changing to a different workspace will
+ * cause different clients to be rendered on the screen.
+ */
 typedef struct {
-	int layout;
-	Client *head, *prev_foc, *current;
+	int layout; /**< The current layout of the WS, as defined in the
+		      layout enum. */
+	Client *head, *prev_foc, *current; /**< Pointers to clients within the
+					     linked list. prev_foc stores the
+					     last focused client and isn't
+					     integral to the linked list. */
 } Workspace;
 
 /* Operators */
