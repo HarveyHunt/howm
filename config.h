@@ -1,30 +1,34 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-/* The main modifier key. */
+/**
+ * @file config.h
+ */
+
+/** The main modifier key. */
 #define MODKEY Mod4Mask
-/* Number of workspaces. */
+/** Number of workspaces. */
 #define WORKSPACES 3
-/* When moving the mouse over a window, focus on the window? */
+/** When moving the mouse over a window, focus on the window? */
 #define FOCUS_MOUSE 0
-/* Upon spawning a new window, move the mouse to the new window? */
+/** Upon spawning a new window, move the mouse to the new window? */
 #define FOLLOW_MOVE 0
-/* The size (in pixels) of the useless gaps. */
+/** The size (in pixels) of the useless gaps. */
 #define GAP 0
-/* Enable debugging output */
+/** Enable debugging output */
 #define DEBUG_ENABLE 1
-/* When in zoom layout, should a gap be displayed? */
+/** When in zoom layout, should a gap be displayed? */
 #define ZOOM_GAP 0
-/* When in zoom layout, should a border be displayed? */
+/** When in zoom layout, should a border be displayed? */
 #define ZOOM_BORDER 0
-/* The size (in pixels) of the border. */
+/** The size (in pixels) of the border. */
 #define BORDER_PX 2
-/* The border colour when the window is focused. */
+/** The border colour when the window is focused. */
 #define BORDER_FOCUS "#FF00FF"
-/* The border colour when the window is unfocused. */
+/** The border colour when the window is unfocused. */
 #define BORDER_UNFOCUS "#00FF00"
 
-/* Shell commands that will be executed. */
+/** Shell commands that will be executed. */
 static const char *term_cmd[] = {"urxvt", "-e", "sleep", "300", NULL};
 static const char *dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
 					"-nb", "#70898f", "-nf", "black",

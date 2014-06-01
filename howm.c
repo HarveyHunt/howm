@@ -16,14 +16,21 @@
  */
 
 /**
- * @brief A minimal X11 tiling WM that mimics vi. Uses the modern XCB library.
+ * @brief howm
  */
 
+/** Calculates a mask that can be applied to a window in order to reconfigure a
+ * window. */
 #define MOVE_RESIZE_MASK (XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y | \
 			XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT)
+/** Ensures that the number lock doesn't intefere with checking the equality
+ * of two modifier masks.*/
 #define CLEANMASK(mask) (mask & ~(numlockmask | XCB_MOD_MASK_LOCK))
+ /** Wraps up the comparison of modifier masks into a neat package. */
 #define EQUALMODS(mask, omask) (CLEANMASK(mask) == CLEANMASK(omask))
+ /** Calculates the length of an array. */
 #define LENGTH(x) (sizeof(x) / sizeof(*x))
+ /** Checks to see if a client is floating, fullscreen or transient. */
 #define FFT(client) (c->is_transient || c->is_floating || c->is_fullscreen)
 
 /**
@@ -92,7 +99,7 @@ typedef struct {
 	short int button; /**< The button that was pressed. */
 	void (*func)(const Arg *); /**< The function to be called when the
 				     button is pressed. */
-	const Arg arg;
+	const Arg arg; /**< The argument passed to the above function. */
 } Button;
 
 /**
@@ -103,8 +110,14 @@ typedef struct {
 typedef struct Client {
 	struct Client *next; /**< Clients are stored in a linked list-
 			       this represents the client after this one. */
-	short int x, y, w, h;  /**< The dimensions of the client. */
-	bool is_fullscreen, is_floating, is_transient;  /**< Properties of the client. */
+	short int x; /**< The x dimension of the client's window. */
+	short int y; /**< The y dimension of the client's window. */
+	short int h; /**< The height of the client's window. */
+	short int w; /**< The width of the client's window. */
+	bool is_fullscreen; /**< Is the client fullscreen? */
+	bool is_floating;  /**< Is the client floating? */
+	bool is_transient; /**< Is the client transient?
+			     Defined at: http://standards.freedesktop.org/wm-spec/wm-spec-latest.html*/
 	xcb_window_t win; /**< The window that this client represents. */
 } Client;
 
@@ -117,10 +130,10 @@ typedef struct Client {
 typedef struct {
 	int layout; /**< The current layout of the WS, as defined in the
 		      layout enum. */
-	Client *head, *prev_foc, *current; /**< Pointers to clients within the
-					     linked list. prev_foc stores the
-					     last focused client and isn't
-					     integral to the linked list. */
+	Client *head;  /**< The start of the linked list. */
+	Client *prev_foc; /**< The last focused client. This is seperate to
+			    the linked list structure. */
+	Client *current;  /**< The client that is currently in focus. */
 } Workspace;
 
 /* Operators */
@@ -134,6 +147,7 @@ static void move_current_up(const Arg *arg);
 static void kill_client(void);
 static void move_down(Client *c);
 static void move_up(Client *c);
+static Client *next_client(Client *c);
 static void focus_next_client(const Arg *arg);
 static void focus_prev_client(const Arg *arg);
 static void update_focused_client(Client *c);
@@ -141,7 +155,7 @@ static Client *prev_client(Client *c);
 static Client *client_from_window(xcb_window_t w);
 static void remove_from_ws(Client *c);
 static void remove_client(Client *c);
-static Client *win_to_client(xcb_window_t w);
+static Client *find_client_by_win(xcb_window_t w);
 static void client_to_ws(Client *c, const int ws);
 static void current_to_ws(const Arg *arg);
 
@@ -186,10 +200,8 @@ static void grab_keys(void);
 static xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym);
 static void grab_keycode(xcb_keycode_t *keycode, const int mod);
 static void elevate_window(xcb_window_t win);
-static void move_resize(xcb_connection_t *con, xcb_window_t win,
-				bool draw_gap, int x, int y, int w, int h);
-static void set_border_width(xcb_connection_t *con, xcb_window_t win,
-				int w);
+static void move_resize(xcb_window_t win, bool draw_gap, int x, int y, int w, int h);
+static void set_border_width(xcb_window_t win, int w);
 static void get_atoms(char **names, xcb_atom_t *atoms, unsigned int cnt);
 static void check_other_wm(void);
 static xcb_keysym_t keycode_to_keysym(xcb_keycode_t keycode);
@@ -249,13 +261,22 @@ static unsigned int cur_mode, cur_cnt, cur_state = OPERATOR_STATE;
 #include "config.h"
 
 #ifdef DEBUG_ENABLE
+ /** Output debugging information using puts. */
 #	define DEBUG(x) puts(x);
+ /** Output debugging information using printf to allow for formatting. */
 #	define DEBUGP(x, ...) printf(x, ##__VA_ARGS__);
 #else
 #	define DEBUG(x) do {} while (0)
 #	define DEBUGP(x, ...) do {} while (0)
 #endif
 
+/**
+ * @brief Occurs when howm first starts.
+ *
+ * A connection to the X11 server is attempted and keys are then grabbed.
+ *
+ * Atoms are gathered.
+ */
 void setup(void)
 {
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
@@ -276,6 +297,14 @@ void setup(void)
 	border_unfocus = get_colour(BORDER_UNFOCUS);
 }
 
+/**
+ * @brief Converts a hexcode colour into an X11 colourmap pixel.
+ *
+ * @param colour A string of the format "#FFFFFF", that will be interpreted as
+ * a colour code.
+ *
+ * @return An X11 colourmap pixel.
+ */
 unsigned int get_colour(char *colour)
 {
 	unsigned int r, g, b, pixel;
@@ -301,6 +330,9 @@ unsigned int get_colour(char *colour)
 	return pixel;
 }
 
+/**
+ * @brief The code that glues howm together...
+ */
 int main(int argc, char *argv[])
 {
 	dpy = xcb_connect(NULL, NULL);
@@ -317,6 +349,12 @@ int main(int argc, char *argv[])
 	return 1;
 }
 
+/**
+ * @brief Try to detect if another WM exists.
+ *
+ * If another WM exists (this can be seen by whether it has registered itself
+ * with the X11 server) then howm will exit.
+ */
 void check_other_wm(void)
 {
 	xcb_generic_error_t *e;
@@ -335,11 +373,31 @@ void check_other_wm(void)
 	free(e);
 }
 
+/**
+ * @brief Process a button press.
+ *
+ * @param ev The button press event.
+ */
 void button_press_event(xcb_generic_event_t *ev)
 {
 	DEBUG("Button was pressed.");
 }
 
+/**
+ * @brief Process a key press.
+ *
+ * This function implements an FSA that determines which command to run, as
+ * well as with what targets and how many times.
+ *
+ * An keyboard input of the form qc (Assuming the correct mod keys have been
+ * pressed) will lead to one client being killed- howm assumes no count means
+ * perform the operation once. This is the behaviour that vim uses.
+ *
+ * Only counts as high as 9 are acceptable- I feel that any higher would just
+ * be pointless.
+ *
+ * @param ev A keypress event.
+ */
 void key_press_event(xcb_generic_event_t *ev)
 {
 	unsigned int i = 0;
@@ -381,6 +439,9 @@ void key_press_event(xcb_generic_event_t *ev)
 			keys[i].func(&keys[i].arg);
 }
 
+/**
+ * @brief Spawns a command.
+ */
 void spawn(const Arg *arg)
 {
 	if (fork())
@@ -395,6 +456,16 @@ void spawn(const Arg *arg)
 	exit(EXIT_SUCCESS);
 }
 
+/**
+ * @brief Handles mapping requests.
+ *
+ * When an X window wishes to be displayed, it send a mapping request. This
+ * function processes that mapping request and inserts the new client (created
+ * from the map requesting window) into the list of clients for the current
+ * workspace.
+ *
+ * @param ev A mapping request event.
+ */
 void map_request_event(xcb_generic_event_t *ev)
 {
 	xcb_window_t transient = 0;
@@ -402,7 +473,7 @@ void map_request_event(xcb_generic_event_t *ev)
 	xcb_map_request_event_t *me = (xcb_map_request_event_t *)ev;
 
 	wa = xcb_get_window_attributes_reply(dpy, xcb_get_window_attributes(dpy, me->window), NULL);
-	if (!wa || wa->override_redirect || win_to_client(me->window)) {
+	if (!wa || wa->override_redirect || find_client_by_win(me->window)) {
 		free(wa);
 		return;
 	}
@@ -418,6 +489,14 @@ void map_request_event(xcb_generic_event_t *ev)
 	update_focused_client(c);
 }
 
+/**
+ * @brief Convert a window into a client.
+ *
+ * @param w A valid xcb window.
+ *
+ * @return A client that has already been inserted into the linked list of
+ * clients.
+ */
 Client *client_from_window(xcb_window_t w)
 {
 	Client *c = (Client *)calloc(1, sizeof(Client));
@@ -438,6 +517,12 @@ Client *client_from_window(xcb_window_t w)
 	return c;
 }
 
+/**
+ * @brief Saves the information about a current workspace.
+ *
+ * @param i The index of the workspace to be saved. Note: Workspaces begin at
+ * index 1.
+ */
 void save_ws(int i)
 {
 	if (i < 1 || i > WORKSPACES)
@@ -448,6 +533,13 @@ void save_ws(int i)
 	workspaces[i].prev_foc = prev_foc;
 }
 
+/**
+ * @brief Reloads the information about a workspace and sets it as the current
+ * workspace.
+ *
+ * @param i The index of the workspace to be reloaded and set as current. Note:
+ * Workspaces begin at index 1.
+ */
 void select_ws(int i)
 {
 	save_ws(cur_ws);
@@ -458,7 +550,20 @@ void select_ws(int i)
 	cur_ws = i;
 }
 
-Client *win_to_client(xcb_window_t win)
+/**
+ * @brief Search workspaces for a window, returning the client that it belongs
+ * to.
+ *
+ * During searching, the current workspace is changed so that all workspaces
+ * can be searched. Upon finding the client, the original workspace is
+ * restored.
+ *
+ * @param win A valid XCB window that is used when searching all clients across
+ * all desktops.
+ *
+ * @return The found client.
+ */
+Client *find_client_by_win(xcb_window_t win)
 {
 	bool found;
 	int w = 1, cw = cur_ws;
@@ -471,6 +576,13 @@ Client *win_to_client(xcb_window_t win)
 	return c;
 }
 
+/**
+ * @brief Convert a keycode to a keysym.
+ *
+ * @param code An XCB keycode.
+ *
+ * @return The keysym corresponding to the given keycode.
+ */
 xcb_keysym_t keycode_to_keysym(xcb_keycode_t code)
 {
 	xcb_keysym_t sym;
@@ -482,6 +594,13 @@ xcb_keysym_t keycode_to_keysym(xcb_keycode_t code)
 	return sym;
 }
 
+/**
+ * @brief Convert a keysym to a keycode.
+ *
+ * @param sym An XCB keysym.
+ *
+ * @return The keycode corresponding to the given keysym.
+ */
 xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym)
 {
 	xcb_keycode_t *code;
@@ -493,6 +612,14 @@ xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym)
 	return code;
 }
 
+/**
+ * @brief Find the client before the given client.
+ *
+ * @param c The client which needs to have its previous found.
+ *
+ * @return The previous client, so long as the given client isn't NULL and
+ * there is more than one client. Else, NULL.
+ */
 Client *prev_client(Client *c)
 {
 	if (!c || !head->next)
@@ -503,6 +630,18 @@ Client *prev_client(Client *c)
 	return p;
 }
 
+/**
+ * @brief Find the next client.
+ *
+ * Note: This function wraps around the end of the list of clients. If c is the
+ * last item in the list of clients, then the head of the list is returned.
+ *
+ * @param c The client which needs to have its next found.
+ *
+ * @return The next client, if c is the last client in the list then this will
+ * be head. If c is NULL or there is only one client in the client list, NULL
+ * will be returned.
+ */
 Client *next_client(Client *c)
 {
 	if (!c || !head->next)
@@ -512,6 +651,11 @@ Client *next_client(Client *c)
 	return head;
 }
 
+/**
+ * @brief Remove a client from a workspace and rearrange the client list.
+ *
+ * @param c The client to be removed.
+ */
 void remove_from_ws(Client *c)
 {
 	if (head == c)
@@ -520,6 +664,9 @@ void remove_from_ws(Client *c)
 	p->next = c->next;
 }
 
+/**
+ * @brief Call the appropriate layout handler for each layout.
+ */
 void arrange_windows(void)
 {
 	if (!head)
@@ -529,22 +676,38 @@ void arrange_windows(void)
 	howm_info();
 }
 
+/**
+ * @brief Arrange the windows into a grid layout.
+ */
 void grid(void)
 {
 	DEBUG("GRID");
 }
 
+/**
+ * @brief Have one window at a time taking up the entire screen.
+ */
 void zoom(void)
 {
 	DEBUG("ZOOM");
 	Client *c;
 	for (c = head; c; c = c->next)
 		if (!FFT(c))
-			move_resize(dpy, c->win, ZOOM_GAP ? true : false,
+			move_resize(c->win, ZOOM_GAP ? true : false,
 					0, 0, screen_width, screen_height);
 }
 
-void move_resize(xcb_connection_t *con, xcb_window_t win, bool draw_gap,
+/**
+ * @brief Change the dimensions and location of a window (win).
+ *
+ * @param win The window upon which the operations should be performed.
+ * @param draw_gap Whether or not to draw useless gaps around the window.
+ * @param x The new x location of the top left corner.
+ * @param y The new y location of the top left corner.
+ * @param w The new width of the window.
+ * @param h The new height of the window.
+ */
+void move_resize(xcb_window_t win, bool draw_gap,
 		int x, int y, int w, int h)
 {
 	unsigned int position[] = {x, y, w, h};
@@ -555,9 +718,15 @@ void move_resize(xcb_connection_t *con, xcb_window_t win, bool draw_gap,
 		position[3] -= 2 * GAP;
 	}
 
-	xcb_configure_window(con, win, MOVE_RESIZE_MASK, position);
+	xcb_configure_window(dpy, win, MOVE_RESIZE_MASK, position);
 }
 
+/**
+ * @brief Sets c to the active window and gives it input focus. Sorts out
+ * border colours as well.
+ *
+ * @param c The client that is currently in focus.
+ */
 void update_focused_client(Client *c)
 {
 	if (!head) {
@@ -584,7 +753,7 @@ void update_focused_client(Client *c)
 	windows[(current->is_floating || current->is_transient) ? 0 : fullscreen] = current->win;
 	c = head;
 	for (fullscreen += FFT(current) ? 1 : 0; c; c = c->next) {
-		set_border_width(dpy, c->win, (c->is_fullscreen ||
+		set_border_width(c->win, (c->is_fullscreen ||
 					!head->next) ? 0 : BORDER_PX);
 		xcb_change_window_attributes(dpy, c->win, XCB_CW_BORDER_PIXEL,
 			(c == current ? &border_focus : &border_unfocus));
@@ -603,6 +772,13 @@ void update_focused_client(Client *c)
 	arrange_windows();
 }
 
+/**
+ * @brief Let the X11 server know which keys howm is interested in so that howm
+ * can be alerted when any of them are pressed.
+ *
+ * All keys are ungrabbed and then each key in keys, operators and motions are
+ * grabbed.
+ */
 void grab_keys(void)
 {
 	/* TODO: optimise this so that it doesn't call xcb_grab_key for all
@@ -628,6 +804,14 @@ void grab_keys(void)
 	}
 }
 
+/**
+ * @brief Grab a keycode, therefore telling the X11 server howm wants to
+ * receive events when the key is pressed.
+ *
+ * @param keycode The keycode to be grabbed.
+ * @param mod The modifier that should be pressed down in order for an event
+ * for the keypress to be sent to howm.
+ */
 void grab_keycode(xcb_keycode_t *keycode, const int mod)
 {
 	unsigned int j, k;
@@ -640,12 +824,23 @@ void grab_keycode(xcb_keycode_t *keycode, const int mod)
 
 }
 
-void set_border_width(xcb_connection_t *con, xcb_window_t win, int w)
+/**
+ * @brief Sets the width of the borders around a window (win).
+ *
+ * @param win The window that will have its border width changed.
+ * @param w The new width of the window's border.
+ */
+void set_border_width(xcb_window_t win, int w)
 {
 	unsigned int width[1] = {w};
-	xcb_configure_window(con, win, XCB_CONFIG_WINDOW_BORDER_WIDTH, width);
+	xcb_configure_window(dpy, win, XCB_CONFIG_WINDOW_BORDER_WIDTH, width);
 }
 
+/**
+ * @brief Move a window to the front of all the other windows.
+ *
+ * @param win The window to be moved.
+ */
 void elevate_window(xcb_window_t win)
 {
 	unsigned int stack_mode[1] = {XCB_STACK_MODE_ABOVE};
@@ -687,11 +882,11 @@ void stack(void)
 	DEBUGP("client_span: %d\n", client_span);
 
 	if (vert) {
-		move_resize(dpy, head->win, BORDER_PX, client_y,
+		move_resize(head->win, BORDER_PX, client_y,
 			true, screen_width - (2 * BORDER_PX), client_span);
 		client_y += (BORDER_PX + (span / n));
 	} else {
-		move_resize(dpy, head->win, client_x, BORDER_PX,
+		move_resize(head->win, client_x, BORDER_PX,
 			true, client_span, screen_height - (2 * BORDER_PX));
 		client_x += (BORDER_PX + (span / n));
 	}
@@ -702,12 +897,12 @@ void stack(void)
 	for (c = head->next, i = 0; i < n - 1; c = c->next, i++) {
 		if (vert) {
 			DEBUGP("client_y: %d\n", client_y);
-			move_resize(dpy, c->win, false, GAP, client_y,
+			move_resize(c->win, false, GAP, client_y,
 					screen_width - (2 * (BORDER_PX + GAP)),
 					client_span - GAP - BORDER_PX);
 			client_y += (BORDER_PX + client_span);
 		} else {
-			move_resize(dpy, c->win, false, client_x, GAP,
+			move_resize(c->win, false, client_x, GAP,
 					client_span - GAP - BORDER_PX,
 					screen_height - (2 * (BORDER_PX + GAP)));
 			client_x += (BORDER_PX + client_span);
@@ -733,7 +928,7 @@ void destroy_event(xcb_generic_event_t *ev)
 {
 	DEBUG("DESTROY");
 	xcb_destroy_notify_event_t *de = (xcb_destroy_notify_event_t *) ev;
-	Client *c = win_to_client(de->window);
+	Client *c = find_client_by_win(de->window);
 	if (c)
 		remove_client(c);
 }
@@ -784,7 +979,7 @@ void enter_event(xcb_generic_event_t *ev)
 	if (!FOCUS_MOUSE)
 		return;
 	DEBUG("enter_event");
-	c = win_to_client(ee->event);
+	c = find_client_by_win(ee->event);
 	if (c)
 		update_focused_client(c);
 }
