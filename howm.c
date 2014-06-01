@@ -259,7 +259,10 @@ static unsigned int screen_height, screen_width, border_focus, border_unfocus;
 static unsigned int cur_mode, cur_cnt, cur_state = OPERATOR_STATE;
 
 #include "config.h"
-
+/* Add comments so that splint ignores this as it doesn't support variadic
+ * macros. 
+ */
+/*@ignore@*/
 #ifdef DEBUG_ENABLE
  /** Output debugging information using puts. */
 #	define DEBUG(x) puts(x);
@@ -269,6 +272,7 @@ static unsigned int cur_mode, cur_cnt, cur_state = OPERATOR_STATE;
 #	define DEBUG(x) do {} while (0)
 #	define DEBUGP(x, ...) do {} while (0)
 #endif
+/*@end@*/
 
 /**
  * @brief Occurs when howm first starts.
