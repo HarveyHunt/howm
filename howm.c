@@ -202,7 +202,7 @@ static void grab_keycode(xcb_keycode_t *keycode, const int mod);
 static void elevate_window(xcb_window_t win);
 static void move_resize(xcb_window_t win, bool draw_gap, int x, int y, int w, int h);
 static void set_border_width(xcb_window_t win, int w);
-static void get_atoms(char **names, xcb_atom_t *atoms, unsigned int cnt);
+static void get_atoms(char **names, xcb_atom_t *atoms);
 static void check_other_wm(void);
 static xcb_keysym_t keycode_to_keysym(xcb_keycode_t keycode);
 
@@ -260,7 +260,7 @@ static unsigned int cur_mode, cur_cnt, cur_state = OPERATOR_STATE;
 
 #include "config.h"
 /* Add comments so that splint ignores this as it doesn't support variadic
- * macros. 
+ * macros.
  */
 /*@ignore@*/
 #ifdef DEBUG_ENABLE
@@ -294,8 +294,8 @@ void setup(void)
 
 	grab_keys();
 
-	get_atoms(NET_ATOM_NAMES, net_atoms, LENGTH(NET_ATOM_NAMES));
-	get_atoms(WM_ATOM_NAMES, wm_atoms, LENGTH(WM_ATOM_NAMES));
+	get_atoms(NET_ATOM_NAMES, net_atoms);
+	get_atoms(WM_ATOM_NAMES, wm_atoms);
 
 	border_focus = get_colour(BORDER_FOCUS);
 	border_unfocus = get_colour(BORDER_UNFOCUS);
@@ -851,11 +851,18 @@ void elevate_window(xcb_window_t win)
 	xcb_configure_window(dpy, win, XCB_CONFIG_WINDOW_STACK_MODE, stack_mode);
 }
 
-void get_atoms(char **names, xcb_atom_t *atoms, unsigned int cnt)
+/**
+ * @brief Request all of the atoms that howm supports.
+ *
+ * @param names The names of the atoms to be fetched.
+ * @param atoms Where the returned atoms will be stored.
+ */
+void get_atoms(char **names, xcb_atom_t *atoms)
 {
 	xcb_intern_atom_reply_t *reply;
+	unsigned int i, cnt;
+	cnt = LENGTH(atoms);
 	xcb_intern_atom_cookie_t cookies[cnt];
-	unsigned int i;
 
 	for (i = 0; i < cnt; i++)
 		cookies[i] = xcb_intern_atom(dpy, 0, strlen(names[i]), names[i]);
@@ -870,6 +877,10 @@ void get_atoms(char **names, xcb_atom_t *atoms, unsigned int cnt)
 	}
 }
 
+/**
+ * @brief Arrange the windows in a stack, whether that be horizontal or
+ * vertical is decided by the current_layout.
+ */
 void stack(void)
 {
 	Client *c = NULL;
@@ -914,6 +925,11 @@ void stack(void)
 	}
 }
 
+/**
+ * @brief Count how many clients aren't Transient, Floating or Fullscreen
+ *
+ * @return The amount of clients in the current workspace that aren't TTF.
+ */
 int get_non_tff_count(void)
 {
 	int n = 0;
@@ -928,6 +944,15 @@ int get_non_tff_count(void)
 
 }
 
+/**
+ * @brief The handler for destroy events.
+ *
+ * Used when a window sends a destroy event, signalling that it wants to be
+ * unmapped. The client that the window belongs to is then removed from the
+ * client list for its repective workspace.
+ *
+ * @param ev The destroy event.
+ */
 void destroy_event(xcb_generic_event_t *ev)
 {
 	DEBUG("DESTROY");
@@ -937,6 +962,11 @@ void destroy_event(xcb_generic_event_t *ev)
 		remove_client(c);
 }
 
+/**
+ * @brief Remove a client from its workspace client list.
+ *
+ * @param c The client to be removed.
+ */
 void remove_client(Client *c)
 {
 	Client **temp = NULL;
@@ -961,6 +991,12 @@ void remove_client(Client *c)
 		select_ws(cw);
 }
 
+/**
+ * @brief Print debug information about the current state of howm.
+ *
+ * This can be parsed by programs such as scripts that will pipe their input
+ * into a status bar.
+ */
 void howm_info(void)
 {
 	int cw = cur_ws;
@@ -976,6 +1012,11 @@ void howm_info(void)
 		select_ws(cw);
 }
 
+/**
+ * @brief The event that occurs when the mouse pointer enters a window.
+ *
+ * @param ev The enter event.
+ */
 void enter_event(xcb_generic_event_t *ev)
 {
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *) ev;
@@ -988,6 +1029,9 @@ void enter_event(xcb_generic_event_t *ev)
 		update_focused_client(c);
 }
 
+/**
+ * @brief Arrange the windows in a fibonacci pattern.
+ */
 void fibonacci(void)
 {
 	Client *c = NULL;
@@ -1000,6 +1044,11 @@ void fibonacci(void)
 	}
 }
 
+/**
+ * @brief Move a client down in its client list.
+ *
+ * @param c The client to be moved.
+ */
 void move_down(Client *c)
 {
 	if (!c)
@@ -1020,6 +1069,11 @@ void move_down(Client *c)
 	arrange_windows();
 }
 
+/**
+ * @brief Move a client up in its client list.
+ *
+ * @param c The client to be moved down.
+ */
 void move_up(Client *c)
 {
 	if (!c)
@@ -1040,6 +1094,12 @@ void move_up(Client *c)
 	arrange_windows();
 }
 
+/**
+ * @brief brief Move focus onto the client next in the client list.
+ *
+ * @param arg The argument passed from the config file. Note: The argument goes
+ * unused.
+ */
 void focus_next_client(const Arg *arg)
 {
 	if (!current || !head->next)
@@ -1048,6 +1108,12 @@ void focus_next_client(const Arg *arg)
 	update_focused_client(current->next ? current->next : head);
 }
 
+/**
+ * @brief brief Move focus onto the client previous in the client list.
+ *
+ * @param arg The argument passed from the config file. Note: The argument goes
+ * unused.
+ */
 void focus_prev_client(const Arg *arg)
 {
 	if (!current || !head->next)
@@ -1057,6 +1123,11 @@ void focus_prev_client(const Arg *arg)
 	update_focused_client(prev_client(prev_foc));
 }
 
+/**
+ * @brief Change to a different workspace.
+ *
+ * @param arg arg->i indicates which workspace howm should change to.
+ */
 void change_ws(const Arg *arg)
 {
 	if (arg->i > WORKSPACES || arg->i <= 0 || arg->i == cur_ws)
@@ -1074,6 +1145,11 @@ void change_ws(const Arg *arg)
 	howm_info();
 }
 
+/**
+ * @brief Focus the previous workspace.
+ *
+ * @param arg Unused.
+ */
 void focus_prev_ws(const Arg *arg)
 {
 	const Arg a = {.i = cur_ws < 2 ? WORKSPACES :
@@ -1081,18 +1157,34 @@ void focus_prev_ws(const Arg *arg)
 	change_ws(&a);
 }
 
+/**
+ * @brief Focus the last focused workspace.
+ *
+ * @param arg Unused.
+ */
 void focus_last_ws(const Arg *arg)
 {
 	const Arg a = {.i = last_ws};
 	change_ws(&a);
 }
 
+/**
+ * @brief Focus the next workspace.
+ *
+ * @param arg Unused.
+ */
 void focus_next_ws(const Arg *arg)
 {
 	const Arg a = {.i = (cur_ws + 1) % WORKSPACES};
 	change_ws(&a);
 }
 
+/**
+ * @brief Change the layout of the current workspace.
+ *
+ * @param arg A numerical value (arg->i) representing the layout that should be
+ * used.
+ */
 void change_layout(const Arg *arg)
 {
 	if (arg->i == cur_layout || arg->i >= END_LAYOUT || arg->i < 0)
@@ -1104,24 +1196,47 @@ void change_layout(const Arg *arg)
 	DEBUGP("Changed layout to %d\n", cur_layout);
 }
 
+/**
+ * @brief Change to the previous layout.
+ *
+ * @param arg Unused.
+ */
 void previous_layout(const Arg *arg)
 {
 	const Arg a = {.i =  cur_layout < 1 ? END_LAYOUT - 1 : cur_layout - 1};
 	change_layout(&a);
 }
 
+/**
+ * @brief Change to the next layout.
+ *
+ * @param arg Unused.
+ */
 void next_layout(const Arg *arg)
 {
 	const Arg a = {.i = (cur_layout + 1) % END_LAYOUT};
 	change_layout(&a);
 }
 
+/**
+ * @brief Change to the last used layout.
+ *
+ * @param arg Unused.
+ */
 void last_layout(const Arg *argvoid)
 {
 	const Arg a = {.i = prev_layout};
 	change_layout(&a);
 }
 
+/**
+ * @brief Change the mode of howm.
+ *
+ * Modes should be thought of in the same way as they are in vi. Different
+ * modes mean keypresses cause different actions.
+ *
+ * @param arg arg->i defines which mode to be selected.
+ */
 void change_mode(const Arg *arg)
 {
 	if (arg->i >= END_MODES || arg->i == cur_mode)
@@ -1130,6 +1245,12 @@ void change_mode(const Arg *arg)
 	DEBUGP("Changed mode to %d\n", cur_mode);
 }
 
+/**
+ * @brief An operator that kills an arbitrary amount of clients or workspaces.
+ *
+ * @param type Whether to kill workspaces or clients.
+ * @param cnt How many "things" to kill.
+ */
 void op_kill(const int type, int cnt)
 {
 	if (type == WORKSPACE) {
@@ -1148,6 +1269,9 @@ void op_kill(const int type, int cnt)
 	}
 }
 
+/**
+ * @brief Kills the current client.
+ */
 void kill_client(void)
 {
 	if (!current)
@@ -1158,6 +1282,11 @@ void kill_client(void)
 	remove_client(current);
 }
 
+/**
+ * @brief Kills the given workspace.
+ *
+ * @param ws The workspace to be killed.
+ */
 void kill_ws(const int ws)
 {
 	Arg arg = {.i = ws};
@@ -1166,16 +1295,38 @@ void kill_ws(const int ws)
 		kill_client();
 }
 
+/**
+ * @brief Move workspace/s or client/s down.
+ *
+ * @param type Whether to move a client or workspace.
+ * @param cnt How many "things" to move.
+ */
 void op_move_down(const int type, int cnt)
 {
 	move_ws_or_client(type, cnt, false);
 }
 
+/**
+ * @brief Move workspace/s or client/s up.
+ *
+ * @param type Whether to move a client or workspace.
+ * @param cnt How many "things" to move.
+ */
 void op_move_up(const int type, int cnt)
 {
 	move_ws_or_client(type, cnt, true);
 }
 
+/**
+ * @brief Moves workspace or a client either upwards or down.
+ *
+ * Moves a single client/workspace or multiple clients/workspaces either up or
+ * down. The op_move_* functions server as simple wrappers to this.
+ *
+ * @param type Whether to move a client or workspace.
+ * @param cnt How many "things" to move.
+ * @param up Whether to move the "things" up or down. True is up.
+ */
 void move_ws_or_client(const int type, int cnt, bool up)
 {
 	if (type == WORKSPACE) {
@@ -1206,16 +1357,32 @@ void move_ws_or_client(const int type, int cnt, bool up)
 	}
 }
 
+/**
+ * @brief Moves the current client down.
+ *
+ * @param arg Unused.
+ */
 void move_current_down(const Arg *arg)
 {
 	move_down(current);
 }
 
+/**
+ * @brief Moves the current client up.
+ *
+ * @param arg Unused.
+ */
 void move_current_up(const Arg *arg)
 {
 	move_up(current);
 }
 
+/**
+ * @brief Moves a client from one workspace to another.
+ *
+ * @param c The client to be moved.
+ * @param ws The ws that the client should be moved to.
+ */
 void client_to_ws(Client *c, const int ws)
 {
 	/* Performed for the current workspace. */
@@ -1253,21 +1420,54 @@ void client_to_ws(Client *c, const int ws)
 	}
 }
 
+/**
+ * @brief Moves the current client to the workspace passed in through arg.
+ *
+ * @param arg arg->i is the target workspace.
+ */
 void current_to_ws(const Arg *arg)
 {
 	client_to_ws(current, arg->i);
 }
 
+/**
+ * @brief Gets the number of the previous workspace.
+ *
+ * Wraps from the lowest workspace to the highest.
+ *
+ * @param ws The workspace who's previous should be fetched.
+ *
+ * @return The number of the previous workspace.
+ */
 int prev_ws(int ws)
 {
 	return correct_ws(correct_ws(ws) - 1);
 }
 
+/**
+ * @brief Gets the number of the next workspace.
+ *
+ * Wraps from the highest workspace to the lowest.
+ *
+ * @param ws The workspace who's next should be fetched.
+ *
+ * @return The number of the next workspace.
+ */
 int next_ws(int ws)
 {
 	return correct_ws(correct_ws(ws) + 1);
 }
 
+/**
+ * @brief Correctly wrap a workspace number.
+ *
+ * This prevents workspace numbers from being greater than WORKSPACES or less
+ * than 1.
+ *
+ * @param ws The value that needs to be corrected.
+ *
+ * @return A corrected workspace number.
+ */
 int correct_ws(int ws)
 {
 	if (ws > WORKSPACES)
@@ -1278,6 +1478,15 @@ int correct_ws(int ws)
 		return ws;
 }
 
+/**
+ * @brief Move the entirety of one workspace to another.
+ *
+ * Takes every client from one workspace and places them, in original order,
+ * onto the end of the destination workspace's client list.
+ *
+ * @param s_ws The source workspace that clients should be moved from.
+ * @param d_ws The target workspace that clients should be moved to.
+ */
 void move_ws(int s_ws, int d_ws)
 {
 		/* Source workspace. */
@@ -1289,11 +1498,23 @@ void move_ws(int s_ws, int d_ws)
 		change_ws(&arg);
 }
 
+/**
+ * @brief Move the entirety of the current workspace to the next workspace
+ * down.
+ *
+ * @param ws The workspace to be moved.
+ */
 void move_ws_down(int ws)
 {
 	move_ws(ws, correct_ws(prev_ws(ws)));
 }
 
+/**
+ * @brief Move the entirety of the current workspace to the next workspace
+ * up.
+ *
+ * @param ws The workspace to be moved.
+ */
 void move_ws_up(int ws)
 {
 	move_ws(ws, correct_ws(next_ws(ws)));
