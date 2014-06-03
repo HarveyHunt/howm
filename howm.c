@@ -52,7 +52,7 @@ typedef union {
  * which the keypress can be seen as valid.
  */
 typedef struct {
-	unsigned int mod; /**< The mask of the modifiers pressed. */
+	int mod; /**< The mask of the modifiers pressed. */
 	unsigned int mode; /**< The mode within which this keypress is valid. */
 	xcb_keysym_t sym; /**< The keysym of the pressed key. */
 	void (*func)(const Arg *); /**< The function to be called when this key is pressed. */
@@ -66,7 +66,7 @@ typedef struct {
  * motions).
  */
 typedef struct {
-	unsigned int mod; /**< The mask of the modifiers pressed. */
+	int mod; /**< The mask of the modifiers pressed. */
 	xcb_keysym_t sym; /**< The keysym of the pressed key. */
 	void (*func)(const int type, const int cnt); /**< The function to be
 						       called when the key is pressed. */
@@ -83,7 +83,7 @@ typedef struct {
  * q4c (Kill, 4, Clients).
  */
 typedef struct {
-	unsigned int mod; /**< The mask of the modifiers pressed. */
+	int mod; /**< The mask of the modifiers pressed. */
 	xcb_keysym_t sym; /**< The keysym of the pressed key. */
 	unsigned int type; /**< Represents whether the motion is for clients, WS etc. */
 } Motion;
@@ -95,7 +95,7 @@ typedef struct {
  * for keys.
  */
 typedef struct {
-	unsigned int mod; /**< The mask of the modifiers pressed.  */
+	int mod; /**< The mask of the modifiers pressed.  */
 	short int button; /**< The button that was pressed. */
 	void (*func)(const Arg *); /**< The function to be called when the
 				     button is pressed. */
@@ -209,7 +209,7 @@ static xcb_keysym_t keycode_to_keysym(xcb_keycode_t keycode);
 /* Misc */
 static void howm_info(void);
 static int get_non_tff_count(void);
-static unsigned int get_colour(char *colour);
+static uint32_t get_colour(char *colour);
 static void spawn(const Arg *arg);
 static void setup(void);
 static void move_ws_or_client(const int type, int cnt, bool up);
@@ -255,8 +255,9 @@ static Client *head, *prev_foc, *current;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
 static int last_ws, cur_layout, prev_layout;
 static int cur_ws = 1;
-static unsigned int screen_height, screen_width, border_focus, border_unfocus;
+static unsigned int border_focus, border_unfocus;
 static unsigned int cur_mode, cur_cnt, cur_state = OPERATOR_STATE;
+static uint16_t screen_height, screen_width;
 
 #include "config.h"
 /* Add comments so that splint ignores this as it doesn't support variadic
@@ -309,9 +310,10 @@ void setup(void)
  *
  * @return An X11 colourmap pixel.
  */
-unsigned int get_colour(char *colour)
+uint32_t get_colour(char *colour)
 {
-	unsigned int r, g, b, pixel;
+	uint16_t r, g, b;
+	uint32_t pixel;
 	xcb_alloc_color_reply_t *rep;
 	xcb_colormap_t map = screen->default_colormap;
 
@@ -319,13 +321,13 @@ unsigned int get_colour(char *colour)
 		{colour[1], colour[2], '\0'},
 		{colour[3], colour[4], '\0'},
 		{colour[5], colour[6], '\0'} };
-	unsigned int rgb16[3] = {(strtol(hex[0], NULL, 16)),
-				(strtol(hex[1], NULL, 16)),
-				(strtol(hex[2], NULL, 16))};
+	unsigned long int rgb16[3] = {(strtoul(hex[0], NULL, 16)),
+				(strtoul(hex[1], NULL, 16)),
+				(strtoul(hex[2], NULL, 16))};
 
 	r = rgb16[0], g = rgb16[1], b = rgb16[2];
 	rep = xcb_alloc_color_reply(dpy, xcb_alloc_color(dpy, map,
-					r * 257, g*257, b * 257), NULL);
+					r * 257, g * 257, b * 257), NULL);
 	if (!rep)
 		err(EXIT_FAILURE, "ERROR: Can't allocate the colour %s\n",
 				colour);
@@ -341,11 +343,12 @@ int main(int argc, char *argv[])
 {
 	dpy = xcb_connect(NULL, NULL);
 	if (xcb_connection_has_error(dpy))
-		err(EXIT_FAILURE, "Can't open XCB connection\n");
+		err(EXIT_FAILURE, "Can't open Xconnection\n");
 	setup();
 	check_other_wm();
 	while (!xcb_connection_has_error(dpy)) {
-		xcb_flush(dpy);
+		if (!xcb_flush(dpy))
+			err(EXIT_FAILURE, "Failed to flush X connection\n");
 		ev = xcb_wait_for_event(dpy);
 		if (handler[ev->response_type])
 			handler[ev->response_type](ev);
@@ -362,7 +365,7 @@ int main(int argc, char *argv[])
 void check_other_wm(void)
 {
 	xcb_generic_error_t *e;
-	unsigned int values[1] = {XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
+	uint32_t values[1] = {XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
 				XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
 				XCB_EVENT_MASK_BUTTON_PRESS |
 				XCB_EVENT_MASK_KEY_PRESS};
@@ -405,10 +408,10 @@ void button_press_event(xcb_generic_event_t *ev)
 void key_press_event(xcb_generic_event_t *ev)
 {
 	unsigned int i = 0;
+	xcb_keysym_t keysym;
 	xcb_key_press_event_t *ke = (xcb_key_press_event_t *)ev;
 	DEBUGP("[+] Keypress code:%d mod:%d\n", ke->detail, ke->state);
-	xcb_keysym_t keysym = keycode_to_keysym(ke->detail);
-
+	keysym = keycode_to_keysym(ke->detail);
 	switch (cur_state) {
 	case OPERATOR_STATE:
 		for (i = 0; i < LENGTH(operators); i++) {
@@ -475,6 +478,7 @@ void map_request_event(xcb_generic_event_t *ev)
 	xcb_window_t transient = 0;
 	xcb_get_window_attributes_reply_t *wa;
 	xcb_map_request_event_t *me = (xcb_map_request_event_t *)ev;
+	Client *c;
 
 	wa = xcb_get_window_attributes_reply(dpy, xcb_get_window_attributes(dpy, me->window), NULL);
 	if (!wa || wa->override_redirect || find_client_by_win(me->window)) {
@@ -483,7 +487,7 @@ void map_request_event(xcb_generic_event_t *ev)
 	}
 	DEBUG("Mapping request");
 	/* Rule stuff needs to be here. */
-	Client *c = client_from_window(me->window);
+	c = client_from_window(me->window);
 
 	/* Assume that transient windows MUST float. */
 	xcb_icccm_get_wm_transient_for_reply(dpy, xcb_icccm_get_wm_transient_for(dpy, me->window), &transient, NULL);

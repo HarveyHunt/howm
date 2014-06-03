@@ -28,18 +28,23 @@
 /** The border colour when the window is unfocused. */
 #define BORDER_UNFOCUS "#00FF00"
 
-/** Shell commands that will be executed. */
-static const char *term_cmd[] = {"urxvt", "-e", "sleep", "300", NULL};
-static const char *dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
-					"-nb", "#70898f", "-nf", "black",
-					"-sf", "#74718e", "-fn",
-					"'Droid Sans Mono-10'"};
-/* The key that, when combined with a number, defines a count. e.g:
+static const char * const term_cmd[] = {"urxvt", "-e", "sleep", "300", NULL};
+static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
+		    "-nb", "#70898f", "-nf", "black",
+		    "-sf", "#74718e", "-fn",
+		    "'Droid Sans Mono-10'", NULL};
+/**
+ * @brief The key that, when combined with a number, defines a count.
  *
- * SUPER + 2*/
+ * For example:
+ *
+ * SUPER 2
+ */
 static int count_mod = MODKEY;
 
-/* The standard key map, feel free to change them. In the form:
+/** @brief The standard key map, feel free to change them.
+ *
+ * In the form:
  *
  * {Modifier, Mode, Key, Command, Args}
  */
@@ -63,38 +68,49 @@ static const Key keys[] = {
 	{ MODKEY, FOCUS, XK_space, focus_next_ws, {NULL} },
 	{ MODKEY | ShiftMask, FOCUS, XK_space, focus_prev_ws, {NULL} },
 	{ MODKEY, FOCUS, XK_1, change_ws, {.i = 1} },
-    { MODKEY, FOCUS, XK_2, change_ws, {.i = 2} },
-    { MODKEY, FOCUS, XK_3, change_ws, {.i = 3} },
-    { MODKEY | ShiftMask, FOCUS, XK_1, current_to_ws, {.i = 1} },
-    { MODKEY | ShiftMask, FOCUS, XK_2, current_to_ws, {.i = 2} },
-    { MODKEY | ShiftMask, FOCUS, XK_3, current_to_ws, {.i = 3} }
+	{ MODKEY, FOCUS, XK_2, change_ws, {.i = 2} },
+	{ MODKEY, FOCUS, XK_3, change_ws, {.i = 3} },
+	{ MODKEY | ShiftMask, FOCUS, XK_1, current_to_ws, {.i = 1} },
+	{ MODKEY | ShiftMask, FOCUS, XK_2, current_to_ws, {.i = 2} },
+	{ MODKEY | ShiftMask, FOCUS, XK_3, current_to_ws, {.i = 3} }
 };
 
-/* The operations to be performed on a target. Vim's built in help is useful
- * for this:
+/**
+ * @brief The operations to be performed on a target. All functions that are
+ * operators begin with op_*.
+ *
+ * Vim's built in help is useful for understanding this:
  *
  * :help operators
  */
 static const Operator operators[] = {
 	{MODKEY, XK_q, op_kill},
-    {MODKEY, XK_j, op_move_down},
-    {MODKEY, XK_k, op_move_up}
+	{MODKEY, XK_j, op_move_down},
+	{MODKEY, XK_k, op_move_up}
 };
 
-/* Motions, can be used to show that an operation should be performed on a
- * certain target. e.g:
+/**
+ * @brief Motions can be used to show that an operation should be performed on
+ * a certain target- such as a client.
+ *
+ * For example:
  *
  * q4c (QUIT, 4, Clients)
  * q2w (QUIT, 2, Workspaces)
+ *
  */
 static const Motion motions[] = {
 	{MODKEY, XK_c, CLIENT},
 	{MODKEY, XK_w, WORKSPACE}
 };
 
-/* Workspaces and their default layouts. */
+/**
+ * @brief Workspaces and their default layout.
+ *
+ * Note: The first item is NULL as workspaces are indexed from 1.
+ */
 static Workspace workspaces[] = {
-    {NULL},
+	{NULL},
 	{.layout = HSTACK},
 	{.layout = HSTACK},
 	{.layout = HSTACK}
