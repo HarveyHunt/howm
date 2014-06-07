@@ -29,7 +29,7 @@
  /** Wraps up the comparison of modifier masks into a neat package. */
 #define EQUALMODS(mask, omask) (CLEANMASK(mask) == CLEANMASK(omask))
  /** Calculates the length of an array. */
-#define LENGTH(x) (sizeof(x) / sizeof(*x))
+#define LENGTH(x) (unsigned int)(sizeof(x) / sizeof(*x))
  /** Checks to see if a client is floating, fullscreen or transient. */
 #define FFT(client) (c->is_transient || c->is_floating || c->is_fullscreen)
 
@@ -249,7 +249,6 @@ static char *NET_ATOM_NAMES[] = {"_NET_WM_STATE_FULLSCREEN", "_NET_SUPPORTED",
 static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)],
 		  net_atoms[LENGTH(NET_ATOM_NAMES)];
 static xcb_screen_t *screen;
-static xcb_generic_event_t *ev;
 static int numlockmask;
 static Client *head, *prev_foc, *current;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
@@ -319,9 +318,9 @@ uint32_t get_colour(char *colour)
 
 	unsigned long int rgb = strtol(++colour, NULL, 16);
 
-	r = ((rgb >> 16) & 0xFF) | 0xFF00;
-	g = ((rgb >> 8) & 0xFF) | 0xFF00;
-	b = (rgb & 0xFF) | 0xFF00;
+	r = ((rgb >> 16) & 0xFF) * 257;
+	g = ((rgb >> 8) & 0xFF) * 257;
+	b = (rgb & 0xFF) * 257;
 	rep = xcb_alloc_color_reply(dpy, xcb_alloc_color(dpy, map,
 					r, g, b), NULL);
 	if (!rep)
@@ -337,6 +336,7 @@ uint32_t get_colour(char *colour)
  */
 int main(int argc, char *argv[])
 {
+	xcb_generic_event_t *ev;
 	dpy = xcb_connect(NULL, NULL);
 	if (xcb_connection_has_error(dpy))
 		err(EXIT_FAILURE, "Can't open Xconnection\n");
@@ -481,6 +481,7 @@ void map_request_event(xcb_generic_event_t *ev)
 		free(wa);
 		return;
 	}
+	free(wa);
 	DEBUG("Mapping request");
 	/* Rule stuff needs to be here. */
 	c = client_from_window(me->window);

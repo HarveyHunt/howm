@@ -40,7 +40,7 @@ static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
  *
  * SUPER 2
  */
-static int count_mod = MODKEY;
+static uint16_t count_mod = MODKEY;
 
 /** @brief The standard key map, feel free to change them.
  *
