@@ -312,22 +312,18 @@ void setup(void)
  */
 uint32_t get_colour(char *colour)
 {
-	uint16_t r, g, b;
 	uint32_t pixel;
+	uint16_t r, g, b;
 	xcb_alloc_color_reply_t *rep;
 	xcb_colormap_t map = screen->default_colormap;
 
-	char hex[3][3] = {
-		{colour[1], colour[2], '\0'},
-		{colour[3], colour[4], '\0'},
-		{colour[5], colour[6], '\0'} };
-	unsigned long int rgb16[3] = {(strtoul(hex[0], NULL, 16)),
-				(strtoul(hex[1], NULL, 16)),
-				(strtoul(hex[2], NULL, 16))};
+	unsigned long int rgb = strtol(++colour, NULL, 16);
 
-	r = rgb16[0], g = rgb16[1], b = rgb16[2];
+	r = ((rgb >> 16) & 0xFF) | 0xFF00;
+	g = ((rgb >> 8) & 0xFF) | 0xFF00;
+	b = (rgb & 0xFF) | 0xFF00;
 	rep = xcb_alloc_color_reply(dpy, xcb_alloc_color(dpy, map,
-					r * 257, g * 257, b * 257), NULL);
+					r, g, b), NULL);
 	if (!rep)
 		err(EXIT_FAILURE, "ERROR: Can't allocate the colour %s\n",
 				colour);
