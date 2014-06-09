@@ -2,4 +2,7 @@ language: c
 compiler:
     - clang
     - gcc
+before_install:
+    - sudo apt-get update -qq
+    - sudo apt-get install -y libx11-xcb-dev
 script: make debug
