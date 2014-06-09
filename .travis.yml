@@ -4,5 +4,6 @@ compiler:
     - gcc
 before_install:
     - sudo apt-get update -qq
-    - sudo apt-get install -y xcb
+    - sudo apt-get install -y libxcb
+    - sudo apt-get install -y xcb-proto
 script: make debug
