@@ -1,12 +1,12 @@
 howm
+==========
 
 [![Build Status](https://travis-ci.org/HarveyHunt/howm.svg?branch=develop)](https://travis-ci.org/HarveyHunt/howm)
 
-=====
 
 A lightweight, tiling X11 window manager that mimics vi by offering operators, motions and modes.
 
-=====
+==========
 
 Configuration is done through the included config.h file. Each option is described in detail.
 
