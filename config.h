@@ -50,11 +50,11 @@ static uint16_t count_mod = MODKEY;
  */
 static const Key keys[] = {
 	{ MODKEY, NORMAL, XK_Return, spawn, {.cmd = term_cmd} },
-	{ MODKEY, NORMAL, XK_r, spawn, {.cmd = dmenu_cmd} },
+	{ MODKEY, NORMAL, XK_d, spawn, {.cmd = dmenu_cmd} },
 
 	{ MODKEY, NORMAL, XK_s, change_layout, {.i = VSTACK} },
 	{ MODKEY, NORMAL, XK_g, change_layout, {.i = GRID} },
-	{ MODKEY, NORMAL, XK_s, change_layout, {.i = ZOOM} },
+	{ MODKEY, NORMAL, XK_z, change_layout, {.i = ZOOM} },
 	{ MODKEY, NORMAL, XK_n, next_layout, {NULL} },
 	{ MODKEY | ShiftMask, NORMAL, XK_n, previous_layout, {NULL} },
 	{ MODKEY, NORMAL, XK_f, change_mode, {.i = FOCUS} },
@@ -65,8 +65,8 @@ static const Key keys[] = {
 	{ MODKEY | ShiftMask, FOCUS, XK_j, move_current_down, {NULL} },
 	{ MODKEY, FOCUS, XK_Escape, change_mode, {.i = NORMAL} },
 
-	{ MODKEY, FOCUS, XK_space, focus_next_ws, {NULL} },
-	{ MODKEY | ShiftMask, FOCUS, XK_space, focus_prev_ws, {NULL} },
+	{ MODKEY, FOCUS, XK_w, focus_next_ws, {NULL} },
+	{ MODKEY | ShiftMask, FOCUS, XK_w, focus_prev_ws, {NULL} },
 	{ MODKEY, FOCUS, XK_1, change_ws, {.i = 1} },
 	{ MODKEY, FOCUS, XK_2, change_ws, {.i = 2} },
 	{ MODKEY, FOCUS, XK_3, change_ws, {.i = 3} },

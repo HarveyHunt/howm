@@ -255,10 +255,12 @@ static Client *head, *prev_foc, *current;
 static int last_ws, cur_layout, prev_layout;
 static int cur_ws = 1;
 static unsigned int border_focus, border_unfocus;
-static unsigned int cur_mode, cur_cnt, cur_state = OPERATOR_STATE;
+static unsigned int cur_mode, cur_state = OPERATOR_STATE;
+static unsigned int cur_cnt = 1;
 static uint16_t screen_height, screen_width;
 
 #include "config.h"
+
 /* Add comments so that splint ignores this as it doesn't support variadic
  * macros.
  */
@@ -299,6 +301,8 @@ void setup(void)
 
 	border_focus = get_colour(BORDER_FOCUS);
 	border_unfocus = get_colour(BORDER_UNFOCUS);
+
+	cur_layout = workspaces[cur_ws].layout;
 }
 
 /**
@@ -1224,7 +1228,7 @@ void next_layout(const Arg *arg)
  *
  * @param arg Unused.
  */
-void last_layout(const Arg *argvoid)
+void last_layout(const Arg *arg)
 {
 	const Arg a = {.i = prev_layout};
 	change_layout(&a);
@@ -1243,7 +1247,7 @@ void change_mode(const Arg *arg)
 	if (arg->i >= END_MODES || arg->i == cur_mode)
 		return;
 	cur_mode = arg->i;
-	DEBUGP("Changed mode to %d\n", cur_mode);
+	howm_info();
 }
 
 /**
