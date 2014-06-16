@@ -182,7 +182,6 @@ static void last_layout(const Arg *arg);
 static void stack(void);
 static void grid(void);
 static void zoom(void);
-static void fibonacci(void);
 static void arrange_windows(void);
 
 /* Modes */
@@ -213,8 +212,9 @@ static uint32_t get_colour(char *colour);
 static void spawn(const Arg *arg);
 static void setup(void);
 static void move_ws_or_client(const int type, int cnt, bool up);
+static void focus_window(xcb_window_t win);
 
-enum {ZOOM, GRID, HSTACK, VSTACK, FIBONACCI, END_LAYOUT};
+enum {ZOOM, GRID, HSTACK, VSTACK, END_LAYOUT};
 enum {OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE};
 enum {NORMAL, FOCUS, RESIZE, END_MODES};
 enum {COMMAND, OPERATOR, MOTION, END_TYPE};
@@ -236,8 +236,7 @@ static void(*layout_handler[])(void) = {
 	[GRID] = grid,
 	[ZOOM] = zoom,
 	[HSTACK] = stack,
-	[VSTACK] = stack,
-	[FIBONACCI] = fibonacci
+	[VSTACK] = stack
 };
 
 static void (*operator_func)(const int type, int cnt);
@@ -387,7 +386,11 @@ void check_other_wm(void)
  */
 void button_press_event(xcb_generic_event_t *ev)
 {
-	DEBUG("Button was pressed.");
+	/* FIXME: be->event doesn't seem to match with any windows managed by howm.*/
+	xcb_button_press_event_t *be = (xcb_button_press_event_t *) ev;
+	DEBUG("button_press_event");
+	if (FOCUS_MOUSE_CLICK && be->detail == XCB_BUTTON_INDEX_1)
+		focus_window(be->event);
 }
 
 /**
@@ -1025,28 +1028,9 @@ void howm_info(void)
 void enter_event(xcb_generic_event_t *ev)
 {
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *) ev;
-	Client *c = NULL;
-	if (!FOCUS_MOUSE)
-		return;
 	DEBUG("enter_event");
-	c = find_client_by_win(ee->event);
-	if (c)
-		update_focused_client(c);
-}
-
-/**
- * @brief Arrange the windows in a fibonacci pattern.
- */
-void fibonacci(void)
-{
-	Client *c = NULL;
-	int ch = screen_height - (BORDER_PX + GAP);
-	int cw = screen_width - (BORDER_PX + GAP);
-	for (c = head; c; c = c->next) {
-		if FFT(c)
-			continue;
-		/* TODO: Actual fibonacci stuff. */
-	}
+	if (FOCUS_MOUSE)
+		focus_window(ee->event);
 }
 
 /**
@@ -1523,4 +1507,17 @@ void move_ws_down(int ws)
 void move_ws_up(int ws)
 {
 	move_ws(ws, correct_ws(next_ws(ws)));
+}
+
+/**
+ * @brief Focus the given window.
+ *
+ * @param win A window that belongs to a client being managed by howm.
+ */
+static void focus_window(xcb_window_t win)
+{
+
+	Client *c = find_client_by_win(win);
+	if (c)
+		update_focused_client(c);
 }
