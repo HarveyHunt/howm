@@ -1,15 +1,14 @@
-#include <xcb/xcb.h>
-
-#include <xcb/xcb_keysyms.h>
-#include <xcb/xcb_icccm.h>
-#include <X11/X.h>
-#include <X11/keysym.h>
 #include <err.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
+#include <X11/keysym.h>
+#include <X11/X.h>
+#include <xcb/xcb.h>
+#include <xcb/xcb_icccm.h>
+#include <xcb/xcb_keysyms.h>
 
 /**
  * @file howm.c
@@ -68,7 +67,7 @@ typedef struct {
 typedef struct {
 	int mod; /**< The mask of the modifiers pressed. */
 	xcb_keysym_t sym; /**< The keysym of the pressed key. */
-	void (*func)(const int type, const int cnt); /**< The function to be
+	void (*func)(const int unsigned type, const int cnt); /**< The function to be
 						       called when the key is pressed. */
 } Operator;
 
@@ -153,7 +152,6 @@ static void focus_prev_client(const Arg *arg);
 static void update_focused_client(Client *c);
 static Client *prev_client(Client *c);
 static Client *client_from_window(xcb_window_t w);
-static void remove_from_ws(Client *c);
 static void remove_client(Client *c);
 static Client *find_client_by_win(xcb_window_t w);
 static void client_to_ws(Client *c, const int ws);
@@ -239,7 +237,7 @@ static void(*layout_handler[])(void) = {
 	[VSTACK] = stack
 };
 
-static void (*operator_func)(const int type, int cnt);
+static void (*operator_func)(const unsigned int type, int cnt);
 
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = {"WM_DELETE_WINDOW", "WM_PROTOCOLS"};
@@ -661,19 +659,6 @@ Client *next_client(Client *c)
 	if (c->next)
 		return c->next;
 	return head;
-}
-
-/**
- * @brief Remove a client from a workspace and rearrange the client list.
- *
- * @param c The client to be removed.
- */
-void remove_from_ws(Client *c)
-{
-	if (head == c)
-		head = NULL;
-	Client *p = prev_client(c);
-	p->next = c->next;
 }
 
 /**
@@ -1319,7 +1304,6 @@ void op_move_up(const int type, int cnt)
 void move_ws_or_client(const int type, int cnt, bool up)
 {
 	if (type == WORKSPACE) {
-		Arg a = {.i = cur_ws};
 		if (up)
 			for (; cnt > 0; cnt--)
 				move_ws_up(correct_ws(cur_ws + cnt - 1));
