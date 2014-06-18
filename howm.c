@@ -109,10 +109,6 @@ typedef struct {
 typedef struct Client {
 	struct Client *next; /**< Clients are stored in a linked list-
 			       this represents the client after this one. */
-	short int x; /**< The x dimension of the client's window. */
-	short int y; /**< The y dimension of the client's window. */
-	short int h; /**< The height of the client's window. */
-	short int w; /**< The width of the client's window. */
 	bool is_fullscreen; /**< Is the client fullscreen? */
 	bool is_floating;  /**< Is the client floating? */
 	bool is_transient; /**< Is the client transient?
@@ -691,7 +687,8 @@ void zoom(void)
 	for (c = head; c; c = c->next)
 		if (!FFT(c))
 			move_resize(c->win, ZOOM_GAP ? true : false,
-					0, 0, screen_width, screen_height);
+					0, BAR_BOTTOM ? 0 : BAR_HEIGHT,
+					screen_width, screen_height - BAR_HEIGHT);
 }
 
 /**
@@ -714,7 +711,6 @@ void move_resize(xcb_window_t win, bool draw_gap,
 		position[2] -= 2 * GAP;
 		position[3] -= 2 * GAP;
 	}
-
 	xcb_configure_window(dpy, win, MOVE_RESIZE_MASK, position);
 }
 
@@ -878,24 +874,23 @@ void stack(void)
 {
 	Client *c = NULL;
 	bool vert = (cur_layout == VSTACK);
-	int span = vert ? screen_height :  screen_width;
-	int client_span, i, n, client_y = 0, client_x = 0;
+	int span = vert ? screen_height - BAR_HEIGHT :  screen_width;
+	int i, n, client_x = 0;
+	int client_y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
 
 	n = get_non_tff_count();
 	/* TODO: Need to take into account when this has remainders. */
-	/* TODO: Fix doubling of gap between windows. */
-	client_span = (span / n) - (2 * BORDER_PX);
+	/* TODO: Fix gaps between windows. */
+	int client_span = (span / n) - (2 * BORDER_PX);
 	DEBUG("STACK")
-	DEBUGP("span: %d\n", span);
-	DEBUGP("client_span: %d\n", client_span);
 
 	if (vert) {
-		move_resize(head->win, BORDER_PX, client_y,
-			true, screen_width - (2 * BORDER_PX), client_span);
+		move_resize(head->win, true, 0, client_y,
+			screen_width - (2 * BORDER_PX), client_span);
 		client_y += (BORDER_PX + (span / n));
 	} else {
-		move_resize(head->win, client_x, BORDER_PX,
-			true, client_span, screen_height - (2 * BORDER_PX));
+		move_resize(head->win, true, client_x,  BAR_BOTTOM ? 0 : BAR_HEIGHT,
+			client_span, screen_height - (2 * BORDER_PX) - BAR_HEIGHT);
 		client_x += (BORDER_PX + (span / n));
 	}
 
@@ -904,15 +899,14 @@ void stack(void)
 
 	for (c = head->next, i = 0; i < n - 1; c = c->next, i++) {
 		if (vert) {
-			DEBUGP("client_y: %d\n", client_y);
-			move_resize(c->win, false, GAP, client_y,
-					screen_width - (2 * (BORDER_PX + GAP)),
-					client_span - GAP - BORDER_PX);
+			move_resize(c->win, true, GAP, client_y,
+					screen_width - (2 * BORDER_PX),
+					client_span - BORDER_PX);
 			client_y += (BORDER_PX + client_span);
 		} else {
-			move_resize(c->win, false, client_x, GAP,
-					client_span - GAP - BORDER_PX,
-					screen_height - (2 * (BORDER_PX + GAP)));
+			move_resize(c->win, true, client_x, BAR_BOTTOM ? 0 : BAR_HEIGHT,
+					client_span - BORDER_PX,
+					screen_height - (2 * BORDER_PX) - BAR_HEIGHT);
 			client_x += (BORDER_PX + client_span);
 		}
 	}

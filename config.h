@@ -29,6 +29,10 @@
 #define BORDER_FOCUS "#FF00FF"
 /** The border colour when the window is unfocused. */
 #define BORDER_UNFOCUS "#00FF00"
+/** The height of the status bar to be displayed. */
+#define BAR_HEIGHT 20
+/** Whether the status bar is at the top or bottom of the screen. */
+#define BAR_BOTTOM true
 
 static const char * const term_cmd[] = {"urxvt", "-e", "sleep", "300", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
