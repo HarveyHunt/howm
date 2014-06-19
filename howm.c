@@ -189,8 +189,9 @@ static void enter_event(xcb_generic_event_t *ev);
 static void destroy_event(xcb_generic_event_t *ev);
 static void button_press_event(xcb_generic_event_t *ev);
 static void key_press_event(xcb_generic_event_t *ev);
-static void map_request_event(xcb_generic_event_t *ev);
-static void configure_request_event(xcb_generic_event_t *ev);
+static void map_event(xcb_generic_event_t *ev);
+static void configure_event(xcb_generic_event_t *ev);
+static void unmap_event(xcb_generic_event_t *ev);
 
 /* XCB */
 static void grab_keys(void);
@@ -225,9 +226,11 @@ enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
 static void(*handler[XCB_NO_OPERATION]) (xcb_generic_event_t *) = {
 	[XCB_BUTTON_PRESS] = button_press_event,
 	[XCB_KEY_PRESS] = key_press_event,
-	[XCB_MAP_REQUEST] = map_request_event,
+	[XCB_MAP_REQUEST] = map_event,
 	[XCB_DESTROY_NOTIFY] = destroy_event,
-	[XCB_ENTER_NOTIFY] = enter_event
+	[XCB_ENTER_NOTIFY] = enter_event,
+	[XCB_CONFIGURE_NOTIFY] = configure_event,
+	[XCB_UNMAP_NOTIFY] = unmap_event
 };
 
 static void(*layout_handler[]) (void) = {
@@ -479,7 +482,7 @@ void spawn(const Arg *arg)
  *
  * @param ev A mapping request event.
  */
-void map_request_event(xcb_generic_event_t *ev)
+void map_event(xcb_generic_event_t *ev)
 {
 	xcb_window_t transient = 0;
 	xcb_get_window_attributes_reply_t *wa;
@@ -1577,27 +1580,38 @@ void op_focus_down(const int type, int cnt)
  *
  * @param ev The event sent from the window.
  */
-void configure_request_event(xcb_generic_event_t *ev)
+void configure_event(xcb_generic_event_t *ev)
 {
-	xcb_configure_request_event_t *cr = (xcb_configure_request_event_t*)ev;
-	Client *c = client_from_window(cr->window);
+	xcb_configure_request_event_t *ce = (xcb_configure_request_event_t*)ev;
+	Client *c = client_from_window(ce->window);
 	unsigned int vals[7], i = 0;
+
 	/* TODO: Need to test whether gaps etc need to be taken into account
 	 * here. */
-	if (XCB_CONFIG_WINDOW_X & cr->value_mask)
-		vals[i++] = cr->x;
-	if (XCB_CONFIG_WINDOW_Y & cr->value_mask)
-		vals[i++] = cr->y + (BAR_BOTTOM ? 0 : BAR_HEIGHT);
-	if (XCB_CONFIG_WINDOW_WIDTH & cr->value_mask)
-		vals[i++] = (cr->width < screen_width - BORDER_PX) ? cr->width : screen_width - BORDER_PX;
-	if (XCB_CONFIG_WINDOW_HEIGHT & cr->value_mask)
-		vals[i++] = (cr->height < screen_height - BORDER_PX) ? cr->height : screen_height - BORDER_PX;
-	if (XCB_CONFIG_WINDOW_BORDER_WIDTH & cr->value_mask)
-		vals[i++] = cr->border_width;
-	if (XCB_CONFIG_WINDOW_SIBLING & cr->value_mask)
-		vals[i++] = cr->sibling;
-	if (XCB_CONFIG_WINDOW_STACK_MODE & cr->value_mask)
-		vals[i++] = cr->stack_mode;
-	xcb_configure_window(dpy, cr->window, cr->value_mask, vals);
+	if (XCB_CONFIG_WINDOW_X & ce->value_mask)
+		vals[i++] = ce->x;
+	if (XCB_CONFIG_WINDOW_Y & ce->value_mask)
+		vals[i++] = ce->y + (BAR_BOTTOM ? 0 : BAR_HEIGHT);
+	if (XCB_CONFIG_WINDOW_WIDTH & ce->value_mask)
+		vals[i++] = (ce->width < screen_width - BORDER_PX) ? ce->width : screen_width - BORDER_PX;
+	if (XCB_CONFIG_WINDOW_HEIGHT & ce->value_mask)
+		vals[i++] = (ce->height < screen_height - BORDER_PX) ? ce->height : screen_height - BORDER_PX;
+	if (XCB_CONFIG_WINDOW_BORDER_WIDTH & ce->value_mask)
+		vals[i++] = ce->border_width;
+	if (XCB_CONFIG_WINDOW_SIBLING & ce->value_mask)
+		vals[i++] = ce->sibling;
+	if (XCB_CONFIG_WINDOW_STACK_MODE & ce->value_mask)
+		vals[i++] = ce->stack_mode;
+	xcb_configure_window(dpy, ce->window, ce->value_mask, vals);
 	arrange_windows();
+}
+
+void unmap_event(xcb_generic_event_t *ev)
+{
+	xcb_unmap_notify_event_t *ue = (xcb_unmap_notify_event_t*)ev;
+	Client *c = client_from_window(ue->window);
+
+	if (c && !ue->event == screen->root)
+		remove_client(c);
+	howm_info();
 }
