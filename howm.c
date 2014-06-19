@@ -190,6 +190,7 @@ static void destroy_event(xcb_generic_event_t *ev);
 static void button_press_event(xcb_generic_event_t *ev);
 static void key_press_event(xcb_generic_event_t *ev);
 static void map_request_event(xcb_generic_event_t *ev);
+static void configure_request_event(xcb_generic_event_t *ev);
 
 /* XCB */
 static void grab_keys(void);
@@ -1533,6 +1534,12 @@ void focus_window(xcb_window_t win)
 		update_focused_client(c);
 }
 
+/**
+ * @brief Operator function to move the current focus up.
+ *
+ * @param type Whether to focus on clients or workspaces.
+ * @param cnt The number of times to move focus.
+ */
 void op_focus_up(const int type, int cnt)
 {
 	while (cnt > 0) {
@@ -1546,6 +1553,12 @@ void op_focus_up(const int type, int cnt)
 	}
 }
 
+/**
+ * @brief Operator function to move the current focus down.
+ *
+ * @param type Whether to focus on clients or workspaces.
+ * @param cnt The number of times to move focus.
+ */
 void op_focus_down(const int type, int cnt)
 {
 	while (cnt > 0) {
@@ -1557,4 +1570,34 @@ void op_focus_down(const int type, int cnt)
 			return;
 		cnt--;
 	}
+}
+
+/**
+ * @brief Deal with a window's request to change its geometry.
+ *
+ * @param ev The event sent from the window.
+ */
+void configure_request_event(xcb_generic_event_t *ev)
+{
+	xcb_configure_request_event_t *cr = (xcb_configure_request_event_t*)ev;
+	Client *c = client_from_window(cr->window);
+	unsigned int vals[7], i = 0;
+	/* TODO: Need to test whether gaps etc need to be taken into account
+	 * here. */
+	if (XCB_CONFIG_WINDOW_X & cr->value_mask)
+		vals[i++] = cr->x;
+	if (XCB_CONFIG_WINDOW_Y & cr->value_mask)
+		vals[i++] = cr->y + (BAR_BOTTOM ? 0 : BAR_HEIGHT);
+	if (XCB_CONFIG_WINDOW_WIDTH & cr->value_mask)
+		vals[i++] = (cr->width < screen_width - BORDER_PX) ? cr->width : screen_width - BORDER_PX;
+	if (XCB_CONFIG_WINDOW_HEIGHT & cr->value_mask)
+		vals[i++] = (cr->height < screen_height - BORDER_PX) ? cr->height : screen_height - BORDER_PX;
+	if (XCB_CONFIG_WINDOW_BORDER_WIDTH & cr->value_mask)
+		vals[i++] = cr->border_width;
+	if (XCB_CONFIG_WINDOW_SIBLING & cr->value_mask)
+		vals[i++] = cr->sibling;
+	if (XCB_CONFIG_WINDOW_STACK_MODE & cr->value_mask)
+		vals[i++] = cr->stack_mode;
+	xcb_configure_window(dpy, cr->window, cr->value_mask, vals);
+	arrange_windows();
 }
