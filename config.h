@@ -7,6 +7,10 @@
 
 /** The main modifier key. */
 #define MODKEY Mod4Mask
+/** The modifier key that, when combined with a number, defines a count. */
+#define COUNT_MOD Mod1Mask
+/** The modifier key that is used for motions and operators. */
+#define OTHER_MOD Mod1Mask
 /** Number of workspaces. */
 #define WORKSPACES 3
 /** When moving the mouse over a window, focus on the window? */
@@ -39,14 +43,6 @@ static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
 		    "-nb", "#70898f", "-nf", "black",
 		    "-sf", "#74718e", "-fn",
 		    "'Droid Sans Mono-10'", NULL};
-/**
- * @brief The key that, when combined with a number, defines a count.
- *
- * For example:
- *
- * SUPER 2
- */
-static uint16_t count_mod = MODKEY;
 
 /** @brief The standard key map, feel free to change them.
  *
@@ -71,8 +67,8 @@ static const Key keys[] = {
 	{ MODKEY | ShiftMask, FOCUS, XK_j, move_current_down, {NULL} },
 	{ MODKEY, FOCUS, XK_Escape, change_mode, {.i = NORMAL} },
 
-	{ MODKEY, FOCUS, XK_w, focus_next_ws, {NULL} },
-	{ MODKEY | ShiftMask, FOCUS, XK_w, focus_prev_ws, {NULL} },
+	{ MODKEY, FOCUS, XK_l, focus_next_ws, {NULL} },
+	{ MODKEY, FOCUS, XK_h, focus_prev_ws, {NULL} },
 	{ MODKEY, FOCUS, XK_1, change_ws, {.i = 1} },
 	{ MODKEY, FOCUS, XK_2, change_ws, {.i = 2} },
 	{ MODKEY, FOCUS, XK_3, change_ws, {.i = 3} },
@@ -90,9 +86,10 @@ static const Key keys[] = {
  * :help operators
  */
 static const Operator operators[] = {
-	{MODKEY, XK_q, op_kill},
-	{MODKEY, XK_j, op_move_down},
-	{MODKEY, XK_k, op_move_up}
+	{OTHER_MOD, XK_q, NORMAL, op_kill},
+	{OTHER_MOD, XK_j, NORMAL, op_move_down},
+	{OTHER_MOD, XK_k, NORMAL, op_move_up},
+	{OTHER_MOD, XK_k, FOCUS, op_focus_up}
 };
 
 /**
@@ -106,8 +103,8 @@ static const Operator operators[] = {
  *
  */
 static const Motion motions[] = {
-	{MODKEY, XK_c, CLIENT},
-	{MODKEY, XK_w, WORKSPACE}
+	{OTHER_MOD, XK_c, CLIENT},
+	{OTHER_MOD, XK_w, WORKSPACE}
 };
 
 /**

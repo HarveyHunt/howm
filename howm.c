@@ -67,6 +67,7 @@ typedef struct {
 typedef struct {
 	int mod; /**< The mask of the modifiers pressed. */
 	xcb_keysym_t sym; /**< The keysym of the pressed key. */
+	unsigned int mode; /**< The mode within which this keypress is valid. */
 	void (*func)(const int unsigned type, const int cnt); /**< The function to be
 						       called when the key is pressed. */
 } Operator;
@@ -135,6 +136,8 @@ typedef struct {
 static void op_kill(const int type, int cnt);
 static void op_move_up(const int type, int cnt);
 static void op_move_down(const int type, int cnt);
+static void op_focus_down(const int type, int cnt);
+static void op_focus_up(const int type, int cnt);
 
 /* Clients */
 static void move_current_down(const Arg *arg);
@@ -412,7 +415,8 @@ void key_press_event(xcb_generic_event_t *ev)
 	switch (cur_state) {
 	case OPERATOR_STATE:
 		for (i = 0; i < LENGTH(operators); i++) {
-			if (keysym == operators[i].sym && EQUALMODS(operators[i].mod, ke->state)) {
+			if (keysym == operators[i].sym && EQUALMODS(operators[i].mod, ke->state)
+					&& operators[i].mode == cur_mode) {
 				operator_func = operators[i].func;
 				cur_state = COUNT_STATE;
 				break;
@@ -420,7 +424,7 @@ void key_press_event(xcb_generic_event_t *ev)
 		}
 		break;
 	case COUNT_STATE:
-		if (EQUALMODS(count_mod, ke->state) && XK_1 <= keysym &&
+		if (EQUALMODS(COUNT_MOD, ke->state) && XK_1 <= keysym &&
 				keysym <= XK_9) {
 			/* Get a value between 1 and 9 inclusive.  */
 			cur_cnt = keysym - XK_0;
@@ -794,6 +798,11 @@ void grab_keys(void)
 	for (i = 0; i < LENGTH(motions); i++) {
 		keycode = keysym_to_keycode(motions[i].sym);
 		grab_keycode(keycode, motions[i].mod);
+	}
+
+	for (i = 0; i < 8; i++) {
+		keycode = keysym_to_keycode(XK_1 + i);
+		grab_keycode(keycode, COUNT_MOD);
 	}
 }
 
@@ -1492,10 +1501,18 @@ void move_ws_up(int ws)
  *
  * @param win A window that belongs to a client being managed by howm.
  */
-static void focus_window(xcb_window_t win)
+void focus_window(xcb_window_t win)
 {
 
 	Client *c = find_client_by_win(win);
 	if (c)
 		update_focused_client(c);
+}
+
+void op_focus_up(const int type, int cnt)
+{
+	while (cnt > 0) {
+		focus_next_client(NULL);
+		cnt--;
+	}
 }
