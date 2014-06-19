@@ -1512,7 +1512,25 @@ void focus_window(xcb_window_t win)
 void op_focus_up(const int type, int cnt)
 {
 	while (cnt > 0) {
-		focus_next_client(NULL);
+		if (type == CLIENT)
+			focus_next_client(NULL);
+		else if (type == WORKSPACE)
+			focus_next_ws(NULL);
+		else
+			return;
+		cnt--;
+	}
+}
+
+void op_focus_down(const int type, int cnt)
+{
+	while (cnt > 0) {
+		if (type == CLIENT)
+			focus_prev_client(NULL);
+		else if (type == WORKSPACE)
+			focus_prev_ws(NULL);
+		else
+			return;
 		cnt--;
 	}
 }

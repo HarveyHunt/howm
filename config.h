@@ -89,6 +89,7 @@ static const Operator operators[] = {
 	{OTHER_MOD, XK_q, NORMAL, op_kill},
 	{OTHER_MOD, XK_j, NORMAL, op_move_down},
 	{OTHER_MOD, XK_k, NORMAL, op_move_up},
+	{OTHER_MOD, XK_j, FOCUS, op_focus_down},
 	{OTHER_MOD, XK_k, FOCUS, op_focus_up}
 };
 
