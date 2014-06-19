@@ -39,9 +39,9 @@
  * result of a keypress.
  */
 typedef union {
-	const char **cmd;       /**< Represents a command that will be called by a shell.  */
-	float f;                /**< Commonly used for scaling operations. */
-	int i;                  /**< Usually used for specifying workspaces or clients. */
+	const char	**cmd;  /**< Represents a command that will be called by a shell.  */
+	float		f;      /**< Commonly used for scaling operations. */
+	int		i;      /**< Usually used for specifying workspaces or clients. */
 } Arg;
 
 /**
@@ -51,11 +51,11 @@ typedef union {
  * which the keypress can be seen as valid.
  */
 typedef struct {
-	int mod;                        /**< The mask of the modifiers pressed. */
-	unsigned int mode;              /**< The mode within which this keypress is valid. */
-	xcb_keysym_t sym;               /**< The keysym of the pressed key. */
+	int		mod;            /**< The mask of the modifiers pressed. */
+	unsigned int	mode;           /**< The mode within which this keypress is valid. */
+	xcb_keysym_t	sym;            /**< The keysym of the pressed key. */
 	void (*func)(const Arg *);      /**< The function to be called when this key is pressed. */
-	const Arg arg;                  /**< The argument passed to the above function. */
+	const Arg	arg;            /**< The argument passed to the above function. */
 } Key;
 
 /**
@@ -65,11 +65,11 @@ typedef struct {
  * motions).
  */
 typedef struct {
-	int mod;                                                /**< The mask of the modifiers pressed. */
-	xcb_keysym_t sym;                                       /**< The keysym of the pressed key. */
-	unsigned int mode;                                      /**< The mode within which this keypress is valid. */
+	int		mod;                                    /**< The mask of the modifiers pressed. */
+	xcb_keysym_t	sym;                                    /**< The keysym of the pressed key. */
+	unsigned int	mode;                                   /**< The mode within which this keypress is valid. */
 	void (*func)(const int unsigned type, const int cnt);   /**< The function to be
-	                                                           called when the key is pressed. */
+								 * called when the key is pressed. */
 } Operator;
 
 /**
@@ -83,9 +83,9 @@ typedef struct {
  * q4c (Kill, 4, Clients).
  */
 typedef struct {
-	int mod;                /**< The mask of the modifiers pressed. */
-	xcb_keysym_t sym;       /**< The keysym of the pressed key. */
-	unsigned int type;      /**< Represents whether the motion is for clients, WS etc. */
+	int		mod;    /**< The mask of the modifiers pressed. */
+	xcb_keysym_t	sym;    /**< The keysym of the pressed key. */
+	unsigned int	type;   /**< Represents whether the motion is for clients, WS etc. */
 } Motion;
 
 /**
@@ -95,11 +95,11 @@ typedef struct {
  * for keys.
  */
 typedef struct {
-	int mod;                        /**< The mask of the modifiers pressed.  */
-	short int button;               /**< The button that was pressed. */
+	int		mod;            /**< The mask of the modifiers pressed.  */
+	short int	button;         /**< The button that was pressed. */
 	void (*func)(const Arg *);      /**< The function to be called when the
-	                                   button is pressed. */
-	const Arg arg;                  /**< The argument passed to the above function. */
+					* button is pressed. */
+	const Arg	arg;            /**< The argument passed to the above function. */
 } Button;
 
 /**
@@ -108,13 +108,13 @@ typedef struct {
  * All the attributes that are needed by howm for a client are stored here.
  */
 typedef struct Client {
-	struct Client *next;    /**< Clients are stored in a linked list-
-	                           this represents the client after this one. */
-	bool is_fullscreen;     /**< Is the client fullscreen? */
-	bool is_floating;       /**< Is the client floating? */
-	bool is_transient;      /**< Is the client transient?
-	                           Defined at: http://standards.freedesktop.org/wm-spec/wm-spec-latest.html*/
-	xcb_window_t win;       /**< The window that this client represents. */
+	struct Client *next;           /**< Clients are stored in a linked list-
+					* this represents the client after this one. */
+	bool		is_fullscreen;  /**< Is the client fullscreen? */
+	bool		is_floating;    /**< Is the client floating? */
+	bool		is_transient;   /**< Is the client transient?
+					* Defined at: http://standards.freedesktop.org/wm-spec/wm-spec-latest.html*/
+	xcb_window_t	win;            /**< The window that this client represents. */
 } Client;
 
 /**
@@ -124,11 +124,11 @@ typedef struct Client {
  * cause different clients to be rendered on the screen.
  */
 typedef struct {
-	int layout;             /**< The current layout of the WS, as defined in the
-	                           layout enum. */
+	int	layout;         /**< The current layout of the WS, as defined in the
+				* layout enum. */
 	Client *head;           /**< The start of the linked list. */
 	Client *prev_foc;       /**< The last focused client. This is seperate to
-	                           the linked list structure. */
+				* the linked list structure. */
 	Client *current;        /**< The client that is currently in focus. */
 } Workspace;
 
@@ -219,7 +219,8 @@ enum { NORMAL, FOCUS, RESIZE, END_MODES };
 enum { COMMAND, OPERATOR, MOTION, END_TYPE };
 enum { CLIENT, WORKSPACE };
 enum { NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
-       NET_ACTIVE_WINDOW };
+	NET_ACTIVE_WINDOW
+	};
 enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
 
 /* Handlers */
@@ -245,9 +246,10 @@ static void (*operator_func)(const unsigned int type, int cnt);
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 static char *NET_ATOM_NAMES[] = { "_NET_WM_STATE_FULLSCREEN", "_NET_SUPPORTED",
-				  "_NET_WM_STATE",	      "_NET_ACTIVE_WINDOW" };
+				  "_NET_WM_STATE",	      "_NET_ACTIVE_WINDOW"
+				};
 static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)],
-		  net_atoms[LENGTH(NET_ATOM_NAMES)];
+	net_atoms[LENGTH(NET_ATOM_NAMES)];
 static xcb_screen_t *screen;
 static int numlockmask;
 static Client *head, *prev_foc, *current;
@@ -326,7 +328,7 @@ uint32_t get_colour(char *colour)
 	g = ((rgb >> 8) & 0xFF) * 257;
 	b = (rgb & 0xFF) * 257;
 	rep = xcb_alloc_color_reply(dpy, xcb_alloc_color(dpy, map,
-							 r, g, b), NULL);
+				    r, g, b), NULL);
 	if (!rep)
 		err(EXIT_FAILURE, "ERROR: Can't allocate the colour %s\n",
 		    colour);
@@ -369,10 +371,11 @@ void check_other_wm(void)
 	uint32_t values[1] = { XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
 			       XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
 			       XCB_EVENT_MASK_BUTTON_PRESS |
-			       XCB_EVENT_MASK_KEY_PRESS };
+			       XCB_EVENT_MASK_KEY_PRESS
+			     };
 
 	e = xcb_request_check(dpy, xcb_change_window_attributes_checked(dpy,
-									screen->root, XCB_CW_EVENT_MASK, values));
+			      screen->root, XCB_CW_EVENT_MASK, values));
 	if (e != NULL) {
 		xcb_disconnect(dpy);
 		DEBUGP("Error code: %d\n", e->error_code);
@@ -390,7 +393,7 @@ void check_other_wm(void)
 void button_press_event(xcb_generic_event_t *ev)
 {
 	/* FIXME: be->event doesn't seem to match with any windows managed by howm.*/
-	xcb_button_press_event_t *be = (xcb_button_press_event_t*)ev;
+	xcb_button_press_event_t *be = (xcb_button_press_event_t *)ev;
 
 	DEBUG("button_press_event");
 	if (FOCUS_MOUSE_CLICK && be->detail == XCB_BUTTON_INDEX_1)
@@ -416,7 +419,7 @@ void key_press_event(xcb_generic_event_t *ev)
 {
 	unsigned int i = 0;
 	xcb_keysym_t keysym;
-	xcb_key_press_event_t *ke = (xcb_key_press_event_t*)ev;
+	xcb_key_press_event_t *ke = (xcb_key_press_event_t *)ev;
 
 	DEBUGP("[+] Keypress code:%d mod:%d\n", ke->detail, ke->state);
 	keysym = keycode_to_keysym(ke->detail);
@@ -465,9 +468,9 @@ void spawn(const Arg *arg)
 	if (dpy)
 		close(screen->root);
 	setsid();
-	execvp((char*)arg->cmd[0], (char**)arg->cmd);
+	execvp((char *)arg->cmd[0], (char **)arg->cmd);
 	DEBUG("SPAWN");
-	fprintf(stderr, "howm: execvp %s\n", (char*)arg->cmd[0]);
+	fprintf(stderr, "howm: execvp %s\n", (char *)arg->cmd[0]);
 	perror(" failed");
 	exit(EXIT_SUCCESS);
 }
@@ -486,7 +489,7 @@ void map_event(xcb_generic_event_t *ev)
 {
 	xcb_window_t transient = 0;
 	xcb_get_window_attributes_reply_t *wa;
-	xcb_map_request_event_t *me = (xcb_map_request_event_t*)ev;
+	xcb_map_request_event_t *me = (xcb_map_request_event_t *)ev;
 	Client *c;
 
 	wa = xcb_get_window_attributes_reply(dpy, xcb_get_window_attributes(dpy, me->window), NULL);
@@ -517,7 +520,7 @@ void map_event(xcb_generic_event_t *ev)
  */
 Client *client_from_window(xcb_window_t w)
 {
-	Client *c = (Client*)calloc(1, sizeof(Client));
+	Client *c = (Client *)calloc(1, sizeof(Client));
 	Client *t = prev_client(head); /* Get the last element. */
 
 	if (!c)
@@ -530,7 +533,8 @@ Client *client_from_window(xcb_window_t w)
 		head->next = c;
 	c->win = w;
 	unsigned int vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
-				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0) };
+				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0)
+			       };
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_EVENT_MASK, vals);
 	return c;
 }
@@ -836,7 +840,6 @@ void grab_keycode(xcb_keycode_t *keycode, const int mod)
 			xcb_grab_key(dpy, 1, screen->root, mod |
 				     mods[k], keycode[j], XCB_GRAB_MODE_ASYNC,
 				     XCB_GRAB_MODE_ASYNC);
-
 }
 
 /**
@@ -914,7 +917,7 @@ void stack(void)
 			    screen_width - (2 * BORDER_PX), client_span);
 		client_y += (BORDER_PX + (span / n));
 	} else {
-		move_resize(head->win, true, client_x,  BAR_BOTTOM ? 0 : BAR_HEIGHT,
+		move_resize(head->win, true, client_x, BAR_BOTTOM ? 0 : BAR_HEIGHT,
 			    client_span, screen_height - (2 * BORDER_PX) - BAR_HEIGHT);
 		client_x += (BORDER_PX + (span / n));
 	}
@@ -953,7 +956,6 @@ int get_non_tff_count(void)
 		else
 			break;
 	return n;
-
 }
 
 /**
@@ -968,7 +970,7 @@ int get_non_tff_count(void)
 void destroy_event(xcb_generic_event_t *ev)
 {
 	DEBUG("DESTROY");
-	xcb_destroy_notify_event_t *de = (xcb_destroy_notify_event_t*)ev;
+	xcb_destroy_notify_event_t *de = (xcb_destroy_notify_event_t *)ev;
 	Client *c = find_client_by_win(de->window);
 	if (c)
 		remove_client(c);
@@ -1033,7 +1035,7 @@ void howm_info(void)
  */
 void enter_event(xcb_generic_event_t *ev)
 {
-	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t*)ev;
+	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *)ev;
 
 	DEBUG("enter_event");
 	if (FOCUS_MOUSE)
@@ -1149,7 +1151,8 @@ void change_ws(const Arg *arg)
 void focus_prev_ws(const Arg *arg)
 {
 	const Arg a = { .i	= cur_ws < 2 ? WORKSPACES :
-				  cur_ws - 1 };
+				  cur_ws - 1
+		      };
 
 	change_ws(&a);
 }
@@ -1202,7 +1205,7 @@ void change_layout(const Arg *arg)
  */
 void previous_layout(const Arg *arg)
 {
-	const Arg a = { .i =  cur_layout < 1 ? END_LAYOUT - 1 : cur_layout - 1 };
+	const Arg a = { .i = cur_layout < 1 ? END_LAYOUT - 1 : cur_layout - 1 };
 
 	change_layout(&a);
 }
@@ -1261,7 +1264,6 @@ void op_kill(const int type, int cnt)
 			kill_ws((cur_ws + cnt) % WORKSPACES);
 			cnt--;
 		}
-
 	} else if (type == CLIENT) {
 		DEBUGP("Killing %d clients.\n", cnt);
 		while (cnt > 0) {
@@ -1339,7 +1341,6 @@ void move_ws_or_client(const int type, int cnt, bool up)
 		else
 			for (int i = 0; i < cnt; i++)
 				move_ws_down(correct_ws(cur_ws + i));
-
 	} else if (type == CLIENT) {
 		if (up) {
 			if (current == head)
@@ -1347,14 +1348,17 @@ void move_ws_or_client(const int type, int cnt, bool up)
 			Client *c = prev_client(current);
 			/* TODO optimise this by inserting the client only once
 			 * and in the correct location.*/
-			for (; cnt > 0; move_down(c), cnt--) ;
+			for (; cnt > 0; move_down(c), cnt--)
+				;
 		} else {
 			if (current == prev_client(head))
 				return;
 			int cntcopy = cnt;
 			Client *c;
-			for (c = current; cntcopy > 0; c = next_client(c), cntcopy--) ;
-			for (; cnt > 0; move_up(c), cnt--) ;
+			for (c = current; cntcopy > 0; c = next_client(c), cntcopy--)
+				;
+			for (; cnt > 0; move_up(c), cnt--)
+				;
 		}
 	}
 }
@@ -1530,7 +1534,6 @@ void move_ws_up(int ws)
  */
 void focus_window(xcb_window_t win)
 {
-
 	Client *c = find_client_by_win(win);
 
 	if (c)
@@ -1582,7 +1585,7 @@ void op_focus_down(const int type, int cnt)
  */
 void configure_event(xcb_generic_event_t *ev)
 {
-	xcb_configure_request_event_t *ce = (xcb_configure_request_event_t*)ev;
+	xcb_configure_request_event_t *ce = (xcb_configure_request_event_t *)ev;
 	Client *c = client_from_window(ce->window);
 	unsigned int vals[7], i = 0;
 
@@ -1608,7 +1611,7 @@ void configure_event(xcb_generic_event_t *ev)
 
 void unmap_event(xcb_generic_event_t *ev)
 {
-	xcb_unmap_notify_event_t *ue = (xcb_unmap_notify_event_t*)ev;
+	xcb_unmap_notify_event_t *ue = (xcb_unmap_notify_event_t *)ev;
 	Client *c = client_from_window(ue->window);
 
 	if (c && !ue->event == screen->root)
