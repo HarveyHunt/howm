@@ -150,7 +150,7 @@ static void focus_next_client(const Arg *arg);
 static void focus_prev_client(const Arg *arg);
 static void update_focused_client(Client *c);
 static Client *prev_client(Client *c);
-static Client *client_from_window(xcb_window_t w);
+static Client *create_client(xcb_window_t w);
 static void remove_client(Client *c);
 static Client *find_client_by_win(xcb_window_t w);
 static void client_to_ws(Client *c, const int ws);
@@ -500,7 +500,7 @@ void map_event(xcb_generic_event_t *ev)
 	free(wa);
 	DEBUG("Mapping request");
 	/* Rule stuff needs to be here. */
-	c = client_from_window(me->window);
+	c = create_client(me->window);
 
 	/* Assume that transient windows MUST float. */
 	xcb_icccm_get_wm_transient_for_reply(dpy, xcb_icccm_get_wm_transient_for(dpy, me->window), &transient, NULL);
@@ -518,7 +518,7 @@ void map_event(xcb_generic_event_t *ev)
  * @return A client that has already been inserted into the linked list of
  * clients.
  */
-Client *client_from_window(xcb_window_t w)
+Client *create_client(xcb_window_t w)
 {
 	Client *c = (Client *)calloc(1, sizeof(Client));
 	Client *t = prev_client(head); /* Get the last element. */
@@ -1586,7 +1586,7 @@ void op_focus_down(const int type, int cnt)
 void configure_event(xcb_generic_event_t *ev)
 {
 	xcb_configure_request_event_t *ce = (xcb_configure_request_event_t *)ev;
-	Client *c = client_from_window(ce->window);
+	Client *c = create_client(ce->window);
 	unsigned int vals[7], i = 0;
 
 	/* TODO: Need to test whether gaps etc need to be taken into account
@@ -1612,7 +1612,7 @@ void configure_event(xcb_generic_event_t *ev)
 void unmap_event(xcb_generic_event_t *ev)
 {
 	xcb_unmap_notify_event_t *ue = (xcb_unmap_notify_event_t *)ev;
-	Client *c = client_from_window(ue->window);
+	Client *c = create_client(ue->window);
 
 	if (c && !ue->event == screen->root)
 		remove_client(c);
