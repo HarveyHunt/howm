@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.7"/>
-<title>howm: Main Page</title>
+<title>howm: Operator Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -37,9 +37,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -59,7 +59,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
-</div><!-- top -->
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -74,11 +80,89 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
+</div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="structOperator-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">howm Documentation</div>  </div>
+<div class="title">Operator Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Represents an operator.  
+ <a href="structOperator.html#details">More...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:aa873a11c67e91882b71a569826ca2d05"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOperator.html#aa873a11c67e91882b71a569826ca2d05">mod</a></td></tr>
+<tr class="separator:aa873a11c67e91882b71a569826ca2d05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35c05d3cc89df4ff1d6941b89840a9d6"><td class="memItemLeft" align="right" valign="top">xcb_keysym_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOperator.html#a35c05d3cc89df4ff1d6941b89840a9d6">sym</a></td></tr>
+<tr class="separator:a35c05d3cc89df4ff1d6941b89840a9d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55d9168505350538ca951a0bc4d84c31"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOperator.html#a55d9168505350538ca951a0bc4d84c31">mode</a></td></tr>
+<tr class="separator:a55d9168505350538ca951a0bc4d84c31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05ca5a06dd09d0de07bfbecf224c0d51"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOperator.html#a05ca5a06dd09d0de07bfbecf224c0d51">func</a> )(const int unsigned type, const int cnt)</td></tr>
+<tr class="separator:a05ca5a06dd09d0de07bfbecf224c0d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Represents an operator. </p>
+<p>Operators perform an action upon one or more targets (identified by motions). </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="a05ca5a06dd09d0de07bfbecf224c0d51"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void(* Operator::func)(const int unsigned type, const int cnt)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The function to be called when the key is pressed. </p>
+
+</div>
+</div>
+<a class="anchor" id="aa873a11c67e91882b71a569826ca2d05"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Operator::mod</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The mask of the modifiers pressed. </p>
+
+</div>
+</div>
+<a class="anchor" id="a55d9168505350538ca951a0bc4d84c31"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int Operator::mode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The mode within which this keypress is valid. </p>
+
+</div>
+</div>
+<a class="anchor" id="a35c05d3cc89df4ff1d6941b89840a9d6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">xcb_keysym_t Operator::sym</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The keysym of the pressed key. </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li><a class="el" href="howm_8c.html">howm.c</a></li>
+</ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

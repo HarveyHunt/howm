@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.7"/>
-<title>howm: Main Page</title>
+<title>howm: Arg Union Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -37,9 +37,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -59,7 +59,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
-</div><!-- top -->
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -74,11 +80,74 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
+</div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="unionArg-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">howm Documentation</div>  </div>
+<div class="title">Arg Union Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Represents an argument.  
+ <a href="unionArg.html#details">More...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:ab27170b54d65377615bec23630fc3f5c"><td class="memItemLeft" align="right" valign="top">const char **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionArg.html#ab27170b54d65377615bec23630fc3f5c">cmd</a></td></tr>
+<tr class="separator:ab27170b54d65377615bec23630fc3f5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56974ae918dc853d97329052165de88b"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionArg.html#a56974ae918dc853d97329052165de88b">f</a></td></tr>
+<tr class="separator:a56974ae918dc853d97329052165de88b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fc90466ebe59415acda831056fdb9ca"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="unionArg.html#a9fc90466ebe59415acda831056fdb9ca">i</a></td></tr>
+<tr class="separator:a9fc90466ebe59415acda831056fdb9ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Represents an argument. </p>
+<p>Used to hold data that is sent as a parameter to a function when called as a result of a keypress. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="ab27170b54d65377615bec23630fc3f5c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char** Arg::cmd</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Represents a command that will be called by a shell. </p>
+
+</div>
+</div>
+<a class="anchor" id="a56974ae918dc853d97329052165de88b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float Arg::f</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Commonly used for scaling operations. </p>
+
+</div>
+</div>
+<a class="anchor" id="a9fc90466ebe59415acda831056fdb9ca"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int Arg::i</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Usually used for specifying workspaces or clients. </p>
+
+</div>
+</div>
+<hr/>The documentation for this union was generated from the following file:<ul>
+<li><a class="el" href="howm_8c.html">howm.c</a></li>
+</ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
