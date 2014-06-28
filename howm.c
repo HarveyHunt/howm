@@ -1586,7 +1586,7 @@ void op_focus_down(const int type, int cnt)
 void configure_event(xcb_generic_event_t *ev)
 {
 	xcb_configure_request_event_t *ce = (xcb_configure_request_event_t *)ev;
-	Client *c = create_client(ce->window);
+	Client *c = find_client_by_win(ce->window);
 	unsigned int vals[7], i = 0;
 
 	/* TODO: Need to test whether gaps etc need to be taken into account
