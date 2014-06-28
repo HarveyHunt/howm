@@ -260,6 +260,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a3f0c701c88ddd6024002c2a576b40627"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#a3f0c701c88ddd6024002c2a576b40627">current_to_ws</a> (const <a class="el" href="unionArg.html">Arg</a> *arg)</td></tr>
 <tr class="memdesc:a3f0c701c88ddd6024002c2a576b40627"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves the current client to the workspace passed in through arg.  <a href="#a3f0c701c88ddd6024002c2a576b40627">More...</a><br /></td></tr>
 <tr class="separator:a3f0c701c88ddd6024002c2a576b40627"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a776b0942e0f25214cf930b3bf1cd6238"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#a776b0942e0f25214cf930b3bf1cd6238">draw_clients</a> (void)</td></tr>
+<tr class="memdesc:a776b0942e0f25214cf930b3bf1cd6238"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arrange the client's windows on the screen.  <a href="#a776b0942e0f25214cf930b3bf1cd6238">More...</a><br /></td></tr>
+<tr class="separator:a776b0942e0f25214cf930b3bf1cd6238"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5848d90f0f94a3515e31c545ae6d1760"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#a5848d90f0f94a3515e31c545ae6d1760">kill_ws</a> (const int ws)</td></tr>
 <tr class="memdesc:a5848d90f0f94a3515e31c545ae6d1760"><td class="mdescLeft">&#160;</td><td class="mdescRight">Kills the given workspace.  <a href="#a5848d90f0f94a3515e31c545ae6d1760">More...</a><br /></td></tr>
 <tr class="separator:a5848d90f0f94a3515e31c545ae6d1760"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1141,6 +1144,33 @@ Variables</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="a776b0942e0f25214cf930b3bf1cd6238"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void draw_clients </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Arrange the client's windows on the screen. </p>
+<p>This function takes some strain off of the layout handlers by passing the client's dimensions to move_resize. This splits the layout handlers into smaller, more understandable parts. </p>
 
 </div>
 </div>
@@ -3192,13 +3222,13 @@ Variables</h2></td></tr>
 <div class="line">        [XCB_CONFIGURE_NOTIFY] = <a class="code" href="howm_8c.html#aa7176ca0c00b1e36f0dd890b0d53b43e">configure_event</a>,</div>
 <div class="line">        [XCB_UNMAP_NOTIFY] = <a class="code" href="howm_8c.html#a24c4b6cb37067adf558eb4b71ead4337">unmap_event</a></div>
 <div class="line">}</div>
-<div class="ttc" id="howm_8c_html_af018244ddc47fc5fe84e1078ded37f0b"><div class="ttname"><a href="howm_8c.html#af018244ddc47fc5fe84e1078ded37f0b">key_press_event</a></div><div class="ttdeci">static void key_press_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Process a key press. </div><div class="ttdef"><b>Definition:</b> howm.c:418</div></div>
-<div class="ttc" id="howm_8c_html_a24c4b6cb37067adf558eb4b71ead4337"><div class="ttname"><a href="howm_8c.html#a24c4b6cb37067adf558eb4b71ead4337">unmap_event</a></div><div class="ttdeci">static void unmap_event(xcb_generic_event_t *ev)</div><div class="ttdef"><b>Definition:</b> howm.c:1612</div></div>
-<div class="ttc" id="howm_8c_html_a0fcc506f33b7bc5ce065fc46954655d8"><div class="ttname"><a href="howm_8c.html#a0fcc506f33b7bc5ce065fc46954655d8">destroy_event</a></div><div class="ttdeci">static void destroy_event(xcb_generic_event_t *ev)</div><div class="ttdoc">The handler for destroy events. </div><div class="ttdef"><b>Definition:</b> howm.c:970</div></div>
-<div class="ttc" id="howm_8c_html_adee8a7dc86d9a63a1a835d261f0f859e"><div class="ttname"><a href="howm_8c.html#adee8a7dc86d9a63a1a835d261f0f859e">map_event</a></div><div class="ttdeci">static void map_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Handles mapping requests. </div><div class="ttdef"><b>Definition:</b> howm.c:488</div></div>
-<div class="ttc" id="howm_8c_html_aa7176ca0c00b1e36f0dd890b0d53b43e"><div class="ttname"><a href="howm_8c.html#aa7176ca0c00b1e36f0dd890b0d53b43e">configure_event</a></div><div class="ttdeci">static void configure_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Deal with a window&#39;s request to change its geometry. </div><div class="ttdef"><b>Definition:</b> howm.c:1586</div></div>
-<div class="ttc" id="howm_8c_html_a1fcbf3bab4a7a08199ea115a2cfad059"><div class="ttname"><a href="howm_8c.html#a1fcbf3bab4a7a08199ea115a2cfad059">button_press_event</a></div><div class="ttdeci">static void button_press_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Process a button press. </div><div class="ttdef"><b>Definition:</b> howm.c:393</div></div>
-<div class="ttc" id="howm_8c_html_aaa38a4492a56c1b41edc7135ec23d614"><div class="ttname"><a href="howm_8c.html#aaa38a4492a56c1b41edc7135ec23d614">enter_event</a></div><div class="ttdeci">static void enter_event(xcb_generic_event_t *ev)</div><div class="ttdoc">The event that occurs when the mouse pointer enters a window. </div><div class="ttdef"><b>Definition:</b> howm.c:1036</div></div>
+<div class="ttc" id="howm_8c_html_af018244ddc47fc5fe84e1078ded37f0b"><div class="ttname"><a href="howm_8c.html#af018244ddc47fc5fe84e1078ded37f0b">key_press_event</a></div><div class="ttdeci">static void key_press_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Process a key press. </div><div class="ttdef"><b>Definition:</b> howm.c:423</div></div>
+<div class="ttc" id="howm_8c_html_a24c4b6cb37067adf558eb4b71ead4337"><div class="ttname"><a href="howm_8c.html#a24c4b6cb37067adf558eb4b71ead4337">unmap_event</a></div><div class="ttdeci">static void unmap_event(xcb_generic_event_t *ev)</div><div class="ttdef"><b>Definition:</b> howm.c:1621</div></div>
+<div class="ttc" id="howm_8c_html_a0fcc506f33b7bc5ce065fc46954655d8"><div class="ttname"><a href="howm_8c.html#a0fcc506f33b7bc5ce065fc46954655d8">destroy_event</a></div><div class="ttdeci">static void destroy_event(xcb_generic_event_t *ev)</div><div class="ttdoc">The handler for destroy events. </div><div class="ttdef"><b>Definition:</b> howm.c:979</div></div>
+<div class="ttc" id="howm_8c_html_adee8a7dc86d9a63a1a835d261f0f859e"><div class="ttname"><a href="howm_8c.html#adee8a7dc86d9a63a1a835d261f0f859e">map_event</a></div><div class="ttdeci">static void map_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Handles mapping requests. </div><div class="ttdef"><b>Definition:</b> howm.c:493</div></div>
+<div class="ttc" id="howm_8c_html_aa7176ca0c00b1e36f0dd890b0d53b43e"><div class="ttname"><a href="howm_8c.html#aa7176ca0c00b1e36f0dd890b0d53b43e">configure_event</a></div><div class="ttdeci">static void configure_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Deal with a window&#39;s request to change its geometry. </div><div class="ttdef"><b>Definition:</b> howm.c:1595</div></div>
+<div class="ttc" id="howm_8c_html_a1fcbf3bab4a7a08199ea115a2cfad059"><div class="ttname"><a href="howm_8c.html#a1fcbf3bab4a7a08199ea115a2cfad059">button_press_event</a></div><div class="ttdeci">static void button_press_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Process a button press. </div><div class="ttdef"><b>Definition:</b> howm.c:398</div></div>
+<div class="ttc" id="howm_8c_html_aaa38a4492a56c1b41edc7135ec23d614"><div class="ttname"><a href="howm_8c.html#aaa38a4492a56c1b41edc7135ec23d614">enter_event</a></div><div class="ttdeci">static void enter_event(xcb_generic_event_t *ev)</div><div class="ttdoc">The event that occurs when the mouse pointer enters a window. </div><div class="ttdef"><b>Definition:</b> howm.c:1045</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -3265,13 +3295,13 @@ Variables</h2></td></tr>
 <div class="line">        [<a class="code" href="howm_8c.html#a06fc87d81c62e9abb8790b6e5713c55ba780bc5128a196fa7905fe6be80a428a3">HSTACK</a>] = <a class="code" href="howm_8c.html#a3fb6958326395f97103d30c8805c96e9">stack</a>,</div>
 <div class="line">        [<a class="code" href="howm_8c.html#a06fc87d81c62e9abb8790b6e5713c55ba3c25942291ac61d0c3611824f29cf928">VSTACK</a>] = <a class="code" href="howm_8c.html#a3fb6958326395f97103d30c8805c96e9">stack</a></div>
 <div class="line">}</div>
-<div class="ttc" id="howm_8c_html_af8a99ab08db52dd5988c2e00bebdd165"><div class="ttname"><a href="howm_8c.html#af8a99ab08db52dd5988c2e00bebdd165">grid</a></div><div class="ttdeci">static void grid(void)</div><div class="ttdoc">Arrange the windows into a grid layout. </div><div class="ttdef"><b>Definition:</b> howm.c:694</div></div>
-<div class="ttc" id="howm_8c_html_a36b7c65ccd608b603caa4e34ded4be76"><div class="ttname"><a href="howm_8c.html#a36b7c65ccd608b603caa4e34ded4be76">zoom</a></div><div class="ttdeci">static void zoom(void)</div><div class="ttdoc">Have one window at a time taking up the entire screen. </div><div class="ttdef"><b>Definition:</b> howm.c:702</div></div>
-<div class="ttc" id="howm_8c_html_a3fb6958326395f97103d30c8805c96e9"><div class="ttname"><a href="howm_8c.html#a3fb6958326395f97103d30c8805c96e9">stack</a></div><div class="ttdeci">static void stack(void)</div><div class="ttdoc">Arrange the windows in a stack, whether that be horizontal or vertical is decided by the current_layo...</div><div class="ttdef"><b>Definition:</b> howm.c:901</div></div>
-<div class="ttc" id="howm_8c_html_a06fc87d81c62e9abb8790b6e5713c55bafbf4fa9eb81ba842a80a29b45064e348"><div class="ttname"><a href="howm_8c.html#a06fc87d81c62e9abb8790b6e5713c55bafbf4fa9eb81ba842a80a29b45064e348">GRID</a></div><div class="ttdef"><b>Definition:</b> howm.c:216</div></div>
-<div class="ttc" id="howm_8c_html_a06fc87d81c62e9abb8790b6e5713c55ba604adefe799fe794cab6b76ed1108201"><div class="ttname"><a href="howm_8c.html#a06fc87d81c62e9abb8790b6e5713c55ba604adefe799fe794cab6b76ed1108201">ZOOM</a></div><div class="ttdef"><b>Definition:</b> howm.c:216</div></div>
-<div class="ttc" id="howm_8c_html_a06fc87d81c62e9abb8790b6e5713c55ba780bc5128a196fa7905fe6be80a428a3"><div class="ttname"><a href="howm_8c.html#a06fc87d81c62e9abb8790b6e5713c55ba780bc5128a196fa7905fe6be80a428a3">HSTACK</a></div><div class="ttdef"><b>Definition:</b> howm.c:216</div></div>
-<div class="ttc" id="howm_8c_html_a06fc87d81c62e9abb8790b6e5713c55ba3c25942291ac61d0c3611824f29cf928"><div class="ttname"><a href="howm_8c.html#a06fc87d81c62e9abb8790b6e5713c55ba3c25942291ac61d0c3611824f29cf928">VSTACK</a></div><div class="ttdef"><b>Definition:</b> howm.c:216</div></div>
+<div class="ttc" id="howm_8c_html_af8a99ab08db52dd5988c2e00bebdd165"><div class="ttname"><a href="howm_8c.html#af8a99ab08db52dd5988c2e00bebdd165">grid</a></div><div class="ttdeci">static void grid(void)</div><div class="ttdoc">Arrange the windows into a grid layout. </div><div class="ttdef"><b>Definition:</b> howm.c:699</div></div>
+<div class="ttc" id="howm_8c_html_a36b7c65ccd608b603caa4e34ded4be76"><div class="ttname"><a href="howm_8c.html#a36b7c65ccd608b603caa4e34ded4be76">zoom</a></div><div class="ttdeci">static void zoom(void)</div><div class="ttdoc">Have one window at a time taking up the entire screen. </div><div class="ttdef"><b>Definition:</b> howm.c:707</div></div>
+<div class="ttc" id="howm_8c_html_a3fb6958326395f97103d30c8805c96e9"><div class="ttname"><a href="howm_8c.html#a3fb6958326395f97103d30c8805c96e9">stack</a></div><div class="ttdeci">static void stack(void)</div><div class="ttdoc">Arrange the windows in a stack, whether that be horizontal or vertical is decided by the current_layo...</div><div class="ttdef"><b>Definition:</b> howm.c:910</div></div>
+<div class="ttc" id="howm_8c_html_a06fc87d81c62e9abb8790b6e5713c55bafbf4fa9eb81ba842a80a29b45064e348"><div class="ttname"><a href="howm_8c.html#a06fc87d81c62e9abb8790b6e5713c55bafbf4fa9eb81ba842a80a29b45064e348">GRID</a></div><div class="ttdef"><b>Definition:</b> howm.c:221</div></div>
+<div class="ttc" id="howm_8c_html_a06fc87d81c62e9abb8790b6e5713c55ba604adefe799fe794cab6b76ed1108201"><div class="ttname"><a href="howm_8c.html#a06fc87d81c62e9abb8790b6e5713c55ba604adefe799fe794cab6b76ed1108201">ZOOM</a></div><div class="ttdef"><b>Definition:</b> howm.c:221</div></div>
+<div class="ttc" id="howm_8c_html_a06fc87d81c62e9abb8790b6e5713c55ba780bc5128a196fa7905fe6be80a428a3"><div class="ttname"><a href="howm_8c.html#a06fc87d81c62e9abb8790b6e5713c55ba780bc5128a196fa7905fe6be80a428a3">HSTACK</a></div><div class="ttdef"><b>Definition:</b> howm.c:221</div></div>
+<div class="ttc" id="howm_8c_html_a06fc87d81c62e9abb8790b6e5713c55ba3c25942291ac61d0c3611824f29cf928"><div class="ttname"><a href="howm_8c.html#a06fc87d81c62e9abb8790b6e5713c55ba3c25942291ac61d0c3611824f29cf928">VSTACK</a></div><div class="ttdef"><b>Definition:</b> howm.c:221</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -3501,7 +3531,7 @@ Variables</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jun 20 2014 20:51:15 for howm by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Jun 29 2014 00:33:20 for howm by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.7
 </small></address>

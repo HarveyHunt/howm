@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.7"/>
-<title>howm: Member List</title>
+<title>howm: Contributing</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -38,8 +38,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
-      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -59,13 +59,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
-  <div id="navrow2" class="tabs2">
-    <ul class="tablist">
-      <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
-      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
-      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
-    </ul>
-  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -83,17 +76,34 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">Workspace Member List</div>  </div>
+<div class="title">Contributing </div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>This is the complete list of members for <a class="el" href="structWorkspace.html">Workspace</a>, including all inherited members.</p>
-<table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="structWorkspace.html#a342dfaf5a6dedc810d7f9f57db50b23e">current</a></td><td class="entry"><a class="el" href="structWorkspace.html">Workspace</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="structWorkspace.html#a7fbd58a8406bbc296bc19f755483eb10">head</a></td><td class="entry"><a class="el" href="structWorkspace.html">Workspace</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structWorkspace.html#aad2c7403d6b52c34a1f46354adb7e99e">layout</a></td><td class="entry"><a class="el" href="structWorkspace.html">Workspace</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="structWorkspace.html#af4f8bfa8ee3bfc7d1ac0dc3633914bf4">prev_foc</a></td><td class="entry"><a class="el" href="structWorkspace.html">Workspace</a></td><td class="entry"></td></tr>
-</table></div><!-- contents -->
+<div class="textblock"><p>Contributions are always welcomed, so start sending some PRs!</p>
+<h2>Getting Started</h2>
+<p>Clone the repository: </p><pre class="fragment">git clone https://github.com/HarveyHunt/howm.git
+</pre><p>Change to the develop branch: </p><pre class="fragment">git checkout develop
+</pre><p>Hack away until your heart is content.</p>
+<h2>Code Style</h2>
+<p>I try to follow the <a href="https://www.kernel.org/doc/Documentation/CodingStyle">Linux Kernel Guide</a> as closely as sanely possible.</p>
+<p>I run checkpatch.pl from the Linux Kernel against the code and strive for no errors- you should do the same.</p>
+<p>Running a code linter, such as <a href="http://www.splint.org/">Splint</a> is always a good idea- try to minimise errors.</p>
+<p>The hard rules are as follows:</p>
+<ul>
+<li>Use tabs for indentation (that are equivalent to 8 spaces in size).</li>
+<li>use_of_underscores_for_functions_variables_etc</li>
+<li>Code should be clear- clarity over conciseness</li>
+<li>Doxygen documentation needs to be updated for new code</li>
+<li>Document new features in the README</li>
+</ul>
+<h2>What comes after code?</h2>
+<p>You have written an awesome new feature and want to get it merged straight away- have you forgotten something?</p>
+<p>Documentation is an important part of any project, howm is no different. Document all new features, as has been done in the README already.</p>
+<p>howm uses <a href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a> for documentation of the code, keep this up to date as you go.</p>
+<h2>Sending PRs</h2>
+<p>Once you have made some cool changes, push to github and send a PR.</p>
+<p>Make sure that the PR is targeted at the develop branch, as packages are built from the master branch. </p>
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated on Sun Jun 29 2014 00:33:20 for howm by &#160;<a href="http://www.doxygen.org/index.html">

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['howm',['howm',['../md_README.html',1,'']]]
+  ['contributing',['Contributing',['../md_CONTRIBUTING.html',1,'']]]
 ];

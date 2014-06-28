@@ -11,6 +11,7 @@ var searchData=
   ['command',['COMMAND',['../howm_8c.html#abc6126af1d45847bc59afa0aa3216b04ae680fa7eb860abe7832f792cc18a44b4',1,'howm.c']]],
   ['config_2eh',['config.h',['../config_8h.html',1,'']]],
   ['configure_5fevent',['configure_event',['../howm_8c.html#aa7176ca0c00b1e36f0dd890b0d53b43e',1,'howm.c']]],
+  ['contributing_2emd',['CONTRIBUTING.md',['../CONTRIBUTING_8md.html',1,'']]],
   ['correct_5fws',['correct_ws',['../howm_8c.html#a688e1f851e61d1aa3230a16f900b3faf',1,'howm.c']]],
   ['count_5fmod',['COUNT_MOD',['../config_8h.html#a68c232b8a153b7cdccf6f8b023fcfc32',1,'config.h']]],
   ['count_5fstate',['COUNT_STATE',['../howm_8c.html#adf764cbdea00d65edcd07bb9953ad2b7a9ed2f47c6ee8538c879b5f5ffb32afd8',1,'howm.c']]],
@@ -21,5 +22,6 @@ var searchData=
   ['cur_5fstate',['cur_state',['../howm_8c.html#a6c5899039878a4a6977779aaa8bbf285',1,'howm.c']]],
   ['cur_5fws',['cur_ws',['../howm_8c.html#ae6675b50fe13849774203a6595a12c55',1,'howm.c']]],
   ['current',['current',['../structWorkspace.html#a342dfaf5a6dedc810d7f9f57db50b23e',1,'Workspace::current()'],['../howm_8c.html#a035fac3462a061cdeedbcbc0579b7f26',1,'current():&#160;howm.c']]],
-  ['current_5fto_5fws',['current_to_ws',['../howm_8c.html#a3f0c701c88ddd6024002c2a576b40627',1,'howm.c']]]
+  ['current_5fto_5fws',['current_to_ws',['../howm_8c.html#a3f0c701c88ddd6024002c2a576b40627',1,'howm.c']]],
+  ['contributing',['Contributing',['../md_CONTRIBUTING.html',1,'']]]
 ];
