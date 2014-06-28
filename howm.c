@@ -1628,6 +1628,13 @@ void unmap_event(xcb_generic_event_t *ev)
 	howm_info();
 }
 
+/**
+ * @brief Arrange the client's windows on the screen.
+ *
+ * This function takes some strain off of the layout handlers by passing the
+ * client's dimensions to move_resize. This splits the layout handlers into
+ * smaller, more understandable parts.
+ */
 void draw_clients(void)
 {
 	Client *c = NULL;
