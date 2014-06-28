@@ -115,6 +115,10 @@ typedef struct Client {
 	bool		is_transient;   /**< Is the client transient?
 					* Defined at: http://standards.freedesktop.org/wm-spec/wm-spec-latest.html*/
 	xcb_window_t	win;            /**< The window that this client represents. */
+	uint16_t x; /**< The x coordinate of the client. */
+	uint16_t y; /**< The y coordinate of the client. */
+	uint16_t w; /**< The width of the client.*/
+	uint16_t h; /**< The height of the client.*/
 } Client;
 
 /**
@@ -155,6 +159,7 @@ static void remove_client(Client *c);
 static Client *find_client_by_win(xcb_window_t w);
 static void client_to_ws(Client *c, const int ws);
 static void current_to_ws(const Arg *arg);
+static void draw_clients(void);
 
 /* Workspaces */
 static void kill_ws(const int ws);
@@ -703,11 +708,15 @@ void zoom(void)
 {
 	DEBUG("ZOOM");
 	Client *c;
-	for (c = head; c; c = c->next)
-		if (!FFT(c))
-			move_resize(c->win, ZOOM_GAP ? true : false,
-				    0, BAR_BOTTOM ? 0 : BAR_HEIGHT,
-				    screen_width, screen_height - BAR_HEIGHT);
+	for (c = head; c; c = c->next) {
+		if (!FFT(c)) {
+			c->x = 0;
+			c->y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
+			c->w = screen_width;
+			c->h = screen_height - BAR_HEIGHT;
+			draw_clients();
+		}
+	}
 }
 
 /**
@@ -1617,4 +1626,11 @@ void unmap_event(xcb_generic_event_t *ev)
 	if (c && !ue->event == screen->root)
 		remove_client(c);
 	howm_info();
+}
+
+void draw_clients(void)
+{
+	Client *c = NULL;
+	for (c = head; c; c = c->next)
+		move_resize(c->win, true, c->x, c->y, c->w, c->h);
 }
