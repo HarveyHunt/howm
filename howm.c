@@ -700,6 +700,38 @@ void arrange_windows(void)
 void grid(void)
 {
 	DEBUG("GRID");
+	int n = get_non_tff_count();
+	if (n == 1) {
+		zoom();
+		return;
+	}
+
+	Client *c = NULL;
+	int cols, rows, col_w, i = -1, col_cnt = 0, row_cnt= 0;
+	int client_y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
+	int col_h = screen_height - BAR_HEIGHT;
+
+	for (cols = 0; cols <= n / 2; cols++)
+		if (cols * cols >= n)
+			break;
+	rows = n / cols;
+	col_w = screen_width / cols;
+	for (c = head; c; c = c->next) {
+		if (FFT(c))
+			continue;
+		else
+			i++;
+
+		if (cols - (n % cols) < (i / rows) + 1)
+			rows = n / cols + 1;
+		change_client_geom(c, col_cnt * col_w, client_y + (row_cnt * col_h / rows),
+				col_w - BORDER_PX, (col_h / rows) - BORDER_PX);
+		if (++row_cnt >= rows) {
+			row_cnt = 0;
+			col_cnt++;
+		}
+	}
+	draw_clients();
 }
 
 /**
