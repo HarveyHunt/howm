@@ -160,6 +160,7 @@ static Client *find_client_by_win(xcb_window_t w);
 static void client_to_ws(Client *c, const int ws);
 static void current_to_ws(const Arg *arg);
 static void draw_clients(void);
+static void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
 
 /* Workspaces */
 static void kill_ws(const int ws);
@@ -703,20 +704,19 @@ void grid(void)
 
 /**
  * @brief Have one window at a time taking up the entire screen.
+ *
+ * Sets the geometry of each window in order for the windows to be rendered to
+ * take up the entire screen.
  */
 void zoom(void)
 {
 	DEBUG("ZOOM");
 	Client *c;
-	for (c = head; c; c = c->next) {
-		if (!FFT(c)) {
-			c->x = 0;
-			c->y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
-			c->w = screen_width;
-			c->h = screen_height - BAR_HEIGHT;
-			draw_clients();
-		}
-	}
+	for (c = head; c; c = c->next)
+		if (!FFT(c))
+			change_client_geom(c, 0, BAR_BOTTOM ? 0 : BAR_HEIGHT,
+					screen_width, screen_height - BAR_HEIGHT);
+	draw_clients();
 }
 
 /**
@@ -916,37 +916,40 @@ void stack(void)
 	int client_y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
 
 	n = get_non_tff_count();
+	if (n == 1) {
+		zoom();
+		return;
+	}
+
 	/* TODO: Need to take into account when this has remainders. */
 	/* TODO: Fix gaps between windows. */
 	int client_span = (span / n) - (2 * BORDER_PX);
 	DEBUG("STACK")
 
 	if (vert) {
-		move_resize(head->win, true, 0, client_y,
+		change_client_geom(head, 0, client_y,
 			    screen_width - (2 * BORDER_PX), client_span);
 		client_y += (BORDER_PX + (span / n));
 	} else {
-		move_resize(head->win, true, client_x, BAR_BOTTOM ? 0 : BAR_HEIGHT,
+		change_client_geom(head, client_x, BAR_BOTTOM ? 0 : BAR_HEIGHT,
 			    client_span, screen_height - (2 * BORDER_PX) - BAR_HEIGHT);
 		client_x += (BORDER_PX + (span / n));
 	}
 
-	if (!head->next)
-		return;
-
 	for (c = head->next, i = 0; i < n - 1; c = c->next, i++) {
 		if (vert) {
-			move_resize(c->win, true, GAP, client_y,
+			change_client_geom(c, GAP, client_y,
 				    screen_width - (2 * BORDER_PX),
 				    client_span - BORDER_PX);
 			client_y += (BORDER_PX + client_span);
 		} else {
-			move_resize(c->win, true, client_x, BAR_BOTTOM ? 0 : BAR_HEIGHT,
+			change_client_geom(c, client_x, BAR_BOTTOM ? 0 : BAR_HEIGHT,
 				    client_span - BORDER_PX,
 				    screen_height - (2 * BORDER_PX) - BAR_HEIGHT);
 			client_x += (BORDER_PX + client_span);
 		}
 	}
+	draw_clients();
 }
 
 /**
@@ -1640,4 +1643,21 @@ void draw_clients(void)
 	Client *c = NULL;
 	for (c = head; c; c = c->next)
 		move_resize(c->win, true, c->x, c->y, c->w, c->h);
+}
+
+/**
+ * @brief Change the size and location of a client.
+ *
+ * @param c The client to be changed.
+ * @param x The x coordinate of the client's window.
+ * @param y The y coordinate of the client's window.
+ * @param w The width of the client's window.
+ * @param h The height of the client's window.
+ */
+void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+{
+	c->x = x;
+	c->y = y;
+	c->w = w;
+	c->h = h;
 }
