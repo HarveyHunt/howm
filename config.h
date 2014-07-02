@@ -5,6 +5,14 @@
  * @file config.h
  */
 
+/*
+ *┌────────────┐
+ *│╻ ╻┏━┓╻ ╻┏┳┓│
+ *│┣━┫┃ ┃┃╻┃┃┃┃│
+ *│╹ ╹┗━┛┗┻┛╹ ╹│
+ *└────────────┘
+ */
+
 /** The main modifier key. */
 #define MODKEY Mod4Mask
 /** The modifier key that, when combined with a number, defines a count. */
