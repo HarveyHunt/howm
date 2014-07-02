@@ -441,8 +441,8 @@ void key_press_event(xcb_generic_event_t *ev)
 		}
 		break;
 	case COUNT_STATE:
-		if (EQUALMODS(COUNT_MOD, ke->state) && XK_1 <= keysym &&
-		    keysym <= XK_9) {
+		if (EQUALMODS(COUNT_MOD, ke->state) && XK_1 <= keysym
+				&& keysym <= XK_9) {
 			/* Get a value between 1 and 9 inclusive.  */
 			cur_cnt = keysym - XK_0;
 			cur_state = MOTION_STATE;
@@ -783,6 +783,8 @@ void move_resize(xcb_window_t win, bool draw_gap,
  */
 void update_focused_client(Client *c)
 {
+	if (!c)
+		return;
 	if (!head) {
 		prev_foc = current = NULL;
 		xcb_delete_property(dpy, screen->root, net_atoms[NET_ACTIVE_WINDOW]);
@@ -1032,16 +1034,16 @@ void remove_client(Client *c)
 	bool found;
 
 	for (found = false; w < WORKSPACES && !found; w++)
-		for (temp = &head, select_ws(cw); temp &&
-		     !(found = *temp == c); temp = &(*temp)->next)
-			;
+		for (temp = &head, select_ws(cw); temp
+				&& !(found = *temp == c);
+		     temp = &(*temp)->next);
 	*temp = c->next;
 	if (c == prev_foc)
 		prev_foc = prev_client(c);
-	if (c == head)
-		head = NULL;
 	if (c == current || !head->next)
 		update_focused_client(prev_foc);
+	if (c == head)
+		head = NULL;
 	free(c);
 	c = NULL;
 	if (cw == w)
