@@ -1465,7 +1465,7 @@ void client_to_ws(Client *c, const int ws)
 	c->next = NULL;
 	xcb_unmap_window(dpy, c->win);
 	update_focused_client(prev_foc);
-	if (FOLLOW_MOVE) {
+	if (FOLLOW_SPAWN) {
 		arg.i = ws;
 		change_ws(&arg);
 	} else {

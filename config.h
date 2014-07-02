@@ -18,15 +18,11 @@
 /** Clicking a window will focus it. */
 #define FOCUS_MOUSE_CLICK true
 /** Upon spawning a new window, move the mouse to the new window? */
-#define FOLLOW_MOVE true
+#define FOLLOW_SPAWN true
 /** The size (in pixels) of the useless gaps. */
 #define GAP 0
 /** Enable debugging output */
 #define DEBUG_ENABLE 1
-/** When in zoom layout, should a gap be displayed? */
-#define ZOOM_GAP true
-/** When in zoom layout, should a border be displayed? */
-#define ZOOM_BORDER true
 /** The size (in pixels) of the border. */
 #define BORDER_PX 2
 /** The border colour when the window is focused. */
