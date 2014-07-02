@@ -1,5 +1,4 @@
-howm
-==========
+#howm
 
 [![Build Status](https://travis-ci.org/HarveyHunt/howm.svg?branch=develop)](https://travis-ci.org/HarveyHunt/howm)
 [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=harveyhunt&url=https://github.com/HarveyHunt/howm&title=howm&language=&tags=github&category=software) 
@@ -7,8 +6,7 @@ howm
 
 A lightweight, tiling X11 window manager that mimics vi by offering operators, motions and modes.
 
-Configuration
-==========
+##Configuration
 
 Configuration is done through the included config.h file.
 
@@ -103,3 +101,43 @@ BAR_HEIGHT = 20
 ```
 BAR_BOTTOM = true
 ```
+
+##Operators
+
+Operators perform an action upon one or more targets (identified by motions).
+
+Below are descriptions of each operator, the motions that they can perform an action upon and the mode that they work in (Note, all examples assume that the correct modifier keys have been pressed and use the default keymappings.):
+
+* **op_kill**: An operator that kills an arbitrary number of targets.
+Can be used on:
+  * Clients
+  * Workspaces
+Modes:
+  * Normal
+
+```
+q4c
+```
+The above command will kill 4 clients, closing the applications and removing removing them from the workspace.
+
+```
+qw
+```
+The above command will kill one workspace. This means that all clients on the current workspace will be killed.
+
+* **op_move_down**: An operator that moves a group of targets down one.
+Can be used on:
+  * Clients
+  * Workspaces
+Modes:
+  * Normal
+
+```
+j2c
+```
+The above command moves 2 clients down one place in the workspace's client list. If a client is moved past the last place, then it is wrapped around and placed at the start of the workspace's client list.
+
+```
+j3w
+```
+The above command moves the contents of 3 workspaces down one workspace. If a workspace is to be moved beyond the last workspace, it is wrapped to the first workspace.
