@@ -39,9 +39,9 @@
  * result of a keypress.
  */
 typedef union {
-	const char	**cmd;  /**< Represents a command that will be called by a shell.  */
-	float		f;      /**< Commonly used for scaling operations. */
-	int		i;      /**< Usually used for specifying workspaces or clients. */
+	const char **cmd;  /**< Represents a command that will be called by a shell.  */
+	float f; /**< Commonly used for scaling operations. */
+	int i; /**< Usually used for specifying workspaces or clients. */
 } Arg;
 
 /**
@@ -51,11 +51,11 @@ typedef union {
  * which the keypress can be seen as valid.
  */
 typedef struct {
-	int		mod;            /**< The mask of the modifiers pressed. */
-	unsigned int	mode;           /**< The mode within which this keypress is valid. */
-	xcb_keysym_t	sym;            /**< The keysym of the pressed key. */
-	void (*func)(const Arg *);      /**< The function to be called when this key is pressed. */
-	const Arg	arg;            /**< The argument passed to the above function. */
+	int mod; /**< The mask of the modifiers pressed. */
+	unsigned int mode; /**< The mode within which this keypress is valid. */
+	xcb_keysym_t sym;  /**< The keysym of the pressed key. */
+	void (*func)(const Arg *); /**< The function to be called when this key is pressed. */
+	const Arg arg; /**< The argument passed to the above function. */
 } Key;
 
 /**
@@ -65,10 +65,10 @@ typedef struct {
  * motions).
  */
 typedef struct {
-	int		mod;                                    /**< The mask of the modifiers pressed. */
-	xcb_keysym_t	sym;                                    /**< The keysym of the pressed key. */
-	unsigned int	mode;                                   /**< The mode within which this keypress is valid. */
-	void (*func)(const int unsigned type, const int cnt);   /**< The function to be
+	int mod; /**< The mask of the modifiers pressed. */
+	xcb_keysym_t sym; /**< The keysym of the pressed key. */
+	unsigned int mode; /**< The mode within which this keypress is valid. */
+	void (*func)(const int unsigned type, const int cnt); /**< The function to be
 								 * called when the key is pressed. */
 } Operator;
 
@@ -83,9 +83,9 @@ typedef struct {
  * q4c (Kill, 4, Clients).
  */
 typedef struct {
-	int		mod;    /**< The mask of the modifiers pressed. */
-	xcb_keysym_t	sym;    /**< The keysym of the pressed key. */
-	unsigned int	type;   /**< Represents whether the motion is for clients, WS etc. */
+	int mod; /**< The mask of the modifiers pressed. */
+	xcb_keysym_t sym; /**< The keysym of the pressed key. */
+	unsigned int type; /**< Represents whether the motion is for clients, WS etc. */
 } Motion;
 
 /**
@@ -95,11 +95,11 @@ typedef struct {
  * for keys.
  */
 typedef struct {
-	int		mod;            /**< The mask of the modifiers pressed.  */
-	short int	button;         /**< The button that was pressed. */
-	void (*func)(const Arg *);      /**< The function to be called when the
+	int mod; /**< The mask of the modifiers pressed.  */
+	short int button; /**< The button that was pressed. */
+	void (*func)(const Arg *); /**< The function to be called when the
 					* button is pressed. */
-	const Arg	arg;            /**< The argument passed to the above function. */
+	const Arg arg; /**< The argument passed to the above function. */
 } Button;
 
 /**
@@ -108,13 +108,13 @@ typedef struct {
  * All the attributes that are needed by howm for a client are stored here.
  */
 typedef struct Client {
-	struct Client *next;           /**< Clients are stored in a linked list-
+	struct Client *next; /**< Clients are stored in a linked list-
 					* this represents the client after this one. */
-	bool		is_fullscreen;  /**< Is the client fullscreen? */
-	bool		is_floating;    /**< Is the client floating? */
-	bool		is_transient;   /**< Is the client transient?
+	bool is_fullscreen; /**< Is the client fullscreen? */
+	bool is_floating; /**< Is the client floating? */
+	bool is_transient; /**< Is the client transient?
 					* Defined at: http://standards.freedesktop.org/wm-spec/wm-spec-latest.html*/
-	xcb_window_t	win;            /**< The window that this client represents. */
+	xcb_window_t win; /**< The window that this client represents. */
 	uint16_t x; /**< The x coordinate of the client. */
 	uint16_t y; /**< The y coordinate of the client. */
 	uint16_t w; /**< The width of the client.*/
@@ -128,12 +128,12 @@ typedef struct Client {
  * cause different clients to be rendered on the screen.
  */
 typedef struct {
-	int	layout;         /**< The current layout of the WS, as defined in the
+	int layout; /**< The current layout of the WS, as defined in the
 				* layout enum. */
-	Client *head;           /**< The start of the linked list. */
-	Client *prev_foc;       /**< The last focused client. This is seperate to
+	Client *head; /**< The start of the linked list. */
+	Client *prev_foc; /**< The last focused client. This is seperate to
 				* the linked list structure. */
-	Client *current;        /**< The client that is currently in focus. */
+	Client *current; /**< The client that is currently in focus. */
 } Workspace;
 
 /* Operators */
