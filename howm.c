@@ -1034,10 +1034,11 @@ void remove_client(Client *c)
 	bool found;
 
 	for (found = false; w < WORKSPACES && !found; w++)
-		for (temp = &head, select_ws(cw); temp
+		for (temp = &head, select_ws(cw); *temp
 				&& !(found = *temp == c);
 		     temp = &(*temp)->next);
-	*temp = c->next;
+	if (*temp != head)
+		*temp = c->next;
 	if (c == prev_foc)
 		prev_foc = prev_client(c);
 	if (c == current || !head->next)
@@ -1307,7 +1308,7 @@ void op_kill(const int type, int cnt)
 	if (type == WORKSPACE) {
 		DEBUGP("Killing %d workspaces.\n", cnt);
 		while (cnt > 0) {
-			kill_ws((cur_ws + cnt) % WORKSPACES);
+			kill_ws(correct_ws(cur_ws + cnt - 1));
 			cnt--;
 		}
 	} else if (type == CLIENT) {
