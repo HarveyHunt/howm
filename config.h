@@ -72,8 +72,8 @@ static const Key keys[] = {
 	{ MODKEY | ShiftMask, NORMAL, XK_f, change_mode, {.i = FLOATING} },
 	{ MODKEY, NORMAL, XK_space, toggle_float, {NULL} },
 
-	{ MODKEY | ShiftMask, FLOATING, XK_j, resize_float_height, {.i = -10} },
-	{ MODKEY | ShiftMask, FLOATING, XK_k, resize_float_height, {.i = 10} },
+	{ MODKEY | ShiftMask, FLOATING, XK_k, resize_float_height, {.i = -10} },
+	{ MODKEY | ShiftMask, FLOATING, XK_j, resize_float_height, {.i = 10} },
 	{ MODKEY | ShiftMask, FLOATING, XK_h, resize_float_width, {.i = -10} },
 	{ MODKEY | ShiftMask, FLOATING, XK_l, resize_float_width, {.i = 10} },
 	{ MODKEY, FLOATING, XK_j, move_float_y, {.i = 10} },
