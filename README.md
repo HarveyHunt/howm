@@ -90,6 +90,12 @@ BORDER_FOCUS = #FF00FF
 BORDER_UNFOCUS = #00FF00
 ```
 
+* **BORDER_PREV_FOCUS**: The colour (in the form #RRGGBB) that the border around last focused windows is.
+
+```
+BORDER_PREV_FOCUS = #0000FF
+```
+
 * **BAR_HEIGHT**: The height of a status bar that can be displayed at the bottom or top of the screen.
 
 ```
