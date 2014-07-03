@@ -270,7 +270,7 @@ static Client *head, *prev_foc, *current;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
 static int last_ws, cur_layout, prev_layout;
 static int cur_ws = 1;
-static unsigned int border_focus, border_unfocus;
+static unsigned int border_focus, border_unfocus, border_prev_focus;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE;
 static unsigned int cur_cnt = 1;
 static uint16_t screen_height, screen_width;
@@ -317,6 +317,7 @@ void setup(void)
 
 	border_focus = get_colour(BORDER_FOCUS);
 	border_unfocus = get_colour(BORDER_UNFOCUS);
+	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
 
 	cur_layout = workspaces[cur_ws].layout;
 }
@@ -820,7 +821,9 @@ void update_focused_client(Client *c)
 		set_border_width(c->win, (c->is_fullscreen ||
 					  !head->next) ? 0 : BORDER_PX);
 		xcb_change_window_attributes(dpy, c->win, XCB_CW_BORDER_PIXEL,
-					     (c == current ? &border_focus : &border_unfocus));
+					     (c == current ? &border_focus :
+					      c == prev_foc ? &border_prev_focus
+					      : &border_unfocus));
 		if (c != current)
 			windows[c->is_fullscreen ? --fullscreen : FFT(c) ?
 				--float_trans : --all] = c->win;

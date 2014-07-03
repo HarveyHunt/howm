@@ -34,9 +34,11 @@
 /** The size (in pixels) of the border. */
 #define BORDER_PX 2
 /** The border colour when the window is focused. */
-#define BORDER_FOCUS "#FF00FF"
+#define BORDER_FOCUS "#70898F"
 /** The border colour when the window is unfocused. */
-#define BORDER_UNFOCUS "#00FF00"
+#define BORDER_UNFOCUS "#555555"
+/** The border colour of the last focused window.. */
+#define BORDER_PREV_FOCUS "#74718E"
 /** The height of the status bar to be displayed. */
 #define BAR_HEIGHT 20
 /** Whether the status bar is at the top or bottom of the screen. */
