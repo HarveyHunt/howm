@@ -175,6 +175,9 @@ static void client_to_ws(Client *c, const int ws);
 static void current_to_ws(const Arg *arg);
 static void draw_clients(bool draw_gap);
 static void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+static void toggle_float(const Arg *arg);
+static void resize_float_width(const Arg *arg);
+static void resize_float_height(const Arg *arg);
 
 /* Workspaces */
 static void kill_ws(const int ws);
@@ -1717,4 +1720,34 @@ static void op_grow_gaps(const int type, int cnt)
 
 static void change_client_gaps(Client *c)
 {
+}
+
+static void toggle_float(const Arg *arg)
+{
+	if (!current)
+		return;
+	current->is_floating = !current->is_floating;
+	arrange_windows();
+}
+
+static void resize_float_width(const Arg *arg)
+{
+	if (!current || !current->is_floating)
+		return;
+	if (current->w + arg->i <= 0)
+		return;
+
+	current->w += arg->i;
+	draw_clients(true);
+}
+
+static void resize_float_height(const Arg *arg)
+{
+	if (!current || !current->is_floating)
+		return;
+	if (current->h + arg->i <= 0)
+		return;
+
+	current->h += arg->i;
+	draw_clients(true);
 }
