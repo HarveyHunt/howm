@@ -1882,6 +1882,11 @@ static void move_float_x(const Arg *arg)
 
 }
 
+/**
+ * @brief Teleport a floating client's window to a location on the screen.
+ *
+ * @param arg Which location to teleport the window to.
+ */
 static void teleport_client(const Arg *arg)
 {
 	if (!current || !current->is_floating)
