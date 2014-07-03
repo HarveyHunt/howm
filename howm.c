@@ -792,8 +792,6 @@ void move_resize(xcb_window_t win, bool draw_gap,
  */
 void update_focused_client(Client *c)
 {
-	if (!c)
-		return;
 	if (!head) {
 		prev_foc = current = NULL;
 		xcb_delete_property(dpy, screen->root, net_atoms[NET_ACTIVE_WINDOW]);
@@ -1046,16 +1044,14 @@ void remove_client(Client *c)
 
 	for (found = false; w < WORKSPACES && !found; w++)
 		for (temp = &head, select_ws(cw); *temp
-				&& !(found = *temp == c);
-		     temp = &(*temp)->next);
-	if (*temp != head)
-		*temp = c->next;
+			&& !(found = *temp == c);
+				temp = &(*temp)->next);
+	*temp = c->next;
+
 	if (c == prev_foc)
-		prev_foc = prev_client(c);
+		prev_foc = prev_client(current);
 	if (c == current || !head->next)
 		update_focused_client(prev_foc);
-	if (c == head)
-		head = NULL;
 	free(c);
 	c = NULL;
 	if (cw == w)
@@ -1340,7 +1336,7 @@ void kill_client(void)
 		return;
 	/* TODO: Kill the window in a nicer way and get it to consistently die. */
 	xcb_kill_client(dpy, current->win);
-	DEBUG("Killing Client");
+	DEBUGP("Killing Client <0x%x>\n", current);
 	remove_client(current);
 }
 
@@ -1670,7 +1666,7 @@ void configure_event(xcb_generic_event_t *ev)
 void unmap_event(xcb_generic_event_t *ev)
 {
 	xcb_unmap_notify_event_t *ue = (xcb_unmap_notify_event_t *)ev;
-	Client *c = create_client(ue->window);
+	Client *c = find_client_by_win(ue->window);
 
 	if (c && !ue->event == screen->root)
 		remove_client(c);
