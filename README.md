@@ -66,6 +66,12 @@ Workspaces allow you to manage which windows are on your screen. You can imagine
 #define GAP 4
 ```
 
+* **OP_GAP_SIZE**: The size (in pixel) that the operators op_shrink_gap and op_grow_gap change the gap size by.
+
+```
+#define OP_GAP_SIZE 2
+```
+
 * **DEBUG_ENABLE**: When true, debugging information is sent to STDOUT.
 
 ```
