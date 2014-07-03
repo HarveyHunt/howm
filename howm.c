@@ -157,7 +157,8 @@ static void op_shrink_gaps(const int type, int cnt);
 static void op_grow_gaps(const int type, int cnt);
 
 /* Clients */
-static void change_client_gaps(Client *c);
+static void change_client_gaps(Client *c, int size);
+static void change_gaps(const int type, int cnt, int size);
 static void move_current_down(const Arg *arg);
 static void move_current_up(const Arg *arg);
 static void kill_client(void);
@@ -963,7 +964,7 @@ void stack(void)
 	int client_y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
 
 	n = get_non_tff_count();
-	if (n == 1) {
+	if (n <= 1) {
 		zoom();
 		return;
 	}
@@ -1717,21 +1718,82 @@ void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t 
 	c->h = h;
 }
 
+/**
+ * @brief An operator to shrink the gaps of either workspaces or clients by
+ * OP_GAP_SIZE.
+ *
+ * When the type is workspace, the gap size for that workspace is also changed.
+ * This means that new windows will be spawned in with the modified gap size.
+ *
+ * @param type Whether the operation should be performed on a client or
+ * workspace.
+ * @param cnt The amount of clients or workspaces to perform the operation on.
+ */
 static void op_shrink_gaps(const int type, int cnt)
 {
+	change_gaps(type, cnt, -OP_GAP_SIZE);
 }
 
+/**
+ * @brief An operator to grow the gaps of either workspaces or clients by
+ * OP_GAP_SIZE.
+ *
+ * When the type is workspace, the gap size for that workspace is also changed.
+ * This means that new windows will be spawned in with the modified gap size.
+ *
+ * @param type Whether the operation should be performed on a client or
+ * workspace.
+ * @param cnt The amount of clients or workspaces to perform the operation on.
+ */
 static void op_grow_gaps(const int type, int cnt)
 {
+	change_gaps(type, cnt, OP_GAP_SIZE);
 }
 
 /**
  * @brief A helper function to change the size of a client's gaps.
  *
  * @param c The client who's gap size should be changed.
+ * @param size The size by which the gap should be changed.
  */
-static void change_client_gaps(Client *c)
+static void change_client_gaps(Client *c, int size)
 {
+	if (c->gap + size <= 0 || c->is_fullscreen || c->is_floating)
+		return;
+	c->gap += size;
+	draw_clients(true);
+}
+
+/**
+ * @brief Does the heavy lifting of changing the gaps of clients.
+ *
+ * @param type Whether to perform the operation on a client or workspace.
+ * @param cnt The amount of times to perform the operation.
+ * @param size The amount of pixels to change the gap size by. This is
+ * configured through OP_GAP_SIZE.
+ */
+static void change_gaps(const int type, int cnt, int size)
+{
+	Client *c = NULL;
+	if (type == WORKSPACE) {
+		int cw = cur_ws;
+		while(cnt > 0) {
+			cnt--;
+			select_ws(correct_ws(cw + cnt));
+			workspaces[correct_ws(cw + cnt)].gap += size;
+			for (c = head; c; c = c->next)
+				change_client_gaps(c, size);
+		}
+		select_ws(cw);
+	} else if (type == CLIENT) {
+		c = current;
+		while (cnt > 0) {
+			change_client_gaps(c, size);
+			c = next_client(c);
+			cnt--;
+		}
+	}
+
 }
 
 /**

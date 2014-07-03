@@ -43,6 +43,9 @@
 #define BAR_HEIGHT 20
 /** Whether the status bar is at the top or bottom of the screen. */
 #define BAR_BOTTOM true
+/** The amount of pixels that the op_shrink_gap and op_grow_gap change the gap
+ * size by. */
+#define OP_GAP_SIZE 2
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
@@ -104,6 +107,8 @@ static const Key keys[] = {
 static const Operator operators[] = {
 	{OTHER_MOD, XK_q, NORMAL, op_kill},
 	{OTHER_MOD, XK_j, NORMAL, op_move_down},
+	{OTHER_MOD, XK_g, NORMAL, op_shrink_gaps},
+	{OTHER_MOD | ShiftMask, XK_g, NORMAL, op_grow_gaps},
 	{OTHER_MOD, XK_k, NORMAL, op_move_up},
 	{OTHER_MOD, XK_j, FOCUS, op_focus_down},
 	{OTHER_MOD, XK_k, FOCUS, op_focus_up}
