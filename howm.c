@@ -1807,6 +1807,10 @@ static void toggle_float(const Arg *arg)
 	if (!current)
 		return;
 	current->is_floating = !current->is_floating;
+	if (current->is_floating && CENTER_FLOATING) {
+		current->x = (screen_width / 2) - (current->w / 2);
+		current->y = (screen_height - BAR_HEIGHT - current->h) / 2;
+	}
 	arrange_windows();
 }
 

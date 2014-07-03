@@ -46,6 +46,8 @@
 /** The amount of pixels that the op_shrink_gap and op_grow_gap change the gap
  * size by. */
 #define OP_GAP_SIZE 2
+/** Upon converting a window to floating, should it be centered? */
+#define CENTER_FLOATING true
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
