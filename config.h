@@ -72,6 +72,10 @@ static const Key keys[] = {
 	{ MODKEY | ShiftMask, NORMAL, XK_k, resize_float_height, {.i = 10} },
 	{ MODKEY | ShiftMask, NORMAL, XK_h, resize_float_width, {.i = -10} },
 	{ MODKEY | ShiftMask, NORMAL, XK_l, resize_float_width, {.i = 10} },
+	{ MODKEY, NORMAL, XK_j, move_float_y, {.i = 10} },
+	{ MODKEY, NORMAL, XK_k, move_float_y, {.i = -10} },
+	{ MODKEY, NORMAL, XK_h, move_float_x, {.i = -10} },
+	{ MODKEY, NORMAL, XK_l, move_float_x, {.i = 10} },
 
 	{ MODKEY, FOCUS, XK_k, focus_prev_client, {NULL} },
 	{ MODKEY, FOCUS, XK_j, focus_next_client, {NULL} },

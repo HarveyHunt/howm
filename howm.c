@@ -178,6 +178,8 @@ static void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, ui
 static void toggle_float(const Arg *arg);
 static void resize_float_width(const Arg *arg);
 static void resize_float_height(const Arg *arg);
+static void move_float_y(const Arg *arg);
+static void move_float_x(const Arg *arg);
 
 /* Workspaces */
 static void kill_ws(const int ws);
@@ -1732,9 +1734,7 @@ static void toggle_float(const Arg *arg)
 
 static void resize_float_width(const Arg *arg)
 {
-	if (!current || !current->is_floating)
-		return;
-	if (current->w + arg->i <= 0)
+	if (!current || !current->is_floating || current->w + arg->i <= 0)
 		return;
 
 	current->w += arg->i;
@@ -1743,11 +1743,26 @@ static void resize_float_width(const Arg *arg)
 
 static void resize_float_height(const Arg *arg)
 {
-	if (!current || !current->is_floating)
-		return;
-	if (current->h + arg->i <= 0)
+	if (!current || !current->is_floating || current->h + arg->i <= 0)
 		return;
 
 	current->h += arg->i;
 	draw_clients(true);
+}
+
+static void move_float_y(const Arg *arg)
+{
+	if (!current || !current->is_floating)
+		return;
+	current->y += arg->i;
+	draw_clients(true);
+
+}
+static void move_float_x(const Arg *arg)
+{
+	if (!current || !current->is_floating)
+		return;
+	current->x += arg->i;
+	draw_clients(true);
+
 }
