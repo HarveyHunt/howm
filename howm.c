@@ -157,6 +157,7 @@ static void op_shrink_gaps(const int type, int cnt);
 static void op_grow_gaps(const int type, int cnt);
 
 /* Clients */
+static void teleport_client(const Arg *arg);
 static void change_client_gaps(Client *c, int size);
 static void change_gaps(const int type, int cnt, int size);
 static void move_current_down(const Arg *arg);
@@ -241,12 +242,12 @@ static void focus_window(xcb_window_t win);
 
 enum { ZOOM, GRID, HSTACK, VSTACK, END_LAYOUT };
 enum { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
-enum { NORMAL, FOCUS, RESIZE, END_MODES };
+enum { NORMAL, FOCUS, FLOATING, END_MODES };
 enum { COMMAND, OPERATOR, MOTION, END_TYPE };
 enum { CLIENT, WORKSPACE };
 enum { NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
-	NET_ACTIVE_WINDOW
-	};
+	NET_ACTIVE_WINDOW};
+enum {TOP_LEFT, TOP_CENTER, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT};
 enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
 
 /* Handlers */
@@ -1875,4 +1876,37 @@ static void move_float_x(const Arg *arg)
 	current->x += arg->i;
 	draw_clients(true);
 
+}
+
+static void teleport_client(const Arg *arg)
+{
+	if (!current || !current->is_floating)
+		return;
+	switch (arg->i) {
+	case TOP_LEFT:
+		current->x = 0;
+		current->y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
+		break;
+	case TOP_CENTER:
+		current->x = (screen_width / 2) - (current->w / 2);
+		current->y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
+		break;
+	case TOP_RIGHT:
+		current->x = screen_width - current->w;
+		current->y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
+		break;
+	case BOTTOM_LEFT:
+		current->x = 0;
+		current->y = (BAR_BOTTOM ? screen_height - BAR_HEIGHT : screen_height) - current->h;
+		break;
+	case BOTTOM_CENTER:
+		current->x = (screen_width / 2) - (current->w / 2);
+		current->y = (BAR_BOTTOM ? screen_height - BAR_HEIGHT : screen_height) - current->h;
+		break;
+	case BOTTOM_RIGHT:
+		current->x = screen_width - current->w;
+		current->y = (BAR_BOTTOM ? screen_height - BAR_HEIGHT : screen_height) - current->h;
+		break;
+	};
+	draw_clients(true);
 }
