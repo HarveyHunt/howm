@@ -127,6 +127,8 @@ typedef struct Client {
 	uint16_t y; /**< The y coordinate of the client. */
 	uint16_t w; /**< The width of the client.*/
 	uint16_t h; /**< The height of the client.*/
+	uint16_t gap; /** The size of the useless gap between this client and
+			the others. */
 } Client;
 
 /**
@@ -138,6 +140,7 @@ typedef struct Client {
 typedef struct {
 	int layout; /**< The current layout of the WS, as defined in the
 				* layout enum. */
+	uint16_t gap; /**< The size of the useless gap between windows for this workspace. */
 	Client *head; /**< The start of the linked list. */
 	Client *prev_foc; /**< The last focused client. This is seperate to
 				* the linked list structure. */
@@ -150,8 +153,11 @@ static void op_move_up(const int type, int cnt);
 static void op_move_down(const int type, int cnt);
 static void op_focus_down(const int type, int cnt);
 static void op_focus_up(const int type, int cnt);
+static void op_shrink_gaps(const int type, int cnt);
+static void op_grow_gaps(const int type, int cnt);
 
 /* Clients */
+static void change_client_gaps(Client *c);
 static void move_current_down(const Arg *arg);
 static void move_current_up(const Arg *arg);
 static void kill_client(void);
@@ -167,7 +173,7 @@ static void remove_client(Client *c);
 static Client *find_client_by_win(xcb_window_t w);
 static void client_to_ws(Client *c, const int ws);
 static void current_to_ws(const Arg *arg);
-static void draw_clients(void);
+static void draw_clients(bool draw_gap);
 static void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
 
 /* Workspaces */
@@ -212,7 +218,7 @@ static void grab_keys(void);
 static xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym);
 static void grab_keycode(xcb_keycode_t *keycode, const int mod);
 static void elevate_window(xcb_window_t win);
-static void move_resize(xcb_window_t win, bool draw_gap, int x, int y, int w, int h);
+static void move_resize(xcb_window_t win, int x, int y, int w, int h);
 static void set_border_width(xcb_window_t win, int w);
 static void get_atoms(char **names, xcb_atom_t *atoms);
 static void check_other_wm(void);
@@ -547,6 +553,7 @@ Client *create_client(xcb_window_t w)
 	else
 		head->next = c;
 	c->win = w;
+	c->gap = workspaces[cur_ws].gap;
 	unsigned int vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
 				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0)
 			       };
@@ -740,7 +747,7 @@ void grid(void)
 			col_cnt++;
 		}
 	}
-	draw_clients();
+	draw_clients(true);
 }
 
 /**
@@ -757,30 +764,22 @@ void zoom(void)
 		if (!FFT(c))
 			change_client_geom(c, 0, BAR_BOTTOM ? 0 : BAR_HEIGHT,
 					screen_width, screen_height - BAR_HEIGHT);
-	draw_clients();
+	draw_clients(true);
 }
 
 /**
  * @brief Change the dimensions and location of a window (win).
  *
  * @param win The window upon which the operations should be performed.
- * @param draw_gap Whether or not to draw useless gaps around the window.
  * @param x The new x location of the top left corner.
  * @param y The new y location of the top left corner.
  * @param w The new width of the window.
  * @param h The new height of the window.
  */
-void move_resize(xcb_window_t win, bool draw_gap,
+void move_resize(xcb_window_t win,
 		 int x, int y, int w, int h)
 {
 	unsigned int position[] = { x, y, w, h };
-
-	if (draw_gap) {
-		position[0] += GAP;
-		position[1] += GAP;
-		position[2] -= 2 * GAP;
-		position[3] -= 2 * GAP;
-	}
 	xcb_configure_window(dpy, win, MOVE_RESIZE_MASK, position);
 }
 
@@ -981,7 +980,7 @@ void stack(void)
 
 	for (c = head->next, i = 0; i < n - 1; c = c->next, i++) {
 		if (vert) {
-			change_client_geom(c, GAP, client_y,
+			change_client_geom(c, 0, client_y,
 				    screen_width - (2 * BORDER_PX),
 				    client_span - BORDER_PX);
 			client_y += (BORDER_PX + client_span);
@@ -992,7 +991,7 @@ void stack(void)
 			client_x += (BORDER_PX + client_span);
 		}
 	}
-	draw_clients();
+	draw_clients(true);
 }
 
 /**
@@ -1680,11 +1679,15 @@ void unmap_event(xcb_generic_event_t *ev)
  * client's dimensions to move_resize. This splits the layout handlers into
  * smaller, more understandable parts.
  */
-void draw_clients(void)
+void draw_clients(bool draw_gap)
 {
 	Client *c = NULL;
 	for (c = head; c; c = c->next)
-		move_resize(c->win, true, c->x, c->y, c->w, c->h);
+		if (draw_gap)
+			move_resize(c->win, c->x + c->gap, c->y + c->gap,
+					c->w - (2 * c->gap), c->h - (2 * c->gap));
+		else
+			move_resize(c->win, c->x, c->y, c->w, c->h);
 }
 
 /**
@@ -1702,4 +1705,16 @@ void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t 
 	c->y = y;
 	c->w = w;
 	c->h = h;
+}
+
+static void op_shrink_gaps(const int type, int cnt)
+{
+}
+
+static void op_grow_gaps(const int type, int cnt)
+{
+}
+
+static void change_client_gaps(Client *c)
+{
 }

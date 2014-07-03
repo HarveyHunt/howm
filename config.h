@@ -44,7 +44,7 @@
 /** Whether the status bar is at the top or bottom of the screen. */
 #define BAR_BOTTOM true
 
-static const char * const term_cmd[] = {"urxvt", "-e", "sleep", "300", NULL};
+static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
 		    "-nb", "#70898f", "-nf", "black",
 		    "-sf", "#74718e", "-fn",
@@ -121,9 +121,9 @@ static const Motion motions[] = {
  */
 static Workspace workspaces[] = {
 	{NULL},
-	{.layout = HSTACK},
-	{.layout = HSTACK},
-	{.layout = HSTACK}
+	{.layout = HSTACK, .gap = 4},
+	{.layout = HSTACK, .gap = 4},
+	{.layout = HSTACK, .gap = 4}
 };
 
 #endif
