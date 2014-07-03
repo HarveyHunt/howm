@@ -247,7 +247,7 @@ enum { COMMAND, OPERATOR, MOTION, END_TYPE };
 enum { CLIENT, WORKSPACE };
 enum { NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
 	NET_ACTIVE_WINDOW};
-enum {TOP_LEFT, TOP_CENTER, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT};
+enum {TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT};
 enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
 
 /* Handlers */
@@ -1897,12 +1897,16 @@ static void teleport_client(const Arg *arg)
 		current->y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
 		break;
 	case TOP_CENTER:
-		current->x = (screen_width / 2) - (current->w / 2);
+		current->x = (screen_width - current->w) / 2;
 		current->y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
 		break;
 	case TOP_RIGHT:
 		current->x = screen_width - current->w;
 		current->y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
+		break;
+	case CENTER:
+		current->x = (screen_width - current->w) / 2;
+		current->y = (screen_height - BAR_HEIGHT - current->h) / 2;
 		break;
 	case BOTTOM_LEFT:
 		current->x = 0;

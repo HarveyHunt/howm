@@ -85,6 +85,7 @@ static const Key keys[] = {
 	{ MODKEY, FLOATING, XK_y, teleport_client, {.i = TOP_LEFT} },
 	{ MODKEY, FLOATING, XK_u, teleport_client, {.i = TOP_CENTER} },
 	{ MODKEY, FLOATING, XK_i, teleport_client, {.i = TOP_RIGHT} },
+	{ MODKEY, FLOATING, XK_space , teleport_client, {.i = CENTER} },
 	{ MODKEY, FLOATING, XK_b, teleport_client, {.i = BOTTOM_LEFT} },
 	{ MODKEY, FLOATING, XK_n, teleport_client, {.i = BOTTOM_CENTER} },
 	{ MODKEY, FLOATING, XK_m, teleport_client, {.i = BOTTOM_RIGHT} },
