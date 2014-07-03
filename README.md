@@ -19,93 +19,93 @@ Each option is described in detail below:
 * **MODKEY**: An alias for a modifier, making it easier to change your modifier in your config. Possible values can be found [here](http://www.x.org/releases/X11R7.6/doc/libX11/specs/XKB/xkblib.html#changing_modifiers).
 
 ```
-MODKEY = Mod4Mask
+#define MODKEY Mod4Mask
 ```
 
 * **COUNT_MOD**: An alias for a modifier that is to be used when indicating a count. Possible values can be found [here](http://www.x.org/releases/X11R7.6/doc/libX11/specs/XKB/xkblib.html#changing_modifiers).
 
 ```
-COUNT_MOD = Mod1Mask
+#define COUNT_MOD Mod1Mask
 ```
 
 * **OTHER_MOD**: An alias for a modifier that is to be used to indicate motions and operators. Possible values can be found [here](http://www.x.org/releases/X11R7.6/doc/libX11/specs/XKB/xkblib.html#changing_modifiers).
 
 ```
-OTHER_MOD = Mod1Mask
+#define OTHER_MOD Mod1Mask
 ```
 
 * **WORKSPACES**: The number of workspaces that you wish to have. The following is a brief description from [here](http://linux.about.com/library/gnome/blgnome2n4.htm):
 
-> Workspaces allow you to manage which windows are on your screen. You can imagine workspaces as being virtual screens, which you can switch between at any time. Every workspace contains the same desktop, the same panels, and the same menus. However, you can run different applications, and open different windows in each workspace. The applications in each workspace will remain there when you switch to other workspaces.
+Workspaces allow you to manage which windows are on your screen. You can imagine  as being virtual screens, which you can switch between at any time. Every workspace contains the same desktop, the same panels, and the same menus. However, you can run different applications, and open different windows in each workspace. The applications in each workspace will remain there when you switch to other .
 
 ```
-WORKSPACES = 3
+#define WORKSPACES 3
 ```
 
 * **FOCUS_MOUSE**: When true, moving the mouse cursor into a different window will focus that window.
 
 ```
-FOCUS_MOUSE = true
+#define FOCUS_MOUSE true
 ```
 
 * **FOCUS_MOUSE_CLICK**: When true, clicking with the mouse cursor on a different window will focus it. If FOCUS_MOUSE is true, this is unnecessary.
 
 ```
-FOCUS_MOUSE_CLICK = false
+#define FOCUS_MOUSE_CLICK false
 ```
 
 * **FOLLOW_SPAWN**: When true, focus will change to a new window when it is spawned.
 
 ```
-FOLLOW_SPAWN = false
+#define FOLLOW_SPAWN false
 ```
 
 * **GAP**: The size (in pixels) of the "useless gap" to place between windows.
 
 ```
-GAP = 4
+#define GAP 4
 ```
 
 * **DEBUG_ENABLE**: When true, debugging information is sent to STDOUT.
 
 ```
-DEBUG_ENABLE = true
+#define DEBUG_ENABLE true
 ```
 
 * **BORDER_PX**: The size of the border drawn around each window.
 
 ```
-BORDER_PX = 4
+#define BORDER_PX 4
 ```
 
 * **BORDER_FOCUS**: The colour (in the form #RRGGBB) that the border around the currently focused window is.
 
 ```
-BORDER_FOCUS = #FF00FF
+#define BORDER_FOCUS #FF00FF
 ```
 
 * **BORDER_UNFOCUS**: The colour (in the form #RRGGBB) that the border around unfocused windows is.
 
 ```
-BORDER_UNFOCUS = #00FF00
+#define BORDER_UNFOCUS #00FF00
 ```
 
 * **BORDER_PREV_FOCUS**: The colour (in the form #RRGGBB) that the border around last focused windows is.
 
 ```
-BORDER_PREV_FOCUS = #0000FF
+#define BORDER_PREV_FOCUS #0000FF
 ```
 
 * **BAR_HEIGHT**: The height of a status bar that can be displayed at the bottom or top of the screen.
 
 ```
-BAR_HEIGHT = 20
+#define BAR_HEIGHT 20
 ```
 
 * **BAR_BOTTOM**: When true, the space for a bar will be reserved at the bottom of the screen. When false, the space will be reserved at the top of the screen.
 
 ```
-BAR_BOTTOM = true
+#define BAR_BOTTOM true
 ```
 
 ##Operators
