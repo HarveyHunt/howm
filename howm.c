@@ -1667,6 +1667,11 @@ void configure_event(xcb_generic_event_t *ev)
 	arrange_windows();
 }
 
+/**
+ * @brief Remove clients that wish to be unmapped.
+ *
+ * @param ev An event letting us know which client should be unmapped.
+ */
 void unmap_event(xcb_generic_event_t *ev)
 {
 	xcb_unmap_notify_event_t *ue = (xcb_unmap_notify_event_t *)ev;
@@ -1720,10 +1725,20 @@ static void op_grow_gaps(const int type, int cnt)
 {
 }
 
+/**
+ * @brief A helper function to change the size of a client's gaps.
+ *
+ * @param c The client who's gap size should be changed.
+ */
 static void change_client_gaps(Client *c)
 {
 }
 
+/**
+ * @brief Toggle a client between being in a floating or non-floating state.
+ *
+ * @param arg Unused.
+ */
 static void toggle_float(const Arg *arg)
 {
 	if (!current)
@@ -1732,6 +1747,14 @@ static void toggle_float(const Arg *arg)
 	arrange_windows();
 }
 
+/**
+ * @brief Change the width of a floating client.
+ *
+ * Negative values will shift the right edge of the window to the left. The
+ * inverse is true for positive values.
+ *
+ * @param arg The amount of pixels that the window's size should be changed by.
+ */
 static void resize_float_width(const Arg *arg)
 {
 	if (!current || !current->is_floating || current->w + arg->i <= 0)
@@ -1741,6 +1764,14 @@ static void resize_float_width(const Arg *arg)
 	draw_clients(true);
 }
 
+/**
+ * @brief Change the height of a floating client.
+ *
+ * Negative values will shift the bottom edge of the window to the top. The
+ * inverse is true for positive values.
+ *
+ * @param arg The amount of pixels that the window's size should be changed by.
+ */
 static void resize_float_height(const Arg *arg)
 {
 	if (!current || !current->is_floating || current->h + arg->i <= 0)
@@ -1750,6 +1781,14 @@ static void resize_float_height(const Arg *arg)
 	draw_clients(true);
 }
 
+/**
+ * @brief Change a floating window's y coordinate.
+ *
+ * Negative values will move the window up. The inverse is true for positive
+ * values.
+ *
+ * @param arg The amount of pixels that the window should be moved.
+ */
 static void move_float_y(const Arg *arg)
 {
 	if (!current || !current->is_floating)
@@ -1758,6 +1797,15 @@ static void move_float_y(const Arg *arg)
 	draw_clients(true);
 
 }
+
+/**
+ * @brief Change a floating window's x coordinate.
+ *
+ * Negative values will move the window to the left. The inverse is true
+ * for positive values.
+ *
+ * @param arg The amount of pixels that the window should be moved.
+ */
 static void move_float_x(const Arg *arg)
 {
 	if (!current || !current->is_floating)
