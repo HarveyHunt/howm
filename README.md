@@ -114,6 +114,12 @@ Workspaces allow you to manage which windows are on your screen. You can imagine
 #define BAR_BOTTOM true
 ```
 
+* **CENTER_FLOATING**: Whether a window that has just been chaned to floating should be centered or not.
+
+```
+#define CENTER_FLOATING true
+```
+
 ##Operators
 
 Operators perform an action upon one or more targets (identified by motions).
