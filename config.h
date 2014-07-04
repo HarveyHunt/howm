@@ -73,6 +73,8 @@ static const Key keys[] = {
 	{ MODKEY, NORMAL, XK_f, change_mode, {.i = FOCUS} },
 	{ MODKEY | ShiftMask, NORMAL, XK_f, change_mode, {.i = FLOATING} },
 	{ MODKEY, NORMAL, XK_space, toggle_float, {NULL} },
+	{ MODKEY, NORMAL, XK_Delete, quit, {.i = EXIT_SUCCESS} },
+	{ MODKEY | ShiftMask, NORMAL, XK_Delete, quit, {EXIT_FAILURE} },
 
 	{ MODKEY | ShiftMask, FLOATING, XK_k, resize_float_height, {.i = -10} },
 	{ MODKEY | ShiftMask, FLOATING, XK_j, resize_float_height, {.i = 10} },

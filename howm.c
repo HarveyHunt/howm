@@ -239,6 +239,9 @@ static void spawn(const Arg *arg);
 static void setup(void);
 static void move_ws_or_client(const int type, int cnt, bool up);
 static void focus_window(xcb_window_t win);
+static void quit(const Arg *arg);
+static void cleanup(void);
+static void delete_win(xcb_window_t win);
 
 enum { ZOOM, GRID, HSTACK, VSTACK, END_LAYOUT };
 enum { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
@@ -278,7 +281,7 @@ static char *NET_ATOM_NAMES[] = { "_NET_WM_STATE_FULLSCREEN", "_NET_SUPPORTED",
 static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)],
 	net_atoms[LENGTH(NET_ATOM_NAMES)];
 static xcb_screen_t *screen;
-static int numlockmask;
+static int numlockmask, retval;
 static Client *head, *prev_foc, *current;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
 static int last_ws, cur_layout, prev_layout;
@@ -287,6 +290,7 @@ static unsigned int border_focus, border_unfocus, border_prev_focus;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE;
 static unsigned int cur_cnt = 1;
 static uint16_t screen_height, screen_width;
+static bool running = true;
 
 #include "config.h"
 
@@ -377,13 +381,19 @@ int main(int argc, char *argv[])
 		err(EXIT_FAILURE, "Can't open Xconnection\n");
 	setup();
 	check_other_wm();
-	while (!xcb_connection_has_error(dpy)) {
+	while (running && !xcb_connection_has_error(dpy)) {
 		if (!xcb_flush(dpy))
 			err(EXIT_FAILURE, "Failed to flush X connection\n");
 		ev = xcb_wait_for_event(dpy);
 		if (handler[ev->response_type])
 			handler[ev->response_type](ev);
 	}
+	if (!running) {
+		cleanup();
+		xcb_disconnect(dpy);
+		return retval;
+	}
+
 	return 1;
 }
 
@@ -1923,3 +1933,42 @@ static void teleport_client(const Arg *arg)
 	};
 	draw_clients(true);
 }
+
+static void quit(const Arg *arg)
+{
+	retval = arg->i;
+	running = false;
+}
+static void cleanup(void)
+{
+	xcb_window_t *w;
+	xcb_query_tree_reply_t *q;
+	unsigned int i;
+
+	xcb_ungrab_key(dpy, XCB_GRAB_ANY, screen->root, XCB_MOD_MASK_ANY);
+
+	q = xcb_query_tree_reply(dpy, xcb_query_tree(dpy, screen->root), 0);
+	if (q) {
+		w = xcb_query_tree_children(q);
+		for (i = 0; i != q->children_len; ++i)
+			delete_win(w[i]);
+	free(q);
+	}
+	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, screen->root,
+			XCB_CURRENT_TIME);
+}
+
+static void delete_win(xcb_window_t win)
+{
+	xcb_client_message_event_t ev;
+
+	ev.response_type = XCB_CLIENT_MESSAGE;
+	ev.sequence = 0;
+	ev.format = 32;
+	ev.window = win;
+	ev.type = wm_atoms[WM_PROTOCOLS];
+	ev.data.data32[0] = wm_atoms[WM_DELETE_WINDOW];
+	ev.data.data32[1] = XCB_CURRENT_TIME;
+	xcb_send_event(dpy, 0, win, XCB_EVENT_MASK_NO_EVENT, (char *)&ev);
+}
+
