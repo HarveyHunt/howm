@@ -1107,8 +1107,8 @@ void enter_event(xcb_generic_event_t *ev)
 {
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *)ev;
 
-	DEBUG("enter_event");
-	if (FOCUS_MOUSE)
+	DEBUGP("enter_event for window <%d>", ee->event);
+	if (FOCUS_MOUSE && cur_layout != ZOOM)
 		focus_window(ee->event);
 }
 
