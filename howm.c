@@ -175,7 +175,7 @@ static void remove_client(Client *c);
 static Client *find_client_by_win(xcb_window_t w);
 static void client_to_ws(Client *c, const int ws);
 static void current_to_ws(const Arg *arg);
-static void draw_clients(bool draw_gap);
+static void draw_clients();
 static void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
 static void toggle_float(const Arg *arg);
 static void resize_float_width(const Arg *arg);
@@ -764,7 +764,7 @@ void grid(void)
 			col_cnt++;
 		}
 	}
-	draw_clients(true);
+	draw_clients();
 }
 
 /**
@@ -781,7 +781,7 @@ void zoom(void)
 		if (!FFT(c))
 			change_client_geom(c, 0, BAR_BOTTOM ? 0 : BAR_HEIGHT,
 					screen_width, screen_height - BAR_HEIGHT);
-	draw_clients(true);
+	draw_clients();
 }
 
 /**
@@ -1008,7 +1008,7 @@ void stack(void)
 			client_x += (BORDER_PX + client_span);
 		}
 	}
-	draw_clients(true);
+	draw_clients();
 }
 
 /**
@@ -1701,15 +1701,15 @@ void unmap_event(xcb_generic_event_t *ev)
  * client's dimensions to move_resize. This splits the layout handlers into
  * smaller, more understandable parts.
  */
-void draw_clients(bool draw_gap)
+void draw_clients()
 {
 	Client *c = NULL;
 	for (c = head; c; c = c->next)
-		if (draw_gap)
+		if (cur_layout == ZOOM && !ZOOM_GAP)
+			move_resize(c->win, c->x, c->y, c->w, c->h);
+		else
 			move_resize(c->win, c->x + c->gap, c->y + c->gap,
 					c->w - (2 * c->gap), c->h - (2 * c->gap));
-		else
-			move_resize(c->win, c->x, c->y, c->w, c->h);
 }
 
 /**
@@ -1772,7 +1772,7 @@ static void change_client_gaps(Client *c, int size)
 	if (c->gap + size <= 0 || c->is_fullscreen || c->is_floating)
 		return;
 	c->gap += size;
-	draw_clients(true);
+	draw_clients();
 }
 
 /**
@@ -1838,7 +1838,7 @@ static void resize_float_width(const Arg *arg)
 		return;
 
 	current->w += arg->i;
-	draw_clients(true);
+	draw_clients();
 }
 
 /**
@@ -1855,7 +1855,7 @@ static void resize_float_height(const Arg *arg)
 		return;
 
 	current->h += arg->i;
-	draw_clients(true);
+	draw_clients();
 }
 
 /**
@@ -1871,7 +1871,7 @@ static void move_float_y(const Arg *arg)
 	if (!current || !current->is_floating)
 		return;
 	current->y += arg->i;
-	draw_clients(true);
+	draw_clients();
 
 }
 
@@ -1888,7 +1888,7 @@ static void move_float_x(const Arg *arg)
 	if (!current || !current->is_floating)
 		return;
 	current->x += arg->i;
-	draw_clients(true);
+	draw_clients();
 
 }
 
@@ -1931,7 +1931,7 @@ static void teleport_client(const Arg *arg)
 		current->y = (BAR_BOTTOM ? screen_height - BAR_HEIGHT : screen_height) - current->h;
 		break;
 	};
-	draw_clients(true);
+	draw_clients();
 }
 
 static void quit(const Arg *arg)

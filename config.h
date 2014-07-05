@@ -48,6 +48,8 @@
 #define OP_GAP_SIZE 2
 /** Upon converting a window to floating, should it be centered? */
 #define CENTER_FLOATING true
+/** Draw a gap around a window when in zoom mode. */
+#define ZOOM_GAP true
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
