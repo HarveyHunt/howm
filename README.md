@@ -120,6 +120,12 @@ Workspaces allow you to manage which windows are on your screen. You can imagine
 #define CENTER_FLOATING true
 ```
 
+* **ZOOM_GAP**: Whether a gap should be drawn around a window when howm is in zoom layout.
+
+```
+#define ZOOM_GAP true
+```
+
 ##Operators
 
 Operators perform an action upon one or more targets (identified by motions).
