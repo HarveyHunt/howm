@@ -288,7 +288,6 @@ static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)],
 	net_atoms[LENGTH(NET_ATOM_NAMES)];
 static xcb_screen_t *screen;
 static int numlockmask, retval;
-static Client *prev_foc;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
 static int last_ws, prev_layout;
 static int cur_ws = 1;
@@ -583,19 +582,6 @@ Client *create_client(xcb_window_t w)
 }
 
 /**
- * @brief Saves the information about a current workspace.
- *
- * @param i The index of the workspace to be saved. Note: Workspaces begin at
- * index 1.
- */
-void save_ws(int i)
-{
-	if (i < 1 || i > WORKSPACES)
-		return;
-	wss[i].prev_foc = prev_foc;
-}
-
-/**
  * @brief Reloads the information about a workspace and sets it as the current
  * workspace.
  *
@@ -604,8 +590,6 @@ void save_ws(int i)
  */
 void select_ws(int i)
 {
-	save_ws(cur_ws);
-	prev_foc = wss[i].prev_foc;
 	cur_ws = i;
 }
 
@@ -807,14 +791,14 @@ void move_resize(xcb_window_t win,
 void update_focused_client(Client *c)
 {
 	if (!wss[cur_ws].head) {
-		prev_foc = wss[cur_ws].current = NULL;
+		wss[cur_ws].prev_foc = wss[cur_ws].current = NULL;
 		xcb_delete_property(dpy, screen->root, net_atoms[NET_ACTIVE_WINDOW]);
 		return;
-	} else if (c == prev_foc) {
-		wss[cur_ws].current = (prev_foc ? prev_foc : wss[cur_ws].head);
-		prev_foc = prev_client(wss[cur_ws].current);
+	} else if (c == wss[cur_ws].prev_foc) {
+		wss[cur_ws].current = (wss[cur_ws].prev_foc ? wss[cur_ws].prev_foc : wss[cur_ws].head);
+		wss[cur_ws].prev_foc = prev_client(wss[cur_ws].current);
 	} else if (c != wss[cur_ws].current) {
-		prev_foc = wss[cur_ws].current;
+		wss[cur_ws].prev_foc = wss[cur_ws].current;
 		wss[cur_ws].current = c;
 	}
 
@@ -834,7 +818,7 @@ void update_focused_client(Client *c)
 					  !wss[cur_ws].head->next) ? 0 : BORDER_PX);
 		xcb_change_window_attributes(dpy, c->win, XCB_CW_BORDER_PIXEL,
 					     (c == wss[cur_ws].current ? &border_focus :
-					      c == prev_foc ? &border_prev_focus
+					      c == wss[cur_ws].prev_foc ? &border_prev_focus
 					      : &border_unfocus));
 		if (c != wss[cur_ws].current)
 			windows[c->is_fullscreen ? --fullscreen : FFT(c) ?
@@ -1084,10 +1068,10 @@ void remove_client(Client *c)
 				temp = &(*temp)->next);
 	*temp = c->next;
 
-	if (c == prev_foc)
-		prev_foc = prev_client(wss[cur_ws].current);
+	if (c == wss[cur_ws].prev_foc)
+		wss[cur_ws].prev_foc = prev_client(wss[cur_ws].current);
 	if (c == wss[cur_ws].current || !wss[cur_ws].head->next)
-		update_focused_client(prev_foc);
+		update_focused_client(wss[cur_ws].prev_foc);
 	free(c);
 	c = NULL;
 	if (cw == w)
@@ -1211,8 +1195,8 @@ void focus_prev_client(const Arg *arg)
 	if (!wss[cur_ws].current || !wss[cur_ws].head->next)
 		return;
 	DEBUG("focus_prev");
-	prev_foc = wss[cur_ws].current;
-	update_focused_client(prev_client(prev_foc));
+	wss[cur_ws].prev_foc = wss[cur_ws].current;
+	update_focused_client(prev_client(wss[cur_ws].prev_foc));
 }
 
 /**
@@ -1511,7 +1495,7 @@ void client_to_ws(Client *c, const int ws)
 		prev->next = next_client(c);
 	c->next = NULL;
 	xcb_unmap_window(dpy, c->win);
-	update_focused_client(prev_foc);
+	update_focused_client(wss[cur_ws].prev_foc);
 	if (FOLLOW_SPAWN) {
 		arg.i = ws;
 		change_ws(&arg);
