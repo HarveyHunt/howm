@@ -590,7 +590,8 @@ Client *create_client(xcb_window_t w)
  */
 void select_ws(int i)
 {
-	cw = i;
+	if (i >= 1 || i <= WORKSPACES)
+		cw = i;
 }
 
 /**
