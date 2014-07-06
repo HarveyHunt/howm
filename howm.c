@@ -290,7 +290,7 @@ static xcb_screen_t *screen;
 static int numlockmask, retval;
 static Client *head, *prev_foc, *current;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
-static int last_ws, cur_layout, prev_layout;
+static int last_ws, prev_layout;
 static int cur_ws = 1;
 static uint32_t border_focus, border_unfocus, border_prev_focus;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE;
@@ -341,8 +341,6 @@ void setup(void)
 	border_focus = get_colour(BORDER_FOCUS);
 	border_unfocus = get_colour(BORDER_UNFOCUS);
 	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
-
-	cur_layout = wss[cur_ws].layout;
 }
 
 /**
@@ -594,7 +592,6 @@ void save_ws(int i)
 {
 	if (i < 1 || i > WORKSPACES)
 		return;
-	wss[i].layout = cur_layout;
 	wss[i].current = current;
 	wss[i].head = head;
 	wss[i].prev_foc = prev_foc;
@@ -610,7 +607,6 @@ void save_ws(int i)
 void select_ws(int i)
 {
 	save_ws(cur_ws);
-	cur_layout = wss[i].layout;
 	current = wss[i].current;
 	head = wss[i].head;
 	prev_foc = wss[i].prev_foc;
@@ -729,7 +725,7 @@ void arrange_windows(void)
 	if (!head)
 		return;
 	DEBUG("Arranging");
-	layout_handler[head->next ? cur_layout : ZOOM]();
+	layout_handler[head->next ? wss[cur_ws].layout : ZOOM]();
 	howm_info();
 }
 
@@ -975,7 +971,7 @@ void get_atoms(char **names, xcb_atom_t *atoms)
 void stack(void)
 {
 	Client *c = NULL;
-	bool vert = (cur_layout == VSTACK);
+	bool vert = (wss[cur_ws].layout == VSTACK);
 	int h = screen_height - wss[cur_ws].bar_height;
 	int w = screen_width;
 	int i, n, client_x = 0;
@@ -1120,13 +1116,13 @@ void howm_info(void)
 		for (select_ws(w), c = head, n = 0; c; c = c->next, n++)
 			;
 		printf("m:%d l:%d n:%d w:%d cw:%d s:%d\n", cur_mode,
-		       cur_layout, n, w, cur_ws == cw, cur_state);
+		       wss[cur_ws].layout, n, w, cur_ws == cw, cur_state);
 	}
 	if (cw != w)
 		select_ws(cw);
 #else
 	printf("m:%d l:%d n:%d w:%d s:%d\n", cur_mode,
-		cur_layout, n, w, cur_state);
+		wss[cur_ws].layout, n, w, cur_state);
 #endif
 }
 
@@ -1140,7 +1136,7 @@ void enter_event(xcb_generic_event_t *ev)
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *)ev;
 
 	DEBUGP("enter_event for window <%d>", ee->event);
-	if (FOCUS_MOUSE && cur_layout != ZOOM)
+	if (FOCUS_MOUSE && wss[cur_ws].layout != ZOOM)
 		focus_window(ee->event);
 }
 
@@ -1291,13 +1287,13 @@ void focus_next_ws(const Arg *arg)
  */
 void change_layout(const Arg *arg)
 {
-	if (arg->i == cur_layout || arg->i >= END_LAYOUT || arg->i < 0)
+	if (arg->i == wss[cur_ws].layout || arg->i >= END_LAYOUT || arg->i < 0)
 		return;
-	prev_layout = cur_layout;
-	cur_layout = arg->i;
+	prev_layout = wss[cur_ws].layout;
+	wss[cur_ws].layout = arg->i;
 	arrange_windows();
 	update_focused_client(current);
-	DEBUGP("Changed layout to %d\n", cur_layout);
+	DEBUGP("Changed layout to %d\n", wss[cur_ws].layout);
 }
 
 /**
@@ -1307,7 +1303,7 @@ void change_layout(const Arg *arg)
  */
 void previous_layout(const Arg *arg)
 {
-	const Arg a = { .i = cur_layout < 1 ? END_LAYOUT - 1 : cur_layout - 1 };
+	const Arg a = { .i = wss[cur_ws].layout < 1 ? END_LAYOUT - 1 : wss[cur_ws].layout - 1 };
 
 	change_layout(&a);
 }
@@ -1319,7 +1315,7 @@ void previous_layout(const Arg *arg)
  */
 void next_layout(const Arg *arg)
 {
-	const Arg a = { .i = (cur_layout + 1) % END_LAYOUT };
+	const Arg a = { .i = (wss[cur_ws].layout + 1) % END_LAYOUT };
 
 	change_layout(&a);
 }
@@ -1738,7 +1734,7 @@ void draw_clients()
 	Client *c = NULL;
 	int hbw = BORDER_PX / 2;
 	for (c = head; c; c = c->next)
-		if (cur_layout == ZOOM && !ZOOM_GAP)
+		if (wss[cur_ws].layout == ZOOM && !ZOOM_GAP)
 			move_resize(c->win, c->x + hbw, c->y + hbw, c->w - hbw, c->h - hbw);
 		else
 			move_resize(c->win, c->x + c->gap + hbw, c->y + c->gap + hbw,
