@@ -1115,7 +1115,7 @@ void howm_info(void)
 	int cw = cur_ws;
 	int w, n;
 	Client *c;
-
+#if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
 		for (select_ws(w), c = head, n = 0; c; c = c->next, n++)
 			;
@@ -1124,6 +1124,10 @@ void howm_info(void)
 	}
 	if (cw != w)
 		select_ws(cw);
+#else
+	printf("m:%d l:%d n:%d w:%d s:%d\n", cur_mode,
+		cur_layout, n, w, cur_state);
+#endif
 }
 
 /**
