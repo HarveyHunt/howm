@@ -141,6 +141,8 @@ typedef struct {
 	int layout; /**< The current layout of the WS, as defined in the
 				* layout enum. */
 	uint16_t gap; /**< The size of the useless gap between windows for this workspace. */
+	float master_ratio; /** The ratio of the size of the master window
+				 compared to the screen's size. */
 	Client *head; /**< The start of the linked list. */
 	Client *prev_foc; /**< The last focused client. This is seperate to
 				* the linked list structure. */
@@ -185,6 +187,7 @@ static void move_float_x(const Arg *arg);
 
 /* Workspaces */
 static void kill_ws(const int ws);
+static void resize_master(const Arg *arg);
 static void focus_next_ws(const Arg *arg);
 static void focus_prev_ws(const Arg *arg);
 static void focus_last_ws(const Arg *arg);
@@ -972,6 +975,9 @@ void stack(void)
 	bool vert = (cur_layout == VSTACK);
 	int h = screen_height - BAR_HEIGHT;
 	int w = screen_width;
+	int i, n, client_x = 0;
+	int client_y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
+        int ms = (vert ? w : h) * workspaces[cur_ws].master_ratio;
 	/* The size of the direction the clients will be stacked in. e.g.
 	 *
 	 *+---------------------------+--------------+   +
@@ -993,9 +999,6 @@ void stack(void)
 	 *+---------------------------+--------------+   v
 	 */
 	int span = vert ? h : w;
-	int i, n, client_x = 0;
-	int client_y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
-        int ms = (vert ? w : h) * MASTER_RATIO;
 
 	n = get_non_tff_count();
 	if (n <= 1) {
@@ -1995,3 +1998,12 @@ static void delete_win(xcb_window_t win)
 	xcb_send_event(dpy, 0, win, XCB_EVENT_MASK_NO_EVENT, (char *)&ev);
 }
 
+static void resize_master(const Arg *arg)
+{
+	float change = ((float)arg->i) / 100;
+	if (workspaces[cur_ws].master_ratio + change >= 1
+			|| workspaces[cur_ws].master_ratio + change <= 0.1)
+		return;
+	workspaces[cur_ws].master_ratio += change;
+	arrange_windows();
+}

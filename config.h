@@ -79,6 +79,8 @@ static const Key keys[] = {
 	{ MODKEY, NORMAL, XK_space, toggle_float, {NULL} },
 	{ MODKEY, NORMAL, XK_Delete, quit, {.i = EXIT_SUCCESS} },
 	{ MODKEY | ShiftMask, NORMAL, XK_Delete, quit, {EXIT_FAILURE} },
+	{ MODKEY, NORMAL, XK_m, resize_master, {.i = 5} },
+	{ MODKEY | ShiftMask, NORMAL, XK_m, resize_master, {.i = -5} },
 
 	{ MODKEY | ShiftMask, FLOATING, XK_k, resize_float_height, {.i = -10} },
 	{ MODKEY | ShiftMask, FLOATING, XK_j, resize_float_height, {.i = 10} },
@@ -102,7 +104,6 @@ static const Key keys[] = {
 	{ MODKEY | ShiftMask, FOCUS, XK_k, move_current_up, {NULL} },
 	{ MODKEY | ShiftMask, FOCUS, XK_j, move_current_down, {NULL} },
 	{ MODKEY, FOCUS, XK_Escape, change_mode, {.i = NORMAL} },
-
 	{ MODKEY, FOCUS, XK_l, focus_next_ws, {NULL} },
 	{ MODKEY, FOCUS, XK_h, focus_prev_ws, {NULL} },
 	{ MODKEY, FOCUS, XK_1, change_ws, {.i = 1} },
@@ -153,9 +154,9 @@ static const Motion motions[] = {
  */
 static Workspace workspaces[] = {
 	{NULL},
-	{.layout = HSTACK, .gap = 4},
-	{.layout = HSTACK, .gap = 4},
-	{.layout = HSTACK, .gap = 4}
+	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6},
+	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6},
+	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6}
 };
 
 #endif
