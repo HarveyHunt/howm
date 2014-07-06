@@ -305,7 +305,7 @@ static bool running = true;
 /** Output debugging information using puts. */
 #       define DEBUG(x) puts(x);
 /** Output debugging information using printf to allow for formatting. */
-#       define DEBUGP(x, ...) printf(x, ## __VA_ARGS__);
+#	define DEBUGP(M, ...) fprintf(stderr, "[DBG] %s:%d: " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 #       define DEBUG(x) do {} while (0)
 #       define DEBUGP(x, ...) do {} while (0)
@@ -327,8 +327,8 @@ void setup(void)
 	screen_height = screen->height_in_pixels;
 	screen_width = screen->width_in_pixels;
 
-	DEBUGP("Screen's height is: %d\n", screen_height);
-	DEBUGP("Screen's width is: %d\n", screen_width);
+	DEBUGP("Screen's height is: %d", screen_height);
+	DEBUGP("Screen's width is: %d", screen_width);
 
 	grab_keys();
 
@@ -417,8 +417,8 @@ void check_other_wm(void)
 			      screen->root, XCB_CW_EVENT_MASK, values));
 	if (e != NULL) {
 		xcb_disconnect(dpy);
-		DEBUGP("Error code: %d\n", e->error_code);
-		DEBUGP("Another window manager is running.\n");
+		DEBUGP("Error code: %d", e->error_code);
+		DEBUGP("Another window manager is running.");
 		exit(EXIT_FAILURE);
 	}
 	free(e);
@@ -460,7 +460,7 @@ void key_press_event(xcb_generic_event_t *ev)
 	xcb_keysym_t keysym;
 	xcb_key_press_event_t *ke = (xcb_key_press_event_t *)ev;
 
-	DEBUGP("[+] Keypress code:%d mod:%d\n", ke->detail, ke->state);
+	DEBUGP("[+] Keypress code:%d mod:%d", ke->detail, ke->state);
 	keysym = keycode_to_keysym(ke->detail);
 	switch (cur_state) {
 	case OPERATOR_STATE:
@@ -925,7 +925,7 @@ void get_atoms(char **names, xcb_atom_t *atoms)
 			atoms[i] = reply->atom;
 			free(reply);
 		} else {
-			DEBUGP("WARNING: the atom %s has not been registered by howm.\n", names[i]);
+			DEBUGP("WARNING: the atom %s has not been registered by howm.", names[i]);
 		}
 	}
 }
@@ -1100,7 +1100,7 @@ void enter_event(xcb_generic_event_t *ev)
 {
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *)ev;
 
-	DEBUGP("enter_event for window <%d>\n", ee->event);
+	DEBUGP("enter_event for window <%d>", ee->event);
 	if (FOCUS_MOUSE && wss[cw].layout != ZOOM)
 		focus_window(ee->event);
 }
@@ -1252,7 +1252,7 @@ void change_layout(const Arg *arg)
 	wss[cw].layout = arg->i;
 	arrange_windows();
 	update_focused_client(wss[cw].current);
-	DEBUGP("Changed layout to %d\n", wss[cw].layout);
+	DEBUGP("Changed layout to %d", wss[cw].layout);
 }
 
 /**
@@ -1316,13 +1316,13 @@ void change_mode(const Arg *arg)
 void op_kill(const int type, int cnt)
 {
 	if (type == WORKSPACE) {
-		DEBUGP("Killing %d workspaces.\n", cnt);
+		DEBUGP("Killing %d workspaces.", cnt);
 		while (cnt > 0) {
 			kill_ws(correct_ws(cw + cnt - 1));
 			cnt--;
 		}
 	} else if (type == CLIENT) {
-		DEBUGP("Killing %d clients.\n", cnt);
+		DEBUGP("Killing %d clients.", cnt);
 		while (cnt > 0) {
 			kill_client();
 			cnt--;
@@ -1339,7 +1339,7 @@ void kill_client(void)
 		return;
 	/* TODO: Kill the window in a nicer way and get it to consistently die. */
 	xcb_kill_client(dpy, wss[cw].current->win);
-	DEBUGP("Killing Client <0x%x>\n", wss[cw].current);
+	DEBUGP("Killing Client <0x%x>", wss[cw].current);
 	remove_client(wss[cw].current);
 }
 
