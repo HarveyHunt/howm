@@ -126,6 +126,19 @@ Workspaces allow you to manage which windows are on your screen. You can imagine
 #define ZOOM_GAP true
 ```
 
+* **LOG_LEVEL**: How much detail should be logged. A LOG_LEVEL of INFO will log
+  everything, LOG_WARN will log warnings and errors and LOG_ERR will log only
+  errors. LOG_NONE means nothing will be logged. Logging level severity is as
+  follows:
+    * LOG_INFO
+    * LOG_WARN
+    * LOG_ERR
+    * LOG_NONE
+
+```
+#define LOG_LEVEL LOG_ERR
+```
+
 ##Operators
 
 Operators perform an action upon one or more targets (identified by motions).

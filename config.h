@@ -52,7 +52,7 @@
 #define ZOOM_GAP true
 /** The ratio of the size of the master window compared to the screen's size. */
 #define MASTER_RATIO 0.7
-/** The How much detailing should be logged. A LOG_LEVEL of INFO will log
+/** How much detail should be logged. A LOG_LEVEL of INFO will log
  * everything, LOG_WARN will log warnings and errors and LOG_ERR will log only
  * errors.
  *
