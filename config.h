@@ -81,6 +81,7 @@ static const Key keys[] = {
 	{ MODKEY | ShiftMask, NORMAL, XK_Delete, quit, {EXIT_FAILURE} },
 	{ MODKEY, NORMAL, XK_m, resize_master, {.i = 5} },
 	{ MODKEY | ShiftMask, NORMAL, XK_m, resize_master, {.i = -5} },
+	{ MODKEY, NORMAL, XK_b, toggle_bar, {NULL} },
 
 	{ MODKEY | ShiftMask, FLOATING, XK_k, resize_float_height, {.i = -10} },
 	{ MODKEY | ShiftMask, FLOATING, XK_j, resize_float_height, {.i = 10} },
@@ -154,9 +155,9 @@ static const Motion motions[] = {
  */
 static Workspace workspaces[] = {
 	{NULL},
-	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6},
-	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6},
-	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6}
+	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
+	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
+	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT}
 };
 
 #endif
