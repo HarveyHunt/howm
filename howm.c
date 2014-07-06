@@ -48,7 +48,6 @@
  */
 typedef union {
 	const char **cmd;  /**< Represents a command that will be called by a shell.  */
-	float f; /**< Commonly used for scaling operations. */
 	int i; /**< Usually used for specifying workspaces or clients. */
 } Arg;
 
@@ -196,7 +195,6 @@ static void focus_prev_ws(const Arg *arg);
 static void focus_last_ws(const Arg *arg);
 static void change_ws(const Arg *arg);
 static void save_ws(int i);
-static void select_ws(int i);
 static int prev_ws(int ws);
 static int next_ws(int ws);
 static int correct_ws(int ws);
@@ -582,19 +580,6 @@ Client *create_client(xcb_window_t w)
 }
 
 /**
- * @brief Reloads the information about a workspace and sets it as the current
- * workspace.
- *
- * @param i The index of the workspace to be reloaded and set as current. Note:
- * Workspaces begin at index 1.
- */
-void select_ws(int i)
-{
-	if (i >= 1 || i <= WORKSPACES)
-		cw = i;
-}
-
-/**
  * @brief Search workspaces for a window, returning the client that it belongs
  * to.
  *
@@ -614,10 +599,10 @@ Client *find_client_by_win(xcb_window_t win)
 	Client *c = NULL;
 
 	for (found = false; w < WORKSPACES && !found; ++w)
-		for (select_ws(w), c = wss[cw].head; c && !(found = (win == c->win)); c = c->next)
+		for (c = wss[w].head; c && !(found = (win == c->win)); c = c->next)
 			;
 	if (cur_ws != w)
-		select_ws(cur_ws);
+		cw = cur_ws;
 	return c;
 }
 
@@ -1064,7 +1049,7 @@ void remove_client(Client *c)
 	bool found;
 
 	for (found = false; w < WORKSPACES && !found; w++)
-		for (temp = &wss[cw].head, select_ws(cur_ws); *temp
+		for (temp = &wss[w].head; *temp
 			&& !(found = *temp == c);
 				temp = &(*temp)->next);
 	*temp = c->next;
@@ -1078,7 +1063,7 @@ void remove_client(Client *c)
 	if (cur_ws == w)
 		arrange_windows();
 	else
-		select_ws(cur_ws);
+		cw = cur_ws;
 }
 
 /**
@@ -1093,13 +1078,13 @@ void howm_info(void)
 	Client *c;
 #if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
-		for (select_ws(w), c = wss[cw].head, n = 0; c; c = c->next, n++)
+		for (c = wss[w].head, n = 0; c; c = c->next, n++)
 			;
 		printf("m:%d l:%d n:%d w:%d cw:%d s:%d\n", cur_mode,
-		       wss[cw].layout, n, w, cur_ws == cw, cur_state);
+		       wss[w].layout, n, w, cur_ws == w, cur_state);
 	}
 	if (cur_ws != w)
-		select_ws(cur_ws);
+		cw = cur_ws;
 #else
 	printf("m:%d l:%d n:%d w:%d s:%d\n", cur_mode,
 		wss[cw].layout, n, w, cur_state);
@@ -1200,7 +1185,7 @@ void focus_prev_client(const Arg *arg)
 }
 
 /**
- * @brief Change to a different workspace.
+ * @brief Change to a different workspace and map the correct windows.
  *
  * @param arg arg->i indicates which workspace howm should change to.
  */
@@ -1209,13 +1194,11 @@ void change_ws(const Arg *arg)
 	if (arg->i > WORKSPACES || arg->i <= 0 || arg->i == cw)
 		return;
 	last_ws = cw;
-	select_ws(arg->i);
-	for (Client *c = wss[cw].head; c; c = c->next)
+	for (Client *c = wss[arg->i].head; c; c = c->next)
 		xcb_map_window(dpy, c->win);
-	select_ws(last_ws);
-	for (Client *c = wss[cw].head; c; c = c->next)
+	for (Client *c = wss[last_ws].head; c; c = c->next)
 		xcb_unmap_window(dpy, c->win);
-	select_ws(arg->i);
+	cw = arg->i;
 	arrange_windows();
 	update_focused_client(wss[cw].current);
 	howm_info();
@@ -1228,9 +1211,7 @@ void change_ws(const Arg *arg)
  */
 void focus_prev_ws(const Arg *arg)
 {
-	const Arg a = { .i = cw < 2 ? WORKSPACES :  cw - 1
-		      };
-
+	const Arg a = {.i = correct_ws(cw - 1)};
 	change_ws(&a);
 }
 
@@ -1253,8 +1234,7 @@ void focus_last_ws(const Arg *arg)
  */
 void focus_next_ws(const Arg *arg)
 {
-	const Arg a = { .i = (cw + 1) % WORKSPACES };
-
+	const Arg a = {.i = correct_ws(cw + 1)};
 	change_ws(&a);
 }
 
@@ -1798,12 +1778,12 @@ static void change_gaps(const int type, int cnt, int size)
 		int cur_ws = cw;
 		while(cnt > 0) {
 			cnt--;
-			select_ws(correct_ws(cur_ws + cnt));
+			cw = correct_ws(cur_ws + cnt);
 			wss[correct_ws(cur_ws + cnt)].gap += size;
 			for (c = wss[cw].head; c; c = c->next)
 				change_client_gaps(c, size);
 		}
-		select_ws(cur_ws);
+		cw = cur_ws;
 	} else if (type == CLIENT) {
 		c = wss[cw].current;
 		while (cnt > 0) {
