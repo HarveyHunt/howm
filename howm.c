@@ -1967,11 +1967,23 @@ static void teleport_client(const Arg *arg)
 	draw_clients();
 }
 
+/**
+ * @brief Quit howm and set the return value.
+ *
+ * @param arg The return value that howm will send.
+ */
 static void quit(const Arg *arg)
 {
 	retval = arg->i;
 	running = false;
 }
+
+/**
+ * @brief Cleanup howm's resources.
+ *
+ * Delete all of the windows that have been created, remove button and key
+ * grabs and remove pointer focus.
+ */
 static void cleanup(void)
 {
 	xcb_window_t *w;
@@ -1991,6 +2003,11 @@ static void cleanup(void)
 			XCB_CURRENT_TIME);
 }
 
+/**
+ * @brief Ask XCB to delete a window.
+ *
+ * @param win The window to be deleted.
+ */
 static void delete_win(xcb_window_t win)
 {
 	xcb_client_message_event_t ev;
@@ -2005,6 +2022,13 @@ static void delete_win(xcb_window_t win)
 	xcb_send_event(dpy, 0, win, XCB_EVENT_MASK_NO_EVENT, (char *)&ev);
 }
 
+/**
+ * @brief Resize the master window of a stack for the current workspace.
+ *
+ * @param arg The amount to resize the master window by. Treated as a
+ * percentage. e.g. arg->i = 5 will increase the master window's size by 5% of
+ * it maximum.
+ */
 static void resize_master(const Arg *arg)
 {
 	float change = ((float)arg->i) / 100;
@@ -2015,6 +2039,11 @@ static void resize_master(const Arg *arg)
 	arrange_windows();
 }
 
+/**
+ * @brief Toggle the space reserved for a status bar.
+ *
+ * @param arg Unused.
+ */
 static void toggle_bar(const Arg *arg)
 {
 	if (workspaces[cur_ws].bar_height == 0
