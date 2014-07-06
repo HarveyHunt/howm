@@ -1,4 +1,5 @@
 #include <err.h>
+#include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -310,6 +311,31 @@ static bool running = true;
 #       define DEBUG(x) do {} while (0)
 #       define DEBUGP(x, ...) do {} while (0)
 #endif
+
+#define clean_errno() (errno == 0 ? "None" : strerror(errno))
+
+#define LOG_INFO 1
+#define LOG_WARN 2
+#define LOG_ERR 3
+#define LOG_NONE 4
+
+#if LOG_LEVEL == LOG_INFO
+#define log_info(M, ...) fprintf(stderr, "[INFO] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#else
+#define log_info(x, ...) do {} while (0)
+#endif
+
+#if LOG_LEVEL <= LOG_WARN
+#define log_warn(M, ...) fprintf(stderr, "[WARN] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#else
+#define log_warn(x, ...) do {} while (0)
+#endif
+
+#if LOG_LEVEL <= LOG_ERR
+#define log_err(M, ...) fprintf(stderr, "[ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
+#else
+#define log_err(x, ...) do {} while (0)
+#endif
 /*@end@*/
 
 /**
@@ -323,18 +349,19 @@ void setup(void)
 {
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (screen == NULL)
-		err(EXIT_FAILURE, "Can't acquire the default screen\n");
+		log_err("Can't acquire the default screen.");
 	screen_height = screen->height_in_pixels;
 	screen_width = screen->width_in_pixels;
 
-	DEBUGP("Screen's height is: %d", screen_height);
-	DEBUGP("Screen's width is: %d", screen_width);
+	log_info("Screen's height is: %d", screen_height);
+	log_info("Screen's width is: %d", screen_width);
 
 	grab_keys();
 
 	get_atoms(NET_ATOM_NAMES, net_atoms);
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
-
+	if (BORDER_PX % 2 == 1)
+		log_warn("Odd value for border pixels.");
 	border_focus = get_colour(BORDER_FOCUS);
 	border_unfocus = get_colour(BORDER_UNFOCUS);
 	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
