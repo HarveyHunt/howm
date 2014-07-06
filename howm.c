@@ -312,8 +312,6 @@ static bool running = true;
 #       define DEBUGP(x, ...) do {} while (0)
 #endif
 
-#define clean_errno() (errno == 0 ? "None" : strerror(errno))
-
 #define LOG_INFO 1
 #define LOG_WARN 2
 #define LOG_ERR 3
@@ -332,7 +330,7 @@ static bool running = true;
 #endif
 
 #if LOG_LEVEL <= LOG_ERR
-#define log_err(M, ...) fprintf(stderr, "[ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, clean_errno(), ##__VA_ARGS__)
+#define log_err(M, ...) fprintf(stderr, "[ERROR] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 #define log_err(x, ...) do {} while (0)
 #endif
@@ -390,8 +388,7 @@ uint32_t get_colour(char *colour)
 	rep = xcb_alloc_color_reply(dpy, xcb_alloc_color(dpy, map,
 				    r, g, b), NULL);
 	if (!rep)
-		err(EXIT_FAILURE, "ERROR: Can't allocate the colour %s\n",
-		    colour);
+		log_err("ERROR: Can't allocate the colour %s", colour);
 	pixel = rep->pixel;
 	free(rep);
 	return pixel;
@@ -405,13 +402,16 @@ int main(int argc, char *argv[])
 	xcb_generic_event_t *ev;
 
 	dpy = xcb_connect(NULL, NULL);
-	if (xcb_connection_has_error(dpy))
-		err(EXIT_FAILURE, "Can't open Xconnection\n");
+	if (xcb_connection_has_error(dpy)) {
+		log_err("Can't open Xconnection");
+		exit(EXIT_FAILURE);
+	}
 	setup();
 	check_other_wm();
 	while (running && !xcb_connection_has_error(dpy)) {
-		if (!xcb_flush(dpy))
-			err(EXIT_FAILURE, "Failed to flush X connection\n");
+		if (!xcb_flush(dpy)) {
+			log_err("Failed to flush X connection");
+		}
 		ev = xcb_wait_for_event(dpy);
 		if (handler[ev->response_type])
 			handler[ev->response_type](ev);
@@ -421,8 +421,7 @@ int main(int argc, char *argv[])
 		xcb_disconnect(dpy);
 		return retval;
 	}
-
-	return 1;
+	return EXIT_FAILURE;
 }
 
 /**
@@ -444,8 +443,7 @@ void check_other_wm(void)
 			      screen->root, XCB_CW_EVENT_MASK, values));
 	if (e != NULL) {
 		xcb_disconnect(dpy);
-		DEBUGP("Error code: %d", e->error_code);
-		DEBUGP("Another window manager is running.");
+		log_err("Couldn't register as WM. Perhaps another WM is running? XCB returned error_code: %d", e->error_code);
 		exit(EXIT_FAILURE);
 	}
 	free(e);
@@ -461,7 +459,7 @@ void button_press_event(xcb_generic_event_t *ev)
 	/* FIXME: be->event doesn't seem to match with any windows managed by howm.*/
 	xcb_button_press_event_t *be = (xcb_button_press_event_t *)ev;
 
-	DEBUG("button_press_event");
+	log_info("Button %d pressed at (%d, %d)", be->detail, be->event_x, be->event_y);
 	if (FOCUS_MOUSE_CLICK && be->detail == XCB_BUTTON_INDEX_1)
 		focus_window(be->event);
 }
@@ -487,7 +485,7 @@ void key_press_event(xcb_generic_event_t *ev)
 	xcb_keysym_t keysym;
 	xcb_key_press_event_t *ke = (xcb_key_press_event_t *)ev;
 
-	DEBUGP("[+] Keypress code:%d mod:%d", ke->detail, ke->state);
+	log_info("Keypress with code: %d mod: %d", ke->detail, ke->state);
 	keysym = keycode_to_keysym(ke->detail);
 	switch (cur_state) {
 	case OPERATOR_STATE:
@@ -534,11 +532,10 @@ void spawn(const Arg *arg)
 	if (dpy)
 		close(screen->root);
 	setsid();
+	log_info("Spawning command: %s", (char *)arg->cmd[0]);
 	execvp((char *)arg->cmd[0], (char **)arg->cmd);
-	DEBUG("SPAWN");
-	fprintf(stderr, "howm: execvp %s\n", (char *)arg->cmd[0]);
-	perror(" failed");
-	exit(EXIT_SUCCESS);
+	log_err("execvp of command: %s failed.", (char *)arg->cmd[0]);
+	exit(EXIT_FAILURE);
 }
 
 /**
@@ -564,7 +561,7 @@ void map_event(xcb_generic_event_t *ev)
 		return;
 	}
 	free(wa);
-	DEBUG("Mapping request");
+	log_info("Mapping request for window %d");
 	/* Rule stuff needs to be here. */
 	c = create_client(me->window);
 
@@ -589,8 +586,10 @@ Client *create_client(xcb_window_t w)
 	Client *c = (Client *)calloc(1, sizeof(Client));
 	Client *t = prev_client(wss[cw].head); /* Get the last element. */
 
-	if (!c)
-		err(EXIT_FAILURE, "Can't allocate memory for client.");
+	if (!c) {
+		log_err("Can't allocate memory for client.");
+		exit(EXIT_FAILURE);
+	}
 	if (!wss[cw].head)
 		wss[cw].head = c;
 	else if (t)
@@ -600,8 +599,7 @@ Client *create_client(xcb_window_t w)
 	c->win = w;
 	c->gap = wss[cw].gap;
 	unsigned int vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
-				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0)
-			       };
+				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0)};
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_EVENT_MASK, vals);
 	return c;
 }
@@ -717,7 +715,7 @@ void arrange_windows(void)
 {
 	if (!wss[cw].head)
 		return;
-	DEBUG("Arranging");
+	log_info("Arranging windows");
 	layout_handler[wss[cw].head->next ? wss[cw].layout : ZOOM]();
 	howm_info();
 }
@@ -727,12 +725,12 @@ void arrange_windows(void)
  */
 void grid(void)
 {
-	DEBUG("GRID");
 	int n = get_non_tff_count();
 	if (n == 1) {
 		zoom();
 		return;
 	}
+	log_info("Arranging %d clients in grid layout", n);
 
 	Client *c = NULL;
 	int cols, rows, col_w, i = -1, col_cnt = 0, row_cnt= 0;
@@ -770,7 +768,7 @@ void grid(void)
  */
 void zoom(void)
 {
-	DEBUG("ZOOM");
+	log_info("Arranging clients in zoom format");
 	Client *c;
 	for (c = wss[cw].head; c; c = c->next)
 		if (!FFT(c))
@@ -815,7 +813,7 @@ void update_focused_client(Client *c)
 		wss[cw].current = c;
 	}
 
-	DEBUG("UPDATING");
+	log_info("Focusing client <0x%x>", c);
 	unsigned int all = 0, fullscreen = 0, float_trans = 0;
 	for (c = wss[cw].head; c; c = c->next, ++all) {
 		if (FFT(c))
@@ -860,7 +858,7 @@ void grab_keys(void)
 	/* TODO: optimise this so that it doesn't call xcb_grab_key for all
 	 * keys, as some are repeated due to modes. Perhaps XCB does this
 	 * already? */
-	DEBUG("Grabbing keys.");
+	log_info("Grabbing keys");
 	xcb_keycode_t *keycode;
 	unsigned int i;
 	xcb_ungrab_key(dpy, XCB_GRAB_ANY, screen->root, XCB_MOD_MASK_ANY);
@@ -914,7 +912,6 @@ void grab_keycode(xcb_keycode_t *keycode, const int mod)
 void set_border_width(xcb_window_t win, int w)
 {
 	unsigned int width[1] = { w };
-
 	xcb_configure_window(dpy, win, XCB_CONFIG_WINDOW_BORDER_WIDTH, width);
 }
 
@@ -926,7 +923,7 @@ void set_border_width(xcb_window_t win, int w)
 void elevate_window(xcb_window_t win)
 {
 	unsigned int stack_mode[1] = { XCB_STACK_MODE_ABOVE };
-
+	log_info("Moving window %d to the front", win);
 	xcb_configure_window(dpy, win, XCB_CONFIG_WINDOW_STACK_MODE, stack_mode);
 }
 
@@ -946,13 +943,15 @@ void get_atoms(char **names, xcb_atom_t *atoms)
 
 	for (i = 0; i < cnt; i++)
 		cookies[i] = xcb_intern_atom(dpy, 0, strlen(names[i]), names[i]);
+		log_info("Requesting atom %s", names[i]);
 	for (i = 0; i < cnt; i++) {
 		reply = xcb_intern_atom_reply(dpy, cookies[i], NULL);
 		if (reply) {
 			atoms[i] = reply->atom;
+			log_info("Got reply for atom %s", names[i]);
 			free(reply);
 		} else {
-			DEBUGP("WARNING: the atom %s has not been registered by howm.", names[i]);
+			log_warn("The atom %s has not been registered by howm.", names[i]);
 		}
 	}
 }
@@ -998,7 +997,7 @@ void stack(void)
 		return;
 	}
 
-
+	log_info("Arranging %d clients in %sstack layout", n, vert ? "v" : "");
 	if (vert) {
 		change_client_geom(wss[cw].head, 0, client_y,
 			    ms, span);
@@ -1010,7 +1009,6 @@ void stack(void)
 	/* TODO: Need to take into account when this has remainders. */
 	/* TODO: Fix gaps between windows. */
 	int client_span = (span / (n - 1));
-	DEBUG("STACK")
 
 	for (c = wss[cw].head->next, i = 0; i < n - 1; c = c->next, i++) {
 		if (vert) {
@@ -1057,9 +1055,9 @@ int get_non_tff_count(void)
  */
 void destroy_event(xcb_generic_event_t *ev)
 {
-	DEBUG("DESTROY");
 	xcb_destroy_notify_event_t *de = (xcb_destroy_notify_event_t *)ev;
 	Client *c = find_client_by_win(de->window);
+	log_info("Client <0x%x> with win <%d> wants to be destroyed", c, de->window);
 	if (c)
 		remove_client(c);
 }
@@ -1074,6 +1072,8 @@ void remove_client(Client *c)
 	Client **temp = NULL;
 	int w = 1, cur_ws = cw;
 	bool found;
+
+	log_info("Removing client <0x%x>", c);
 
 	for (found = false; w < WORKSPACES && !found; w++)
 		for (temp = &wss[w].head; *temp
@@ -1127,7 +1127,7 @@ void enter_event(xcb_generic_event_t *ev)
 {
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *)ev;
 
-	DEBUGP("enter_event for window <%d>", ee->event);
+	log_info("Enter event for window <%d>", ee->event);
 	if (FOCUS_MOUSE && wss[cw].layout != ZOOM)
 		focus_window(ee->event);
 }
