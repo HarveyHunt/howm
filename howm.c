@@ -48,7 +48,6 @@
  */
 typedef union {
 	const char **cmd;  /**< Represents a command that will be called by a shell.  */
-	float f; /**< Commonly used for scaling operations. */
 	int i; /**< Usually used for specifying workspaces or clients. */
 } Arg;
 
@@ -196,7 +195,6 @@ static void focus_prev_ws(const Arg *arg);
 static void focus_last_ws(const Arg *arg);
 static void change_ws(const Arg *arg);
 static void save_ws(int i);
-static void select_ws(int i);
 static int prev_ws(int ws);
 static int next_ws(int ws);
 static int correct_ws(int ws);
@@ -288,10 +286,9 @@ static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)],
 	net_atoms[LENGTH(NET_ATOM_NAMES)];
 static xcb_screen_t *screen;
 static int numlockmask, retval;
-static Client *head, *prev_foc, *current;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
-static int last_ws, cur_layout, prev_layout;
-static int cur_ws = 1;
+static int last_ws, prev_layout;
+static int cw = 1;
 static uint32_t border_focus, border_unfocus, border_prev_focus;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE;
 static unsigned int cur_cnt = 1;
@@ -341,8 +338,6 @@ void setup(void)
 	border_focus = get_colour(BORDER_FOCUS);
 	border_unfocus = get_colour(BORDER_UNFOCUS);
 	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
-
-	cur_layout = workspaces[cur_ws].layout;
 }
 
 /**
@@ -565,56 +560,23 @@ void map_event(xcb_generic_event_t *ev)
 Client *create_client(xcb_window_t w)
 {
 	Client *c = (Client *)calloc(1, sizeof(Client));
-	Client *t = prev_client(head); /* Get the last element. */
+	Client *t = prev_client(wss[cw].head); /* Get the last element. */
 
 	if (!c)
 		err(EXIT_FAILURE, "Can't allocate memory for client.");
-	if (!head)
-		head = c;
+	if (!wss[cw].head)
+		wss[cw].head = c;
 	else if (t)
 		t->next = c;
 	else
-		head->next = c;
+		wss[cw].head->next = c;
 	c->win = w;
-	c->gap = workspaces[cur_ws].gap;
+	c->gap = wss[cw].gap;
 	unsigned int vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
 				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0)
 			       };
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_EVENT_MASK, vals);
 	return c;
-}
-
-/**
- * @brief Saves the information about a current workspace.
- *
- * @param i The index of the workspace to be saved. Note: Workspaces begin at
- * index 1.
- */
-void save_ws(int i)
-{
-	if (i < 1 || i > WORKSPACES)
-		return;
-	workspaces[i].layout = cur_layout;
-	workspaces[i].current = current;
-	workspaces[i].head = head;
-	workspaces[i].prev_foc = prev_foc;
-}
-
-/**
- * @brief Reloads the information about a workspace and sets it as the current
- * workspace.
- *
- * @param i The index of the workspace to be reloaded and set as current. Note:
- * Workspaces begin at index 1.
- */
-void select_ws(int i)
-{
-	save_ws(cur_ws);
-	cur_layout = workspaces[i].layout;
-	current = workspaces[i].current;
-	head = workspaces[i].head;
-	prev_foc = workspaces[i].prev_foc;
-	cur_ws = i;
 }
 
 /**
@@ -633,14 +595,14 @@ void select_ws(int i)
 Client *find_client_by_win(xcb_window_t win)
 {
 	bool found;
-	int w = 1, cw = cur_ws;
+	int w = 1, cur_ws = cw;
 	Client *c = NULL;
 
 	for (found = false; w < WORKSPACES && !found; ++w)
-		for (select_ws(w), c = head; c && !(found = (win == c->win)); c = c->next)
+		for (c = wss[w].head; c && !(found = (win == c->win)); c = c->next)
 			;
-	if (cw != w)
-		select_ws(cw);
+	if (cur_ws != w)
+		cw = cur_ws;
 	return c;
 }
 
@@ -692,10 +654,10 @@ xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym)
  */
 Client *prev_client(Client *c)
 {
-	if (!c || !head->next)
+	if (!c || !wss[cw].head->next)
 		return NULL;
 	Client *p;
-	for (p = head; p->next && p->next != c; p = p->next)
+	for (p = wss[cw].head; p->next && p->next != c; p = p->next)
 		;
 	return p;
 }
@@ -714,11 +676,11 @@ Client *prev_client(Client *c)
  */
 Client *next_client(Client *c)
 {
-	if (!c || !head->next)
+	if (!c || !wss[cw].head->next)
 		return NULL;
 	if (c->next)
 		return c->next;
-	return head;
+	return wss[cw].head;
 }
 
 /**
@@ -726,10 +688,10 @@ Client *next_client(Client *c)
  */
 void arrange_windows(void)
 {
-	if (!head)
+	if (!wss[cw].head)
 		return;
 	DEBUG("Arranging");
-	layout_handler[head->next ? cur_layout : ZOOM]();
+	layout_handler[wss[cw].head->next ? wss[cw].layout : ZOOM]();
 	howm_info();
 }
 
@@ -747,15 +709,15 @@ void grid(void)
 
 	Client *c = NULL;
 	int cols, rows, col_w, i = -1, col_cnt = 0, row_cnt= 0;
-	int client_y = BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height;
-	int col_h = screen_height - workspaces[cur_ws].bar_height;
+	int client_y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
+	int col_h = screen_height - wss[cw].bar_height;
 
 	for (cols = 0; cols <= n / 2; cols++)
 		if (cols * cols >= n)
 			break;
 	rows = n / cols;
 	col_w = screen_width / cols;
-	for (c = head; c; c = c->next) {
+	for (c = wss[cw].head; c; c = c->next) {
 		if (FFT(c))
 			continue;
 		else
@@ -783,10 +745,10 @@ void zoom(void)
 {
 	DEBUG("ZOOM");
 	Client *c;
-	for (c = head; c; c = c->next)
+	for (c = wss[cw].head; c; c = c->next)
 		if (!FFT(c))
-			change_client_geom(c, 0, BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height,
-					screen_width, screen_height - workspaces[cur_ws].bar_height);
+			change_client_geom(c, 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+					screen_width, screen_height - wss[cw].bar_height);
 	draw_clients();
 }
 
@@ -814,37 +776,37 @@ void move_resize(xcb_window_t win,
  */
 void update_focused_client(Client *c)
 {
-	if (!head) {
-		prev_foc = current = NULL;
+	if (!wss[cw].head) {
+		wss[cw].prev_foc = wss[cw].current = NULL;
 		xcb_delete_property(dpy, screen->root, net_atoms[NET_ACTIVE_WINDOW]);
 		return;
-	} else if (c == prev_foc) {
-		current = (prev_foc ? prev_foc : head);
-		prev_foc = prev_client(current);
-	} else if (c != current) {
-		prev_foc = current;
-		current = c;
+	} else if (c == wss[cw].prev_foc) {
+		wss[cw].current = (wss[cw].prev_foc ? wss[cw].prev_foc : wss[cw].head);
+		wss[cw].prev_foc = prev_client(wss[cw].current);
+	} else if (c != wss[cw].current) {
+		wss[cw].prev_foc = wss[cw].current;
+		wss[cw].current = c;
 	}
 
 	DEBUG("UPDATING");
 	unsigned int all = 0, fullscreen = 0, float_trans = 0;
-	for (c = head; c; c = c->next, ++all) {
+	for (c = wss[cw].head; c; c = c->next, ++all) {
 		if (FFT(c))
 			fullscreen++;
 		if (!c->is_fullscreen)
 			float_trans++;
 	}
 	xcb_window_t windows[all];
-	windows[(current->is_floating || current->is_transient) ? 0 : fullscreen] = current->win;
-	c = head;
-	for (fullscreen += FFT(current) ? 1 : 0; c; c = c->next) {
+	windows[(wss[cw].current->is_floating || wss[cw].current->is_transient) ? 0 : fullscreen] = wss[cw].current->win;
+	c = wss[cw].head;
+	for (fullscreen += FFT(wss[cw].current) ? 1 : 0; c; c = c->next) {
 		set_border_width(c->win, (c->is_fullscreen ||
-					  !head->next) ? 0 : BORDER_PX);
+					  !wss[cw].head->next) ? 0 : BORDER_PX);
 		xcb_change_window_attributes(dpy, c->win, XCB_CW_BORDER_PIXEL,
-					     (c == current ? &border_focus :
-					      c == prev_foc ? &border_prev_focus
+					     (c == wss[cw].current ? &border_focus :
+					      c == wss[cw].prev_foc ? &border_prev_focus
 					      : &border_unfocus));
-		if (c != current)
+		if (c != wss[cw].current)
 			windows[c->is_fullscreen ? --fullscreen : FFT(c) ?
 				--float_trans : --all] = c->win;
 	}
@@ -853,8 +815,8 @@ void update_focused_client(Client *c)
 		elevate_window(windows[all - float_trans]);
 
 	xcb_change_property(dpy, XCB_PROP_MODE_REPLACE, screen->root,
-			    net_atoms[NET_ACTIVE_WINDOW], XCB_ATOM_WINDOW, 32, 1, &current->win);
-	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, current->win,
+			    net_atoms[NET_ACTIVE_WINDOW], XCB_ATOM_WINDOW, 32, 1, &wss[cw].current->win);
+	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, wss[cw].current->win,
 			    XCB_CURRENT_TIME);
 	arrange_windows();
 }
@@ -975,12 +937,12 @@ void get_atoms(char **names, xcb_atom_t *atoms)
 void stack(void)
 {
 	Client *c = NULL;
-	bool vert = (cur_layout == VSTACK);
-	int h = screen_height - workspaces[cur_ws].bar_height;
+	bool vert = (wss[cw].layout == VSTACK);
+	int h = screen_height - wss[cw].bar_height;
 	int w = screen_width;
 	int i, n, client_x = 0;
-	int client_y = BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height;
-        int ms = (vert ? w : h) * workspaces[cur_ws].master_ratio;
+	int client_y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
+        int ms = (vert ? w : h) * wss[cw].master_ratio;
 	/* The size of the direction the clients will be stacked in. e.g.
 	 *
 	 *+---------------------------+--------------+   +
@@ -1011,10 +973,10 @@ void stack(void)
 
 
 	if (vert) {
-		change_client_geom(head, 0, client_y,
+		change_client_geom(wss[cw].head, 0, client_y,
 			    ms, span);
 	} else {
-		change_client_geom(head, 0, BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height,
+		change_client_geom(wss[cw].head, 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
 			span, ms);
 	}
 
@@ -1023,7 +985,7 @@ void stack(void)
 	int client_span = (span / (n - 1));
 	DEBUG("STACK")
 
-	for (c = head->next, i = 0; i < n - 1; c = c->next, i++) {
+	for (c = wss[cw].head->next, i = 0; i < n - 1; c = c->next, i++) {
 		if (vert) {
 			change_client_geom(c, ms, client_y,
 				    screen_width - ms,
@@ -1032,7 +994,7 @@ void stack(void)
 		} else {
 			change_client_geom(c, client_x, ms,
 				    client_span,
-				    screen_height - workspaces[cur_ws].bar_height - ms);
+				    screen_height - wss[cw].bar_height - ms);
 			client_x += client_span;
 		}
 	}
@@ -1049,7 +1011,7 @@ int get_non_tff_count(void)
 	int n = 0;
 	Client *c = NULL;
 
-	for (c = head; c; c = c->next)
+	for (c = wss[cw].head; c; c = c->next)
 		if (!FFT(c))
 			n++;
 		else
@@ -1083,25 +1045,25 @@ void destroy_event(xcb_generic_event_t *ev)
 void remove_client(Client *c)
 {
 	Client **temp = NULL;
-	int w = 1, cw = cur_ws;
+	int w = 1, cur_ws = cw;
 	bool found;
 
 	for (found = false; w < WORKSPACES && !found; w++)
-		for (temp = &head, select_ws(cw); *temp
+		for (temp = &wss[w].head; *temp
 			&& !(found = *temp == c);
 				temp = &(*temp)->next);
 	*temp = c->next;
 
-	if (c == prev_foc)
-		prev_foc = prev_client(current);
-	if (c == current || !head->next)
-		update_focused_client(prev_foc);
+	if (c == wss[cw].prev_foc)
+		wss[cw].prev_foc = prev_client(wss[cw].current);
+	if (c == wss[cw].current || !wss[cw].head->next)
+		update_focused_client(wss[cw].prev_foc);
 	free(c);
 	c = NULL;
-	if (cw == w)
+	if (cur_ws == w)
 		arrange_windows();
 	else
-		select_ws(cw);
+		cw = cur_ws;
 }
 
 /**
@@ -1112,21 +1074,20 @@ void remove_client(Client *c)
  */
 void howm_info(void)
 {
-	int cw = cur_ws;
-	int w, n;
+	int w, n, cur_ws = cw;
 	Client *c;
 #if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
-		for (select_ws(w), c = head, n = 0; c; c = c->next, n++)
+		for (c = wss[w].head, n = 0; c; c = c->next, n++)
 			;
 		printf("m:%d l:%d n:%d w:%d cw:%d s:%d\n", cur_mode,
-		       cur_layout, n, w, cur_ws == cw, cur_state);
+		       wss[w].layout, n, w, cur_ws == w, cur_state);
 	}
-	if (cw != w)
-		select_ws(cw);
+	if (cur_ws != w)
+		cw = cur_ws;
 #else
 	printf("m:%d l:%d n:%d w:%d s:%d\n", cur_mode,
-		cur_layout, n, w, cur_state);
+		wss[cw].layout, n, w, cur_state);
 #endif
 }
 
@@ -1139,8 +1100,8 @@ void enter_event(xcb_generic_event_t *ev)
 {
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *)ev;
 
-	DEBUGP("enter_event for window <%d>", ee->event);
-	if (FOCUS_MOUSE && cur_layout != ZOOM)
+	DEBUGP("enter_event for window <%d>\n", ee->event);
+	if (FOCUS_MOUSE && wss[cw].layout != ZOOM)
 		focus_window(ee->event);
 }
 
@@ -1154,18 +1115,18 @@ void move_down(Client *c)
 	if (!c)
 		return;
 	Client *prev = prev_client(c);
-	Client *n = (c->next) ? c->next : head;
+	Client *n = (c->next) ? c->next : wss[cw].head;
 	if (!prev)
 		return;
-	if (head == c)
-		head = n;
+	if (wss[cw].head == c)
+		wss[cw].head = n;
 	else
 		prev->next = c->next;
 	c->next = (c->next) ? n->next : n;
 	if (n->next == c->next)
 		n->next = c;
 	else
-		head = c;
+		wss[cw].head = c;
 	arrange_windows();
 }
 
@@ -1183,14 +1144,14 @@ void move_up(Client *c)
 	if (!p)
 		return;
 	if (p->next)
-		for (pp = head; pp && pp->next != p; pp = pp->next)
+		for (pp = wss[cw].head; pp && pp->next != p; pp = pp->next)
 			;
 	if (pp)
 		pp->next = c;
 	else
-		head = (head == c) ? c->next : c;
-	p->next = (c->next == head) ? c : c->next;
-	c->next = (c->next == head) ? NULL : p;
+		wss[cw].head = (wss[cw].head == c) ? c->next : c;
+	p->next = (c->next == wss[cw].head) ? c : c->next;
+	c->next = (c->next == wss[cw].head) ? NULL : p;
 	arrange_windows();
 }
 
@@ -1202,10 +1163,10 @@ void move_up(Client *c)
  */
 void focus_next_client(const Arg *arg)
 {
-	if (!current || !head->next)
+	if (!wss[cw].current || !wss[cw].head->next)
 		return;
 	DEBUG("focus_next");
-	update_focused_client(current->next ? current->next : head);
+	update_focused_client(wss[cw].current->next ? wss[cw].current->next : wss[cw].head);
 }
 
 /**
@@ -1216,32 +1177,30 @@ void focus_next_client(const Arg *arg)
  */
 void focus_prev_client(const Arg *arg)
 {
-	if (!current || !head->next)
+	if (!wss[cw].current || !wss[cw].head->next)
 		return;
 	DEBUG("focus_prev");
-	prev_foc = current;
-	update_focused_client(prev_client(prev_foc));
+	wss[cw].prev_foc = wss[cw].current;
+	update_focused_client(prev_client(wss[cw].prev_foc));
 }
 
 /**
- * @brief Change to a different workspace.
+ * @brief Change to a different workspace and map the correct windows.
  *
  * @param arg arg->i indicates which workspace howm should change to.
  */
 void change_ws(const Arg *arg)
 {
-	if (arg->i > WORKSPACES || arg->i <= 0 || arg->i == cur_ws)
+	if (arg->i > WORKSPACES || arg->i <= 0 || arg->i == cw)
 		return;
-	last_ws = cur_ws;
-	select_ws(arg->i);
-	for (Client *c = head; c; c = c->next)
+	last_ws = cw;
+	for (Client *c = wss[arg->i].head; c; c = c->next)
 		xcb_map_window(dpy, c->win);
-	select_ws(last_ws);
-	for (Client *c = head; c; c = c->next)
+	for (Client *c = wss[last_ws].head; c; c = c->next)
 		xcb_unmap_window(dpy, c->win);
-	select_ws(arg->i);
+	cw = arg->i;
 	arrange_windows();
-	update_focused_client(current);
+	update_focused_client(wss[cw].current);
 	howm_info();
 }
 
@@ -1252,10 +1211,7 @@ void change_ws(const Arg *arg)
  */
 void focus_prev_ws(const Arg *arg)
 {
-	const Arg a = { .i	= cur_ws < 2 ? WORKSPACES :
-				  cur_ws - 1
-		      };
-
+	const Arg a = {.i = correct_ws(cw - 1)};
 	change_ws(&a);
 }
 
@@ -1278,8 +1234,7 @@ void focus_last_ws(const Arg *arg)
  */
 void focus_next_ws(const Arg *arg)
 {
-	const Arg a = { .i = (cur_ws + 1) % WORKSPACES };
-
+	const Arg a = {.i = correct_ws(cw + 1)};
 	change_ws(&a);
 }
 
@@ -1291,13 +1246,13 @@ void focus_next_ws(const Arg *arg)
  */
 void change_layout(const Arg *arg)
 {
-	if (arg->i == cur_layout || arg->i >= END_LAYOUT || arg->i < 0)
+	if (arg->i == wss[cw].layout || arg->i >= END_LAYOUT || arg->i < 0)
 		return;
-	prev_layout = cur_layout;
-	cur_layout = arg->i;
+	prev_layout = wss[cw].layout;
+	wss[cw].layout = arg->i;
 	arrange_windows();
-	update_focused_client(current);
-	DEBUGP("Changed layout to %d\n", cur_layout);
+	update_focused_client(wss[cw].current);
+	DEBUGP("Changed layout to %d\n", wss[cw].layout);
 }
 
 /**
@@ -1307,7 +1262,7 @@ void change_layout(const Arg *arg)
  */
 void previous_layout(const Arg *arg)
 {
-	const Arg a = { .i = cur_layout < 1 ? END_LAYOUT - 1 : cur_layout - 1 };
+	const Arg a = { .i = wss[cw].layout < 1 ? END_LAYOUT - 1 : wss[cw].layout - 1 };
 
 	change_layout(&a);
 }
@@ -1319,7 +1274,7 @@ void previous_layout(const Arg *arg)
  */
 void next_layout(const Arg *arg)
 {
-	const Arg a = { .i = (cur_layout + 1) % END_LAYOUT };
+	const Arg a = { .i = (wss[cw].layout + 1) % END_LAYOUT };
 
 	change_layout(&a);
 }
@@ -1363,7 +1318,7 @@ void op_kill(const int type, int cnt)
 	if (type == WORKSPACE) {
 		DEBUGP("Killing %d workspaces.\n", cnt);
 		while (cnt > 0) {
-			kill_ws(correct_ws(cur_ws + cnt - 1));
+			kill_ws(correct_ws(cw + cnt - 1));
 			cnt--;
 		}
 	} else if (type == CLIENT) {
@@ -1380,12 +1335,12 @@ void op_kill(const int type, int cnt)
  */
 void kill_client(void)
 {
-	if (!current)
+	if (!wss[cw].current)
 		return;
 	/* TODO: Kill the window in a nicer way and get it to consistently die. */
-	xcb_kill_client(dpy, current->win);
-	DEBUGP("Killing Client <0x%x>\n", current);
-	remove_client(current);
+	xcb_kill_client(dpy, wss[cw].current->win);
+	DEBUGP("Killing Client <0x%x>\n", wss[cw].current);
+	remove_client(wss[cw].current);
 }
 
 /**
@@ -1398,7 +1353,7 @@ void kill_ws(const int ws)
 	Arg arg = { .i = ws };
 
 	change_ws(&arg);
-	while (head)
+	while (wss[cw].head)
 		kill_client();
 }
 
@@ -1439,25 +1394,25 @@ void move_ws_or_client(const int type, int cnt, bool up)
 	if (type == WORKSPACE) {
 		if (up)
 			for (; cnt > 0; cnt--)
-				move_ws_up(correct_ws(cur_ws + cnt - 1));
+				move_ws_up(correct_ws(cw + cnt - 1));
 		else
 			for (int i = 0; i < cnt; i++)
-				move_ws_down(correct_ws(cur_ws + i));
+				move_ws_down(correct_ws(cw + i));
 	} else if (type == CLIENT) {
 		if (up) {
-			if (current == head)
+			if (wss[cw].current == wss[cw].head)
 				return;
-			Client *c = prev_client(current);
+			Client *c = prev_client(wss[cw].current);
 			/* TODO optimise this by inserting the client only once
 			 * and in the correct location.*/
 			for (; cnt > 0; move_down(c), cnt--)
 				;
 		} else {
-			if (current == prev_client(head))
+			if (wss[cw].current == prev_client(wss[cw].head))
 				return;
 			int cntcopy = cnt;
 			Client *c;
-			for (c = current; cntcopy > 0; c = next_client(c), cntcopy--)
+			for (c = wss[cw].current; cntcopy > 0; c = next_client(c), cntcopy--)
 				;
 			for (; cnt > 0; move_up(c), cnt--)
 				;
@@ -1472,7 +1427,7 @@ void move_ws_or_client(const int type, int cnt, bool up)
  */
 void move_current_down(const Arg *arg)
 {
-	move_down(current);
+	move_down(wss[cw].current);
 }
 
 /**
@@ -1482,7 +1437,7 @@ void move_current_down(const Arg *arg)
  */
 void move_current_up(const Arg *arg)
 {
-	move_up(current);
+	move_up(wss[cw].current);
 }
 
 /**
@@ -1494,34 +1449,32 @@ void move_current_up(const Arg *arg)
 void client_to_ws(Client *c, const int ws)
 {
 	/* Performed for the current workspace. */
-	if (!c || ws == cur_ws)
+	if (!c || ws == cw)
 		return;
 	Client *last;
 	Client *prev = prev_client(c);
-	int cw = cur_ws;
-	Arg arg = { .i = ws };
+	int cur_ws = cw;
 	/* Target workspace. */
-	change_ws(&arg);
-	last = prev_client(head);
-	if (!head)
-		head = c;
+	cw = ws;
+	last = prev_client(wss[cw].head);
+	if (!wss[cw].head)
+		wss[cw].head = c;
 	else if (last)
 		last->next = c;
 	else
-		head->next = c;
+		wss[cw].head->next = c;
 
-	arg.i = cw;
 	/* Current workspace. */
-	change_ws(&arg);
-	if (c == head || !prev)
-		head = next_client(c);
+	cw = cur_ws;
+	if (c == wss[cw].head || !prev)
+		wss[cw].head = next_client(c);
 	else
 		prev->next = next_client(c);
 	c->next = NULL;
 	xcb_unmap_window(dpy, c->win);
-	update_focused_client(prev_foc);
+	update_focused_client(wss[cw].prev_foc);
 	if (FOLLOW_SPAWN) {
-		arg.i = ws;
+		Arg arg = { .i = ws };
 		change_ws(&arg);
 	} else {
 		arrange_windows();
@@ -1535,7 +1488,7 @@ void client_to_ws(Client *c, const int ws)
  */
 void current_to_ws(const Arg *arg)
 {
-	client_to_ws(current, arg->i);
+	client_to_ws(wss[cw].current, arg->i);
 }
 
 /**
@@ -1601,9 +1554,9 @@ void move_ws(int s_ws, int d_ws)
 	Arg arg = { .i = s_ws };
 
 	change_ws(&arg);
-	while (head)
+	while (wss[cw].head)
 		/* The destination workspace. */
-		client_to_ws(head, d_ws);
+		client_to_ws(wss[cw].head, d_ws);
 	change_ws(&arg);
 }
 
@@ -1696,7 +1649,7 @@ void configure_event(xcb_generic_event_t *ev)
 	if (XCB_CONFIG_WINDOW_X & ce->value_mask)
 		vals[i++] = ce->x;
 	if (XCB_CONFIG_WINDOW_Y & ce->value_mask)
-		vals[i++] = ce->y + (BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height);
+		vals[i++] = ce->y + (BAR_BOTTOM ? 0 : wss[cw].bar_height);
 	if (XCB_CONFIG_WINDOW_WIDTH & ce->value_mask)
 		vals[i++] = (ce->width < screen_width) ? ce->width : screen_width;
 	if (XCB_CONFIG_WINDOW_HEIGHT & ce->value_mask)
@@ -1737,8 +1690,8 @@ void draw_clients()
 {
 	Client *c = NULL;
 	int hbw = BORDER_PX / 2;
-	for (c = head; c; c = c->next)
-		if (cur_layout == ZOOM && !ZOOM_GAP)
+	for (c = wss[cw].head; c; c = c->next)
+		if (wss[cw].layout == ZOOM && !ZOOM_GAP)
 			move_resize(c->win, c->x + hbw, c->y + hbw, c->w - hbw, c->h - hbw);
 		else
 			move_resize(c->win, c->x + c->gap + hbw, c->y + c->gap + hbw,
@@ -1820,17 +1773,17 @@ static void change_gaps(const int type, int cnt, int size)
 {
 	Client *c = NULL;
 	if (type == WORKSPACE) {
-		int cw = cur_ws;
+		int cur_ws = cw;
 		while(cnt > 0) {
 			cnt--;
-			select_ws(correct_ws(cw + cnt));
-			workspaces[correct_ws(cw + cnt)].gap += size;
-			for (c = head; c; c = c->next)
+			cw = correct_ws(cur_ws + cnt);
+			wss[correct_ws(cur_ws + cnt)].gap += size;
+			for (c = wss[cw].head; c; c = c->next)
 				change_client_gaps(c, size);
 		}
-		select_ws(cw);
+		cw = cur_ws;
 	} else if (type == CLIENT) {
-		c = current;
+		c = wss[cw].current;
 		while (cnt > 0) {
 			change_client_gaps(c, size);
 			c = next_client(c);
@@ -1847,12 +1800,12 @@ static void change_gaps(const int type, int cnt, int size)
  */
 static void toggle_float(const Arg *arg)
 {
-	if (!current)
+	if (!wss[cw].current)
 		return;
-	current->is_floating = !current->is_floating;
-	if (current->is_floating && CENTER_FLOATING) {
-		current->x = (screen_width / 2) - (current->w / 2);
-		current->y = (screen_height - workspaces[cur_ws].bar_height - current->h) / 2;
+	wss[cw].current->is_floating = !wss[cw].current->is_floating;
+	if (wss[cw].current->is_floating && CENTER_FLOATING) {
+		wss[cw].current->x = (screen_width / 2) - (wss[cw].current->w / 2);
+		wss[cw].current->y = (screen_height - wss[cw].bar_height - wss[cw].current->h) / 2;
 	}
 	arrange_windows();
 }
@@ -1867,10 +1820,10 @@ static void toggle_float(const Arg *arg)
  */
 static void resize_float_width(const Arg *arg)
 {
-	if (!current || !current->is_floating || current->w + arg->i <= 0)
+	if (!wss[cw].current || !wss[cw].current->is_floating || wss[cw].current->w + arg->i <= 0)
 		return;
 
-	current->w += arg->i;
+	wss[cw].current->w += arg->i;
 	draw_clients();
 }
 
@@ -1884,10 +1837,10 @@ static void resize_float_width(const Arg *arg)
  */
 static void resize_float_height(const Arg *arg)
 {
-	if (!current || !current->is_floating || current->h + arg->i <= 0)
+	if (!wss[cw].current || !wss[cw].current->is_floating || wss[cw].current->h + arg->i <= 0)
 		return;
 
-	current->h += arg->i;
+	wss[cw].current->h += arg->i;
 	draw_clients();
 }
 
@@ -1901,9 +1854,9 @@ static void resize_float_height(const Arg *arg)
  */
 static void move_float_y(const Arg *arg)
 {
-	if (!current || !current->is_floating)
+	if (!wss[cw].current || !wss[cw].current->is_floating)
 		return;
-	current->y += arg->i;
+	wss[cw].current->y += arg->i;
 	draw_clients();
 
 }
@@ -1918,9 +1871,9 @@ static void move_float_y(const Arg *arg)
  */
 static void move_float_x(const Arg *arg)
 {
-	if (!current || !current->is_floating)
+	if (!wss[cw].current || !wss[cw].current->is_floating)
 		return;
-	current->x += arg->i;
+	wss[cw].current->x += arg->i;
 	draw_clients();
 
 }
@@ -1932,36 +1885,36 @@ static void move_float_x(const Arg *arg)
  */
 static void teleport_client(const Arg *arg)
 {
-	if (!current || !current->is_floating)
+	if (!wss[cw].current || !wss[cw].current->is_floating)
 		return;
 	switch (arg->i) {
 	case TOP_LEFT:
-		current->x = 0;
-		current->y = BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height;
+		wss[cw].current->x = 0;
+		wss[cw].current->y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
 		break;
 	case TOP_CENTER:
-		current->x = (screen_width - current->w) / 2;
-		current->y = BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height;
+		wss[cw].current->x = (screen_width - wss[cw].current->w) / 2;
+		wss[cw].current->y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
 		break;
 	case TOP_RIGHT:
-		current->x = screen_width - current->w;
-		current->y = BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height;
+		wss[cw].current->x = screen_width - wss[cw].current->w;
+		wss[cw].current->y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
 		break;
 	case CENTER:
-		current->x = (screen_width - current->w) / 2;
-		current->y = (screen_height - workspaces[cur_ws].bar_height - current->h) / 2;
+		wss[cw].current->x = (screen_width - wss[cw].current->w) / 2;
+		wss[cw].current->y = (screen_height - wss[cw].bar_height - wss[cw].current->h) / 2;
 		break;
 	case BOTTOM_LEFT:
-		current->x = 0;
-		current->y = (BAR_BOTTOM ? screen_height - workspaces[cur_ws].bar_height : screen_height) - current->h;
+		wss[cw].current->x = 0;
+		wss[cw].current->y = (BAR_BOTTOM ? screen_height - wss[cw].bar_height : screen_height) - wss[cw].current->h;
 		break;
 	case BOTTOM_CENTER:
-		current->x = (screen_width / 2) - (current->w / 2);
-		current->y = (BAR_BOTTOM ? screen_height - workspaces[cur_ws].bar_height : screen_height) - current->h;
+		wss[cw].current->x = (screen_width / 2) - (wss[cw].current->w / 2);
+		wss[cw].current->y = (BAR_BOTTOM ? screen_height - wss[cw].bar_height : screen_height) - wss[cw].current->h;
 		break;
 	case BOTTOM_RIGHT:
-		current->x = screen_width - current->w;
-		current->y = (BAR_BOTTOM ? screen_height - workspaces[cur_ws].bar_height : screen_height) - current->h;
+		wss[cw].current->x = screen_width - wss[cw].current->w;
+		wss[cw].current->y = (BAR_BOTTOM ? screen_height - wss[cw].bar_height : screen_height) - wss[cw].current->h;
 		break;
 	};
 	draw_clients();
@@ -2032,10 +1985,10 @@ static void delete_win(xcb_window_t win)
 static void resize_master(const Arg *arg)
 {
 	float change = ((float)arg->i) / 100;
-	if (workspaces[cur_ws].master_ratio + change >= 1
-			|| workspaces[cur_ws].master_ratio + change <= 0.1)
+	if (wss[cw].master_ratio + change >= 1
+			|| wss[cw].master_ratio + change <= 0.1)
 		return;
-	workspaces[cur_ws].master_ratio += change;
+	wss[cw].master_ratio += change;
 	arrange_windows();
 }
 
@@ -2046,11 +1999,11 @@ static void resize_master(const Arg *arg)
  */
 static void toggle_bar(const Arg *arg)
 {
-	if (workspaces[cur_ws].bar_height == 0
+	if (wss[cw].bar_height == 0
 			&& BAR_HEIGHT > 0)
-		workspaces[cur_ws].bar_height = BAR_HEIGHT;
-	else if (workspaces[cur_ws].bar_height == BAR_HEIGHT)
-		workspaces[cur_ws].bar_height = 0;
+		wss[cw].bar_height = BAR_HEIGHT;
+	else if (wss[cw].bar_height == BAR_HEIGHT)
+		wss[cw].bar_height = 0;
 	else
 		return;
 	arrange_windows();
