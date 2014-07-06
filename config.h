@@ -153,7 +153,7 @@ static const Motion motions[] = {
  *
  * Note: The first item is NULL as workspaces are indexed from 1.
  */
-static Workspace wss[] = {
+static Workspace workspaces[] = {
 	{NULL},
 	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
 	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
