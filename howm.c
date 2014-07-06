@@ -758,7 +758,7 @@ void grid(void)
 		if (cols - (n % cols) < (i / rows) + 1)
 			rows = n / cols + 1;
 		change_client_geom(c, col_cnt * col_w, client_y + (row_cnt * col_h / rows),
-				col_w - BORDER_PX, (col_h / rows) - BORDER_PX);
+				col_w, (col_h / rows));
 		if (++row_cnt >= rows) {
 			row_cnt = 0;
 			col_cnt++;
@@ -970,9 +970,32 @@ void stack(void)
 {
 	Client *c = NULL;
 	bool vert = (cur_layout == VSTACK);
-	int span = vert ? screen_height - BAR_HEIGHT :  screen_width;
+	int h = screen_height - BAR_HEIGHT;
+	int w = screen_width;
+	/* The size of the direction the clients will be stacked in. e.g.
+	 *
+	 *+---------------------------+--------------+   +
+	 *|                           |              |   |
+	 *|                           |              |   |
+	 *|                           |              |   |
+	 *|                           |              |   |
+	 *|                           |              |   | Span for vert stack
+	 *|                           +--------------+   |
+	 *|                           |              |   |
+	 *|                           |              |   |
+	 *|                           |              |   |
+	 *|                           |              |   |
+	 *|                           +--------------+   |
+	 *|                           |              |   |
+	 *|                           |              |   |
+	 *|                           |              |   |
+	 *|                           |              |   |
+	 *+---------------------------+--------------+   v
+	 */
+	int span = vert ? h : w;
 	int i, n, client_x = 0;
 	int client_y = BAR_BOTTOM ? 0 : BAR_HEIGHT;
+        int ms = (vert ? w : h) * MASTER_RATIO;
 
 	n = get_non_tff_count();
 	if (n <= 1) {
@@ -980,32 +1003,31 @@ void stack(void)
 		return;
 	}
 
-	/* TODO: Need to take into account when this has remainders. */
-	/* TODO: Fix gaps between windows. */
-	int client_span = (span / n) - (2 * BORDER_PX);
-	DEBUG("STACK")
 
 	if (vert) {
 		change_client_geom(head, 0, client_y,
-			    screen_width - (2 * BORDER_PX), client_span);
-		client_y += (BORDER_PX + (span / n));
+			    ms, span);
 	} else {
-		change_client_geom(head, client_x, BAR_BOTTOM ? 0 : BAR_HEIGHT,
-			    client_span, screen_height - (2 * BORDER_PX) - BAR_HEIGHT);
-		client_x += (BORDER_PX + (span / n));
+		change_client_geom(head, 0, BAR_BOTTOM ? 0 : BAR_HEIGHT,
+			span, ms);
 	}
+
+	/* TODO: Need to take into account when this has remainders. */
+	/* TODO: Fix gaps between windows. */
+	int client_span = (span / (n - 1));
+	DEBUG("STACK")
 
 	for (c = head->next, i = 0; i < n - 1; c = c->next, i++) {
 		if (vert) {
-			change_client_geom(c, 0, client_y,
-				    screen_width - (2 * BORDER_PX),
-				    client_span - BORDER_PX);
-			client_y += (BORDER_PX + client_span);
+			change_client_geom(c, ms, client_y,
+				    screen_width - ms,
+				    client_span);
+			client_y += client_span;
 		} else {
-			change_client_geom(c, client_x, BAR_BOTTOM ? 0 : BAR_HEIGHT,
-				    client_span - BORDER_PX,
-				    screen_height - (2 * BORDER_PX) - BAR_HEIGHT);
-			client_x += (BORDER_PX + client_span);
+			change_client_geom(c, client_x, ms,
+				    client_span,
+				    screen_height - BAR_HEIGHT - ms);
+			client_x += client_span;
 		}
 	}
 	draw_clients();
@@ -1666,9 +1688,9 @@ void configure_event(xcb_generic_event_t *ev)
 	if (XCB_CONFIG_WINDOW_Y & ce->value_mask)
 		vals[i++] = ce->y + (BAR_BOTTOM ? 0 : BAR_HEIGHT);
 	if (XCB_CONFIG_WINDOW_WIDTH & ce->value_mask)
-		vals[i++] = (ce->width < screen_width - BORDER_PX) ? ce->width : screen_width - BORDER_PX;
+		vals[i++] = (ce->width < screen_width) ? ce->width : screen_width;
 	if (XCB_CONFIG_WINDOW_HEIGHT & ce->value_mask)
-		vals[i++] = (ce->height < screen_height - BORDER_PX) ? ce->height : screen_height - BORDER_PX;
+		vals[i++] = (ce->height < screen_height) ? ce->height : screen_height;
 	if (XCB_CONFIG_WINDOW_BORDER_WIDTH & ce->value_mask)
 		vals[i++] = ce->border_width;
 	if (XCB_CONFIG_WINDOW_SIBLING & ce->value_mask)
@@ -1704,12 +1726,13 @@ void unmap_event(xcb_generic_event_t *ev)
 void draw_clients()
 {
 	Client *c = NULL;
+	int hbw = BORDER_PX / 2;
 	for (c = head; c; c = c->next)
 		if (cur_layout == ZOOM && !ZOOM_GAP)
-			move_resize(c->win, c->x, c->y, c->w, c->h);
+			move_resize(c->win, c->x + hbw, c->y + hbw, c->w - hbw, c->h - hbw);
 		else
-			move_resize(c->win, c->x + c->gap, c->y + c->gap,
-					c->w - (2 * c->gap), c->h - (2 * c->gap));
+			move_resize(c->win, c->x + c->gap + hbw, c->y + c->gap + hbw,
+					c->w - (2 * c->gap) - hbw, c->h - (2 * c->gap) - hbw);
 }
 
 /**

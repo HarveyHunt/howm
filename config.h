@@ -50,6 +50,8 @@
 #define CENTER_FLOATING true
 /** Draw a gap around a window when in zoom mode. */
 #define ZOOM_GAP true
+/** The ratio of the size of the master window compared to the screen's size. */
+#define MASTER_RATIO 0.7
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
