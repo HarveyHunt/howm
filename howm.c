@@ -342,7 +342,7 @@ void setup(void)
 	border_unfocus = get_colour(BORDER_UNFOCUS);
 	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
 
-	cur_layout = workspaces[cur_ws].layout;
+	cur_layout = wss[cur_ws].layout;
 }
 
 /**
@@ -576,7 +576,7 @@ Client *create_client(xcb_window_t w)
 	else
 		head->next = c;
 	c->win = w;
-	c->gap = workspaces[cur_ws].gap;
+	c->gap = wss[cur_ws].gap;
 	unsigned int vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
 				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0)
 			       };
@@ -594,10 +594,10 @@ void save_ws(int i)
 {
 	if (i < 1 || i > WORKSPACES)
 		return;
-	workspaces[i].layout = cur_layout;
-	workspaces[i].current = current;
-	workspaces[i].head = head;
-	workspaces[i].prev_foc = prev_foc;
+	wss[i].layout = cur_layout;
+	wss[i].current = current;
+	wss[i].head = head;
+	wss[i].prev_foc = prev_foc;
 }
 
 /**
@@ -610,10 +610,10 @@ void save_ws(int i)
 void select_ws(int i)
 {
 	save_ws(cur_ws);
-	cur_layout = workspaces[i].layout;
-	current = workspaces[i].current;
-	head = workspaces[i].head;
-	prev_foc = workspaces[i].prev_foc;
+	cur_layout = wss[i].layout;
+	current = wss[i].current;
+	head = wss[i].head;
+	prev_foc = wss[i].prev_foc;
 	cur_ws = i;
 }
 
@@ -747,8 +747,8 @@ void grid(void)
 
 	Client *c = NULL;
 	int cols, rows, col_w, i = -1, col_cnt = 0, row_cnt= 0;
-	int client_y = BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height;
-	int col_h = screen_height - workspaces[cur_ws].bar_height;
+	int client_y = BAR_BOTTOM ? 0 : wss[cur_ws].bar_height;
+	int col_h = screen_height - wss[cur_ws].bar_height;
 
 	for (cols = 0; cols <= n / 2; cols++)
 		if (cols * cols >= n)
@@ -785,8 +785,8 @@ void zoom(void)
 	Client *c;
 	for (c = head; c; c = c->next)
 		if (!FFT(c))
-			change_client_geom(c, 0, BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height,
-					screen_width, screen_height - workspaces[cur_ws].bar_height);
+			change_client_geom(c, 0, BAR_BOTTOM ? 0 : wss[cur_ws].bar_height,
+					screen_width, screen_height - wss[cur_ws].bar_height);
 	draw_clients();
 }
 
@@ -976,11 +976,11 @@ void stack(void)
 {
 	Client *c = NULL;
 	bool vert = (cur_layout == VSTACK);
-	int h = screen_height - workspaces[cur_ws].bar_height;
+	int h = screen_height - wss[cur_ws].bar_height;
 	int w = screen_width;
 	int i, n, client_x = 0;
-	int client_y = BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height;
-        int ms = (vert ? w : h) * workspaces[cur_ws].master_ratio;
+	int client_y = BAR_BOTTOM ? 0 : wss[cur_ws].bar_height;
+        int ms = (vert ? w : h) * wss[cur_ws].master_ratio;
 	/* The size of the direction the clients will be stacked in. e.g.
 	 *
 	 *+---------------------------+--------------+   +
@@ -1014,7 +1014,7 @@ void stack(void)
 		change_client_geom(head, 0, client_y,
 			    ms, span);
 	} else {
-		change_client_geom(head, 0, BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height,
+		change_client_geom(head, 0, BAR_BOTTOM ? 0 : wss[cur_ws].bar_height,
 			span, ms);
 	}
 
@@ -1032,7 +1032,7 @@ void stack(void)
 		} else {
 			change_client_geom(c, client_x, ms,
 				    client_span,
-				    screen_height - workspaces[cur_ws].bar_height - ms);
+				    screen_height - wss[cur_ws].bar_height - ms);
 			client_x += client_span;
 		}
 	}
@@ -1696,7 +1696,7 @@ void configure_event(xcb_generic_event_t *ev)
 	if (XCB_CONFIG_WINDOW_X & ce->value_mask)
 		vals[i++] = ce->x;
 	if (XCB_CONFIG_WINDOW_Y & ce->value_mask)
-		vals[i++] = ce->y + (BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height);
+		vals[i++] = ce->y + (BAR_BOTTOM ? 0 : wss[cur_ws].bar_height);
 	if (XCB_CONFIG_WINDOW_WIDTH & ce->value_mask)
 		vals[i++] = (ce->width < screen_width) ? ce->width : screen_width;
 	if (XCB_CONFIG_WINDOW_HEIGHT & ce->value_mask)
@@ -1824,7 +1824,7 @@ static void change_gaps(const int type, int cnt, int size)
 		while(cnt > 0) {
 			cnt--;
 			select_ws(correct_ws(cw + cnt));
-			workspaces[correct_ws(cw + cnt)].gap += size;
+			wss[correct_ws(cw + cnt)].gap += size;
 			for (c = head; c; c = c->next)
 				change_client_gaps(c, size);
 		}
@@ -1852,7 +1852,7 @@ static void toggle_float(const Arg *arg)
 	current->is_floating = !current->is_floating;
 	if (current->is_floating && CENTER_FLOATING) {
 		current->x = (screen_width / 2) - (current->w / 2);
-		current->y = (screen_height - workspaces[cur_ws].bar_height - current->h) / 2;
+		current->y = (screen_height - wss[cur_ws].bar_height - current->h) / 2;
 	}
 	arrange_windows();
 }
@@ -1937,31 +1937,31 @@ static void teleport_client(const Arg *arg)
 	switch (arg->i) {
 	case TOP_LEFT:
 		current->x = 0;
-		current->y = BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height;
+		current->y = BAR_BOTTOM ? 0 : wss[cur_ws].bar_height;
 		break;
 	case TOP_CENTER:
 		current->x = (screen_width - current->w) / 2;
-		current->y = BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height;
+		current->y = BAR_BOTTOM ? 0 : wss[cur_ws].bar_height;
 		break;
 	case TOP_RIGHT:
 		current->x = screen_width - current->w;
-		current->y = BAR_BOTTOM ? 0 : workspaces[cur_ws].bar_height;
+		current->y = BAR_BOTTOM ? 0 : wss[cur_ws].bar_height;
 		break;
 	case CENTER:
 		current->x = (screen_width - current->w) / 2;
-		current->y = (screen_height - workspaces[cur_ws].bar_height - current->h) / 2;
+		current->y = (screen_height - wss[cur_ws].bar_height - current->h) / 2;
 		break;
 	case BOTTOM_LEFT:
 		current->x = 0;
-		current->y = (BAR_BOTTOM ? screen_height - workspaces[cur_ws].bar_height : screen_height) - current->h;
+		current->y = (BAR_BOTTOM ? screen_height - wss[cur_ws].bar_height : screen_height) - current->h;
 		break;
 	case BOTTOM_CENTER:
 		current->x = (screen_width / 2) - (current->w / 2);
-		current->y = (BAR_BOTTOM ? screen_height - workspaces[cur_ws].bar_height : screen_height) - current->h;
+		current->y = (BAR_BOTTOM ? screen_height - wss[cur_ws].bar_height : screen_height) - current->h;
 		break;
 	case BOTTOM_RIGHT:
 		current->x = screen_width - current->w;
-		current->y = (BAR_BOTTOM ? screen_height - workspaces[cur_ws].bar_height : screen_height) - current->h;
+		current->y = (BAR_BOTTOM ? screen_height - wss[cur_ws].bar_height : screen_height) - current->h;
 		break;
 	};
 	draw_clients();
@@ -2032,10 +2032,10 @@ static void delete_win(xcb_window_t win)
 static void resize_master(const Arg *arg)
 {
 	float change = ((float)arg->i) / 100;
-	if (workspaces[cur_ws].master_ratio + change >= 1
-			|| workspaces[cur_ws].master_ratio + change <= 0.1)
+	if (wss[cur_ws].master_ratio + change >= 1
+			|| wss[cur_ws].master_ratio + change <= 0.1)
 		return;
-	workspaces[cur_ws].master_ratio += change;
+	wss[cur_ws].master_ratio += change;
 	arrange_windows();
 }
 
@@ -2046,11 +2046,11 @@ static void resize_master(const Arg *arg)
  */
 static void toggle_bar(const Arg *arg)
 {
-	if (workspaces[cur_ws].bar_height == 0
+	if (wss[cur_ws].bar_height == 0
 			&& BAR_HEIGHT > 0)
-		workspaces[cur_ws].bar_height = BAR_HEIGHT;
-	else if (workspaces[cur_ws].bar_height == BAR_HEIGHT)
-		workspaces[cur_ws].bar_height = 0;
+		wss[cur_ws].bar_height = BAR_HEIGHT;
+	else if (wss[cur_ws].bar_height == BAR_HEIGHT)
+		wss[cur_ws].bar_height = 0;
 	else
 		return;
 	arrange_windows();
