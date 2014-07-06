@@ -1100,7 +1100,7 @@ void enter_event(xcb_generic_event_t *ev)
 {
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *)ev;
 
-	DEBUGP("enter_event for window <%d>", ee->event);
+	DEBUGP("enter_event for window <%d>\n", ee->event);
 	if (FOCUS_MOUSE && wss[cw].layout != ZOOM)
 		focus_window(ee->event);
 }
@@ -1454,9 +1454,8 @@ void client_to_ws(Client *c, const int ws)
 	Client *last;
 	Client *prev = prev_client(c);
 	int cur_ws = cw;
-	Arg arg = { .i = ws };
 	/* Target workspace. */
-	change_ws(&arg);
+	cw = ws;
 	last = prev_client(wss[cw].head);
 	if (!wss[cw].head)
 		wss[cw].head = c;
@@ -1465,9 +1464,8 @@ void client_to_ws(Client *c, const int ws)
 	else
 		wss[cw].head->next = c;
 
-	arg.i = cur_ws;
 	/* Current workspace. */
-	change_ws(&arg);
+	cw = cur_ws;
 	if (c == wss[cw].head || !prev)
 		wss[cw].head = next_client(c);
 	else
@@ -1476,7 +1474,7 @@ void client_to_ws(Client *c, const int ws)
 	xcb_unmap_window(dpy, c->win);
 	update_focused_client(wss[cw].prev_foc);
 	if (FOLLOW_SPAWN) {
-		arg.i = ws;
+		Arg arg = { .i = ws };
 		change_ws(&arg);
 	} else {
 		arrange_windows();
