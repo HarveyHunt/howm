@@ -1154,6 +1154,7 @@ void move_down(Client *c)
 		n->next = c;
 	else
 		wss[cw].head = c;
+	log_info("Moved client <0x%x> on workspace <%d> down");
 	arrange_windows();
 }
 
@@ -1179,6 +1180,7 @@ void move_up(Client *c)
 		wss[cw].head = (wss[cw].head == c) ? c->next : c;
 	p->next = (c->next == wss[cw].head) ? c : c->next;
 	c->next = (c->next == wss[cw].head) ? NULL : p;
+	log_info("Moved client <0x%x> on workspace <%d> down");
 	arrange_windows();
 }
 
@@ -1192,7 +1194,7 @@ void focus_next_client(const Arg *arg)
 {
 	if (!wss[cw].current || !wss[cw].head->next)
 		return;
-	DEBUG("focus_next");
+	log_info("Focusing next client");
 	update_focused_client(wss[cw].current->next ? wss[cw].current->next : wss[cw].head);
 }
 
@@ -1206,7 +1208,7 @@ void focus_prev_client(const Arg *arg)
 {
 	if (!wss[cw].current || !wss[cw].head->next)
 		return;
-	DEBUG("focus_prev");
+	log_info("Focusing previous client");
 	wss[cw].prev_foc = wss[cw].current;
 	update_focused_client(prev_client(wss[cw].prev_foc));
 }
@@ -1221,6 +1223,7 @@ void change_ws(const Arg *arg)
 	if (arg->i > WORKSPACES || arg->i <= 0 || arg->i == cw)
 		return;
 	last_ws = cw;
+	log_info("Changing from workspace <%d> to <%d>.", last_ws, arg->i);
 	for (Client *c = wss[arg->i].head; c; c = c->next)
 		xcb_map_window(dpy, c->win);
 	for (Client *c = wss[last_ws].head; c; c = c->next)
@@ -1239,6 +1242,7 @@ void change_ws(const Arg *arg)
 void focus_prev_ws(const Arg *arg)
 {
 	const Arg a = {.i = correct_ws(cw - 1)};
+	log_info("Focusing previous workspace");
 	change_ws(&a);
 }
 
@@ -1250,7 +1254,7 @@ void focus_prev_ws(const Arg *arg)
 void focus_last_ws(const Arg *arg)
 {
 	const Arg a = { .i = last_ws };
-
+	log_info("Focusing last workspace");
 	change_ws(&a);
 }
 
@@ -1262,6 +1266,7 @@ void focus_last_ws(const Arg *arg)
 void focus_next_ws(const Arg *arg)
 {
 	const Arg a = {.i = correct_ws(cw + 1)};
+	log_info("Focusing previous workspace");
 	change_ws(&a);
 }
 
@@ -1279,7 +1284,7 @@ void change_layout(const Arg *arg)
 	wss[cw].layout = arg->i;
 	arrange_windows();
 	update_focused_client(wss[cw].current);
-	DEBUGP("Changed layout to %d", wss[cw].layout);
+	log_info("Changed layout from %d to %d", prev_layout,  wss[cw].layout);
 }
 
 /**
@@ -1290,7 +1295,7 @@ void change_layout(const Arg *arg)
 void previous_layout(const Arg *arg)
 {
 	const Arg a = { .i = wss[cw].layout < 1 ? END_LAYOUT - 1 : wss[cw].layout - 1 };
-
+	log_info("Changing to previous layout (%d)", a.i);
 	change_layout(&a);
 }
 
@@ -1302,7 +1307,7 @@ void previous_layout(const Arg *arg)
 void next_layout(const Arg *arg)
 {
 	const Arg a = { .i = (wss[cw].layout + 1) % END_LAYOUT };
-
+	log_info("Changing to next layout (%d)", a.i);
 	change_layout(&a);
 }
 
@@ -1314,7 +1319,7 @@ void next_layout(const Arg *arg)
 void last_layout(const Arg *arg)
 {
 	const Arg a = { .i = prev_layout };
-
+	log_info("Changing to last layout (%d)", a.i);
 	change_layout(&a);
 }
 
@@ -1331,6 +1336,7 @@ void change_mode(const Arg *arg)
 	if (arg->i >= END_MODES || arg->i == cur_mode)
 		return;
 	cur_mode = arg->i;
+	log_info("Changing to mode %d", cur_mode);
 	howm_info();
 }
 
