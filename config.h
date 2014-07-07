@@ -52,6 +52,13 @@
 #define ZOOM_GAP true
 /** The ratio of the size of the master window compared to the screen's size. */
 #define MASTER_RATIO 0.7
+/** How much detail should be logged. A LOG_LEVEL of INFO will log
+ * everything, LOG_WARN will log warnings and errors and LOG_ERR will log only
+ * errors.
+ *
+ * LOG_NONE means nothing will be logged.
+ */
+#define LOG_LEVEL LOG_INFO
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
