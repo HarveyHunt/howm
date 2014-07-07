@@ -85,7 +85,7 @@ static const Key keys[] = {
 	{ MODKEY | ShiftMask, NORMAL, XK_f, change_mode, {.i = FLOATING} },
 	{ MODKEY, NORMAL, XK_space, toggle_float, {NULL} },
 	{ MODKEY, NORMAL, XK_Delete, quit, {.i = EXIT_SUCCESS} },
-	{ MODKEY | ShiftMask, NORMAL, XK_Delete, quit, {EXIT_FAILURE} },
+	{ MODKEY | ShiftMask, NORMAL, XK_Delete, quit, {.i = EXIT_FAILURE} },
 	{ MODKEY, NORMAL, XK_m, resize_master, {.i = 5} },
 	{ MODKEY | ShiftMask, NORMAL, XK_m, resize_master, {.i = -5} },
 	{ MODKEY, NORMAL, XK_b, toggle_bar, {NULL} },
