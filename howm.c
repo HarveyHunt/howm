@@ -1453,12 +1453,13 @@ void move_current_up(const Arg *arg)
  */
 void client_to_ws(Client *c, const int ws)
 {
-	/* Performed for the current workspace. */
-	if (!c || ws == cw)
-		return;
 	Client *last;
 	Client *prev = prev_client(c);
 	int cur_ws = cw;
+
+	/* Performed for the current workspace. */
+	if (!c || ws == cw)
+		return;
 	/* Target workspace. */
 	cw = ws;
 	last = prev_client(wss[cw].head);
@@ -1648,8 +1649,8 @@ void configure_event(xcb_generic_event_t *ev)
 {
 	xcb_configure_request_event_t *ce = (xcb_configure_request_event_t *)ev;
 	Client *c = find_client_by_win(ce->window);
-	log_info("Received configure request for client <%p>", c);
 	unsigned int vals[7], i = 0;
+	log_info("Received configure request for client <%p>", c);
 
 	/* TODO: Need to test whether gaps etc need to be taken into account
 	 * here. */
@@ -2043,6 +2044,8 @@ Client *create_client(xcb_window_t w)
 {
 	Client *c = (Client *)calloc(1, sizeof(Client));
 	Client *t = prev_client(wss[cw].head); /* Get the last element. */
+	unsigned int vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
+				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0)};
 
 	if (!c) {
 		log_err("Can't allocate memory for client.");
@@ -2056,8 +2059,6 @@ Client *create_client(xcb_window_t w)
 		wss[cw].head->next = c;
 	c->win = w;
 	c->gap = wss[cw].gap;
-	unsigned int vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
-				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0)};
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_EVENT_MASK, vals);
 	return c;
 }
