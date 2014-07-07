@@ -152,18 +152,18 @@ typedef struct {
 } Workspace;
 
 /* Operators */
-static void op_kill(const int type, int cnt);
-static void op_move_up(const int type, int cnt);
-static void op_move_down(const int type, int cnt);
-static void op_focus_down(const int type, int cnt);
-static void op_focus_up(const int type, int cnt);
-static void op_shrink_gaps(const int type, int cnt);
-static void op_grow_gaps(const int type, int cnt);
+static void op_kill(const unsigned int type, int cnt);
+static void op_move_up(const unsigned int type, int cnt);
+static void op_move_down(const unsigned int type, int cnt);
+static void op_focus_down(const unsigned int type, int cnt);
+static void op_focus_up(const unsigned int type, int cnt);
+static void op_shrink_gaps(const unsigned int type, int cnt);
+static void op_grow_gaps(const unsigned int type, int cnt);
 
 /* Clients */
 static void teleport_client(const Arg *arg);
 static void change_client_gaps(Client *c, int size);
-static void change_gaps(const int type, int cnt, int size);
+static void change_gaps(const unsigned int type, int cnt, int size);
 static void move_current_down(const Arg *arg);
 static void move_current_up(const Arg *arg);
 static void kill_client(void);
@@ -195,7 +195,6 @@ static void focus_next_ws(const Arg *arg);
 static void focus_prev_ws(const Arg *arg);
 static void focus_last_ws(const Arg *arg);
 static void change_ws(const Arg *arg);
-static void save_ws(int i);
 static int prev_ws(int ws);
 static int next_ws(int ws);
 static int correct_ws(int ws);
@@ -561,7 +560,7 @@ void map_event(xcb_generic_event_t *ev)
 		return;
 	}
 	free(wa);
-	log_info("Mapping request for window %d");
+	log_info("Mapping request for window <%d>", me->window);
 	/* Rule stuff needs to be here. */
 	c = create_client(me->window);
 
@@ -1122,7 +1121,7 @@ void move_down(Client *c)
 		n->next = c;
 	else
 		wss[cw].head = c;
-	log_info("Moved client <%p> on workspace <%d> down");
+	log_info("Moved client <%p> on workspace <%d> down", c, cw);
 	arrange_windows();
 }
 
@@ -1148,7 +1147,7 @@ void move_up(Client *c)
 		wss[cw].head = (wss[cw].head == c) ? c->next : c;
 	p->next = (c->next == wss[cw].head) ? c : c->next;
 	c->next = (c->next == wss[cw].head) ? NULL : p;
-	log_info("Moved client <%p> on workspace <%d> down");
+	log_info("Moved client <%p> on workspace <%d> down", c, cw);
 	arrange_windows();
 }
 
@@ -1315,7 +1314,7 @@ void change_mode(const Arg *arg)
  * @param type Whether to kill workspaces or clients.
  * @param cnt How many "things" to kill.
  */
-void op_kill(const int type, int cnt)
+void op_kill(const unsigned int type, int cnt)
 {
 	if (type == WORKSPACE) {
 		log_info("Killing %d workspaces", cnt);
@@ -1366,7 +1365,7 @@ void kill_ws(const int ws)
  * @param type Whether to move a client or workspace.
  * @param cnt How many "things" to move.
  */
-void op_move_down(const int type, int cnt)
+void op_move_down(const unsigned int type, int cnt)
 {
 	move_ws_or_client(type, cnt, false);
 }
@@ -1377,7 +1376,7 @@ void op_move_down(const int type, int cnt)
  * @param type Whether to move a client or workspace.
  * @param cnt How many "things" to move.
  */
-void op_move_up(const int type, int cnt)
+void op_move_up(const unsigned int type, int cnt)
 {
 	move_ws_or_client(type, cnt, true);
 }
@@ -1479,7 +1478,7 @@ void client_to_ws(Client *c, const int ws)
 	c->next = NULL;
 	xcb_unmap_window(dpy, c->win);
 	update_focused_client(wss[cw].prev_foc);
-	log_info("Moved client <%d> from <%d> to <%d>", c, cur_ws, ws);
+	log_info("Moved client <%p> from <%d> to <%d>", c, cur_ws, ws);
 	if (FOLLOW_SPAWN) {
 		Arg arg = { .i = ws };
 		change_ws(&arg);
@@ -1608,7 +1607,7 @@ void focus_window(xcb_window_t win)
  * @param type Whether to focus on clients or workspaces.
  * @param cnt The number of times to move focus.
  */
-void op_focus_up(const int type, int cnt)
+void op_focus_up(const unsigned int type, int cnt)
 {
 	while (cnt > 0) {
 		if (type == CLIENT)
@@ -1627,7 +1626,7 @@ void op_focus_up(const int type, int cnt)
  * @param type Whether to focus on clients or workspaces.
  * @param cnt The number of times to move focus.
  */
-void op_focus_down(const int type, int cnt)
+void op_focus_down(const unsigned int type, int cnt)
 {
 	while (cnt > 0) {
 		if (type == CLIENT)
@@ -1738,7 +1737,7 @@ void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t 
  * workspace.
  * @param cnt The amount of clients or workspaces to perform the operation on.
  */
-static void op_shrink_gaps(const int type, int cnt)
+static void op_shrink_gaps(const unsigned int type, int cnt)
 {
 	change_gaps(type, cnt, -OP_GAP_SIZE);
 }
@@ -1754,7 +1753,7 @@ static void op_shrink_gaps(const int type, int cnt)
  * workspace.
  * @param cnt The amount of clients or workspaces to perform the operation on.
  */
-static void op_grow_gaps(const int type, int cnt)
+static void op_grow_gaps(const unsigned int type, int cnt)
 {
 	change_gaps(type, cnt, OP_GAP_SIZE);
 }
@@ -1767,7 +1766,7 @@ static void op_grow_gaps(const int type, int cnt)
  */
 static void change_client_gaps(Client *c, int size)
 {
-	if (c->gap + size <= 0 || c->is_fullscreen || c->is_floating)
+	if ((int)c->gap + size <= 0 || c->is_fullscreen || c->is_floating)
 		return;
 	c->gap += size;
 	draw_clients();
@@ -1781,7 +1780,7 @@ static void change_client_gaps(Client *c, int size)
  * @param size The amount of pixels to change the gap size by. This is
  * configured through OP_GAP_SIZE.
  */
-static void change_gaps(const int type, int cnt, int size)
+static void change_gaps(const unsigned int type, int cnt, int size)
 {
 	Client *c = NULL;
 	log_info("Changing gaps");
@@ -1835,7 +1834,7 @@ static void toggle_float(const Arg *arg)
  */
 static void resize_float_width(const Arg *arg)
 {
-	if (!wss[cw].current || !wss[cw].current->is_floating || wss[cw].current->w + arg->i <= 0)
+	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->w + arg->i <= 0)
 		return;
 	log_info("Resizing width of client <%p> from %d to %d", wss[cw].current, wss[cw].current->w, arg->i);
 	wss[cw].current->w += arg->i;
@@ -1852,7 +1851,7 @@ static void resize_float_width(const Arg *arg)
  */
 static void resize_float_height(const Arg *arg)
 {
-	if (!wss[cw].current || !wss[cw].current->is_floating || wss[cw].current->h + arg->i <= 0)
+	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->h + arg->i <= 0)
 		return;
 	log_info("Resizing height of client <%p> from %d to %d", wss[cw].current, wss[cw].current->h, arg->i);
 	wss[cw].current->h += arg->i;
@@ -1959,7 +1958,7 @@ static void cleanup(void)
 {
 	xcb_window_t *w;
 	xcb_query_tree_reply_t *q;
-	unsigned int i;
+	uint16_t i;
 
 	log_warn("Cleaning up");
 	xcb_ungrab_key(dpy, XCB_GRAB_ANY, screen->root, XCB_MOD_MASK_ANY);
@@ -2008,7 +2007,7 @@ static void resize_master(const Arg *arg)
 	if (wss[cw].master_ratio + change >= 1
 			|| wss[cw].master_ratio + change <= 0.1)
 		return;
-	log_info("Resizing master_ratio from <%d> to <%d>", wss[cw].master_ratio, wss[cw].master_ratio + change);
+	log_info("Resizing master_ratio from <%f.2> to <%f.2>", wss[cw].master_ratio, wss[cw].master_ratio + change);
 	wss[cw].master_ratio += change;
 	arrange_windows();
 }
@@ -2044,7 +2043,7 @@ Client *create_client(xcb_window_t w)
 {
 	Client *c = (Client *)calloc(1, sizeof(Client));
 	Client *t = prev_client(wss[cw].head); /* Get the last element. */
-	unsigned int vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
+	uint32_t vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
 				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0)};
 
 	if (!c) {
