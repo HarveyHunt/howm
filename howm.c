@@ -2065,9 +2065,17 @@ Client *create_client(xcb_window_t w)
 	return c;
 }
 
+/**
+ * @brief Moves the current window to the master window, when in stack mode.
+ *
+ * @param arg Unused
+ */
 static void make_master(const Arg *arg)
 {
-	if (!wss[cw].current || !wss[cw].head->next || wss[cw].head == wss[cw].current)
+	if (!wss[cw].current || !wss[cw].head->next
+			|| wss[cw].head == wss[cw].current
+			|| !(wss[cw].layout == HSTACK
+				|| wss[cw].layout == VSTACK))
 		return;
         while (wss[cw].current != wss[cw].head)
 		move_up(wss[cw].current);
