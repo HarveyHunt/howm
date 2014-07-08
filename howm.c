@@ -186,6 +186,7 @@ static void resize_float_width(const Arg *arg);
 static void resize_float_height(const Arg *arg);
 static void move_float_y(const Arg *arg);
 static void move_float_x(const Arg *arg);
+static void make_master(const Arg *arg);
 
 /* Workspaces */
 static void kill_ws(const int ws);
@@ -2062,4 +2063,13 @@ Client *create_client(xcb_window_t w)
 	c->gap = wss[cw].gap;
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_EVENT_MASK, vals);
 	return c;
+}
+
+static void make_master(const Arg *arg)
+{
+	if (!wss[cw].current || !wss[cw].head->next || wss[cw].head == wss[cw].current)
+		return;
+        while (wss[cw].current != wss[cw].head)
+		move_up(wss[cw].current);
+	update_focused_client(wss[cw].head);
 }

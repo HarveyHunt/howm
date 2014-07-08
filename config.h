@@ -58,7 +58,7 @@
  *
  * LOG_NONE means nothing will be logged.
  */
-#define LOG_LEVEL LOG_INFO
+#define LOG_LEVEL LOG_WARN
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
@@ -114,6 +114,7 @@ static const Key keys[] = {
 	{ MODKEY, FOCUS, XK_Escape, change_mode, {.i = NORMAL} },
 	{ MODKEY, FOCUS, XK_l, focus_next_ws, {NULL} },
 	{ MODKEY, FOCUS, XK_h, focus_prev_ws, {NULL} },
+	{ MODKEY, FOCUS, XK_m, make_master, {NULL} },
 	{ MODKEY, FOCUS, XK_1, change_ws, {.i = 1} },
 	{ MODKEY, FOCUS, XK_2, change_ws, {.i = 2} },
 	{ MODKEY, FOCUS, XK_3, change_ws, {.i = 3} },
