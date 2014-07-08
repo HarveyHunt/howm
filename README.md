@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/HarveyHunt/howm.svg?branch=develop)](https://travis-ci.org/HarveyHunt/howm)
 [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=harveyhunt&url=https://github.com/HarveyHunt/howm&title=howm&language=&tags=github&category=software) 
 
+###Beta software, at best.
 
 A lightweight, tiling X11 window manager that mimics vi by offering operators, motions and modes.
 
