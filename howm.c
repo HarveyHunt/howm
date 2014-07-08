@@ -229,8 +229,8 @@ static void grab_keys(void);
 static xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym);
 static void grab_keycode(xcb_keycode_t *keycode, const int mod);
 static void elevate_window(xcb_window_t win);
-static void move_resize(xcb_window_t win, int x, int y, int w, int h);
-static void set_border_width(xcb_window_t win, int w);
+static void move_resize(xcb_window_t win, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+static void set_border_width(xcb_window_t win, uint16_t w);
 static void get_atoms(char **names, xcb_atom_t *atoms);
 static void check_other_wm(void);
 static xcb_keysym_t keycode_to_keysym(xcb_keycode_t keycode);
@@ -695,9 +695,10 @@ void grid(void)
 {
 	int n = get_non_tff_count();
 	Client *c = NULL;
-	int cols, rows, col_w, i = -1, col_cnt = 0, row_cnt= 0;
-	int client_y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
-	int col_h = screen_height - wss[cw].bar_height;
+	int cols, rows, i = -1, col_cnt = 0, row_cnt= 0;
+	uint16_t col_w;
+	uint16_t client_y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
+	uint16_t col_h = screen_height - wss[cw].bar_height;
 
 	if (n == 1) {
 		zoom();
@@ -756,9 +757,9 @@ void zoom(void)
  * @param h The new height of the window.
  */
 void move_resize(xcb_window_t win,
-		 int x, int y, int w, int h)
+		 uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
-	unsigned int position[] = { x, y, w, h };
+	uint32_t position[] = { x, y, w, h };
 	xcb_configure_window(dpy, win, MOVE_RESIZE_MASK, position);
 }
 
@@ -864,7 +865,7 @@ void grab_keys(void)
 void grab_keycode(xcb_keycode_t *keycode, const int mod)
 {
 	unsigned int j, k;
-	unsigned int mods[] = { 0, XCB_MOD_MASK_LOCK };
+	uint16_t mods[] = { 0, XCB_MOD_MASK_LOCK };
 
 	for (j = 0; keycode[j] != XCB_NO_SYMBOL; j++)
 		for (k = 0; k < LENGTH(mods); k++)
@@ -879,9 +880,9 @@ void grab_keycode(xcb_keycode_t *keycode, const int mod)
  * @param win The window that will have its border width changed.
  * @param w The new width of the window's border.
  */
-void set_border_width(xcb_window_t win, int w)
+void set_border_width(xcb_window_t win, uint16_t w)
 {
-	unsigned int width[1] = { w };
+	uint32_t width[1] = { w };
 	xcb_configure_window(dpy, win, XCB_CONFIG_WINDOW_BORDER_WIDTH, width);
 }
 
@@ -892,7 +893,7 @@ void set_border_width(xcb_window_t win, int w)
  */
 void elevate_window(xcb_window_t win)
 {
-	unsigned int stack_mode[1] = { XCB_STACK_MODE_ABOVE };
+	uint32_t stack_mode[1] = { XCB_STACK_MODE_ABOVE };
 	log_info("Moving window %d to the front", win);
 	xcb_configure_window(dpy, win, XCB_CONFIG_WINDOW_STACK_MODE, stack_mode);
 }
@@ -932,11 +933,12 @@ void stack(void)
 {
 	Client *c = NULL;
 	bool vert = (wss[cw].layout == VSTACK);
-	int h = screen_height - wss[cw].bar_height;
-	int w = screen_width;
-	int i, n = get_non_tff_count(), client_x = 0;
-	int client_y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
-        int ms = (vert ? w : h) * wss[cw].master_ratio;
+	uint16_t h = screen_height - wss[cw].bar_height;
+	uint16_t w = screen_width;
+	int i, n = get_non_tff_count();
+	uint16_t client_x = 0;
+	uint16_t client_y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
+        uint16_t ms = (vert ? w : h) * wss[cw].master_ratio;
 	/* The size of the direction the clients will be stacked in. e.g.
 	 *
 	 *+---------------------------+--------------+   +
@@ -957,10 +959,10 @@ void stack(void)
 	 *|                           |              |   |
 	 *+---------------------------+--------------+   v
 	 */
-	int span = vert ? h : w;
+	uint16_t span = vert ? h : w;
 	/* TODO: Need to take into account when this has remainders. */
 	/* TODO: Fix gaps between windows. */
-	int client_span = (span / (n - 1));
+	uint16_t client_span = (span / (n - 1));
 
 	if (n <= 1) {
 		zoom();
@@ -1648,7 +1650,7 @@ void configure_event(xcb_generic_event_t *ev)
 {
 	xcb_configure_request_event_t *ce = (xcb_configure_request_event_t *)ev;
 	Client *c = find_client_by_win(ce->window);
-	unsigned int vals[7], i = 0;
+	uint32_t vals[7], i = 0;
 	log_info("Received configure request for client <%p>", c);
 
 	/* TODO: Need to test whether gaps etc need to be taken into account

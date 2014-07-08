@@ -2,3 +2,5 @@
 -boolops
 -paramuse
 -warnposix
+-fullinitblock
+-casebreak
