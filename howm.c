@@ -346,7 +346,7 @@ static bool running = true;
 void setup(void)
 {
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
-	if (screen == NULL)
+	if (!screen)
 		log_err("Can't acquire the default screen.");
 	screen_height = screen->height_in_pixels;
 	screen_width = screen->width_in_pixels;
@@ -1077,7 +1077,7 @@ void howm_info(void)
 	for (w = 1; w <= WORKSPACES; w++) {
 		for (c = wss[w].head, n = 0; c; c = c->next, n++)
 			;
-		printf("m:%d l:%d n:%d w:%d cw:%d s:%d\n", cur_mode,
+		printf("m:%u l:%d n:%d w:%d cw:%d s:%u\n", cur_mode,
 		       wss[w].layout, n, w, cur_ws == w, cur_state);
 	}
 	if (cur_ws != w)

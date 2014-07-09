@@ -4,3 +4,6 @@
 -warnposix
 -fullinitblock
 -casebreak
+-predboolint
++boolint
++matchanyintegral
