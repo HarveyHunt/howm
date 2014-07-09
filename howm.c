@@ -10,6 +10,7 @@
 #include <xcb/xcb.h>
 #include <xcb/xcb_icccm.h>
 #include <xcb/xcb_keysyms.h>
+#include <xcb/xcb_ewmh.h>
 
 /**
  * @file howm.c
@@ -247,6 +248,7 @@ static void focus_window(xcb_window_t win);
 static void quit(const Arg *arg);
 static void cleanup(void);
 static void delete_win(xcb_window_t win);
+static void ewmh_setup(void);
 
 enum { ZOOM, GRID, HSTACK, VSTACK, END_LAYOUT };
 enum { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
@@ -276,27 +278,30 @@ static void(*layout_handler[]) (void) = {
 	[VSTACK] = stack
 };
 
+#include "config.h"
+
 static void (*operator_func)(const unsigned int type, int cnt);
 
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 static char *NET_ATOM_NAMES[] = { "_NET_WM_STATE_FULLSCREEN", "_NET_SUPPORTED",
-				  "_NET_WM_STATE",	      "_NET_ACTIVE_WINDOW"
+				  "_NET_WM_STATE", "_NET_ACTIVE_WINDOW", "_NET_NUMBER_OF_DESKTOPS"
 				};
 static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)],
 	net_atoms[LENGTH(NET_ATOM_NAMES)];
 static xcb_screen_t *screen;
+static xcb_ewmh_connection_t *ewmh;
 static int numlockmask, retval;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
 static int last_ws, prev_layout;
-static int cw = 1;
+static int cw = DEFAULT_WORKSPACE;
 static uint32_t border_focus, border_unfocus, border_prev_focus;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE;
 static unsigned int cur_cnt = 1;
 static uint16_t screen_height, screen_width;
 static bool running = true;
 
-#include "config.h"
+
 
 /* Add comments so that splint ignores this as it doesn't support variadic
  * macros.
@@ -363,6 +368,31 @@ void setup(void)
 	border_focus = get_colour(BORDER_FOCUS);
 	border_unfocus = get_colour(BORDER_UNFOCUS);
 	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
+}
+
+void ewmh_setup(void)
+{
+	xcb_intern_atom_cookie_t *cookie;
+
+	if (!ewmh)
+		log_err("Unable to set ewmh atoms\n");
+	cookie = xcb_ewmh_init_atoms(dpy, ewmh);
+	xcb_ewmh_init_atoms_replies(ewmh, cookie, (void *)0);
+
+	xcb_atom_t net_atoms[] = { ewmh->_NET_SUPPORTED,
+				ewmh->_NET_WM_STATE_FULLSCREEN,
+				ewmh->_NET_WM_STATE,
+				ewmh->_NET_ACTIVE_WINDOW,
+				ewmh->_NET_NUMBER_OF_DESKTOPS };
+
+	xcb_ewmh_set_supported(ewmh, 0, LENGTH(net_atoms), net_atoms);
+	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
+	xcb_ewmh_set_current_desktop(ewmh, 0, DEFAULT_WORKSPACE);
+
+	xcb_change_property(dpy, XCB_PROP_MODE_REPLACE, screen->root,
+			net_atoms[NET_SUPPORTED], XCB_ATOM_ATOM, 32,
+			LENGTH(net_atoms), net_atoms);
+
 }
 
 /**
@@ -1975,6 +2005,9 @@ static void cleanup(void)
 	}
 	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, screen->root,
 			XCB_CURRENT_TIME);
+	xcb_ewmh_connection_wipe(ewmh);
+	if (ewmh)
+		free(ewmh);
 }
 
 /**

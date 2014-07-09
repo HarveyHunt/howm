@@ -59,6 +59,7 @@
  * LOG_NONE means nothing will be logged.
  */
 #define LOG_LEVEL LOG_WARN
+#define DEFAULT_WORKSPACE 1
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
