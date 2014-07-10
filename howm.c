@@ -285,7 +285,7 @@ static void (*operator_func)(const unsigned int type, int cnt);
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
-xcb_atom_t net_atoms[];
+static xcb_atom_t net_atoms;
 static xcb_screen_t *screen;
 static xcb_ewmh_connection_t *ewmh;
 static int numlockmask, retval;
@@ -367,10 +367,15 @@ void setup(void)
 	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
 }
 
+/**
+ * @brief Create the EWMH connection, request all of the atoms and set some
+ * sensible defaults for them.
+ */
 void ewmh_setup(void)
 {
 	xcb_intern_atom_cookie_t *cookie;
-	xcb_ewmh_coordinates_t viewport[4] = {0, 0, screen_width, screen_height};
+	xcb_ewmh_coordinates_t viewport[4] = { 0, 0, screen_width, screen_height };
+	xcb_ewmh_geometry_t workarea[4] = { 0, 0, screen_width, screen_height };
 
 	ewmh = calloc(1, sizeof(xcb_ewmh_connection_t));
 	if (!ewmh)
@@ -383,13 +388,15 @@ void ewmh_setup(void)
 				ewmh->_NET_DESKTOP_VIEWPORT,
 				ewmh->_NET_WM_STATE,
 				ewmh->_NET_ACTIVE_WINDOW,
-				ewmh->_NET_NUMBER_OF_DESKTOPS };
+				ewmh->_NET_NUMBER_OF_DESKTOPS,
+				ewmh->_NET_WORKAREA };
 
 	xcb_ewmh_set_supported(ewmh, 0, LENGTH(net_atoms), net_atoms);
-	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(net_atoms), viewport);
+	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewport), viewport);
 	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
 	xcb_ewmh_set_current_desktop(ewmh, 0, DEFAULT_WORKSPACE);
 	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
+	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(viewport), workarea);
 }
 
 /**
@@ -804,7 +811,7 @@ void update_focused_client(Client *c)
 
 	if (!wss[cw].head) {
 		wss[cw].prev_foc = wss[cw].current = NULL;
-		xcb_delete_property(dpy, screen->root, net_atoms[NET_ACTIVE_WINDOW]);
+		xcb_delete_property(dpy, screen->root, ewmh->_NET_ACTIVE_WINDOW);
 		return;
 	} else if (c == wss[cw].prev_foc) {
 		wss[cw].current = (wss[cw].prev_foc ? wss[cw].prev_foc : wss[cw].head);
