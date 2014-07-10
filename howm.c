@@ -387,11 +387,7 @@ void ewmh_setup(void)
 	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
 	xcb_ewmh_set_current_desktop(ewmh, 0, DEFAULT_WORKSPACE);
 	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
-
-	xcb_change_property(dpy, XCB_PROP_MODE_REPLACE, screen->root,
-			net_atoms[NET_SUPPORTED], XCB_ATOM_ATOM, 32,
-			LENGTH(net_atoms), net_atoms);
-
+	xcb_ewmh_set_supported(ewmh, 0, LENGTH(net_atoms), net_atoms);
 }
 
 /**
@@ -840,8 +836,8 @@ void update_focused_client(Client *c)
 	for (float_trans = 0; float_trans <= all; ++float_trans)
 		elevate_window(windows[all - float_trans]);
 
-	xcb_change_property(dpy, XCB_PROP_MODE_REPLACE, screen->root,
-			    net_atoms[NET_ACTIVE_WINDOW], XCB_ATOM_WINDOW, 32, 1, &wss[cw].current->win);
+	xcb_ewmh_set_active_window(ewmh, 0, wss[cw].current->win);
+
 	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, wss[cw].current->win,
 			    XCB_CURRENT_TIME);
 	arrange_windows();
