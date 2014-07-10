@@ -370,6 +370,7 @@ void setup(void)
 void ewmh_setup(void)
 {
 	xcb_intern_atom_cookie_t *cookie;
+	xcb_ewmh_coordinates_t viewport[4] = {0, 0, screen_width, screen_height};
 
 	ewmh = calloc(1, sizeof(xcb_ewmh_connection_t));
 	if (!ewmh)
@@ -379,21 +380,22 @@ void ewmh_setup(void)
 
 	xcb_atom_t net_atoms[] = { ewmh->_NET_SUPPORTED,
 				ewmh->_NET_WM_STATE_FULLSCREEN,
+				ewmh->_NET_DESKTOP_VIEWPORT,
 				ewmh->_NET_WM_STATE,
 				ewmh->_NET_ACTIVE_WINDOW,
 				ewmh->_NET_NUMBER_OF_DESKTOPS };
 
 	xcb_ewmh_set_supported(ewmh, 0, LENGTH(net_atoms), net_atoms);
+	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(net_atoms), viewport);
 	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
 	xcb_ewmh_set_current_desktop(ewmh, 0, DEFAULT_WORKSPACE);
 	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
-	xcb_ewmh_set_supported(ewmh, 0, LENGTH(net_atoms), net_atoms);
 }
 
 /**
  * @brief Converts a hexcode colour into an X11 colourmap pixel.
  *
- * @param colour A string of the format "#FFFFFF", that will be interpreted as
+ * @param colour A string of the format "#RRGGBB", that will be interpreted as
  * a colour code.
  *
  * @return An X11 colourmap pixel.
