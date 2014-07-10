@@ -1239,6 +1239,12 @@ void change_ws(const Arg *arg)
 	cw = arg->i;
 	arrange_windows();
 	update_focused_client(wss[cw].current);
+
+	xcb_ewmh_set_current_desktop(ewmh, 0, cw - 1);
+	xcb_ewmh_geometry_t workarea[4] = { 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+				screen_width, screen_height - wss[cw].bar_height};
+	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
+
 	howm_info();
 }
 
