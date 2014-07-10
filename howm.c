@@ -284,11 +284,8 @@ static void (*operator_func)(const unsigned int type, int cnt);
 
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
-static char *NET_ATOM_NAMES[] = { "_NET_WM_STATE_FULLSCREEN", "_NET_SUPPORTED",
-				  "_NET_WM_STATE", "_NET_ACTIVE_WINDOW", "_NET_NUMBER_OF_DESKTOPS"
-				};
-static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)],
-	net_atoms[LENGTH(NET_ATOM_NAMES)];
+static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
+xcb_atom_t net_atoms[];
 static xcb_screen_t *screen;
 static xcb_ewmh_connection_t *ewmh;
 static int numlockmask, retval;
@@ -361,8 +358,8 @@ void setup(void)
 
 	grab_keys();
 
-	get_atoms(NET_ATOM_NAMES, net_atoms);
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
+	ewmh_setup();
 	if (BORDER_PX % 2 == 1)
 		log_warn("Odd value for border pixels.");
 	border_focus = get_colour(BORDER_FOCUS);
@@ -374,6 +371,7 @@ void ewmh_setup(void)
 {
 	xcb_intern_atom_cookie_t *cookie;
 
+	ewmh = calloc(1, sizeof(xcb_ewmh_connection_t));
 	if (!ewmh)
 		log_err("Unable to set ewmh atoms\n");
 	cookie = xcb_ewmh_init_atoms(dpy, ewmh);
@@ -388,6 +386,7 @@ void ewmh_setup(void)
 	xcb_ewmh_set_supported(ewmh, 0, LENGTH(net_atoms), net_atoms);
 	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
 	xcb_ewmh_set_current_desktop(ewmh, 0, DEFAULT_WORKSPACE);
+	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
 
 	xcb_change_property(dpy, XCB_PROP_MODE_REPLACE, screen->root,
 			net_atoms[NET_SUPPORTED], XCB_ATOM_ATOM, 32,
@@ -443,7 +442,7 @@ int main(int argc, char *argv[])
 			log_err("Failed to flush X connection");
 		}
 		ev = xcb_wait_for_event(dpy);
-		if (handler[ev->response_type])
+		if (ev && handler[ev->response_type])
 			handler[ev->response_type](ev);
 	}
 	if (!running) {
