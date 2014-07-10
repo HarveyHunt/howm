@@ -375,7 +375,8 @@ void ewmh_setup(void)
 {
 	xcb_intern_atom_cookie_t *cookie;
 	xcb_ewmh_coordinates_t viewport[4] = { 0, 0, screen_width, screen_height };
-	xcb_ewmh_geometry_t workarea[4] = { 0, 0, screen_width, screen_height };
+	xcb_ewmh_geometry_t workarea[4] = { 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+				screen_width, screen_height - wss[cw].bar_height};
 
 	ewmh = calloc(1, sizeof(xcb_ewmh_connection_t));
 	if (!ewmh)
@@ -389,14 +390,16 @@ void ewmh_setup(void)
 				ewmh->_NET_WM_STATE,
 				ewmh->_NET_ACTIVE_WINDOW,
 				ewmh->_NET_NUMBER_OF_DESKTOPS,
-				ewmh->_NET_WORKAREA };
+				ewmh->_NET_WORKAREA,
+				ewmh->_NET_SUPPORTING_WM_CHECK };
 
 	xcb_ewmh_set_supported(ewmh, 0, LENGTH(net_atoms), net_atoms);
 	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewport), viewport);
 	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
 	xcb_ewmh_set_current_desktop(ewmh, 0, DEFAULT_WORKSPACE);
 	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
-	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(viewport), workarea);
+	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
+	xcb_ewmh_set_supporting_wm_check(ewmh, 0, screen->root);
 }
 
 /**
@@ -2068,6 +2071,9 @@ static void toggle_bar(const Arg *arg)
 	} else {
 		return;
 	}
+	xcb_ewmh_geometry_t workarea[4] = { 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+				screen_width, screen_height - wss[cw].bar_height};
+	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 	arrange_windows();
 }
 
