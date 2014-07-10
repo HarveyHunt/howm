@@ -9,4 +9,5 @@ before_install:
     - sudo apt-get install -y libxcb-util0-dev
     - sudo apt-get install -y libxcb-icccm4-dev
     - sudo apt-get install -y xcb-proto
+    - sudo apt-get install -y libxcb-ewmh-dev
 script: make debug

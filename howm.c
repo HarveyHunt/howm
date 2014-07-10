@@ -1815,6 +1815,8 @@ static void change_client_gaps(Client *c, int size)
 	if ((int)c->gap + size <= 0 || c->is_fullscreen || c->is_floating)
 		return;
 	c->gap += size;
+	uint32_t space = c->gap + BORDER_PX;
+	xcb_ewmh_set_frame_extents(ewmh, c->win, space, space, space, space);
 	draw_clients();
 }
 
@@ -2111,6 +2113,8 @@ Client *create_client(xcb_window_t w)
 	c->win = w;
 	c->gap = wss[cw].gap;
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_EVENT_MASK, vals);
+	uint32_t space = c->gap + BORDER_PX;
+	xcb_ewmh_set_frame_extents(ewmh, c->win, space, space, space, space);
 	return c;
 }
 
