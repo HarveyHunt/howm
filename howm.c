@@ -248,7 +248,7 @@ static void focus_window(xcb_window_t win);
 static void quit(const Arg *arg);
 static void cleanup(void);
 static void delete_win(xcb_window_t win);
-static void ewmh_setup(void);
+static void setup_ewmh(void);
 
 enum { ZOOM, GRID, HSTACK, VSTACK, END_LAYOUT };
 enum { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
@@ -359,7 +359,7 @@ void setup(void)
 	grab_keys();
 
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
-	ewmh_setup();
+	setup_ewmh();
 	if (BORDER_PX % 2 == 1)
 		log_warn("Odd value for border pixels.");
 	border_focus = get_colour(BORDER_FOCUS);
@@ -371,7 +371,7 @@ void setup(void)
  * @brief Create the EWMH connection, request all of the atoms and set some
  * sensible defaults for them.
  */
-void ewmh_setup(void)
+void setup_ewmh(void)
 {
 	xcb_intern_atom_cookie_t *cookie;
 	xcb_ewmh_coordinates_t viewport[4] = { 0, 0, screen_width, screen_height };
@@ -1114,14 +1114,14 @@ void howm_info(void)
 	for (w = 1; w <= WORKSPACES; w++) {
 		for (c = wss[w].head, n = 0; c; c = c->next, n++)
 			;
-		printf("m:%u l:%d n:%d w:%d cw:%d s:%u\n", cur_mode,
-		       wss[w].layout, n, w, cur_ws == w, cur_state);
+		printf("%u:%d:%d:%u:%d\n", cur_mode,
+		       wss[w].layout, w, cur_state, n);
 	}
 	if (cur_ws != w)
 		cw = cur_ws;
 #else
-	printf("m:%d l:%d n:%d w:%d s:%d\n", cur_mode,
-		wss[cw].layout, n, w, cur_state);
+	printf("%u:%d:%d:%u:%d\n", cur_mode,
+		wss[w].layout, w, cur_state, n);
 #endif
 }
 

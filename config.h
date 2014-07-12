@@ -20,7 +20,7 @@
 /** The modifier key that is used for motions and operators. */
 #define OTHER_MOD Mod1Mask
 /** Number of workspaces. */
-#define WORKSPACES 3
+#define WORKSPACES 5
 /** When moving the mouse over a window, focus on the window? */
 #define FOCUS_MOUSE true
 /** Clicking a window will focus it. */
@@ -164,6 +164,8 @@ static const Motion motions[] = {
  */
 static Workspace wss[] = {
 	{NULL},
+	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
+	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
 	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
 	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
 	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT}
