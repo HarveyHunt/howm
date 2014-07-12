@@ -30,7 +30,7 @@
 /** The size (in pixels) of the useless gaps. */
 #define GAP 0
 /** Enable debugging output */
-#define DEBUG_ENABLE 1
+#define DEBUG_ENABLE 0
 /** The size (in pixels) of the border. */
 #define BORDER_PX 2
 /** The border colour when the window is focused. */
@@ -119,9 +119,13 @@ static const Key keys[] = {
 	{ MODKEY, FOCUS, XK_1, change_ws, {.i = 1} },
 	{ MODKEY, FOCUS, XK_2, change_ws, {.i = 2} },
 	{ MODKEY, FOCUS, XK_3, change_ws, {.i = 3} },
+	{ MODKEY, FOCUS, XK_4, change_ws, {.i = 4} },
+	{ MODKEY, FOCUS, XK_5, change_ws, {.i = 5} },
 	{ MODKEY | ShiftMask, FOCUS, XK_1, current_to_ws, {.i = 1} },
 	{ MODKEY | ShiftMask, FOCUS, XK_2, current_to_ws, {.i = 2} },
-	{ MODKEY | ShiftMask, FOCUS, XK_3, current_to_ws, {.i = 3} }
+	{ MODKEY | ShiftMask, FOCUS, XK_3, current_to_ws, {.i = 3} },
+	{ MODKEY | ShiftMask, FOCUS, XK_4, current_to_ws, {.i = 4} },
+	{ MODKEY | ShiftMask, FOCUS, XK_5, current_to_ws, {.i = 5} }
 };
 
 /**

@@ -810,7 +810,6 @@ void move_resize(xcb_window_t win,
 void update_focused_client(Client *c)
 {
 	unsigned int all = 0, fullscreen = 0, float_trans = 0;
-	xcb_window_t windows[all];
 
 	if (!wss[cw].head) {
 		wss[cw].prev_foc = wss[cw].current = NULL;
@@ -831,6 +830,7 @@ void update_focused_client(Client *c)
 		if (!c->is_fullscreen)
 			float_trans++;
 	}
+	xcb_window_t windows[all];
 	windows[(wss[cw].current->is_floating || wss[cw].current->is_transient) ? 0 : fullscreen] = wss[cw].current->win;
 	c = wss[cw].head;
 	for (fullscreen += FFT(wss[cw].current) ? 1 : 0; c; c = c->next) {
@@ -1108,21 +1108,23 @@ void remove_client(Client *c)
  */
 void howm_info(void)
 {
-	int w, n, cur_ws = cw;
+	unsigned int w = 0, n, cur_ws = cw;
 	Client *c;
 #if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
 		for (c = wss[w].head, n = 0; c; c = c->next, n++)
 			;
-		fprintf(stdout, "%u:%d:%d:%u:%d\n", cur_mode,
+		fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
 		       wss[w].layout, w, cur_state, n);
 	}
 	fflush(stdout);
 	if (cur_ws != w)
 		cw = cur_ws;
 #else
-	fprintf(stdout, "%u:%d:%d:%u:%d\n", cur_mode,
-		wss[w].layout, w, cur_state, n);
+	for (c = wss[cw].head, n = 0; c; c = c->next, n++)
+		;
+	fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
+		wss[cw].layout, cw, cur_state, n);
 	fflush(stdout);
 #endif
 }
