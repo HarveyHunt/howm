@@ -1114,14 +1114,16 @@ void howm_info(void)
 	for (w = 1; w <= WORKSPACES; w++) {
 		for (c = wss[w].head, n = 0; c; c = c->next, n++)
 			;
-		printf("%u:%d:%d:%u:%d\n", cur_mode,
+		fprintf(stdout, "%u:%d:%d:%u:%d\n", cur_mode,
 		       wss[w].layout, w, cur_state, n);
 	}
+	fflush(stdout);
 	if (cur_ws != w)
 		cw = cur_ws;
 #else
-	printf("%u:%d:%d:%u:%d\n", cur_mode,
+	fprintf(stdout, "%u:%d:%d:%u:%d\n", cur_mode,
 		wss[w].layout, w, cur_state, n);
+	fflush(stdout);
 #endif
 }
 
