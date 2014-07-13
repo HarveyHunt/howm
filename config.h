@@ -20,7 +20,7 @@
 /** The modifier key that is used for motions and operators. */
 #define OTHER_MOD Mod1Mask
 /** Number of workspaces. */
-#define WORKSPACES 3
+#define WORKSPACES 5
 /** When moving the mouse over a window, focus on the window? */
 #define FOCUS_MOUSE true
 /** Clicking a window will focus it. */
@@ -30,7 +30,7 @@
 /** The size (in pixels) of the useless gaps. */
 #define GAP 0
 /** Enable debugging output */
-#define DEBUG_ENABLE 1
+#define DEBUG_ENABLE 0
 /** The size (in pixels) of the border. */
 #define BORDER_PX 2
 /** The border colour when the window is focused. */
@@ -45,7 +45,7 @@
 #define BAR_BOTTOM true
 /** The amount of pixels that the op_shrink_gap and op_grow_gap change the gap
  * size by. */
-#define OP_GAP_SIZE 2
+#define OP_GAP_SIZE 8
 /** Upon converting a window to floating, should it be centered? */
 #define CENTER_FLOATING true
 /** Draw a gap around a window when in zoom mode. */
@@ -59,6 +59,7 @@
  * LOG_NONE means nothing will be logged.
  */
 #define LOG_LEVEL LOG_WARN
+#define DEFAULT_WORKSPACE 1
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
@@ -118,9 +119,13 @@ static const Key keys[] = {
 	{ MODKEY, FOCUS, XK_1, change_ws, {.i = 1} },
 	{ MODKEY, FOCUS, XK_2, change_ws, {.i = 2} },
 	{ MODKEY, FOCUS, XK_3, change_ws, {.i = 3} },
+	{ MODKEY, FOCUS, XK_4, change_ws, {.i = 4} },
+	{ MODKEY, FOCUS, XK_5, change_ws, {.i = 5} },
 	{ MODKEY | ShiftMask, FOCUS, XK_1, current_to_ws, {.i = 1} },
 	{ MODKEY | ShiftMask, FOCUS, XK_2, current_to_ws, {.i = 2} },
-	{ MODKEY | ShiftMask, FOCUS, XK_3, current_to_ws, {.i = 3} }
+	{ MODKEY | ShiftMask, FOCUS, XK_3, current_to_ws, {.i = 3} },
+	{ MODKEY | ShiftMask, FOCUS, XK_4, current_to_ws, {.i = 4} },
+	{ MODKEY | ShiftMask, FOCUS, XK_5, current_to_ws, {.i = 5} }
 };
 
 /**
@@ -153,7 +158,9 @@ static const Operator operators[] = {
  */
 static const Motion motions[] = {
 	{OTHER_MOD, XK_c, CLIENT},
-	{OTHER_MOD, XK_w, WORKSPACE}
+	{OTHER_MOD | ShiftMask, XK_c, CLIENT},
+	{OTHER_MOD, XK_w, WORKSPACE},
+	{OTHER_MOD | ShiftMask, XK_w, WORKSPACE}
 };
 
 /**
@@ -163,6 +170,8 @@ static const Motion motions[] = {
  */
 static Workspace wss[] = {
 	{NULL},
+	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
+	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
 	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
 	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
 	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT}

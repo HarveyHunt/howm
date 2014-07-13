@@ -10,6 +10,7 @@
 #include <xcb/xcb.h>
 #include <xcb/xcb_icccm.h>
 #include <xcb/xcb_keysyms.h>
+#include <xcb/xcb_ewmh.h>
 
 /**
  * @file howm.c
@@ -247,6 +248,7 @@ static void focus_window(xcb_window_t win);
 static void quit(const Arg *arg);
 static void cleanup(void);
 static void delete_win(xcb_window_t win);
+static void setup_ewmh(void);
 
 enum { ZOOM, GRID, HSTACK, VSTACK, END_LAYOUT };
 enum { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
@@ -276,27 +278,27 @@ static void(*layout_handler[]) (void) = {
 	[VSTACK] = stack
 };
 
+#include "config.h"
+
 static void (*operator_func)(const unsigned int type, int cnt);
 
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
-static char *NET_ATOM_NAMES[] = { "_NET_WM_STATE_FULLSCREEN", "_NET_SUPPORTED",
-				  "_NET_WM_STATE",	      "_NET_ACTIVE_WINDOW"
-				};
-static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)],
-	net_atoms[LENGTH(NET_ATOM_NAMES)];
+static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
+static xcb_atom_t net_atoms;
 static xcb_screen_t *screen;
+static xcb_ewmh_connection_t *ewmh;
 static int numlockmask, retval;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
 static int last_ws, prev_layout;
-static int cw = 1;
+static int cw = DEFAULT_WORKSPACE;
 static uint32_t border_focus, border_unfocus, border_prev_focus;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE;
 static unsigned int cur_cnt = 1;
 static uint16_t screen_height, screen_width;
 static bool running = true;
 
-#include "config.h"
+
 
 /* Add comments so that splint ignores this as it doesn't support variadic
  * macros.
@@ -356,8 +358,8 @@ void setup(void)
 
 	grab_keys();
 
-	get_atoms(NET_ATOM_NAMES, net_atoms);
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
+	setup_ewmh();
 	if (BORDER_PX % 2 == 1)
 		log_warn("Odd value for border pixels.");
 	border_focus = get_colour(BORDER_FOCUS);
@@ -366,9 +368,44 @@ void setup(void)
 }
 
 /**
+ * @brief Create the EWMH connection, request all of the atoms and set some
+ * sensible defaults for them.
+ */
+void setup_ewmh(void)
+{
+	xcb_intern_atom_cookie_t *cookie;
+	xcb_ewmh_coordinates_t viewport[4] = { 0, 0, screen_width, screen_height };
+	xcb_ewmh_geometry_t workarea[4] = { 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+				screen_width, screen_height - wss[cw].bar_height};
+
+	ewmh = calloc(1, sizeof(xcb_ewmh_connection_t));
+	if (!ewmh)
+		log_err("Unable to set ewmh atoms\n");
+	cookie = xcb_ewmh_init_atoms(dpy, ewmh);
+	xcb_ewmh_init_atoms_replies(ewmh, cookie, (void *)0);
+
+	xcb_atom_t net_atoms[] = { ewmh->_NET_SUPPORTED,
+				ewmh->_NET_WM_STATE_FULLSCREEN,
+				ewmh->_NET_DESKTOP_VIEWPORT,
+				ewmh->_NET_WM_STATE,
+				ewmh->_NET_ACTIVE_WINDOW,
+				ewmh->_NET_NUMBER_OF_DESKTOPS,
+				ewmh->_NET_WORKAREA,
+				ewmh->_NET_SUPPORTING_WM_CHECK };
+
+	xcb_ewmh_set_supported(ewmh, 0, LENGTH(net_atoms), net_atoms);
+	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewport), viewport);
+	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
+	xcb_ewmh_set_current_desktop(ewmh, 0, DEFAULT_WORKSPACE);
+	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
+	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
+	xcb_ewmh_set_supporting_wm_check(ewmh, 0, screen->root);
+}
+
+/**
  * @brief Converts a hexcode colour into an X11 colourmap pixel.
  *
- * @param colour A string of the format "#FFFFFF", that will be interpreted as
+ * @param colour A string of the format "#RRGGBB", that will be interpreted as
  * a colour code.
  *
  * @return An X11 colourmap pixel.
@@ -413,7 +450,7 @@ int main(int argc, char *argv[])
 			log_err("Failed to flush X connection");
 		}
 		ev = xcb_wait_for_event(dpy);
-		if (handler[ev->response_type])
+		if (ev && handler[ev->response_type])
 			handler[ev->response_type](ev);
 	}
 	if (!running) {
@@ -773,11 +810,10 @@ void move_resize(xcb_window_t win,
 void update_focused_client(Client *c)
 {
 	unsigned int all = 0, fullscreen = 0, float_trans = 0;
-	xcb_window_t windows[all];
 
 	if (!wss[cw].head) {
 		wss[cw].prev_foc = wss[cw].current = NULL;
-		xcb_delete_property(dpy, screen->root, net_atoms[NET_ACTIVE_WINDOW]);
+		xcb_delete_property(dpy, screen->root, ewmh->_NET_ACTIVE_WINDOW);
 		return;
 	} else if (c == wss[cw].prev_foc) {
 		wss[cw].current = (wss[cw].prev_foc ? wss[cw].prev_foc : wss[cw].head);
@@ -794,6 +830,7 @@ void update_focused_client(Client *c)
 		if (!c->is_fullscreen)
 			float_trans++;
 	}
+	xcb_window_t windows[all];
 	windows[(wss[cw].current->is_floating || wss[cw].current->is_transient) ? 0 : fullscreen] = wss[cw].current->win;
 	c = wss[cw].head;
 	for (fullscreen += FFT(wss[cw].current) ? 1 : 0; c; c = c->next) {
@@ -811,8 +848,8 @@ void update_focused_client(Client *c)
 	for (float_trans = 0; float_trans <= all; ++float_trans)
 		elevate_window(windows[all - float_trans]);
 
-	xcb_change_property(dpy, XCB_PROP_MODE_REPLACE, screen->root,
-			    net_atoms[NET_ACTIVE_WINDOW], XCB_ATOM_WINDOW, 32, 1, &wss[cw].current->win);
+	xcb_ewmh_set_active_window(ewmh, 0, wss[cw].current->win);
+
 	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, wss[cw].current->win,
 			    XCB_CURRENT_TIME);
 	arrange_windows();
@@ -1071,20 +1108,24 @@ void remove_client(Client *c)
  */
 void howm_info(void)
 {
-	int w, n, cur_ws = cw;
+	unsigned int w = 0, n, cur_ws = cw;
 	Client *c;
 #if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
 		for (c = wss[w].head, n = 0; c; c = c->next, n++)
 			;
-		printf("m:%u l:%d n:%d w:%d cw:%d s:%u\n", cur_mode,
-		       wss[w].layout, n, w, cur_ws == w, cur_state);
+		fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
+		       wss[w].layout, w, cur_state, n);
 	}
+	fflush(stdout);
 	if (cur_ws != w)
 		cw = cur_ws;
 #else
-	printf("m:%d l:%d n:%d w:%d s:%d\n", cur_mode,
-		wss[cw].layout, n, w, cur_state);
+	for (c = wss[cw].head, n = 0; c; c = c->next, n++)
+		;
+	fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
+		wss[cw].layout, cw, cur_state, n);
+	fflush(stdout);
 #endif
 }
 
@@ -1202,6 +1243,12 @@ void change_ws(const Arg *arg)
 	cw = arg->i;
 	arrange_windows();
 	update_focused_client(wss[cw].current);
+
+	xcb_ewmh_set_current_desktop(ewmh, 0, cw - 1);
+	xcb_ewmh_geometry_t workarea[4] = { 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+				screen_width, screen_height - wss[cw].bar_height};
+	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
+
 	howm_info();
 }
 
@@ -1772,6 +1819,8 @@ static void change_client_gaps(Client *c, int size)
 	if ((int)c->gap + size <= 0 || c->is_fullscreen || c->is_floating)
 		return;
 	c->gap += size;
+	uint32_t space = c->gap + BORDER_PX;
+	xcb_ewmh_set_frame_extents(ewmh, c->win, space, space, space, space);
 	draw_clients();
 }
 
@@ -1975,6 +2024,9 @@ static void cleanup(void)
 	}
 	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, screen->root,
 			XCB_CURRENT_TIME);
+	xcb_ewmh_connection_wipe(ewmh);
+	if (ewmh)
+		free(ewmh);
 }
 
 /**
@@ -2031,6 +2083,9 @@ static void toggle_bar(const Arg *arg)
 	} else {
 		return;
 	}
+	xcb_ewmh_geometry_t workarea[4] = { 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+				screen_width, screen_height - wss[cw].bar_height};
+	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 	arrange_windows();
 }
 
@@ -2062,6 +2117,8 @@ Client *create_client(xcb_window_t w)
 	c->win = w;
 	c->gap = wss[cw].gap;
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_EVENT_MASK, vals);
+	uint32_t space = c->gap + BORDER_PX;
+	xcb_ewmh_set_frame_extents(ewmh, c->win, space, space, space, space);
 	return c;
 }
 
