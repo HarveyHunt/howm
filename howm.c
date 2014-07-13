@@ -450,7 +450,7 @@ int main(int argc, char *argv[])
 			log_err("Failed to flush X connection");
 		}
 		ev = xcb_wait_for_event(dpy);
-		if (ev && handler[ev->response_type])
+		if (ev && ev->response_type < 0x80 && handler[ev->response_type])
 			handler[ev->response_type](ev);
 	}
 	if (!running) {
