@@ -45,7 +45,7 @@
 #define BAR_BOTTOM true
 /** The amount of pixels that the op_shrink_gap and op_grow_gap change the gap
  * size by. */
-#define OP_GAP_SIZE 2
+#define OP_GAP_SIZE 8
 /** Upon converting a window to floating, should it be centered? */
 #define CENTER_FLOATING true
 /** Draw a gap around a window when in zoom mode. */
@@ -158,7 +158,9 @@ static const Operator operators[] = {
  */
 static const Motion motions[] = {
 	{OTHER_MOD, XK_c, CLIENT},
-	{OTHER_MOD, XK_w, WORKSPACE}
+	{OTHER_MOD | ShiftMask, XK_c, CLIENT},
+	{OTHER_MOD, XK_w, WORKSPACE},
+	{OTHER_MOD | ShiftMask, XK_w, WORKSPACE}
 };
 
 /**
