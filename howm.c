@@ -590,6 +590,8 @@ void map_event(xcb_generic_event_t *ev)
 	xcb_window_t transient = 0;
 	xcb_get_window_attributes_reply_t *wa;
 	xcb_map_request_event_t *me = (xcb_map_request_event_t *)ev;
+	xcb_ewmh_get_atoms_reply_t type;
+	bool floating = false;
 	Client *c;
 
 	wa = xcb_get_window_attributes_reply(dpy, xcb_get_window_attributes(dpy, me->window), NULL);
@@ -598,13 +600,34 @@ void map_event(xcb_generic_event_t *ev)
 		return;
 	}
 	free(wa);
+
+	if (xcb_ewmh_get_wm_window_type_reply(ewmh,
+				xcb_ewmh_get_wm_window_type(ewmh, me->window),
+				&type, NULL) == 1) {
+		for (unsigned int i = 0; i < type.atoms_len; i++) {
+			xcb_atom_t a = type.atoms[i];
+			if (a == ewmh->_NET_WM_WINDOW_TYPE_DOCK
+				|| a == ewmh->_NET_WM_WINDOW_TYPE_TOOLBAR) {
+				return;
+			} else if (a == ewmh->_NET_WM_WINDOW_TYPE_NOTIFICATION
+				|| a == ewmh->_NET_WM_WINDOW_TYPE_DROPDOWN_MENU
+				|| a == ewmh->_NET_WM_WINDOW_TYPE_SPLASH
+				|| a == ewmh->_NET_WM_WINDOW_TYPE_POPUP_MENU
+				|| a == ewmh->_NET_WM_WINDOW_TYPE_TOOLTIP
+				|| a == ewmh->_NET_WM_WINDOW_TYPE_DIALOG) {
+				floating = true;
+			}
+		}
+	}
+
 	log_info("Mapping request for window <%d>", me->window);
 	/* Rule stuff needs to be here. */
 	c = create_client(me->window);
 
 	/* Assume that transient windows MUST float. */
-	xcb_icccm_get_wm_transient_for_reply(dpy, xcb_icccm_get_wm_transient_for(dpy, me->window), &transient, NULL);
-	c->is_floating = c->is_transient = transient ? true : false;
+	xcb_icccm_get_wm_transient_for_reply(dpy, xcb_icccm_get_wm_transient_for_unchecked(dpy, me->window), &transient, NULL);
+	c->is_transient = transient ? true : false;
+	c->is_floating = c->is_transient || floating;
 	arrange_windows();
 	xcb_map_window(dpy, c->win);
 	update_focused_client(c);
@@ -810,6 +833,8 @@ void move_resize(xcb_window_t win,
 void update_focused_client(Client *c)
 {
 	unsigned int all = 0, fullscreen = 0, float_trans = 0;
+	if (!c)
+		return;
 
 	if (!wss[cw].head) {
 		wss[cw].prev_foc = wss[cw].current = NULL;
@@ -932,7 +957,9 @@ void set_border_width(xcb_window_t win, uint16_t w)
 void elevate_window(xcb_window_t win)
 {
 	uint32_t stack_mode[1] = { XCB_STACK_MODE_ABOVE };
-	log_info("Moving window %d to the front", win);
+	if (!find_client_by_win(win))
+		return;
+	log_info("Moving window client <%p> to the front", find_client_by_win(win));
 	xcb_configure_window(dpy, win, XCB_CONFIG_WINDOW_STACK_MODE, stack_mode);
 }
 
@@ -945,7 +972,7 @@ void elevate_window(xcb_window_t win)
 void get_atoms(char **names, xcb_atom_t *atoms)
 {
 	xcb_intern_atom_reply_t *reply;
-	unsigned int i, cnt = LENGTH(atoms);
+	unsigned int i, cnt = LENGTH(atoms) - 1;
 	xcb_intern_atom_cookie_t cookies[cnt];
 
 	for (i = 0; i < cnt; i++)
@@ -974,7 +1001,7 @@ void stack(void)
 	uint16_t h = screen_height - wss[cw].bar_height;
 	uint16_t w = screen_width;
 	int i, n = get_non_tff_count();
-	uint16_t client_x = 0;
+	uint16_t client_x = 0, client_span = 0;
 	uint16_t client_y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
         uint16_t ms = (vert ? w : h) * wss[cw].master_ratio;
 	/* The size of the direction the clients will be stacked in. e.g.
@@ -998,14 +1025,14 @@ void stack(void)
 	 *+---------------------------+--------------+   v
 	 */
 	uint16_t span = vert ? h : w;
-	/* TODO: Need to take into account when this has remainders. */
-	/* TODO: Fix gaps between windows. */
-	uint16_t client_span = (span / (n - 1));
 
 	if (n <= 1) {
 		zoom();
 		return;
 	}
+	/* TODO: Need to take into account when this has remainders. */
+	/* TODO: Fix gaps between windows. */
+	client_span = (span / (n - 1));
 
 	log_info("Arranging %d clients in %sstack layout", n, vert ? "v" : "");
 	if (vert) {
@@ -1064,9 +1091,10 @@ void destroy_event(xcb_generic_event_t *ev)
 {
 	xcb_destroy_notify_event_t *de = (xcb_destroy_notify_event_t *)ev;
 	Client *c = find_client_by_win(de->window);
+	if (!c)
+		return;
 	log_info("Client <%p> wants to be destroyed", c);
-	if (c)
-		remove_client(c);
+	remove_client(c);
 }
 
 /**
@@ -1404,7 +1432,7 @@ void kill_ws(const int ws)
 	Arg arg = { .i = ws };
 
 	change_ws(&arg);
-	log_info("Killing of workspace <%d>", arg.i);
+	log_info("Killing off workspace <%d>", arg.i);
 	while (wss[cw].head)
 		kill_client();
 }
@@ -1697,8 +1725,10 @@ void op_focus_down(const unsigned int type, int cnt)
 void configure_event(xcb_generic_event_t *ev)
 {
 	xcb_configure_request_event_t *ce = (xcb_configure_request_event_t *)ev;
-	Client *c = find_client_by_win(ce->window);
 	uint32_t vals[7], i = 0;
+	Client *c = find_client_by_win(ce->window);
+	if (!c)
+		return;
 	log_info("Received configure request for client <%p>", c);
 
 	/* TODO: Need to test whether gaps etc need to be taken into account
@@ -1730,9 +1760,11 @@ void unmap_event(xcb_generic_event_t *ev)
 {
 	xcb_unmap_notify_event_t *ue = (xcb_unmap_notify_event_t *)ev;
 	Client *c = find_client_by_win(ue->window);
+	if (!c)
+		return;
 	log_info("Received unmap request for client <%p>", c);
 
-	if (c && !ue->event == screen->root)
+	if (!ue->event == screen->root)
 		remove_client(c);
 	howm_info();
 }
@@ -1953,7 +1985,8 @@ static void move_float_x(const Arg *arg)
  */
 static void teleport_client(const Arg *arg)
 {
-	if (!wss[cw].current || !wss[cw].current->is_floating)
+	if (!wss[cw].current || !wss[cw].current->is_floating
+			|| wss[cw].current->is_transient)
 		return;
 	switch (arg->i) {
 	case TOP_LEFT:
@@ -2119,6 +2152,7 @@ Client *create_client(xcb_window_t w)
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_EVENT_MASK, vals);
 	uint32_t space = c->gap + BORDER_PX;
 	xcb_ewmh_set_frame_extents(ewmh, c->win, space, space, space, space);
+	log_info("Created client <0x%p>", c);
 	return c;
 }
 

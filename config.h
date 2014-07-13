@@ -22,7 +22,7 @@
 /** Number of workspaces. */
 #define WORKSPACES 5
 /** When moving the mouse over a window, focus on the window? */
-#define FOCUS_MOUSE true
+#define FOCUS_MOUSE false
 /** Clicking a window will focus it. */
 #define FOCUS_MOUSE_CLICK true
 /** Upon spawning a new window, move the mouse to the new window? */
@@ -58,7 +58,7 @@
  *
  * LOG_NONE means nothing will be logged.
  */
-#define LOG_LEVEL LOG_WARN
+#define LOG_LEVEL LOG_INFO
 #define DEFAULT_WORKSPACE 1
 
 static const char * const term_cmd[] = {"urxvt", NULL};
