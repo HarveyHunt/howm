@@ -374,9 +374,13 @@ void setup(void)
 void setup_ewmh(void)
 {
 	xcb_intern_atom_cookie_t *cookie;
-	xcb_ewmh_coordinates_t viewport[4] = { 0, 0, screen_width, screen_height };
-	xcb_ewmh_geometry_t workarea[4] = { 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
-				screen_width, screen_height - wss[cw].bar_height};
+	unsigned int i;
+	xcb_ewmh_coordinates_t viewports[WORKSPACES];
+	xcb_ewmh_coordinates_t viewport[] = {0, 0};
+
+	for (i = 0; i < WORKSPACES; i++) {
+		viewports[i] = *viewport;
+	}
 
 	ewmh = calloc(1, sizeof(xcb_ewmh_connection_t));
 	if (!ewmh)
@@ -390,15 +394,13 @@ void setup_ewmh(void)
 				ewmh->_NET_WM_STATE,
 				ewmh->_NET_ACTIVE_WINDOW,
 				ewmh->_NET_NUMBER_OF_DESKTOPS,
-				ewmh->_NET_WORKAREA,
 				ewmh->_NET_SUPPORTING_WM_CHECK };
 
 	xcb_ewmh_set_supported(ewmh, 0, LENGTH(net_atoms), net_atoms);
-	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewport), viewport);
+	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewports), viewports);
 	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
 	xcb_ewmh_set_current_desktop(ewmh, 0, DEFAULT_WORKSPACE);
 	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
-	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 	xcb_ewmh_set_supporting_wm_check(ewmh, 0, screen->root);
 }
 
@@ -450,8 +452,9 @@ int main(int argc, char *argv[])
 			log_err("Failed to flush X connection");
 		}
 		ev = xcb_wait_for_event(dpy);
-		if (ev && ev->response_type < 0x80 && handler[ev->response_type])
-			handler[ev->response_type](ev);
+		if (ev && handler[ev->response_type & ~0x80])
+			handler[ev->response_type & ~0x80](ev);
+		free(ev);
 	}
 	if (!running) {
 		cleanup();
@@ -588,6 +591,7 @@ void spawn(const Arg *arg)
 void map_event(xcb_generic_event_t *ev)
 {
 	xcb_window_t transient = 0;
+	xcb_get_geometry_reply_t *geom;
 	xcb_get_window_attributes_reply_t *wa;
 	xcb_map_request_event_t *me = (xcb_map_request_event_t *)ev;
 	xcb_ewmh_get_atoms_reply_t type;
@@ -620,9 +624,16 @@ void map_event(xcb_generic_event_t *ev)
 		}
 	}
 
+
 	log_info("Mapping request for window <%d>", me->window);
 	/* Rule stuff needs to be here. */
 	c = create_client(me->window);
+
+	if ((geom = xcb_get_geometry_reply(dpy,
+		xcb_get_geometry(dpy, me->window), NULL))) {
+		log_info("geom: %ux%u+%d+%d\n", geom->width, geom->height, geom->x, geom->y);
+		free(geom);
+	}
 
 	/* Assume that transient windows MUST float. */
 	xcb_icccm_get_wm_transient_for_reply(dpy, xcb_icccm_get_wm_transient_for_unchecked(dpy, me->window), &transient, NULL);
@@ -850,13 +861,14 @@ void update_focused_client(Client *c)
 
 	log_info("Focusing client <%p>", c);
 	for (c = wss[cw].head; c; c = c->next, ++all) {
-		if (FFT(c))
+		if (FFT(c)) {
 			fullscreen++;
-		if (!c->is_fullscreen)
-			float_trans++;
+			if (!c->is_fullscreen)
+				float_trans++;
+		}
 	}
 	xcb_window_t windows[all];
-	windows[(wss[cw].current->is_floating || wss[cw].current->is_transient) ? 0 : fullscreen] = wss[cw].current->win;
+	windows[(wss[cw].current->is_floating || wss[cw].current->is_transient) ? 0 : float_trans] = wss[cw].current->win;
 	c = wss[cw].head;
 	for (fullscreen += FFT(wss[cw].current) ? 1 : 0; c; c = c->next) {
 		set_border_width(c->win, (c->is_fullscreen ||
@@ -2152,7 +2164,7 @@ Client *create_client(xcb_window_t w)
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_EVENT_MASK, vals);
 	uint32_t space = c->gap + BORDER_PX;
 	xcb_ewmh_set_frame_extents(ewmh, c->win, space, space, space, space);
-	log_info("Created client <0x%p>", c);
+	log_info("Created client <%p>", c);
 	return c;
 }
 
