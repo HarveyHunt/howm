@@ -45,7 +45,7 @@
 #define BAR_BOTTOM true
 /** The amount of pixels that the op_shrink_gap and op_grow_gap change the gap
  * size by. */
-#define OP_GAP_SIZE 8
+#define OP_GAP_SIZE 4
 /** Upon converting a window to floating, should it be centered? */
 #define CENTER_FLOATING true
 /** Draw a gap around a window when in zoom mode. */
