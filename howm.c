@@ -373,10 +373,10 @@ void setup(void)
  */
 void setup_ewmh(void)
 {
-	xcb_intern_atom_cookie_t *cookie;
 	unsigned int i;
 	xcb_ewmh_coordinates_t viewports[WORKSPACES];
 	xcb_ewmh_coordinates_t viewport[] = {0, 0};
+	xcb_generic_error_t *e;
 
 	for (i = 0; i < WORKSPACES; i++) {
 		viewports[i] = *viewport;
@@ -384,24 +384,27 @@ void setup_ewmh(void)
 
 	ewmh = calloc(1, sizeof(xcb_ewmh_connection_t));
 	if (!ewmh)
-		log_err("Unable to set ewmh atoms\n");
-	cookie = xcb_ewmh_init_atoms(dpy, ewmh);
-	xcb_ewmh_init_atoms_replies(ewmh, cookie, (void *)0);
+		log_err("Unable to create ewmh connection\n");
+	xcb_ewmh_init_atoms_replies(ewmh, xcb_ewmh_init_atoms(dpy, ewmh), &e);
+	if (e)
+		log_err("Couldn't initialise ewmh atoms");
 
 	xcb_atom_t net_atoms[] = { ewmh->_NET_SUPPORTED,
-				ewmh->_NET_WM_STATE_FULLSCREEN,
+				ewmh->_NET_SUPPORTING_WM_CHECK,
 				ewmh->_NET_DESKTOP_VIEWPORT,
-				ewmh->_NET_WM_STATE,
-				ewmh->_NET_ACTIVE_WINDOW,
+				ewmh->_NET_WM_NAME,
+				ewmh->_NET_CURRENT_DESKTOP,
 				ewmh->_NET_NUMBER_OF_DESKTOPS,
-				ewmh->_NET_SUPPORTING_WM_CHECK };
+				ewmh->_NET_DESKTOP_GEOMETRY,
+				ewmh->_NET_ACTIVE_WINDOW };
 
 	xcb_ewmh_set_supported(ewmh, 0, LENGTH(net_atoms), net_atoms);
-	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewports), viewports);
-	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
-	xcb_ewmh_set_current_desktop(ewmh, 0, DEFAULT_WORKSPACE);
-	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
 	xcb_ewmh_set_supporting_wm_check(ewmh, 0, screen->root);
+	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewports), viewports);
+	//xcb_ewmh_set_wm_name(ewmh, 0, strlen("howm"), "howm");
+	//xcb_ewmh_set_current_desktop(ewmh, 0, DEFAULT_WORKSPACE);
+	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
+	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
 }
 
 /**
@@ -984,13 +987,14 @@ void elevate_window(xcb_window_t win)
 void get_atoms(char **names, xcb_atom_t *atoms)
 {
 	xcb_intern_atom_reply_t *reply;
-	unsigned int i, cnt = LENGTH(atoms) - 1;
-	xcb_intern_atom_cookie_t cookies[cnt];
+	unsigned int i;
+	xcb_intern_atom_cookie_t cookies[LENGTH(names)];
 
-	for (i = 0; i < cnt; i++)
+	for (i = 0; i <= LENGTH(names); i++) {
 		cookies[i] = xcb_intern_atom(dpy, 0, strlen(names[i]), names[i]);
 		log_info("Requesting atom %s", names[i]);
-	for (i = 0; i < cnt; i++) {
+	}
+	for (i = 0; i <= LENGTH(names); i++) {
 		reply = xcb_intern_atom_reply(dpy, cookies[i], NULL);
 		if (reply) {
 			atoms[i] = reply->atom;
