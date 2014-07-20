@@ -5,7 +5,12 @@
 
 ###A lightweight, tiling X11 window manager that mimics vi by offering operators, motions and modes.
 
-
+Contents
+=====
+* [Configuration](#configuration)
+* [Motions](#motions)
+* [Counts](#counts)
+* [Operators](#operators)
 
 ##Configuration
 
