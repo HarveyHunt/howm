@@ -1,11 +1,11 @@
-#howm
+#howm (Beta)
 
 [![Build Status](https://travis-ci.org/HarveyHunt/howm.svg?branch=develop)](https://travis-ci.org/HarveyHunt/howm)
 [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=harveyhunt&url=https://github.com/HarveyHunt/howm&title=howm&language=&tags=github&category=software) 
 
-###Beta software, at best.
+###A lightweight, tiling X11 window manager that mimics vi by offering operators, motions and modes.
 
-A lightweight, tiling X11 window manager that mimics vi by offering operators, motions and modes.
+
 
 ##Configuration
 
@@ -23,7 +23,7 @@ Each option is described in detail below:
 #define MODKEY Mod4Mask
 ```
 
-* **COUNT_MOD**: An alias for a modifier that is to be used when indicating a count. Possible values can be found [here](http://www.x.org/releases/X11R7.6/doc/libX11/specs/XKB/xkblib.html#changing_modifiers).
+* **COUNT_MOD**: An alias for a modifier that is to be used when indicating a [count](#Counts). Possible values can be found [here](http://www.x.org/releases/X11R7.6/doc/libX11/specs/XKB/xkblib.html#changing_modifiers).
 
 ```
 #define COUNT_MOD Mod1Mask
@@ -163,7 +163,9 @@ Operators and motions are combined so that an operation can be performed on mult
 
 * **Client**: Perform an operation on one or more clients.
 
-Counts be applied to a motion, to make an operator affect multiple things. For example, you can add a 3 before a motion, meaning that the operator will affect 3 of the motions.
+##Counts
+
+Counts be applied to a motion, to make an operator affect multiple things. For example, you can add a 3 before a motion, meaning that the operator will affect 3 of the motions. The modifier that is used is defined by COUNT_MOD.
 
 For example:
 
