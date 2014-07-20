@@ -59,6 +59,7 @@
  * LOG_NONE means nothing will be logged.
  */
 #define LOG_LEVEL LOG_INFO
+/** The workspace that should be focused upon startup. */
 #define DEFAULT_WORKSPACE 1
 
 static const char * const term_cmd[] = {"urxvt", NULL};
@@ -107,6 +108,7 @@ static const Key keys[] = {
 	{ MODKEY, FLOATING, XK_n, teleport_client, {.i = BOTTOM_CENTER} },
 	{ MODKEY, FLOATING, XK_m, teleport_client, {.i = BOTTOM_RIGHT} },
 	{ MODKEY, FLOATING, XK_Escape, change_mode, {.i = NORMAL} },
+	{ MODKEY, FLOATING, XK_f, change_mode, {.i = FOCUS} },
 
 	{ MODKEY, FOCUS, XK_k, focus_prev_client, {NULL} },
 	{ MODKEY, FOCUS, XK_j, focus_next_client, {NULL} },
@@ -125,7 +127,8 @@ static const Key keys[] = {
 	{ MODKEY | ShiftMask, FOCUS, XK_2, current_to_ws, {.i = 2} },
 	{ MODKEY | ShiftMask, FOCUS, XK_3, current_to_ws, {.i = 3} },
 	{ MODKEY | ShiftMask, FOCUS, XK_4, current_to_ws, {.i = 4} },
-	{ MODKEY | ShiftMask, FOCUS, XK_5, current_to_ws, {.i = 5} }
+	{ MODKEY | ShiftMask, FOCUS, XK_5, current_to_ws, {.i = 5} },
+	{ MODKEY | ShiftMask, FOCUS, XK_f, change_mode, {.i = FLOATING} }
 };
 
 /**
