@@ -177,6 +177,7 @@ q2w
 ```
 
 Will kill 2 workspaces (assuming the correct modifier keys are pressed and default keybindings are being used).
+
 ##Operators
 
 Operators perform an action upon one or more targets (identified by motions).
@@ -218,6 +219,47 @@ The above command moves 2 clients down one place in the workspace's client list.
 j3w
 ```
 The above command moves the contents of 3 workspaces down one workspace. If a workspace is to be moved beyond the last workspace, it is wrapped to the first workspace.
+
+* **op_move_up**: This is the opposite of op_move_down, and instead is bound to k.
+
+* **op_shrink_gaps**: An operator to shrink the size of the gaps around windows. The size is changed by the amount defined for OP\_GAP\_SIZE.
+Can be used on:
+  * Clients
+  * Workspaces
+
+Used in mode:
+  * Normal
+
+```
+g1w
+```
+
+The above command will shrink the gaps of all windows on the current workspace by OP\_GAP\_SIZE.
+
+```
+g4c
+```
+
+The above command will shrink the gaps of 4 clients on the current workspace by OP\_GAP\_SIZE.
+
+* **op_grow_gaps**: This is the opposite of op\_shrink\_gaps and is bound to Shift + g.
+
+* **op_focus_up**: Move the current focus up.
+Can be used on:
+  * Clients
+  * Workspaces
+
+Used in mode:
+  * Normal
+
+```
+j3c
+```
+
+The above command will move the current focus down 3 clients.
+
+* **op_focus_down**: Performs the opposite of op\_focus\_up and is instead bound to j.
+
 
 ##Modes
 
