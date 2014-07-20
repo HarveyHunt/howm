@@ -37,7 +37,7 @@ Each option is described in detail below:
 
 * **WORKSPACES**: The number of workspaces that you wish to have. The following is a brief description from [here](http://linux.about.com/library/gnome/blgnome2n4.htm):
 
-Workspaces allow you to manage which windows are on your screen. You can imagine  as being virtual screens, which you can switch between at any time. Every workspace contains the same desktop, the same panels, and the same menus. However, you can run different applications, and open different windows in each workspace. The applications in each workspace will remain there when you switch to other .
+>Workspaces allow you to manage which windows are on your screen. You can imagine  as being virtual screens, which you can switch between at any time. Every workspace contains the same desktop, the same panels, and the same menus. However, you can run different applications, and open different windows in each workspace. The applications in each workspace will remain there when you switch to other .
 
 ```
 #define WORKSPACES 3
@@ -140,6 +140,38 @@ Workspaces allow you to manage which windows are on your screen. You can imagine
 #define LOG_LEVEL LOG_ERR
 ```
 
+* **MASTER_RATIO**: The ratio of the master window's size in stack modes compared to the size of the stack area.
+can be from 0 to 1.
+
+```
+#define MASTER_RATIO 0.7
+```
+
+* **DEFAULT_WORKSPACE**: The workspace that should be selected upon startup.
+
+```
+#define DEFAULT_WORKSPACE 1
+```
+
+##Motions
+
+For a good primer on motions, vim's [documentation](http://vimdoc.sourceforge.net/htmldoc/motion.html) explains them well.
+
+Operators and motions are combined so that an operation can be performed on multiple things, such as clients or workspaces. The current supported motions are as follows:
+
+* **Workspace**: Perform an operation on one or more workspaces.
+
+* **Client**: Perform an operation on one or more clients.
+
+Counts be applied to a motion, to make an operator affect multiple things. For example, you can add a 3 before a motion, meaning that the operator will affect 3 of the motions.
+
+For example:
+
+```
+q2w
+```
+
+Will kill 2 workspaces (assuming the correct modifier keys are pressed and default keybindings are being used).
 ##Operators
 
 Operators perform an action upon one or more targets (identified by motions).
@@ -150,7 +182,8 @@ Below are descriptions of each operator, the motions that they can perform an ac
 Can be used on:
   * Clients
   * Workspaces
-Modes:
+
+Used in mode:
   * Normal
 
 ```
@@ -167,7 +200,8 @@ The above command will kill one workspace. This means that all clients on the cu
 Can be used on:
   * Clients
   * Workspaces
-Modes:
+
+Used in mode:
   * Normal
 
 ```
