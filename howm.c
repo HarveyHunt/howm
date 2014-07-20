@@ -144,7 +144,7 @@ typedef struct {
 	uint16_t gap; /**< The size of the useless gap between windows for this workspace. */
 	float master_ratio; /** The ratio of the size of the master window
 				 compared to the screen's size. */
-	uint8_t bar_height; /** The height of the space left for a bar. Stored
+	uint16_t bar_height; /** The height of the space left for a bar. Stored
 			      here so it can be toggled per ws. */
 	Client *head; /**< The start of the linked list. */
 	Client *prev_foc; /**< The last focused client. This is seperate to
@@ -285,7 +285,6 @@ static void (*operator_func)(const unsigned int type, int cnt);
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
-static xcb_atom_t net_atoms;
 static xcb_screen_t *screen;
 static xcb_ewmh_connection_t *ewmh;
 static int numlockmask, retval;
@@ -359,6 +358,7 @@ void setup(void)
 	grab_keys();
 
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
+
 	setup_ewmh();
 	if (BORDER_PX % 2 == 1)
 		log_warn("Odd value for border pixels.");
@@ -374,36 +374,33 @@ void setup(void)
 void setup_ewmh(void)
 {
 	unsigned int i;
-	xcb_ewmh_coordinates_t viewports[WORKSPACES];
-	xcb_ewmh_coordinates_t viewport[] = {0, 0};
-	xcb_generic_error_t *e;
-
-	for (i = 0; i < WORKSPACES; i++) {
-		viewports[i] = *viewport;
-	}
+	xcb_ewmh_coordinates_t viewport[] = {{ 0, 0 }};
+	xcb_ewmh_geometry_t workarea[] = { 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+		 screen_width, screen_height - wss[cw].bar_height};
 
 	ewmh = calloc(1, sizeof(xcb_ewmh_connection_t));
 	if (!ewmh)
 		log_err("Unable to create ewmh connection\n");
-	xcb_ewmh_init_atoms_replies(ewmh, xcb_ewmh_init_atoms(dpy, ewmh), &e);
-	if (e)
+	if (xcb_ewmh_init_atoms_replies(ewmh, xcb_ewmh_init_atoms(dpy, ewmh), NULL) == 0)
 		log_err("Couldn't initialise ewmh atoms");
 
-	xcb_atom_t net_atoms[] = { ewmh->_NET_SUPPORTED,
+	xcb_atom_t ewmh_net_atoms[] = { ewmh->_NET_SUPPORTED,
 				ewmh->_NET_SUPPORTING_WM_CHECK,
 				ewmh->_NET_DESKTOP_VIEWPORT,
 				ewmh->_NET_WM_NAME,
 				ewmh->_NET_CURRENT_DESKTOP,
 				ewmh->_NET_NUMBER_OF_DESKTOPS,
 				ewmh->_NET_DESKTOP_GEOMETRY,
+				ewmh->_NET_WORKAREA,
 				ewmh->_NET_ACTIVE_WINDOW };
 
-	xcb_ewmh_set_supported(ewmh, 0, LENGTH(net_atoms), net_atoms);
+	xcb_ewmh_set_supported(ewmh, 0, LENGTH(ewmh_net_atoms), ewmh_net_atoms);
 	xcb_ewmh_set_supporting_wm_check(ewmh, 0, screen->root);
-	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewports), viewports);
-	//xcb_ewmh_set_wm_name(ewmh, 0, strlen("howm"), "howm");
-	//xcb_ewmh_set_current_desktop(ewmh, 0, DEFAULT_WORKSPACE);
+	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewport), viewport);
+	xcb_ewmh_set_wm_name(ewmh, 0, strlen("howm"), "howm");
+	xcb_ewmh_set_current_desktop(ewmh, 0, DEFAULT_WORKSPACE);
 	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
+	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
 }
 
@@ -479,7 +476,8 @@ void check_other_wm(void)
 	uint32_t values[1] = { XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
 			       XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
 			       XCB_EVENT_MASK_BUTTON_PRESS |
-			       XCB_EVENT_MASK_KEY_PRESS
+			       XCB_EVENT_MASK_KEY_PRESS |
+			       XCB_EVENT_MASK_PROPERTY_CHANGE
 			     };
 
 	e = xcb_request_check(dpy, xcb_change_window_attributes_checked(dpy,
@@ -632,16 +630,23 @@ void map_event(xcb_generic_event_t *ev)
 	/* Rule stuff needs to be here. */
 	c = create_client(me->window);
 
-	if ((geom = xcb_get_geometry_reply(dpy,
-		xcb_get_geometry(dpy, me->window), NULL))) {
-		log_info("geom: %ux%u+%d+%d\n", geom->width, geom->height, geom->x, geom->y);
-		free(geom);
-	}
-
 	/* Assume that transient windows MUST float. */
 	xcb_icccm_get_wm_transient_for_reply(dpy, xcb_icccm_get_wm_transient_for_unchecked(dpy, me->window), &transient, NULL);
 	c->is_transient = transient ? true : false;
 	c->is_floating = c->is_transient || floating;
+
+	if ((geom = xcb_get_geometry_reply(dpy,
+		xcb_get_geometry(dpy, me->window), NULL))) {
+		log_info("geom: %ux%u+%d+%d\n", geom->width, geom->height, geom->x, geom->y);
+		if (c->is_floating) {
+			c->w = geom->width;
+			c->h = geom->height;
+			c->x = CENTER_FLOATING ? (screen_width / 2) - (c->w / 2) : geom->x;
+			c->y = CENTER_FLOATING ? (screen_height - wss[cw].bar_height - c->h) / 2 : geom->y;
+		}
+		free(geom);
+	}
+
 	arrange_windows();
 	xcb_map_window(dpy, c->win);
 	update_focused_client(c);
@@ -1741,7 +1746,7 @@ void op_focus_down(const unsigned int type, int cnt)
 void configure_event(xcb_generic_event_t *ev)
 {
 	xcb_configure_request_event_t *ce = (xcb_configure_request_event_t *)ev;
-	uint32_t vals[7], i = 0;
+	uint32_t vals[7] = {0}, i = 0;
 	Client *c = find_client_by_win(ce->window);
 	if (!c)
 		return;
@@ -1754,9 +1759,9 @@ void configure_event(xcb_generic_event_t *ev)
 	if (XCB_CONFIG_WINDOW_Y & ce->value_mask)
 		vals[i++] = ce->y + (BAR_BOTTOM ? 0 : wss[cw].bar_height);
 	if (XCB_CONFIG_WINDOW_WIDTH & ce->value_mask)
-		vals[i++] = (ce->width < screen_width) ? ce->width : screen_width;
+		vals[i++] = (ce->width < screen_width - BORDER_PX - wss[cw].gap) ? ce->width : screen_width - BORDER_PX - wss[cw].gap;
 	if (XCB_CONFIG_WINDOW_HEIGHT & ce->value_mask)
-		vals[i++] = (ce->height < screen_height) ? ce->height : screen_height;
+		vals[i++] = (ce->height < screen_height - BORDER_PX - wss[cw].gap) ? ce->height : screen_height - BORDER_PX - wss[cw].gap;
 	if (XCB_CONFIG_WINDOW_BORDER_WIDTH & ce->value_mask)
 		vals[i++] = ce->border_width;
 	if (XCB_CONFIG_WINDOW_SIBLING & ce->value_mask)
