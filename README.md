@@ -26,7 +26,7 @@ Each option is described in detail below:
 #define MODKEY Mod4Mask
 ```
 
-* **COUNT_MOD**: An alias for a modifier that is to be used when indicating a [count](#Counts). Possible values can be found [here](http://www.x.org/releases/X11R7.6/doc/libX11/specs/XKB/xkblib.html#changing_modifiers).
+* **COUNT_MOD**: An alias for a modifier that is to be used when indicating a [count](#counts). Possible values can be found [here](http://www.x.org/releases/X11R7.6/doc/libX11/specs/XKB/xkblib.html#changing_modifiers).
 
 ```
 #define COUNT_MOD Mod1Mask
