@@ -189,8 +189,8 @@ Can be used on:
   * Clients
   * Workspaces
 
-Used in mode:
-  * Normal
+  Used in mode:
+    * Normal
 
 ```
 q4c
@@ -207,8 +207,8 @@ Can be used on:
   * Clients
   * Workspaces
 
-Used in mode:
-  * Normal
+  Used in mode:
+    * Normal
 
 ```
 j2c
@@ -227,8 +227,8 @@ Can be used on:
   * Clients
   * Workspaces
 
-Used in mode:
-  * Normal
+  Used in mode:
+    * Normal
 
 ```
 g1w
@@ -249,8 +249,8 @@ Can be used on:
   * Clients
   * Workspaces
 
-Used in mode:
-  * Normal
+  Used in mode:
+    * Normal
 
 ```
 j3c
