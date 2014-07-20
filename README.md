@@ -16,11 +16,7 @@ Contents
 
 ##Configuration
 
-Configuration is done through the included config.h file.
-
-Keys, operators, colours, motions and more are defined in this file.
-
-It has a layout that will be recognisable to anyone that has used similarly small WMs.
+Configuration is done through the included config.h file. Keys, operators, colours, motions and more are defined in this file. It has a layout that will be recognisable to anyone that has used similarly small WMs.
 
 Each option is described in detail below:
 
