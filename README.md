@@ -7,7 +7,7 @@
 
 Contents
 =====
-* [Contributing](#howm/CONTRIBUTING.md)
+* [Contributing](CONTRIBUTING.md)
 * [Configuration](#configuration)
 * [Motions](#motions)
 * [Counts](#counts)
