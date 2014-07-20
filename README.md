@@ -12,6 +12,7 @@ Contents
 * [Motions](#motions)
 * [Counts](#counts)
 * [Operators](#operators)
+* [Modes](#modes)
 
 ##Configuration
 
@@ -221,3 +222,23 @@ The above command moves 2 clients down one place in the workspace's client list.
 j3w
 ```
 The above command moves the contents of 3 workspaces down one workspace. If a workspace is to be moved beyond the last workspace, it is wrapped to the first workspace.
+
+##Modes
+
+A good primer on modes is available [here](http://vimdoc.sourceforge.net/htmldoc/intro.html#vim-modes-intro).
+
+In howm, modes are used to allow the same keys to be bound to multiple functions. Modes also help to logically separate what needs to be done to a window. The available modes are as follows:
+
+* **Normal**: This mode is the one that you will spend most of your time in. It is used for executing commands and most of the operators are designed to work in this mode. This mode behaves similarly to how other WMs behave, but without focusing or dealing with floating windows.
+
+* **Focus**: This mode is designed to be used to change the focus and locations of windows or workspaces.
+
+* **Floating**: This mode is designed to deal with all things floating. Moving, resizing and teleporting floating windows are all available in this mode.
+
+
+
+
+
+
+
+
