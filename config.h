@@ -61,6 +61,12 @@
 #define LOG_LEVEL LOG_INFO
 /** The workspace that should be focused upon startup. */
 #define DEFAULT_WORKSPACE 1
+/** The minimum width of a floating window that is spawned, if it doesn't
+ * respond to geometry requests. */
+#define MIN_FLOAT_WIDTH 500
+/** The minimum height of a floating window that is spawned, if it doesn't
+ * respond to geometry requests. */
+#define MIN_FLOAT_HEIGHT 500
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",

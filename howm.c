@@ -639,8 +639,8 @@ void map_event(xcb_generic_event_t *ev)
 		xcb_get_geometry(dpy, me->window), NULL))) {
 		log_info("geom: %ux%u+%d+%d\n", geom->width, geom->height, geom->x, geom->y);
 		if (c->is_floating) {
-			c->w = geom->width;
-			c->h = geom->height;
+			c->w = geom->width > 1 ? geom->width : MIN_FLOAT_WIDTH;
+			c->h = geom->height > 1 ? geom->height : MIN_FLOAT_HEIGHT;
 			c->x = CENTER_FLOATING ? (screen_width / 2) - (c->w / 2) : geom->x;
 			c->y = CENTER_FLOATING ? (screen_height - wss[cw].bar_height - c->h) / 2 : geom->y;
 		}
@@ -1805,6 +1805,9 @@ void draw_clients()
 	for (c = wss[cw].head; c; c = c->next)
 		if (wss[cw].layout == ZOOM && !ZOOM_GAP)
 			move_resize(c->win, c->x + hbw, c->y + hbw, c->w - hbw, c->h - hbw);
+		else if (c->is_floating)
+			move_resize(c->win, c->x + hbw, c->y + hbw,
+					c->w - hbw, c->h - hbw);
 		else
 			move_resize(c->win, c->x + c->gap + hbw, c->y + c->gap + hbw,
 					c->w - (2 * c->gap) - hbw, c->h - (2 * c->gap) - hbw);
@@ -1941,7 +1944,7 @@ static void resize_float_width(const Arg *arg)
 {
 	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->w + arg->i <= 0)
 		return;
-	log_info("Resizing width of client <%p> from %d to %d", wss[cw].current, wss[cw].current->w, arg->i);
+	log_info("Resizing width of client <%p> from %d by %d", wss[cw].current, wss[cw].current->w, arg->i);
 	wss[cw].current->w += arg->i;
 	draw_clients();
 }
