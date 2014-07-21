@@ -156,6 +156,18 @@ can be from 0 to 1.
 #define DEFAULT_WORKSPACE 1
 ```
 
+* **FLOAT_SPAWN_WIDTH**: This represents the width of a floating window when it is spawned, if no geometry information is known about it.
+
+```
+#define FLOAT_SPAWN_WIDTH 400
+```
+
+* **FLOAT_SPAWN_HEIGHT**: This represents the height of a floating window when it is spawned, if no geometry information is known about it.
+
+```
+#define FLOAT_SPAWN_HEIGHT 400
+```
+
 ##Motions
 
 For a good primer on motions, vim's [documentation](http://vimdoc.sourceforge.net/htmldoc/motion.html) explains them well.
