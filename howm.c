@@ -639,8 +639,8 @@ void map_event(xcb_generic_event_t *ev)
 		xcb_get_geometry(dpy, me->window), NULL))) {
 		log_info("geom: %ux%u+%d+%d\n", geom->width, geom->height, geom->x, geom->y);
 		if (c->is_floating) {
-			c->w = geom->width > 1 ? geom->width : MIN_FLOAT_WIDTH;
-			c->h = geom->height > 1 ? geom->height : MIN_FLOAT_HEIGHT;
+			c->w = geom->width > 1 ? geom->width : FLOAT_SPAWN_WIDTH;
+			c->h = geom->height > 1 ? geom->height : FLOAT_SPAWN_HEIGHT;
 			c->x = CENTER_FLOATING ? (screen_width / 2) - (c->w / 2) : geom->x;
 			c->y = CENTER_FLOATING ? (screen_height - wss[cw].bar_height - c->h) / 2 : geom->y;
 		}
