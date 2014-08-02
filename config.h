@@ -52,20 +52,22 @@
 #define ZOOM_GAP true
 /** The ratio of the size of the master window compared to the screen's size. */
 #define MASTER_RATIO 0.7
-/** How much detail should be logged. A LOG_LEVEL of INFO will log
+/** How much detail should be logged. A LOG_LEVEL of INFO will log almost
  * everything, LOG_WARN will log warnings and errors and LOG_ERR will log only
  * errors.
  *
  * LOG_NONE means nothing will be logged.
+ *
+ * LOG_DEBUG should be used by developers.
  */
 #define LOG_LEVEL LOG_INFO
 /** The workspace that should be focused upon startup. */
 #define DEFAULT_WORKSPACE 1
 /** The minimum width of a floating window that is spawned, if it doesn't
- * respond to geometry requests. */
+ * respond to geometry requests in a satisfactory manner. */
 #define FLOAT_SPAWN_WIDTH 500
 /** The minimum height of a floating window that is spawned, if it doesn't
- * respond to geometry requests. */
+ * respond to geometry requests in a satisfactory manner. */
 #define FLOAT_SPAWN_HEIGHT 500
 
 static const char * const term_cmd[] = {"urxvt", NULL};
@@ -84,10 +86,12 @@ static const Key keys[] = {
 	{ MODKEY, NORMAL, XK_Return, spawn, {.cmd = term_cmd} },
 	{ MODKEY, NORMAL, XK_d, spawn, {.cmd = dmenu_cmd} },
 
-	{ MODKEY, NORMAL, XK_s, change_layout, {.i = VSTACK} },
+	{ MODKEY, NORMAL, XK_v, change_layout, {.i = VSTACK} },
+	{ MODKEY, NORMAL, XK_h, change_layout, {.i = HSTACK} },
 	{ MODKEY, NORMAL, XK_g, change_layout, {.i = GRID} },
 	{ MODKEY, NORMAL, XK_z, change_layout, {.i = ZOOM} },
 	{ MODKEY, NORMAL, XK_n, next_layout, {NULL} },
+	{ MODKEY, NORMAL, XK_l, last_layout, {NULL} },
 	{ MODKEY | ShiftMask, NORMAL, XK_n, previous_layout, {NULL} },
 	{ MODKEY, NORMAL, XK_f, change_mode, {.i = FOCUS} },
 	{ MODKEY | ShiftMask, NORMAL, XK_f, change_mode, {.i = FLOATING} },
@@ -121,6 +125,7 @@ static const Key keys[] = {
 	{ MODKEY | ShiftMask, FOCUS, XK_k, move_current_up, {NULL} },
 	{ MODKEY | ShiftMask, FOCUS, XK_j, move_current_down, {NULL} },
 	{ MODKEY, FOCUS, XK_Escape, change_mode, {.i = NORMAL} },
+	{ MODKEY, FOCUS, XK_u, focus_last_ws, {NULL} },
 	{ MODKEY, FOCUS, XK_l, focus_next_ws, {NULL} },
 	{ MODKEY, FOCUS, XK_h, focus_prev_ws, {NULL} },
 	{ MODKEY, FOCUS, XK_m, make_master, {NULL} },
