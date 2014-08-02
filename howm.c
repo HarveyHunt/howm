@@ -250,15 +250,14 @@ static void cleanup(void);
 static void delete_win(xcb_window_t win);
 static void setup_ewmh(void);
 
-enum { ZOOM, GRID, HSTACK, VSTACK, END_LAYOUT };
-enum { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
-enum { NORMAL, FOCUS, FLOATING, END_MODES };
-enum { COMMAND, OPERATOR, MOTION, END_TYPE };
-enum { CLIENT, WORKSPACE };
-enum { NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
+enum layouts { ZOOM, GRID, HSTACK, VSTACK, END_LAYOUT };
+enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
+enum modes { NORMAL, FOCUS, FLOATING, END_MODES };
+enum motions { CLIENT, WORKSPACE };
+enum net_atom_enum { NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
 	NET_ACTIVE_WINDOW};
-enum {TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT};
-enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
+enum wm_atom_enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
+enum teleport_locations {TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT};
 
 /* Handlers */
 static void(*handler[XCB_NO_OPERATION]) (xcb_generic_event_t *) = {
