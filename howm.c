@@ -188,6 +188,7 @@ static void resize_float_height(const Arg *arg);
 static void move_float_y(const Arg *arg);
 static void move_float_x(const Arg *arg);
 static void make_master(const Arg *arg);
+static void grab_buttons(Client *c);
 
 /* Workspaces */
 static void kill_ws(const int ws);
@@ -424,6 +425,8 @@ int main(int argc, char *argv[])
 		ev = xcb_wait_for_event(dpy);
 		if (ev && handler[ev->response_type & ~0x80])
 			handler[ev->response_type & ~0x80](ev);
+		else
+			log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
 		free(ev);
 	}
 	if (!running) {
@@ -473,6 +476,11 @@ void button_press_event(xcb_generic_event_t *ev)
 	log_info("Button %d pressed at (%d, %d)", be->detail, be->event_x, be->event_y);
 	if (FOCUS_MOUSE_CLICK && be->detail == XCB_BUTTON_INDEX_1)
 		focus_window(be->event);
+
+	if (FOCUS_MOUSE_CLICK) {
+		xcb_allow_events(dpy, XCB_ALLOW_REPLAY_POINTER, be->time);
+		xcb_flush(dpy);
+	}
 }
 
 /**
@@ -619,6 +627,7 @@ void map_event(xcb_generic_event_t *ev)
 		free(geom);
 	}
 
+	grab_buttons(c);
 	arrange_windows();
 	xcb_map_window(dpy, c->win);
 	update_focused_client(c);
@@ -913,6 +922,20 @@ void grab_keys(void)
 		keycode = keysym_to_keycode(XK_1 + i);
 		grab_keycode(keycode, COUNT_MOD);
 	}
+}
+
+/**
+ * @brief Make a client listen for button press events.
+ *
+ * @param c The client that needs to listen for button presses.
+ */
+void grab_buttons(Client *c)
+{
+	xcb_ungrab_button(dpy, XCB_BUTTON_INDEX_ANY, c->win, XCB_GRAB_ANY);
+	xcb_grab_button(dpy, 1, c->win, XCB_EVENT_MASK_BUTTON_PRESS,
+			XCB_GRAB_MODE_SYNC, XCB_GRAB_MODE_ASYNC,
+			XCB_WINDOW_NONE, XCB_CURSOR_NONE,
+			XCB_BUTTON_INDEX_ANY, XCB_BUTTON_MASK_ANY);
 }
 
 /**
@@ -1688,6 +1711,8 @@ void focus_window(xcb_window_t win)
 
 	if (c)
 		update_focused_client(c);
+	else
+		log_warn("No client owns the window <%d>", win);
 }
 
 /**
