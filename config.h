@@ -28,7 +28,7 @@
 /** Upon spawning a new window, move the mouse to the new window? */
 #define FOLLOW_SPAWN true
 /** The size (in pixels) of the useless gaps. */
-#define GAP 0
+#define GAP 2
 /** Enable debugging output */
 #define DEBUG_ENABLE 0
 /** The size (in pixels) of the border. */

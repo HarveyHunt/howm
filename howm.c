@@ -1340,6 +1340,7 @@ void focus_last_ws(const Arg *arg)
 void focus_next_ws(const Arg *arg)
 {
 	const Arg a = {.i = correct_ws(cw + 1)};
+
 	log_info("Focusing previous workspace");
 	change_ws(&a);
 }
