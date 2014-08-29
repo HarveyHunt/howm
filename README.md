@@ -13,6 +13,7 @@ Contents
 * [Counts](#counts)
 * [Operators](#operators)
 * [Modes](#modes)
+* [Parsing Output](*parsingoutput)
 
 ##Configuration
 
@@ -284,6 +285,66 @@ In howm, modes are used to allow the same keys to be bound to multiple functions
 * **Focus**: This mode is designed to be used to change the focus and locations of windows or workspaces.
 
 * **Floating**: This mode is designed to deal with all things floating. Moving, resizing and teleporting floating windows are all available in this mode.
+
+
+##Parsing Output
+
+When debug mode is disabled, howm outputs information about its current state and the current workspace whenever something changes (such as adding a new window or changing mode). When debug mode is enabled, information is outputted for each workspace (placed on a new line).
+
+The format for the output is as follows:
+
+```
+Mode:Layout:Workspace:State:NumberofClients
+```
+
+An example output can be seen below:
+
+```
+0:2:1:0:1
+```
+
+The information outputted at the same time as the example above, but with debugging mode turned on is shown below:
+
+```
+0:2:1:0:1
+0:2:2:0:0
+0:2:3:0:0
+0:2:4:0:0
+0:2:5:0:0
+```
+
+Below is an example of a script that parses thes output of howm (when debugging is disabled) and sends it to dzen2:
+
+```
+#!/bin/bash
+ff="/tmp/howm.fifo"
+[[ -p $ff ]] || mkfifo -m 666 "$ff"
+
+ws=("term" "vim" "www" "chat" "media")
+
+lay=("▣" "▦" "▥" "▤")
+
+mbg=("#333333" "#5F5F87" "#AFD7AF")
+mfg=("#DDDDDD" "#333333" "#333333")
+
+bg="#333333"
+
+while read -t 10 -r howmout || true; do
+    if [[ $howmout =~ ^(([[:digit:]]+:)+[[:digit:]]+ ?)+$ ]]; then
+        unset r
+        IFS=':' read -r m l w s c <<< "$howmout"
+        r+='^fg('"${mfg[$m]}"')'
+        r+='^bg('"${mbg[$m]}"')'
+        r+=" ${lay[$l]} | "
+        r+="${ws[$w - 1]}"
+        r="${r%::*}"
+    fi
+    printf "%s%s\n" "$r" " | $(date +"%F %R")"
+done < "$ff" | dzen2 -h 20 -y -20 -ta r -bg "$bg" -fn "Inconsolata-dz:size=10" &
+
+# pass output to fifo
+/home/harvey/code/howm/howm > "$ff"
+```
 
 
 
