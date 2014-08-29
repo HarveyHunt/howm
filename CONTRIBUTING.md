@@ -37,6 +37,8 @@ You have written an awesome new feature and want to get it merged straight away-
 Documentation is an important part of any project, howm is no different. Document all new features, as has been done
 in the README already.
 
+Please don't change any version numbers anywhere within the project.
+
 howm uses [Doxygen](http://www.stack.nl/~dimitri/doxygen/) for documentation of the code, keep this up to date as you go.
 
 
@@ -44,4 +46,4 @@ howm uses [Doxygen](http://www.stack.nl/~dimitri/doxygen/) for documentation of 
   
 Once you have made some cool changes, push to github and send a PR.
 
-Make sure that the PR is targeted at the develop branch, as packages are built from the master branch.
+Make sure that the PR is targeted at the develop branch, as packages are built from the master branch and that should be kept as stable as possible.
