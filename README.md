@@ -13,7 +13,7 @@ Contents
 * [Counts](#counts)
 * [Operators](#operators)
 * [Modes](#modes)
-* [Parsing Output](*parsingoutput)
+* [Parsing Output](#parsingoutput)
 
 ##Configuration
 
