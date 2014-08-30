@@ -40,7 +40,7 @@
 /** Calculates the length of an array. */
 #define LENGTH(x) (unsigned int)(sizeof(x) / sizeof(*x))
 /** Checks to see if a client is floating, fullscreen or transient. */
-#define FFT(client) (c->is_transient || c->is_floating || c->is_fullscreen)
+#define FFT(c) (c->is_transient || c->is_floating || c->is_fullscreen)
 
 /**
  * @brief Represents an argument.
