@@ -1897,8 +1897,11 @@ static void op_grow_gaps(const unsigned int type, int cnt)
  */
 static void change_client_gaps(Client *c, int size)
 {
-	if ((int)c->gap + size <= 0 || c->is_fullscreen || c->is_floating)
+	if (c->is_fullscreen || c->is_floating)
 		return;
+	if ((int)c->gap + size <= 0)
+		c->gap = 0;
+
 	c->gap += size;
 	uint32_t space = c->gap + BORDER_PX;
 
