@@ -2310,14 +2310,25 @@ static void toggle_fullscreen(const Arg *arg)
 	set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
 }
 
+/**
+ * @brief Handle messages sent by the client to alter its state.
+ *
+ * @param ev The client message as a generic event.
+ */
 static void client_message_event(xcb_generic_event_t *ev)
 {
 	xcb_client_message_event_t *cm = (xcb_client_message_event_t *)ev;
 	Client *c = find_client_by_win(cm->window);
 	if (c && cm->type == ewmh->_NET_WM_STATE
-			&& (cm->data.data32[1] == ewmh->_NET_WM_STATE_FULLSCREEN
-			|| cm->data.data32[2] == ewmh->_NET_WM_STATE_FULLSCREEN)) {
-		set_fullscreen(c, (cm->data.data32[0] == 1
-					|| (cm->data.data32[0] == 2 && !c->is_fullscreen)));
+			&& cm->data.data32[1] == ewmh->_NET_WM_STATE_FULLSCREEN) {
+		/* Disable fullscreen. */
+		if (cm->data.data32[0] == 0)
+			set_fullscreen(c, false);
+		/* Enable fullscreen. */
+		else if (cm->data.data32[0] == 1)
+			set_fullscreen(c, true);
+		/* Toggle fullscreen. */
+		else if (cm->data.data32[0] == 2)
+			set_fullscreen(c, !c->is_fullscreen);
 	}
 }
