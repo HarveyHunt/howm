@@ -176,6 +176,8 @@ can be from 0 to 1.
 
 For a good primer on motions, vim's [documentation](http://vimdoc.sourceforge.net/htmldoc/motion.html) explains them well.
 
+**Please note: The modifier key that is OTHER_MOD needs to be held down whilst entering a motion.**
+
 Operators and motions are combined so that an operation can be performed on multiple things, such as clients or workspaces. The current supported motions are as follows:
 
 * **Workspace**: Perform an operation on one or more workspaces.
