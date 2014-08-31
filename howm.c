@@ -228,6 +228,7 @@ static void key_press_event(xcb_generic_event_t *ev);
 static void map_event(xcb_generic_event_t *ev);
 static void configure_event(xcb_generic_event_t *ev);
 static void unmap_event(xcb_generic_event_t *ev);
+static void client_message_event(xcb_generic_event_t *ev);
 
 /* XCB */
 static void grab_keys(void);
@@ -270,7 +271,8 @@ static void(*handler[XCB_NO_OPERATION]) (xcb_generic_event_t *) = {
 	[XCB_DESTROY_NOTIFY] = destroy_event,
 	[XCB_ENTER_NOTIFY] = enter_event,
 	[XCB_CONFIGURE_NOTIFY] = configure_event,
-	[XCB_UNMAP_NOTIFY] = unmap_event
+	[XCB_UNMAP_NOTIFY] = unmap_event,
+	[XCB_CLIENT_MESSAGE] = client_message_event
 };
 
 static void(*layout_handler[]) (void) = {
@@ -2248,6 +2250,8 @@ void setup_ewmh(void)
 				ewmh->_NET_DESKTOP_VIEWPORT,
 				ewmh->_NET_WM_NAME,
 				ewmh->_NET_WM_STATE,
+				ewmh->_NET_CLOSE_WINDOW,
+				ewmh->_NET_WM_STATE_FULLSCREEN,
 				ewmh->_NET_CURRENT_DESKTOP,
 				ewmh->_NET_NUMBER_OF_DESKTOPS,
 				ewmh->_NET_DESKTOP_GEOMETRY,
@@ -2271,7 +2275,8 @@ void setup_ewmh(void)
  * @param c The client which should have its fullscreen state altered.
  * @param fscr The fullscreen state that the client should be changed to.
  */
-static void set_fullscreen(Client *c, bool fscr) {
+static void set_fullscreen(Client *c, bool fscr)
+{
 	long data[] = {fscr ? ewmh->_NET_WM_STATE_FULLSCREEN : XCB_NONE };
 
 	if (!c || fscr == c->is_fullscreen)
@@ -2291,6 +2296,7 @@ static void set_fullscreen(Client *c, bool fscr) {
 		arrange_windows();
 		draw_clients();
 	}
+	update_focused_client(c);
 
 }
 
@@ -2302,4 +2308,16 @@ static void set_fullscreen(Client *c, bool fscr) {
 static void toggle_fullscreen(const Arg *arg)
 {
 	set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
+}
+
+static void client_message_event(xcb_generic_event_t *ev)
+{
+	xcb_client_message_event_t *cm = (xcb_client_message_event_t *)ev;
+	Client *c = find_client_by_win(cm->window);
+	if (c && cm->type == ewmh->_NET_WM_STATE
+			&& (cm->data.data32[1] == ewmh->_NET_WM_STATE_FULLSCREEN
+			|| cm->data.data32[2] == ewmh->_NET_WM_STATE_FULLSCREEN)) {
+		set_fullscreen(c, (cm->data.data32[0] == 1
+					|| (cm->data.data32[0] == 2 && !c->is_fullscreen)));
+	}
 }
