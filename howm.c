@@ -1415,7 +1415,7 @@ void last_layout(const Arg *arg)
  */
 void change_mode(const Arg *arg)
 {
-	if (arg->i >= END_MODES || arg->i == cur_mode)
+	if (arg->i >= (int)END_MODES || arg->i == (int)cur_mode)
 		return;
 	cur_mode = arg->i;
 	log_info("Changing to mode %d", cur_mode);
@@ -2284,9 +2284,9 @@ static void set_fullscreen(Client *c, bool fscr)
 
 	c->is_fullscreen = fscr;
 	log_info("Setting client <%p>'s fullscreen state to %d", c, fscr);
-        xcb_change_property(dpy, XCB_PROP_MODE_REPLACE,
-                            c->win, ewmh->_NET_WM_STATE, XCB_ATOM_ATOM, 32,
-                            fscr, data);
+	xcb_change_property(dpy, XCB_PROP_MODE_REPLACE,
+			c->win, ewmh->_NET_WM_STATE, XCB_ATOM_ATOM, 32,
+			fscr, data);
 	if (fscr) {
 		set_border_width(c->win, 0);
 		change_client_geom(c, 0, 0, screen_width, screen_height);
@@ -2319,6 +2319,7 @@ static void client_message_event(xcb_generic_event_t *ev)
 {
 	xcb_client_message_event_t *cm = (xcb_client_message_event_t *)ev;
 	Client *c = find_client_by_win(cm->window);
+
 	if (c && cm->type == ewmh->_NET_WM_STATE
 			&& cm->data.data32[1] == ewmh->_NET_WM_STATE_FULLSCREEN) {
 		/* Disable fullscreen. */
