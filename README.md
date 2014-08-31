@@ -122,7 +122,7 @@ Each option is described in detail below:
 #define BAR_BOTTOM true
 ```
 
-* **CENTER_FLOATING**: Whether a window that has just been chaned to floating should be centered or not.
+* **CENTER_FLOATING**: Whether a window that has just been changed to floating should be centered or not.
 
 ```
 #define CENTER_FLOATING true
