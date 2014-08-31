@@ -120,6 +120,7 @@ static const Key keys[] = {
 	{ MODKEY, FLOATING, XK_Escape, change_mode, {.i = NORMAL} },
 	{ MODKEY, FLOATING, XK_f, change_mode, {.i = FOCUS} },
 
+	{ MODKEY, FOCUS, XK_space, toggle_fullscreen, {NULL} },
 	{ MODKEY, FOCUS, XK_k, focus_prev_client, {NULL} },
 	{ MODKEY, FOCUS, XK_j, focus_next_client, {NULL} },
 	{ MODKEY | ShiftMask, FOCUS, XK_k, move_current_up, {NULL} },

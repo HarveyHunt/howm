@@ -189,6 +189,8 @@ static void move_float_y(const Arg *arg);
 static void move_float_x(const Arg *arg);
 static void make_master(const Arg *arg);
 static void grab_buttons(Client *c);
+static void set_fullscreen(Client *c, bool fscr);
+static void toggle_fullscreen(const Arg *arg);
 
 /* Workspaces */
 static void kill_ws(const int ws);
@@ -256,9 +258,9 @@ enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
 enum modes { NORMAL, FOCUS, FLOATING, END_MODES };
 enum motions { CLIENT, WORKSPACE };
 enum net_atom_enum { NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
-	NET_ACTIVE_WINDOW};
+	NET_ACTIVE_WINDOW };
 enum wm_atom_enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
-enum teleport_locations {TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT};
+enum teleport_locations { TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT };
 
 /* Handlers */
 static void(*handler[XCB_NO_OPERATION]) (xcb_generic_event_t *) = {
@@ -1827,6 +1829,8 @@ void draw_clients(void)
 		else if (c->is_floating)
 			move_resize(c->win, c->x + hbw, c->y + hbw,
 					c->w - hbw, c->h - hbw);
+		else if (c->is_fullscreen)
+			move_resize(c->win, c->x, c->y, c->w, c->h);
 		else
 			move_resize(c->win, c->x + c->gap + hbw, c->y + c->gap + hbw,
 					c->w - (2 * c->gap) - hbw, c->h - (2 * c->gap) - hbw);
@@ -2243,6 +2247,7 @@ void setup_ewmh(void)
 				ewmh->_NET_SUPPORTING_WM_CHECK,
 				ewmh->_NET_DESKTOP_VIEWPORT,
 				ewmh->_NET_WM_NAME,
+				ewmh->_NET_WM_STATE,
 				ewmh->_NET_CURRENT_DESKTOP,
 				ewmh->_NET_NUMBER_OF_DESKTOPS,
 				ewmh->_NET_DESKTOP_GEOMETRY,
@@ -2257,4 +2262,32 @@ void setup_ewmh(void)
 	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
 	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
+}
+
+static void set_fullscreen(Client *c, bool fscr){
+	long data[] = {fscr ? ewmh->_NET_WM_STATE_FULLSCREEN : XCB_NONE };
+
+	if (!c || fscr == c->is_fullscreen)
+		return;
+
+	c->is_fullscreen = fscr;
+	log_info("Setting client <%p>'s fullscreen state to %d", c, fscr);
+        xcb_change_property(dpy, XCB_PROP_MODE_REPLACE,
+                            c->win, ewmh->_NET_WM_STATE, XCB_ATOM_ATOM, 32,
+                            fscr, data);
+	if (fscr) {
+		set_border_width(c->win, 0);
+		change_client_geom(c, 0, 0, screen_width, screen_height);
+		draw_clients();
+	} else {
+		set_border_width(c->win, !wss[cw].head->next ? 0 : BORDER_PX);
+		arrange_windows();
+		draw_clients();
+	}
+
+}
+
+static void toggle_fullscreen(const Arg *arg)
+{
+	set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
 }
