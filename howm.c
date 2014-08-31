@@ -2264,7 +2264,14 @@ void setup_ewmh(void)
 	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
 }
 
-static void set_fullscreen(Client *c, bool fscr){
+/**
+ * @brief Set the fullscreen state of the client. Change its geometry and
+ * border widths.
+ *
+ * @param c The client which should have its fullscreen state altered.
+ * @param fscr The fullscreen state that the client should be changed to.
+ */
+static void set_fullscreen(Client *c, bool fscr) {
 	long data[] = {fscr ? ewmh->_NET_WM_STATE_FULLSCREEN : XCB_NONE };
 
 	if (!c || fscr == c->is_fullscreen)
@@ -2287,6 +2294,11 @@ static void set_fullscreen(Client *c, bool fscr){
 
 }
 
+/**
+ * @brief Toggle the fullscreen state of the current client.
+ *
+ * @param arg Unused.
+ */
 static void toggle_fullscreen(const Arg *arg)
 {
 	set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
