@@ -1450,10 +1450,27 @@ void op_kill(const unsigned int type, int cnt)
  */
 void kill_client(void)
 {
+	xcb_icccm_get_wm_protocols_reply_t rep;
+	unsigned int i;
+	bool found = false;
+
 	if (!wss[cw].current)
 		return;
-	/* TODO: Kill the window in a nicer way and get it to consistently die. */
-	xcb_kill_client(dpy, wss[cw].current->win);
+
+	if (xcb_icccm_get_wm_protocols_reply(dpy,
+				xcb_icccm_get_wm_protocols(dpy,
+					wss[cw].current->win,
+					wm_atoms[WM_PROTOCOLS]), &rep, NULL)) {
+		for (i = 0; i < rep.atoms_len; ++i)
+			if (rep.atoms[i] == wm_atoms[WM_PROTOCOLS]) {
+				delete_win(wss[cw].current->win);
+				found = true;
+				break;
+			}
+		xcb_icccm_get_wm_protocols_reply_wipe(&rep);
+	}
+	if (!found)
+		xcb_kill_client(dpy, wss[cw].current->win);
 	log_info("Killing Client <%p>", wss[cw].current);
 	remove_client(wss[cw].current);
 }
@@ -2126,7 +2143,7 @@ static void delete_win(xcb_window_t win)
 {
 	xcb_client_message_event_t ev;
 
-	log_info("Deleting window <%d>", win);
+	log_info("Sending WM_DELETE_WINDOW to window <%d>", win);
 	ev.response_type = XCB_CLIENT_MESSAGE;
 	ev.sequence = 0;
 	ev.format = 32;
@@ -2135,6 +2152,7 @@ static void delete_win(xcb_window_t win)
 	ev.data.data32[0] = wm_atoms[WM_DELETE_WINDOW];
 	ev.data.data32[1] = XCB_CURRENT_TIME;
 	xcb_send_event(dpy, 0, win, XCB_EVENT_MASK_NO_EVENT, (char *)&ev);
+	xcb_flush(dpy);
 }
 
 /**
