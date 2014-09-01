@@ -1482,11 +1482,8 @@ void kill_client(void)
  */
 void kill_ws(const int ws)
 {
-	Arg arg = { .i = ws };
-
-	change_ws(&arg);
-	log_info("Killing off workspace <%d>", arg.i);
-	while (wss[cw].head)
+	log_info("Killing off workspace <%d>", ws);
+	while (wss[ws].head)
 		kill_client();
 }
 
