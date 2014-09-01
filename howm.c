@@ -1135,16 +1135,15 @@ void remove_client(Client *c)
 {
 	Client **temp = NULL;
 	int w = 1;
-	bool found;
 
-	for (found = false; w <= WORKSPACES && !found; w++)
-		for (temp = &wss[w].head; *temp
-			&& !(found = *temp == c);
-				temp = &(*temp)->next);
+	for (; w <= WORKSPACES; ++w)
+		for (temp = &wss[w].head; *temp; temp = &(*temp)->next)
+			if (*temp == c) {
+				goto found;
+			}
+	return;
 
-	if (!found)
-		return;
-	w -= 1;
+found:
 	*temp = c->next;
 	log_info("Removing client <%p>", c);
 	if (c == wss[w].prev_foc)
