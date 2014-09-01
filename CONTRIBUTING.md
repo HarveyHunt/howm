@@ -11,8 +11,17 @@ Clone the repository:
 Change to the develop branch:
 
     git checkout develop
+    
+You might find it useful to have the generated Doxygen docs handy. They are host on github
+[here](http://harveyhunt.github.io/howm/). 
+
+Alternatively, change into the newly cloned howm directory and run:
+
+    doxygen
+    
+To have the documentation automatically generated locally.
   
-Hack away until your heart is content.
+Then it is time to hack away until your heart is content.
 
 ## Code Style
 
