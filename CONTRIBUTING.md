@@ -12,7 +12,7 @@ Change to the develop branch:
 
     git checkout develop
     
-You might find it useful to have the generated Doxygen docs handy. They are host on github
+You might find it useful to have the generated Doxygen docs handy. They are hosted on github
 [here](http://harveyhunt.github.io/howm/). 
 
 Alternatively, change into the newly cloned howm directory and run:
