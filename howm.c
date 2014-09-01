@@ -1714,7 +1714,7 @@ void move_ws_up(int ws)
 }
 
 /**
- * @brief Focus the given window.
+ * @brief Focus the given window, so long as it isn't already focused.
  *
  * @param win A window that belongs to a client being managed by howm.
  */
@@ -1911,8 +1911,9 @@ static void change_client_gaps(Client *c, int size)
 		return;
 	if ((int)c->gap + size <= 0)
 		c->gap = 0;
+	else
+		c->gap += size;
 
-	c->gap += size;
 	uint32_t space = c->gap + BORDER_PX;
 
 	xcb_ewmh_set_frame_extents(ewmh, c->win, space, space, space, space);
