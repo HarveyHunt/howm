@@ -7,11 +7,11 @@ Contributions are always welcomed, so start sending some PRs!
 Clone the repository:
 
     git clone https://github.com/HarveyHunt/howm.git
-  
+
 Change to the develop branch:
 
     git checkout develop
-  
+
 Hack away until your heart is content.
 
 ## Code Style
@@ -29,7 +29,7 @@ The hard rules are as follows:
   * Code should be clear- clarity over conciseness
   * Doxygen documentation needs to be updated for new code
   * Document new features in the README
-  
+
 ## What comes after code?
 
 You have written an awesome new feature and want to get it merged straight away- have you forgotten something?
@@ -43,7 +43,7 @@ howm uses [Doxygen](http://www.stack.nl/~dimitri/doxygen/) for documentation of 
 
 
 ## Sending PRs
-  
+
 Once you have made some cool changes, push to github and send a PR.
 
 Make sure that the PR is targeted at the develop branch, as packages are built from the master branch and that should be kept as stable as possible.
