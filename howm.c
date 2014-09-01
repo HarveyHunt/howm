@@ -1134,26 +1134,27 @@ void destroy_event(xcb_generic_event_t *ev)
 void remove_client(Client *c)
 {
 	Client **temp = NULL;
-	int w = 1, cur_ws = cw;
+	int w = 1;
 	bool found;
 
 	for (found = false; w <= WORKSPACES && !found; w++)
 		for (temp = &wss[w].head; *temp
 			&& !(found = *temp == c);
 				temp = &(*temp)->next);
-	*temp = c->next;
 
+	if (!found)
+		return;
+	w -= 1;
+	*temp = c->next;
 	log_info("Removing client <%p>", c);
-	if (c == wss[cw].prev_foc)
-		wss[cw].prev_foc = prev_client(wss[cw].current);
-	if (c == wss[cw].current || !wss[cw].head->next)
-		update_focused_client(wss[cw].prev_foc);
+	if (c == wss[w].prev_foc)
+		wss[w].prev_foc = prev_client(wss[w].current);
+	if (c == wss[w].current || !wss[w].head->next)
+		update_focused_client(wss[w].prev_foc);
 	free(c);
 	c = NULL;
-	if (cur_ws == w)
+	if (cw == w)
 		arrange_windows();
-	else
-		cw = cur_ws;
 }
 
 /**
