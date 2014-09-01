@@ -167,7 +167,7 @@ static void change_client_gaps(Client *c, int size);
 static void change_gaps(const unsigned int type, int cnt, int size);
 static void move_current_down(const Arg *arg);
 static void move_current_up(const Arg *arg);
-static void kill_client(void);
+static void kill_client(const int ws);
 static void move_down(Client *c);
 static void move_up(Client *c);
 static Client *next_client(Client *c);
@@ -1149,6 +1149,7 @@ found:
 	if (c == wss[w].prev_foc)
 		wss[w].prev_foc = prev_client(wss[w].current);
 	if (c == wss[w].current || !wss[w].head->next)
+		wss[w].current = NULL;
 		update_focused_client(wss[w].prev_foc);
 	free(c);
 	c = NULL;
@@ -1438,40 +1439,42 @@ void op_kill(const unsigned int type, int cnt)
 	} else if (type == CLIENT) {
 		log_info("Killing %d clients", cnt);
 		while (cnt > 0) {
-			kill_client();
+			kill_client(cw);
 			cnt--;
 		}
 	}
 }
 
 /**
- * @brief Kills the current client.
+ * @brief Kills the current client on the workspace ws.
+ *
+ * @param ws The workspace that the current client to be killed is on.
  */
-void kill_client(void)
+void kill_client(const int ws)
 {
 	xcb_icccm_get_wm_protocols_reply_t rep;
 	unsigned int i;
 	bool found = false;
 
-	if (!wss[cw].current)
+	if (!wss[ws].current)
 		return;
 
 	if (xcb_icccm_get_wm_protocols_reply(dpy,
 				xcb_icccm_get_wm_protocols(dpy,
-					wss[cw].current->win,
+					wss[ws].current->win,
 					wm_atoms[WM_PROTOCOLS]), &rep, NULL)) {
 		for (i = 0; i < rep.atoms_len; ++i)
 			if (rep.atoms[i] == wm_atoms[WM_DELETE_WINDOW]) {
-				delete_win(wss[cw].current->win);
+				delete_win(wss[ws].current->win);
 				found = true;
 				break;
 			}
 		xcb_icccm_get_wm_protocols_reply_wipe(&rep);
 	}
 	if (!found)
-		xcb_kill_client(dpy, wss[cw].current->win);
-	log_info("Killing Client <%p>", wss[cw].current);
-	remove_client(wss[cw].current);
+		xcb_kill_client(dpy, wss[ws].current->win);
+	log_info("Killing Client <%p>", wss[ws].current);
+	remove_client(wss[ws].current);
 }
 
 /**
@@ -1483,7 +1486,7 @@ void kill_ws(const int ws)
 {
 	log_info("Killing off workspace <%d>", ws);
 	while (wss[ws].head)
-		kill_client();
+		kill_client(ws);
 }
 
 /**
