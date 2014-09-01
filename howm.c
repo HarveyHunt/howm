@@ -1687,14 +1687,9 @@ int correct_ws(int ws)
  */
 void move_ws(int s_ws, int d_ws)
 {
-	/* Source workspace. */
-	Arg arg = { .i = s_ws };
-
-	change_ws(&arg);
-	while (wss[cw].head)
+	while (wss[s_ws].head)
 		/* The destination workspace. */
-		client_to_ws(wss[cw].head, d_ws);
-	change_ws(&arg);
+		client_to_ws(wss[s_ws].head, d_ws);
 }
 
 /**
