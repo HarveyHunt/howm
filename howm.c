@@ -1462,7 +1462,7 @@ void kill_client(void)
 					wss[cw].current->win,
 					wm_atoms[WM_PROTOCOLS]), &rep, NULL)) {
 		for (i = 0; i < rep.atoms_len; ++i)
-			if (rep.atoms[i] == wm_atoms[WM_PROTOCOLS]) {
+			if (rep.atoms[i] == wm_atoms[WM_DELETE_WINDOW]) {
 				delete_win(wss[cw].current->win);
 				found = true;
 				break;
