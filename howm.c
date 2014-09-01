@@ -1584,23 +1584,20 @@ void client_to_ws(Client *c, const int ws)
 {
 	Client *last;
 	Client *prev = prev_client(c);
-	int cur_ws = cw;
 
 	/* Performed for the current workspace. */
 	if (!c || ws == cw)
 		return;
 	/* Target workspace. */
-	cw = ws;
-	last = prev_client(wss[cw].head);
-	if (!wss[cw].head)
-		wss[cw].head = c;
+	last = prev_client(wss[ws].head);
+	if (!wss[ws].head)
+		wss[ws].head = c;
 	else if (last)
 		last->next = c;
 	else
-		wss[cw].head->next = c;
+		wss[ws].head->next = c;
 
 	/* Current workspace. */
-	cw = cur_ws;
 	if (c == wss[cw].head || !prev)
 		wss[cw].head = next_client(c);
 	else
@@ -1608,7 +1605,7 @@ void client_to_ws(Client *c, const int ws)
 	c->next = NULL;
 	xcb_unmap_window(dpy, c->win);
 	update_focused_client(wss[cw].prev_foc);
-	log_info("Moved client <%p> from <%d> to <%d>", c, cur_ws, ws);
+	log_info("Moved client <%p> from <%d> to <%d>", c, cw, ws);
 	if (FOLLOW_SPAWN) {
 		Arg arg = { .i = ws };
 
@@ -1934,7 +1931,7 @@ static void change_gaps(const unsigned int type, int cnt, int size)
 {
 	Client *c = NULL;
 
-	log_info("Changing gaps");
+	log_info("Changing gaps by %dpx", size);
 	if (type == WORKSPACE) {
 		int cur_ws = cw;
 
@@ -2348,5 +2345,13 @@ static void client_message_event(xcb_generic_event_t *ev)
 		/* Toggle fullscreen. */
 		else if (cm->data.data32[0] == 2)
 			set_fullscreen(c, !c->is_fullscreen);
+	} else if (c && cm->type == ewmh->_NET_CLOSE_WINDOW) {
+		log_info("_NET_CLOSE_WINDOW: Removing client <%p>", c);
+		remove_client(c);
+	} else if (c && cm->type == ewmh->_NET_ACTIVE_WINDOW) {
+		log_info("_NET_ACTIVE_WINDOW: Focusing client <%p>", c);
+		update_focused_client(find_client_by_win(cm->window));
+	} else {
+		log_debug("Unhandled client message.");
 	}
 }
