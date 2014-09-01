@@ -1836,16 +1836,22 @@ void draw_clients(void)
 
 	log_debug("Drawing clients");
 	for (c = wss[cw].head; c; c = c->next)
-		if (wss[cw].layout == ZOOM && !ZOOM_GAP)
-			move_resize(c->win, c->x + hbw, c->y + hbw, c->w - hbw, c->h - hbw);
+		if (wss[cw].layout == ZOOM && ZOOM_GAP) {
+			set_border_width(c->win, 0);
+			move_resize(c->win, c->x + c->gap, c->y + c->gap,
+					c->w - (2 * c->gap), c->h - (2 * c->gap));
+		}
 		else if (c->is_floating)
 			move_resize(c->win, c->x + hbw, c->y + hbw,
 					c->w - hbw, c->h - hbw);
-		else if (c->is_fullscreen)
+		else if (c->is_fullscreen || wss[cw].layout == ZOOM) {
+			set_border_width(c->win, 0);
 			move_resize(c->win, c->x, c->y, c->w, c->h);
+		}
 		else
 			move_resize(c->win, c->x + c->gap + hbw, c->y + c->gap + hbw,
-					c->w - (2 * c->gap) - hbw, c->h - (2 * c->gap) - hbw);
+					c->w - (2 * c->gap) - BORDER_PX,
+					c->h - (2 * c->gap) - BORDER_PX);
 }
 
 /**
@@ -2235,7 +2241,7 @@ static void make_master(const Arg *arg)
 	if (!wss[cw].current || !wss[cw].head->next
 			|| wss[cw].head == wss[cw].current
 			|| !(wss[cw].layout == HSTACK
-				|| wss[cw].layout == VSTACK))
+			|| wss[cw].layout == VSTACK))
 		return;
 	while (wss[cw].current != wss[cw].head)
 		move_up(wss[cw].current);
