@@ -1137,8 +1137,7 @@ void remove_client(Client *c)
 	int w = 1, cur_ws = cw;
 	bool found;
 
-
-	for (found = false; w < WORKSPACES && !found; w++)
+	for (found = false; w <= WORKSPACES && !found; w++)
 		for (temp = &wss[w].head; *temp
 			&& !(found = *temp == c);
 				temp = &(*temp)->next);
