@@ -200,12 +200,7 @@ static void focus_next_ws(const Arg *arg);
 static void focus_prev_ws(const Arg *arg);
 static void focus_last_ws(const Arg *arg);
 static void change_ws(const Arg *arg);
-static int prev_ws(int ws);
-static int next_ws(int ws);
 static int correct_ws(int ws);
-static void move_ws_down(int ws);
-static void move_ws_up(int ws);
-static void move_ws(int s_ws, int d_ws);
 
 /* Layouts */
 static void change_layout(const Arg *arg);
@@ -247,7 +242,7 @@ static int get_non_tff_count(void);
 static uint32_t get_colour(char *colour);
 static void spawn(const Arg *arg);
 static void setup(void);
-static void move_ws_or_client(const int type, int cnt, bool up);
+static void move_client(int cnt, bool up);
 static void focus_window(xcb_window_t win);
 static void quit(const Arg *arg);
 static void cleanup(void);
@@ -1145,9 +1140,8 @@ void remove_client(Client *c)
 
 	for (; w <= WORKSPACES; ++w)
 		for (temp = &wss[w].head; *temp; temp = &(*temp)->next)
-			if (*temp == c) {
+			if (*temp == c)
 				goto found;
-			}
 	return;
 
 found:
@@ -1497,67 +1491,61 @@ void kill_ws(const int ws)
 }
 
 /**
- * @brief Move workspace/s or client/s down.
+ * @brief Move client/s down.
  *
- * @param type Whether to move a client or workspace.
+ * @param type Unused
  * @param cnt How many "things" to move.
  */
 void op_move_down(const unsigned int type, int cnt)
 {
-	move_ws_or_client(type, cnt, false);
+	if (type == WORKSPACE)
+		return;
+	move_client(cnt, false);
 }
 
 /**
- * @brief Move workspace/s or client/s up.
+ * @brief Move client/s up.
  *
- * @param type Whether to move a client or workspace.
+ * @param type Unused
  * @param cnt How many "things" to move.
  */
 void op_move_up(const unsigned int type, int cnt)
 {
-	move_ws_or_client(type, cnt, true);
+	if (type == WORKSPACE)
+		return;
+	move_client(cnt, true);
 }
 
 /**
- * @brief Moves workspace or a client either upwards or down.
+ * @brief Moves a client either upwards or down.
  *
- * Moves a single client/workspace or multiple clients/workspaces either up or
+ * Moves a single client or multiple clients either up or
  * down. The op_move_* functions server as simple wrappers to this.
  *
- * @param type Whether to move a client or workspace.
  * @param cnt How many "things" to move.
  * @param up Whether to move the "things" up or down. True is up.
  */
-void move_ws_or_client(const int type, int cnt, bool up)
+void move_client(int cnt, bool up)
 {
-	int i = 0, cntcopy;
+	int cntcopy;
 	Client *c;
 
-	if (type == WORKSPACE) {
-		if (up)
-			for (; cnt > 0; cnt--)
-				move_ws_up(correct_ws(cw + cnt - 1));
-		else
-			for (; i < cnt; i++)
-				move_ws_down(correct_ws(cw + i));
-	} else if (type == CLIENT) {
-		if (up) {
-			if (wss[cw].current == wss[cw].head)
-				return;
-			c = prev_client(wss[cw].current);
-			/* TODO optimise this by inserting the client only once
-			 * and in the correct location.*/
-			for (; cnt > 0; move_down(c), cnt--)
-				;
-		} else {
-			if (wss[cw].current == prev_client(wss[cw].head))
-				return;
-			cntcopy = cnt;
-			for (c = wss[cw].current; cntcopy > 0; c = next_client(c), cntcopy--)
-				;
-			for (; cnt > 0; move_up(c), cnt--)
-				;
-		}
+	if (up) {
+		if (wss[cw].current == wss[cw].head)
+			return;
+		c = prev_client(wss[cw].current);
+		/* TODO optimise this by inserting the client only once
+			* and in the correct location.*/
+		for (; cnt > 0; move_down(c), cnt--)
+			;
+	} else {
+		if (wss[cw].current == prev_client(wss[cw].head))
+			return;
+		cntcopy = cnt;
+		for (c = wss[cw].current; cntcopy > 0; c = next_client(c), cntcopy--)
+			;
+		for (; cnt > 0; move_up(c), cnt--)
+			;
 	}
 }
 
@@ -1635,34 +1623,6 @@ void current_to_ws(const Arg *arg)
 }
 
 /**
- * @brief Gets the number of the previous workspace.
- *
- * Wraps from the lowest workspace to the highest.
- *
- * @param ws The workspace who's previous should be fetched.
- *
- * @return The number of the previous workspace.
- */
-int prev_ws(int ws)
-{
-	return correct_ws(correct_ws(ws) - 1);
-}
-
-/**
- * @brief Gets the number of the next workspace.
- *
- * Wraps from the highest workspace to the lowest.
- *
- * @param ws The workspace who's next should be fetched.
- *
- * @return The number of the next workspace.
- */
-int next_ws(int ws)
-{
-	return correct_ws(correct_ws(ws) + 1);
-}
-
-/**
  * @brief Correctly wrap a workspace number.
  *
  * This prevents workspace numbers from being greater than WORKSPACES or less
@@ -1680,44 +1640,6 @@ int correct_ws(int ws)
 		return ws + WORKSPACES;
 	else
 		return ws;
-}
-
-/**
- * @brief Move the entirety of one workspace to another.
- *
- * Takes every client from one workspace and places them, in original order,
- * onto the end of the destination workspace's client list.
- *
- * @param s_ws The source workspace that clients should be moved from.
- * @param d_ws The target workspace that clients should be moved to.
- */
-void move_ws(int s_ws, int d_ws)
-{
-	while (wss[s_ws].head)
-		/* The destination workspace. */
-		client_to_ws(wss[s_ws].head, d_ws);
-}
-
-/**
- * @brief Move the entirety of the current workspace to the next workspace
- * down.
- *
- * @param ws The workspace to be moved.
- */
-void move_ws_down(int ws)
-{
-	move_ws(ws, correct_ws(prev_ws(ws)));
-}
-
-/**
- * @brief Move the entirety of the current workspace to the next workspace
- * up.
- *
- * @param ws The workspace to be moved.
- */
-void move_ws_up(int ws)
-{
-	move_ws(ws, correct_ws(next_ws(ws)));
 }
 
 /**
