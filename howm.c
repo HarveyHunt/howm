@@ -766,12 +766,7 @@ void grid(void)
 	uint16_t client_y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
 	uint16_t col_h = screen_height - wss[cw].bar_height;
 
-	if (n == 1) {
-		zoom();
-		return;
-	}
 	log_info("Arranging %d clients in grid layout", n);
-
 
 	for (cols = 0; cols <= n / 2; cols++)
 		if (cols * cols >= n)
@@ -807,6 +802,11 @@ void zoom(void)
 	Client *c;
 
 	log_info("Arranging clients in zoom format");
+	/* When zoom is called because there aren't enough clients for other
+	 * layouts to work, draw a border to be consistent with other layouts.
+	 * */
+	if (wss[cw].layout != ZOOM)
+		set_border_width(wss[cw].head->win, BORDER_PX);
 	for (c = wss[cw].head; c; c = c->next)
 		if (!FFT(c))
 			change_client_geom(c, 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
@@ -1054,10 +1054,6 @@ void stack(void)
 	 */
 	uint16_t span = vert ? h : w;
 
-	if (n <= 1) {
-		zoom();
-		return;
-	}
 	/* TODO: Need to take into account when this has remainders. */
 	/* TODO: Fix gaps between windows. */
 	client_span = (span / (n - 1));
