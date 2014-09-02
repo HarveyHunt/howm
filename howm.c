@@ -807,6 +807,7 @@ void zoom(void)
 	 * */
 	if (wss[cw].layout != ZOOM)
 		set_border_width(wss[cw].head->win, BORDER_PX);
+
 	for (c = wss[cw].head; c; c = c->next)
 		if (!FFT(c))
 			change_client_geom(c, 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
@@ -869,8 +870,7 @@ void update_focused_client(Client *c)
 	windows[(wss[cw].current->is_floating || wss[cw].current->is_transient) ? 0 : float_trans] = wss[cw].current->win;
 	c = wss[cw].head;
 	for (fullscreen += FFT(wss[cw].current) ? 1 : 0; c; c = c->next) {
-		set_border_width(c->win, (c->is_fullscreen ||
-					  !wss[cw].head->next) ? 0 : BORDER_PX);
+		set_border_width(c->win, c->is_fullscreen ? 0 : BORDER_PX);
 		xcb_change_window_attributes(dpy, c->win, XCB_CW_BORDER_PIXEL,
 					     (c == wss[cw].current ? &border_focus :
 					      c == wss[cw].prev_foc ? &border_prev_focus
@@ -1786,9 +1786,9 @@ void configure_event(xcb_generic_event_t *ev)
 	if (XCB_CONFIG_WINDOW_Y & ce->value_mask)
 		vals[i++] = ce->y + (BAR_BOTTOM ? 0 : wss[cw].bar_height);
 	if (XCB_CONFIG_WINDOW_WIDTH & ce->value_mask)
-		vals[i++] = (ce->width < screen_width - BORDER_PX - wss[cw].gap) ? ce->width : screen_width - BORDER_PX - wss[cw].gap;
+		vals[i++] = (ce->width < screen_width - BORDER_PX) ? ce->width : screen_width - BORDER_PX;
 	if (XCB_CONFIG_WINDOW_HEIGHT & ce->value_mask)
-		vals[i++] = (ce->height < screen_height - BORDER_PX - wss[cw].gap) ? ce->height : screen_height - BORDER_PX - wss[cw].gap;
+		vals[i++] = (ce->height < screen_height - BORDER_PX) ? ce->height : screen_height - BORDER_PX;
 	if (XCB_CONFIG_WINDOW_BORDER_WIDTH & ce->value_mask)
 		vals[i++] = ce->border_width;
 	if (XCB_CONFIG_WINDOW_SIBLING & ce->value_mask)
@@ -1828,7 +1828,6 @@ void unmap_event(xcb_generic_event_t *ev)
 void draw_clients(void)
 {
 	Client *c = NULL;
-	int hbw = BORDER_PX / 2;
 
 	log_debug("Drawing clients");
 	for (c = wss[cw].head; c; c = c->next)
@@ -1836,18 +1835,17 @@ void draw_clients(void)
 			set_border_width(c->win, 0);
 			move_resize(c->win, c->x + c->gap, c->y + c->gap,
 					c->w - (2 * c->gap), c->h - (2 * c->gap));
-		}
-		else if (c->is_floating)
-			move_resize(c->win, c->x + hbw, c->y + hbw,
-					c->w - hbw, c->h - hbw);
-		else if (c->is_fullscreen || wss[cw].layout == ZOOM) {
+		} else if (c->is_fullscreen || wss[cw].layout == ZOOM) {
 			set_border_width(c->win, 0);
 			move_resize(c->win, c->x, c->y, c->w, c->h);
+		} else if (c->is_floating) {
+			move_resize(c->win, c->x + BORDER_PX, c->y + BORDER_PX,
+					c->w - BORDER_PX, c->h - BORDER_PX);
+		} else {
+			move_resize(c->win, c->x + c->gap, c->y + c->gap,
+					c->w - (2 * (c->gap + BORDER_PX)),
+					c->h - (2 * (c->gap + BORDER_PX)));
 		}
-		else
-			move_resize(c->win, c->x + c->gap + hbw, c->y + c->gap + hbw,
-					c->w - (2 * c->gap) - BORDER_PX,
-					c->h - (2 * c->gap) - BORDER_PX);
 }
 
 /**
