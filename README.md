@@ -221,7 +221,6 @@ The above command will kill one workspace. This means that all clients on the cu
 * **op_move_down**: An operator that moves a group of targets down one.
 Can be used on:
   * Clients
-  * Workspaces
 
   Used in mode:
     * Normal
@@ -230,11 +229,6 @@ Can be used on:
 j2c
 ```
 The above command moves 2 clients down one place in the workspace's client list. If a client is moved past the last place, then it is wrapped around and placed at the start of the workspace's client list.
-
-```
-j3w
-```
-The above command moves the contents of 3 workspaces down one workspace. If a workspace is to be moved beyond the last workspace, it is wrapped to the first workspace.
 
 * **op_move_up**: This is the opposite of op_move_down, and instead is bound to k.
 
