@@ -185,11 +185,11 @@ static const Motion motions[] = {
  */
 static Workspace wss[] = {
 	{NULL},
-	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
-	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
-	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
-	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
-	{.layout = HSTACK, .gap = 4, .master_ratio = 0.6, .bar_height = BAR_HEIGHT}
+	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
+	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
+	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
+	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
+	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT}
 };
 
 #endif

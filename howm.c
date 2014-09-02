@@ -766,6 +766,11 @@ void grid(void)
 	uint16_t client_y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
 	uint16_t col_h = screen_height - wss[cw].bar_height;
 
+	if (n <= 1) {
+		zoom();
+		return;
+	}
+
 	log_info("Arranging %d clients in grid layout", n);
 
 	for (cols = 0; cols <= n / 2; cols++)
@@ -1053,6 +1058,12 @@ void stack(void)
 	 *+---------------------------+--------------+   v
 	 */
 	uint16_t span = vert ? h : w;
+
+	if (n <= 1) {
+		zoom();
+		return;
+	}
+
 
 	/* TODO: Need to take into account when this has remainders. */
 	/* TODO: Fix gaps between windows. */
