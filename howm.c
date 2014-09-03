@@ -2300,19 +2300,43 @@ static void client_message_event(xcb_generic_event_t *ev)
 	}
 }
 
-static void save_last_ocm(void (*op)(const unsigned int type, int cnt), const unsigned int type, int cnt) {
+/**
+ * @brief Save last operator, count and motion. These saved values are then
+ * used in replay.
+ *
+ * @param op The last operator.
+ * @param type The last type (defined by a motion).
+ * @param cnt The last count.
+ */
+static void save_last_ocm(void (*op)(const unsigned int, int), const unsigned int type, int cnt) {
 	last_op = op;
 	last_type = type;
 	last_cnt = cnt;
 	last_cmd = NULL;
 }
 
+/**
+ * @brief Save the last command and argument that was passed to it. These saved
+ * values are then used in replay.
+ *
+ * @param cmd The last command.
+ * @param arg The argument passed to the last command.
+ */
 static void save_last_cmd(void (*cmd)(const Arg *arg), const Arg *arg) {
 	last_cmd = cmd;
 	last_arg = arg;
 	last_op = NULL;
 }
 
+/**
+ * @brief Replay the last command or operator, complete with the last arguments
+ * passed to them.
+ *
+ * FIXME: segfaults when replay calls itself- pressing mod + XK_period twice
+ * causes this.
+ *
+ * @param arg Unused
+ */
 static void replay(const Arg *arg) {
 	if (last_cmd)
 		last_cmd(last_arg);
