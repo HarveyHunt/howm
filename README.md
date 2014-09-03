@@ -266,7 +266,7 @@ Can be used on:
   * Workspaces
 
   Used in mode:
-    * Normal
+    * Focus
 
 ```
 j3c
