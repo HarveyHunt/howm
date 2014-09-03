@@ -546,7 +546,8 @@ void key_press_event(xcb_generic_event_t *ev)
 		if (keysym == keys[i].sym && EQUALMODS(keys[i].mod, ke->state)
 		    && keys[i].func && keys[i].mode == cur_mode) {
 			keys[i].func(&keys[i].arg);
-			save_last_cmd(keys[i].func, &keys[i].arg);
+			if (keys[i].func != replay)
+				save_last_cmd(keys[i].func, &keys[i].arg);
 		}
 }
 
@@ -2331,9 +2332,6 @@ static void save_last_cmd(void (*cmd)(const Arg *arg), const Arg *arg) {
 /**
  * @brief Replay the last command or operator, complete with the last arguments
  * passed to them.
- *
- * FIXME: segfaults when replay calls itself- pressing mod + XK_period twice
- * causes this.
  *
  * @param arg Unused
  */
