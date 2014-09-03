@@ -101,6 +101,7 @@ static const Key keys[] = {
 	{ MODKEY, NORMAL, XK_m, resize_master, {.i = 5} },
 	{ MODKEY | ShiftMask, NORMAL, XK_m, resize_master, {.i = -5} },
 	{ MODKEY, NORMAL, XK_b, toggle_bar, {NULL} },
+	{ MODKEY, NORMAL, XK_period, replay, {NULL} },
 
 	{ MODKEY | ShiftMask, FLOATING, XK_k, resize_float_height, {.i = -10} },
 	{ MODKEY | ShiftMask, FLOATING, XK_j, resize_float_height, {.i = 10} },

@@ -238,6 +238,9 @@ static xcb_keysym_t keycode_to_keysym(xcb_keycode_t keycode);
 
 /* Misc */
 static void howm_info(void);
+static void save_last_ocm(void (*op) (const int unsigned, int), const unsigned int type, int cnt);
+static void save_last_cmd(void (*cmd)(const Arg *), const Arg *arg);
+static void replay(const Arg *arg);
 static int get_non_tff_count(void);
 static uint32_t get_colour(char *colour);
 static void spawn(const Arg *arg);
@@ -295,7 +298,11 @@ static unsigned int cur_mode, cur_state = OPERATOR_STATE, cur_cnt = 1;
 static uint16_t screen_height, screen_width;
 static bool running = true;
 
-
+static void (*last_op)(const int unsigned type, int cnt);
+static void (*last_cmd)(const Arg *arg);
+static const Arg *last_arg;
+static unsigned int last_type;
+static int last_cnt;
 
 /* Add comments so that splint ignores this as it doesn't support variadic
  * macros.
@@ -528,6 +535,7 @@ void key_press_event(xcb_generic_event_t *ev)
 		for (i = 0; i < LENGTH(motions); i++) {
 			if (keysym == motions[i].sym && EQUALMODS(motions[i].mod, ke->state)) {
 				operator_func(motions[i].type, cur_cnt);
+				save_last_ocm(operator_func, motions[i].type, cur_cnt);
 				cur_state = OPERATOR_STATE;
 				/* Reset so that qc is equivalent to q1c. */
 				cur_cnt = 1;
@@ -536,8 +544,10 @@ void key_press_event(xcb_generic_event_t *ev)
 	}
 	for (i = 0; i < LENGTH(keys); i++)
 		if (keysym == keys[i].sym && EQUALMODS(keys[i].mod, ke->state)
-		    && keys[i].func && keys[i].mode == cur_mode)
+		    && keys[i].func && keys[i].mode == cur_mode) {
 			keys[i].func(&keys[i].arg);
+			save_last_cmd(keys[i].func, &keys[i].arg);
+		}
 }
 
 /**
@@ -2288,4 +2298,24 @@ static void client_message_event(xcb_generic_event_t *ev)
 	} else {
 		log_debug("Unhandled client message.");
 	}
+}
+
+static void save_last_ocm(void (*op)(const unsigned int type, int cnt), const unsigned int type, int cnt) {
+	last_op = op;
+	last_type = type;
+	last_cnt = cnt;
+	last_cmd = NULL;
+}
+
+static void save_last_cmd(void (*cmd)(const Arg *arg), const Arg *arg) {
+	last_cmd = cmd;
+	last_arg = arg;
+	last_op = NULL;
+}
+
+static void replay(const Arg *arg) {
+	if (last_cmd)
+		last_cmd(last_arg);
+	else
+		last_op(last_type, last_cnt);
 }
