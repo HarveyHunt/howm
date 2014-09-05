@@ -12,15 +12,15 @@ COMPILE_FLAGS = -std=c99 -Wall -Wextra -Wno-unused-parameter
 # Additional release-specific flags
 RCOMPILE_FLAGS = -D NDEBUG
 # Additional debug-specific flags
-DCOMPILE_FLAGS = -g 
+DCOMPILE_FLAGS = -g
 # Add additional include paths
 INCLUDES = -I $(SRC_PATH)/
 # General linker settings
 LINK_FLAGS = -lxcb -lxcb-keysyms -lxcb-icccm -lxcb-ewmh
 # Additional release-specific linker settings
-RLINK_FLAGS = 
+RLINK_FLAGS =
 # Additional debug-specific linker settings
-DLINK_FLAGS = 
+DLINK_FLAGS =
 # Destination directory, like a jail or mounted system
 DESTDIR = /
 # Install path (bin/ is appended automatically)
@@ -33,7 +33,7 @@ INSTALL_PREFIX = usr/local
 export V = false
 export CMD_PREFIX = @
 ifeq ($(V),true)
-	CMD_PREFIX = 
+	CMD_PREFIX =
 endif
 
 # Combine compiler and linker flags
@@ -63,7 +63,7 @@ START_TIME = date '+%s' > $(TIME_FILE)
 END_TIME = read st < $(TIME_FILE) ; \
 	$(RM) $(TIME_FILE) ; \
 	st=$$((`date '+%s'` - $$st - 86400)) ; \
-	echo `date -u -d @$$st '+%H:%M:%S'` 
+	echo `date -u -d @$$st '+%H:%M:%S'`
 
 # Version macros
 # Comment/remove this section to remove versioning
@@ -149,4 +149,3 @@ $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
 	$(CMD_PREFIX)$(CXX) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
 	@echo -en "\t Compile time: "
 	@$(END_TIME)
-
