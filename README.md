@@ -5,6 +5,8 @@
 
 ###A lightweight, tiling X11 window manager that mimics vi by offering operators, motions and modes.
 
+Come and join us on Freenode in the channel #howm
+
 ![](http://i.imgur.com/4sW6RlT.gif)
 ![](http://i.imgur.com/tyiZcLx.gif)
 
