@@ -152,6 +152,21 @@ typedef struct {
 	Client *current; /**< The client that is currently in focus. */
 } Workspace;
 
+/**
+ * @brief Represents the last command (and its arguments) or the last
+ * combination of operator, count and motion (ocm).
+ */
+struct replay_state {
+	void (*last_op)(const int unsigned type, int cnt); /** The last operator to be called. */
+	void (*last_cmd)(const Arg *arg); /** The last command to be called. */
+	const Arg *last_arg; /** The last argument, passed to the last command. */
+	unsigned int last_type; /** The value determine by the last motion
+				(workspace, client etc).*/
+	int last_cnt; /** The last count passed to the last operator function. */
+};
+
+
+
 /* Operators */
 static void op_kill(const unsigned int type, int cnt);
 static void op_move_up(const unsigned int type, int cnt);
@@ -298,11 +313,7 @@ static unsigned int cur_mode, cur_state = OPERATOR_STATE, cur_cnt = 1;
 static uint16_t screen_height, screen_width;
 static bool running = true;
 
-static void (*last_op)(const int unsigned type, int cnt);
-static void (*last_cmd)(const Arg *arg);
-static const Arg *last_arg;
-static unsigned int last_type;
-static int last_cnt;
+static struct replay_state rep_state;
 
 /* Add comments so that splint ignores this as it doesn't support variadic
  * macros.
@@ -2310,10 +2321,10 @@ static void client_message_event(xcb_generic_event_t *ev)
  * @param cnt The last count.
  */
 static void save_last_ocm(void (*op)(const unsigned int, int), const unsigned int type, int cnt) {
-	last_op = op;
-	last_type = type;
-	last_cnt = cnt;
-	last_cmd = NULL;
+	rep_state.last_op = op;
+	rep_state.last_type = type;
+	rep_state.last_cnt = cnt;
+	rep_state.last_cmd = NULL;
 }
 
 /**
@@ -2324,9 +2335,9 @@ static void save_last_ocm(void (*op)(const unsigned int, int), const unsigned in
  * @param arg The argument passed to the last command.
  */
 static void save_last_cmd(void (*cmd)(const Arg *arg), const Arg *arg) {
-	last_cmd = cmd;
-	last_arg = arg;
-	last_op = NULL;
+	rep_state.last_cmd = cmd;
+	rep_state.last_arg = arg;
+	rep_state.last_op = NULL;
 }
 
 /**
@@ -2336,8 +2347,8 @@ static void save_last_cmd(void (*cmd)(const Arg *arg), const Arg *arg) {
  * @param arg Unused
  */
 static void replay(const Arg *arg) {
-	if (last_cmd)
-		last_cmd(last_arg);
+	if (rep_state.last_cmd)
+		rep_state.last_cmd(rep_state.last_arg);
 	else
-		last_op(last_type, last_cnt);
+		rep_state.last_op(rep_state.last_type, rep_state.last_cnt);
 }
