@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['w',['w',['../structClient.html#a9af6dcaef6f7ed87a4b123aab84ebf7b',1,'Client']]],
-  ['win',['win',['../structClient.html#a9ae6f757c86e285afe2df117aa24d953',1,'Client']]],
-  ['wm_5fatom_5fnames',['WM_ATOM_NAMES',['../howm_8c.html#a41bfc3a7a8abf189944e1eab37f66764',1,'howm.c']]],
-  ['wm_5fatoms',['wm_atoms',['../howm_8c.html#a9d057a15fa1b9277beb83eda649906bb',1,'howm.c']]],
-  ['workspaces',['workspaces',['../config_8h.html#a01bbd45a96a884b46b319a5de08fd3cf',1,'config.h']]]
+  ['retval',['retval',['../howm_8c.html#a7f345697df7eb20c9aba1ab6980cae8f',1,'howm.c']]],
+  ['running',['running',['../howm_8c.html#a36f7b6be7108281af77939ceaec42fd6',1,'howm.c']]]
 ];

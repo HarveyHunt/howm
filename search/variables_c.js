@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['prev_5ffoc',['prev_foc',['../structWorkspace.html#af4f8bfa8ee3bfc7d1ac0dc3633914bf4',1,'Workspace::prev_foc()'],['../howm_8c.html#a80c79770152f11f8ffaeec276f9a7368',1,'prev_foc():&#160;howm.c']]],
-  ['prev_5flayout',['prev_layout',['../howm_8c.html#a8884b03553ffed8ee0532c9fc8aeb8f1',1,'howm.c']]]
+  ['next',['next',['../structClient.html#aa6f9fae53c3cef86d88c0bce02eed80e',1,'Client']]],
+  ['numlockmask',['numlockmask',['../howm_8c.html#addc4d00de842e042008ccf5b5f2b32af',1,'howm.c']]]
 ];

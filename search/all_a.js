@@ -1,8 +1,20 @@
 var searchData=
 [
+  ['last_5farg',['last_arg',['../howm_8c.html#a138449a6e72d1737f51543dd08051443',1,'howm.c']]],
+  ['last_5fcmd',['last_cmd',['../howm_8c.html#a03d091cd43789f796bd1ea44ffa57414',1,'howm.c']]],
+  ['last_5fcnt',['last_cnt',['../howm_8c.html#a034ec67e31eb0a3edfd7f024bccb1c98',1,'howm.c']]],
   ['last_5flayout',['last_layout',['../howm_8c.html#a5eb5e5306d337b27fbb2feb79ba385d2',1,'howm.c']]],
+  ['last_5fop',['last_op',['../howm_8c.html#a62cde2b9d043fc638dfea60945a061a6',1,'howm.c']]],
+  ['last_5ftype',['last_type',['../howm_8c.html#a26b99a8af992a0fec605be2a12e851eb',1,'howm.c']]],
   ['last_5fws',['last_ws',['../howm_8c.html#ad9cdce4d561e999e5d5194cb98ac9f7d',1,'howm.c']]],
   ['layout',['layout',['../structWorkspace.html#aad2c7403d6b52c34a1f46354adb7e99e',1,'Workspace']]],
   ['layout_5fhandler',['layout_handler',['../howm_8c.html#a933c2ae97b5e7ad6d639e5f325c69b11',1,'howm.c']]],
-  ['length',['LENGTH',['../howm_8c.html#a33c8dff98e7a3a432e8f8d26714c31fe',1,'howm.c']]]
+  ['layouts',['layouts',['../howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6',1,'howm.c']]],
+  ['length',['LENGTH',['../howm_8c.html#a33c8dff98e7a3a432e8f8d26714c31fe',1,'howm.c']]],
+  ['log_5fdebug',['log_debug',['../howm_8c.html#a4429cf7171bbcd650457cdb674d073cf',1,'log_debug():&#160;howm.c'],['../howm_8c.html#a6ff63e8955665c4a58b1598f2b07c51a',1,'LOG_DEBUG():&#160;howm.c']]],
+  ['log_5ferr',['LOG_ERR',['../howm_8c.html#a96fad55b3f5adf08c39e4c877cf185e3',1,'LOG_ERR():&#160;howm.c'],['../howm_8c.html#aab82a35ff3e94d1028501db189a4b021',1,'log_err():&#160;howm.c']]],
+  ['log_5finfo',['LOG_INFO',['../howm_8c.html#aeb4f36db01bd128c7afeac5889dac311',1,'LOG_INFO():&#160;howm.c'],['../howm_8c.html#ab906bb1655b428369efbca0b73b5f09a',1,'log_info():&#160;howm.c']]],
+  ['log_5flevel',['LOG_LEVEL',['../config_8h.html#a0b87e0d3bf5853bcbb0b66a7c48fdc05',1,'config.h']]],
+  ['log_5fnone',['LOG_NONE',['../howm_8c.html#a1632479322efa3952798f98177b54471',1,'howm.c']]],
+  ['log_5fwarn',['LOG_WARN',['../howm_8c.html#aea3f57d6dcc5b4ac957e2679e87dde27',1,'LOG_WARN():&#160;howm.c'],['../howm_8c.html#a0b9b49791ddc1aac7caa31cfb10f173f',1,'log_warn():&#160;howm.c']]]
 ];

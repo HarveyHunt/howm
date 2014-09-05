@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['h',['h',['../structClient.html#abd6a8cd0cb27c2f2cd7f016f1499cd53',1,'Client']]],
-  ['handler',['handler',['../howm_8c.html#aba3cd62bf658fd698f44ee2365685469',1,'howm.c']]],
-  ['head',['head',['../structWorkspace.html#a7fbd58a8406bbc296bc19f755483eb10',1,'Workspace::head()'],['../howm_8c.html#a58158e163763e9328d842528f553fd59',1,'head():&#160;howm.c']]]
+  ['func',['func',['../structKey.html#a1dfd7bcbd12163d2f36e1b09777055ad',1,'Key::func()'],['../structOperator.html#a05ca5a06dd09d0de07bfbecf224c0d51',1,'Operator::func()'],['../structButton.html#a2a2ac98305f37d9e198097e7fc0fdf06',1,'Button::func()']]]
 ];

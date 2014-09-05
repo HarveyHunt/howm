@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['grid',['GRID',['../howm_8c.html#a06fc87d81c62e9abb8790b6e5713c55bafbf4fa9eb81ba842a80a29b45064e348',1,'howm.c']]]
+  ['floating',['FLOATING',['../howm_8c.html#a811fe196a5d9d37857c2f8adeeaac3c6aacd87a682af0d31c6e5ccf7c54565510',1,'howm.c']]],
+  ['focus',['FOCUS',['../howm_8c.html#a811fe196a5d9d37857c2f8adeeaac3c6ab92406776d6051345e2bfaff03419b36',1,'howm.c']]]
 ];

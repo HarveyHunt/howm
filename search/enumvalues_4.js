@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hstack',['HSTACK',['../howm_8c.html#a06fc87d81c62e9abb8790b6e5713c55ba780bc5128a196fa7905fe6be80a428a3',1,'howm.c']]]
+  ['grid',['GRID',['../howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6afbf4fa9eb81ba842a80a29b45064e348',1,'howm.c']]]
 ];

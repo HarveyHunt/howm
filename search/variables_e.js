@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['term_5fcmd',['term_cmd',['../config_8h.html#a2f59d1f10645069b75419e07745d4c36',1,'config.h']]],
-  ['type',['type',['../structMotion.html#a714c1c44f23b3991332ccc13b02e8dc9',1,'Motion']]]
+  ['prev_5ffoc',['prev_foc',['../structWorkspace.html#af4f8bfa8ee3bfc7d1ac0dc3633914bf4',1,'Workspace']]],
+  ['prev_5flayout',['prev_layout',['../howm_8c.html#a8884b03553ffed8ee0532c9fc8aeb8f1',1,'howm.c']]]
 ];

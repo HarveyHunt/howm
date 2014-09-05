@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['motion',['MOTION',['../howm_8c.html#abc6126af1d45847bc59afa0aa3216b04a01f918dbf6f1dff3a7ba9c7c8f7665ee',1,'howm.c']]],
-  ['motion_5fstate',['MOTION_STATE',['../howm_8c.html#adf764cbdea00d65edcd07bb9953ad2b7aa2b24250e93a31be352eb1bce2a40c90',1,'howm.c']]]
+  ['hstack',['HSTACK',['../howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3',1,'howm.c']]]
 ];

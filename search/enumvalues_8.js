@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['resize',['RESIZE',['../howm_8c.html#a99fb83031ce9923c84392b4e92f956b5af33118f5fff8a9038bda49d7b5f027da',1,'howm.c']]]
+  ['operator_5fstate',['OPERATOR_STATE',['../howm_8c.html#aa19be6305a5a4485e1e70de70ed7d677ac7f3dae94e45131a6f791bfa2f672430',1,'howm.c']]]
 ];
