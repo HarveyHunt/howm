@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.8"/>
-<title>howm: Key Struct Reference</title>
+<title>howm: Member List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -85,7 +85,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('structKey.html','');});
+$(document).ready(function(){initNavTree('structreplay__state.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -103,108 +103,23 @@ $(document).ready(function(){initNavTree('structKey.html','');});
 </div>
 
 <div class="header">
-  <div class="summary">
-<a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structKey-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">Key Struct Reference</div>  </div>
+<div class="title">replay_state Member List</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Represents a key.  
- <a href="structKey.html#details">More...</a></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a009df210bdaf418fadf7ce5f1fb3adf3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structKey.html#a009df210bdaf418fadf7ce5f1fb3adf3">mod</a></td></tr>
-<tr class="separator:a009df210bdaf418fadf7ce5f1fb3adf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa405aabada2f774685ca015b2b6283ff"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structKey.html#aa405aabada2f774685ca015b2b6283ff">mode</a></td></tr>
-<tr class="separator:aa405aabada2f774685ca015b2b6283ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02eb15dc165abc63abb9671d9f769249"><td class="memItemLeft" align="right" valign="top">xcb_keysym_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structKey.html#a02eb15dc165abc63abb9671d9f769249">sym</a></td></tr>
-<tr class="separator:a02eb15dc165abc63abb9671d9f769249"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1dfd7bcbd12163d2f36e1b09777055ad"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structKey.html#a1dfd7bcbd12163d2f36e1b09777055ad">func</a> )(const <a class="el" href="unionArg.html">Arg</a> *)</td></tr>
-<tr class="separator:a1dfd7bcbd12163d2f36e1b09777055ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb8c5425a854d13d080a37989862df2d"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="unionArg.html">Arg</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structKey.html#aeb8c5425a854d13d080a37989862df2d">arg</a></td></tr>
-<tr class="separator:aeb8c5425a854d13d080a37989862df2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Represents a key. </p>
-<p>Holds information relative to a key, such as keysym and the mode during which the keypress can be seen as valid. </p>
-</div><h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="aeb8c5425a854d13d080a37989862df2d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="unionArg.html">Arg</a> Key::arg</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>The argument passed to the above function. </p>
-
-</div>
-</div>
-<a class="anchor" id="a1dfd7bcbd12163d2f36e1b09777055ad"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void(* Key::func)(const <a class="el" href="unionArg.html">Arg</a> *)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>The function to be called when this key is pressed. </p>
-
-</div>
-</div>
-<a class="anchor" id="a009df210bdaf418fadf7ce5f1fb3adf3"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int Key::mod</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>The mask of the modifiers pressed. </p>
-
-</div>
-</div>
-<a class="anchor" id="aa405aabada2f774685ca015b2b6283ff"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned int Key::mode</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>The mode within which this keypress is valid. </p>
-
-</div>
-</div>
-<a class="anchor" id="a02eb15dc165abc63abb9671d9f769249"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">xcb_keysym_t Key::sym</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>The keysym of the pressed key. </p>
-
-</div>
-</div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li><a class="el" href="howm_8c.html">howm.c</a></li>
-</ul>
-</div><!-- contents -->
+<p>This is the complete list of members for <a class="el" href="structreplay__state.html">replay_state</a>, including all inherited members.</p>
+<table class="directory">
+  <tr class="even"><td class="entry"><a class="el" href="structreplay__state.html#ae0f280b8e2183f3662806943d7565ce0">last_arg</a></td><td class="entry"><a class="el" href="structreplay__state.html">replay_state</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="structreplay__state.html#a28e4866cabc68cd15cbcc4dcffc8684e">last_cmd</a></td><td class="entry"><a class="el" href="structreplay__state.html">replay_state</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structreplay__state.html#af5df7daf1b8b524d29ce0438f5c21dbd">last_cnt</a></td><td class="entry"><a class="el" href="structreplay__state.html">replay_state</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="structreplay__state.html#ac6d6a0655320f2e69863451ee977a7eb">last_op</a></td><td class="entry"><a class="el" href="structreplay__state.html">replay_state</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structreplay__state.html#acb29784a85e414bf8c86590349b8219a">last_type</a></td><td class="entry"><a class="el" href="structreplay__state.html">replay_state</a></td><td class="entry"></td></tr>
+</table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="structKey.html">Key</a></li>
     <li class="footer">Generated on Fri Sep 5 2014 14:10:33 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>

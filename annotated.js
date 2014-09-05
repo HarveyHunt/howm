@@ -6,5 +6,6 @@ var annotated =
     [ "Key", "structKey.html", "structKey" ],
     [ "Motion", "structMotion.html", "structMotion" ],
     [ "Operator", "structOperator.html", "structOperator" ],
+    [ "replay_state", "structreplay__state.html", "structreplay__state" ],
     [ "Workspace", "structWorkspace.html", "structWorkspace" ]
 ];
