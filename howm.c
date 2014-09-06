@@ -2279,9 +2279,8 @@ static void set_fullscreen(Client *c, bool fscr)
  */
 static void toggle_fullscreen(const Arg *arg)
 {
-        if (wss[cw].current != NULL) {
+        if (wss[cw].current != NULL) 
             set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
-        }
 }
 
 /**
