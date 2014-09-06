@@ -23,6 +23,20 @@ To have the documentation automatically generated locally.
   
 Then it is time to hack away until your heart is content.
 
+## Tools of the trade
+
+It's important to have some tools to test howm with. I like to use [Xephyr](http://www.freedesktop.org/wiki/Software/Xephyr/) and [x11trace](http://xtrace.alioth.debian.org/).
+
+Xephyr is an X server in a window and makes it easy to test howm without having to change to a different X server. I invoke Xephyr using the following command:
+
+    Xephyr -ac -br -screen 1024x768 :1
+
+Then I change into the directory that howm is in and run the following:
+
+    DISPLAY=:1 gdb howm
+    
+x11trace is used for seeing the communication between an X server and its clients. This is useful when trying to track down bugs involving communication with X clients as well as implementing EWMH compliance. For normal development, it isn't necessary to use x11trace.
+
 ## Code Style
 
 I try to follow the [Linux Kernel Guide](https://www.kernel.org/doc/Documentation/CodingStyle) as closely as sanely possible.
