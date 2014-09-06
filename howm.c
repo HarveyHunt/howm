@@ -1616,9 +1616,11 @@ void client_to_ws(Client *c, const int ws)
 
 	/* Current workspace. */
 	if (c == wss[cw].head || !prev)
-		wss[cw].head = next_client(c);
+		//wss[cw].head = next_client(c);
+		wss[cw].head = c->next;
 	else
-		prev->next = next_client(c);
+		//prev->next = next_client(c);
+		prev->next = c->next;
 	c->next = NULL;
 	xcb_unmap_window(dpy, c->win);
 	update_focused_client(wss[cw].prev_foc);
