@@ -1190,7 +1190,6 @@ found:
 void howm_info(void)
 {
 	unsigned int w=0, n;
-        UNUSED(w);
 	Client *c;
 #if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
@@ -1201,15 +1200,13 @@ void howm_info(void)
 	}
 	fflush(stdout);
 #else
+        UNUSED(w);
 	for (c = wss[cw].head, n = 0; c; c = c->next, n++)
 		;
 	fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
 		wss[cw].layout, cw, cur_state, n);
 	fflush(stdout);
 #endif
-
-
-        
 }
 
 /**
