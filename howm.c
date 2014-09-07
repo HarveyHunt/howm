@@ -41,7 +41,8 @@
 #define LENGTH(x) (unsigned int)(sizeof(x) / sizeof(*x))
 /** Checks to see if a client is floating, fullscreen or transient. */
 #define FFT(c) (c->is_transient || c->is_floating || c->is_fullscreen)
-
+/** Supresses the unsued variable compiler warnings caused by #ifdef and #endif*/
+#define UNUSED(x) (void)(x)
 /**
  * @brief Represents an argument.
  *
@@ -266,7 +267,6 @@ static void quit(const Arg *arg);
 static void cleanup(void);
 static void delete_win(xcb_window_t win);
 static void setup_ewmh(void);
-static void UNUSED(unsigned int x);
 
 enum layouts { ZOOM, GRID, HSTACK, VSTACK, END_LAYOUT };
 enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
@@ -2356,19 +2356,4 @@ static void replay(const Arg *arg) {
 		rep_state.last_cmd(rep_state.last_arg);
 	else
 		rep_state.last_op(rep_state.last_type, rep_state.last_cnt);
-}
-
-
-/**
- * @brief A stub function to take care for all the unused variables 
- * causing a compiler warinings.
- *
- * @param x Pass any variable to this function which is unused
- */
-
-static void UNUSED(unsigned int x)
-{
-    /*
-     * do nothing
-     */
 }
