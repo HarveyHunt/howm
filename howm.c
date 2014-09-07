@@ -1188,7 +1188,7 @@ found:
  */
 void howm_info(void)
 {
-	unsigned int w = 0, n;
+	unsigned int n;
 	Client *c;
 #if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
