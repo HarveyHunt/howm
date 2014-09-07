@@ -173,6 +173,26 @@ struct replay_state {
 	int last_cnt; /** The last count passed to the last operator function. */
 };
 
+/**
+ * @brief Represents a stack. This stack is going to hold linked lists of
+ * clients. An example of the stack is below:
+ *
+ * TOP
+ * ==========
+ * c1->c2->c3->NULL
+ * ==========
+ * c1->NULL
+ * ==========
+ * c1->c2->c3->NULL
+ * ==========
+ * BOTTOM
+ *
+ */
+struct stack {
+	int size; /** The amount of items in the stack. */
+	Client **contents; /** The contents is an array of linked lists. Storage
+			is malloced later as we don't know the size yet.*/
+};
 
 
 /* Operators */
@@ -183,6 +203,7 @@ static void op_focus_down(const unsigned int type, int cnt);
 static void op_focus_up(const unsigned int type, int cnt);
 static void op_shrink_gaps(const unsigned int type, int cnt);
 static void op_grow_gaps(const unsigned int type, int cnt);
+static void op_cut(const unsigned int type, int cnt);
 
 /* Clients */
 static void teleport_client(const Arg *arg);
@@ -240,6 +261,12 @@ static void arrange_windows(void);
 /* Modes */
 static void change_mode(const Arg *arg);
 
+/* Stack */
+static void stack_push(struct stack *s, Client *c);
+static Client *stack_pop(struct stack *s);
+static void stack_init(struct stack *s);
+static void stack_free(struct stack *s);
+
 /* Events */
 static void enter_event(xcb_generic_event_t *ev);
 static void destroy_event(xcb_generic_event_t *ev);
@@ -267,6 +294,7 @@ static void howm_info(void);
 static void save_last_ocm(void (*op) (const int unsigned, int), const unsigned int type, int cnt);
 static void save_last_cmd(void (*cmd)(const Arg *), const Arg *arg);
 static void replay(const Arg *arg);
+static void paste(const Arg *arg);
 static int get_non_tff_count(void);
 static uint32_t get_colour(char *colour);
 static void spawn(const Arg *arg);
@@ -310,6 +338,8 @@ static void(*layout_handler[]) (void) = {
 #include "config.h"
 
 static void (*operator_func)(const unsigned int type, int cnt);
+
+static struct stack del_reg;
 
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
@@ -402,6 +432,7 @@ void setup(void)
 	border_unfocus = get_colour(BORDER_UNFOCUS);
 	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
 	border_urgent = get_colour(BORDER_URGENT);
+	stack_init(&del_reg);
 }
 
 /**
@@ -751,7 +782,7 @@ Client *prev_client(Client *c)
 {
 	Client *p = NULL;
 
-	if (!c || !wss[cw].head->next)
+	if (!c || !wss[cw].head || !wss[cw].head->next)
 		return NULL;
 	for (p = wss[cw].head; p->next && p->next != c; p = p->next)
 		;
@@ -772,7 +803,7 @@ Client *prev_client(Client *c)
  */
 Client *next_client(Client *c)
 {
-	if (!c || !wss[cw].head->next)
+	if (!c || !wss[cw].head	|| !wss[cw].head->next)
 		return NULL;
 	if (c->next)
 		return c->next;
@@ -1340,7 +1371,6 @@ void change_ws(const Arg *arg)
 	for (c = wss[last_ws].head; c; c = c->next)
 		xcb_unmap_window(dpy, c->win);
 	cw = arg->i;
-	arrange_windows();
 	update_focused_client(wss[cw].current);
 
 	xcb_ewmh_set_current_desktop(ewmh, 0, cw - 1);
@@ -1403,7 +1433,6 @@ void change_layout(const Arg *arg)
 		return;
 	prev_layout = wss[cw].layout;
 	wss[cw].layout = arg->i;
-	arrange_windows();
 	update_focused_client(wss[cw].current);
 	log_info("Changed layout from %d to %d", prev_layout,  wss[cw].layout);
 }
@@ -2103,6 +2132,7 @@ static void cleanup(void)
 	xcb_ewmh_connection_wipe(ewmh);
 	if (ewmh)
 		free(ewmh);
+	stack_free(&del_reg);
 }
 
 /**
@@ -2435,6 +2465,140 @@ static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action)
 }
 
 /**
+ * @brief Dynamically allocate space for the contents of the stack.
+ *
+ * We don't know how big the stack will be when the struct is defined, so we
+ * need to allocate it dynamically.
+ *
+ * @param s The stack that needs to have its contents allocated.
+ */
+static void stack_init(struct stack *s)
+{
+	s->contents = (Client **)malloc(sizeof(Client) * DELETE_REGISTER_SIZE);
+	if (!s->contents)
+		log_err("Failed to allocate memory for stack.");
+}
+
+/**
+ * @brief Free the allocated contents.
+ *
+ * @param s The stack that needs to have its contents freed.
+ */
+static void stack_free(struct stack *s)
+{
+	free(s->contents);
+}
+
+/**
+ * @brief Pushes a client onto the stack, as long as it isn't full.
+ *
+ * @param s The stack.
+ * @param c The client to be pushed on. This client is treated as the head of a
+ * linked list.
+ */
+static void stack_push(struct stack *s, Client *c)
+{
+	if (!c || !s) {
+		return;
+	} else if (s->size >= DELETE_REGISTER_SIZE) {
+		log_warn("Can't push <%p> onto stack <%p>- it is full", c, s);
+		return;
+	}
+	s->contents[++(s->size)] = c;
+}
+
+/**
+ * @brief Remove the top item from the stack and return it.
+ *
+ * @param s The stack to be popped from.
+ *
+ * @return The client that was at the top of the stack. It acts as the head of
+ * the linked list of clients.
+ */
+static Client *stack_pop(struct stack *s)
+{
+	if (!s) {
+		return NULL;
+	} else if (s->size == 0) {
+		log_warn("Can't pop from stack <%p> as it is empty.", s);
+		return NULL;
+	}
+	return s->contents[(s->size)--];
+}
+
+/**
+ * @brief Cut one or more clients and add them onto howm's delete register
+ * stack (if there is space).
+ *
+ * A segment of howm's internal client list is taken and placed onto the delete
+ * register stack. All clients from the list segment must be unmapped and the
+ * remaining clients must be refocused.
+ *
+ * @param type Whether to cut an entire workspace or client.
+ * @param cnt The amount of clients or workspaces to cut.
+ */
+static void op_cut(const unsigned int type, int cnt)
+{
+	Client *tail = wss[cw].current;
+	Client *head = wss[cw].current;
+	Client *head_prev = prev_client(wss[cw].current);
+
+	if (!head)
+		return;
+
+	if (del_reg.size >= DELETE_REGISTER_SIZE) {
+		log_warn("No more stack space.");
+		return;
+	}
+
+	if (type == WORKSPACE) {
+		if (cnt + del_reg.size > DELETE_REGISTER_SIZE)
+			return;
+
+		while (cnt > 0) {
+			head = wss[correct_ws(cw + cnt - 1)].head;
+			for (tail = head; tail; tail = tail->next)
+				xcb_unmap_window(dpy, tail->win);
+			stack_push(&del_reg, head);
+			wss[correct_ws(cw + cnt - 1)].head = NULL;
+			wss[correct_ws(cw + cnt - 1)].current = NULL;
+			cnt--;
+		}
+
+	} else if (type == CLIENT) {
+		xcb_unmap_window(dpy, head->win);
+		/* TODO: Fix weird behaviour when cnt is greater than the
+		 * number of clients. */
+		while (cnt > 1) {
+			tail = next_client(tail);
+			xcb_unmap_window(dpy, tail->win);
+			cnt--;
+			if (head == next_client(tail))
+				break;
+		}
+
+		/* If cnt was greater than 1 and we have reached the end of the
+		 * client list, we need to make it "circular".*/
+		if (tail != head && head->next == NULL && next_client(head))
+			head->next = next_client(head);
+
+		if (head == wss[cw].head) {
+			wss[cw].head = head == next_client(tail) ? NULL : next_client(tail);
+		} else if (tail->next != head_prev) {
+			head_prev->next = tail->next;
+		} else if (tail->next && tail->next == head_prev) {
+			wss[cw].head = head_prev;
+			head_prev->next = NULL;
+		}
+
+		wss[cw].current = head_prev;
+		tail->next = NULL;
+		update_focused_client(head_prev);
+		stack_push(&del_reg, head);
+	}
+}
+
+/**
  * @brief Focus a client that has an urgent hint.
  *
  * @param arg Unused.
@@ -2453,4 +2617,54 @@ static void focus_urgent(const Arg *arg)
 		change_ws(&(Arg){.i = w});
 		update_focused_client(c);
 	}
+}
+
+/**
+ * @brief Remove a list of clients from howm's delete register stack and paste
+ * them after the currently focused window.
+ *
+ * @param arg Unused
+ */
+static void paste(const Arg *arg)
+{
+	UNUSED(arg);
+	Client *head = stack_pop(&del_reg);
+	Client *t, *c = head;
+	if (!head) {
+		log_warn("No clients on stack.");
+		return;
+	}
+
+	if (!wss[cw].current) {
+		wss[cw].head = head;
+		wss[cw].current = head;
+		while (c) {
+			xcb_map_window(dpy, c->win);
+			wss[cw].current = c;
+			c = c->next;
+		}
+	} else if (!wss[cw].current->next) {
+		wss[cw].current->next = head;
+		while (c) {
+			xcb_map_window(dpy, c->win);
+			wss[cw].current = c;
+			c = c->next;
+		}
+	} else {
+		t = wss[cw].current->next;
+		wss[cw].current->next = head;
+		while (c) {
+			xcb_map_window(dpy, c->win);
+			if (!c->next) {
+				c->next = t;
+				wss[cw].current = c;
+				break;
+			} else {
+				wss[cw].current = c;
+				c = c->next;
+			}
+		}
+	}
+	xcb_flush(dpy);
+	update_focused_client(wss[cw].current);
 }
