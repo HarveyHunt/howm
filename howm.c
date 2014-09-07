@@ -41,7 +41,8 @@
 #define LENGTH(x) (unsigned int)(sizeof(x) / sizeof(*x))
 /** Checks to see if a client is floating, fullscreen or transient. */
 #define FFT(c) (c->is_transient || c->is_floating || c->is_fullscreen)
-
+/** Supresses the unsued variable compiler warnings caused by #ifdef and #endif*/
+#define UNUSED(x) (void)(x)
 /**
  * @brief Represents an argument.
  *
@@ -1188,7 +1189,7 @@ found:
  */
 void howm_info(void)
 {
-	unsigned int w = 0, n;
+	unsigned int w=0, n;
 	Client *c;
 #if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
@@ -1199,6 +1200,7 @@ void howm_info(void)
 	}
 	fflush(stdout);
 #else
+	UNUSED(w);
 	for (c = wss[cw].head, n = 0; c; c = c->next, n++)
 		;
 	fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
@@ -2279,7 +2281,7 @@ static void set_fullscreen(Client *c, bool fscr)
  */
 static void toggle_fullscreen(const Arg *arg)
 {
-        if (wss[cw].current != NULL) 
+	if (wss[cw].current != NULL) 
             set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
 }
 
