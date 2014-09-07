@@ -1200,7 +1200,7 @@ void howm_info(void)
 	}
 	fflush(stdout);
 #else
-        UNUSED(w);
+	UNUSED(w);
 	for (c = wss[cw].head, n = 0; c; c = c->next, n++)
 		;
 	fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
@@ -2281,7 +2281,7 @@ static void set_fullscreen(Client *c, bool fscr)
  */
 static void toggle_fullscreen(const Arg *arg)
 {
-        if (wss[cw].current != NULL) 
+	if (wss[cw].current != NULL) 
             set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
 }
 
