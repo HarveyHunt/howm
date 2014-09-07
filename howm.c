@@ -266,6 +266,7 @@ static void quit(const Arg *arg);
 static void cleanup(void);
 static void delete_win(xcb_window_t win);
 static void setup_ewmh(void);
+static void UNUSED(unsigned int x);
 
 enum layouts { ZOOM, GRID, HSTACK, VSTACK, END_LAYOUT };
 enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
@@ -1188,7 +1189,8 @@ found:
  */
 void howm_info(void)
 {
-	unsigned int n;
+	unsigned int w=0, n;
+        UNUSED(w);
 	Client *c;
 #if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
@@ -1205,6 +1207,9 @@ void howm_info(void)
 		wss[cw].layout, cw, cur_state, n);
 	fflush(stdout);
 #endif
+
+
+        
 }
 
 /**
@@ -2354,4 +2359,19 @@ static void replay(const Arg *arg) {
 		rep_state.last_cmd(rep_state.last_arg);
 	else
 		rep_state.last_op(rep_state.last_type, rep_state.last_cnt);
+}
+
+
+/**
+ * @brief A stub function to take care for all the unused variables 
+ * causing a compiler warinings.
+ *
+ * @param x Pass any variable to this function which is unused
+ */
+
+static void UNUSED(unsigned int x)
+{
+    /*
+     * do nothing
+     */
 }
