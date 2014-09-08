@@ -2117,6 +2117,10 @@ static void delete_win(xcb_window_t win)
  */
 static void resize_master(const Arg *arg)
 {
+	/* Resize master only when resizing is visible (i.e. in Stack layouts). */
+	if (wss[cw].layout != HSTACK && wss[cw].layout != VSTACK)
+		return;
+
 	float change = ((float)arg->i) / 100;
 
 	if (wss[cw].master_ratio + change >= 1
