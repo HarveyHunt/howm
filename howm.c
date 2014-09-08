@@ -41,8 +41,9 @@
 #define LENGTH(x) (unsigned int)(sizeof(x) / sizeof(*x))
 /** Checks to see if a client is floating, fullscreen or transient. */
 #define FFT(c) (c->is_transient || c->is_floating || c->is_fullscreen)
-/** Supresses the unsued variable compiler warnings caused by #ifdef and #endif*/
+/** Supresses the unused variable compiler warnings. */
 #define UNUSED(x) (void)(x)
+
 /**
  * @brief Represents an argument.
  *
@@ -429,6 +430,8 @@ uint32_t get_colour(char *colour)
 int main(int argc, char *argv[])
 {
 	xcb_generic_event_t *ev;
+	UNUSED(argc);
+	UNUSED(argv);
 
 	dpy = xcb_connect(NULL, NULL);
 	if (xcb_connection_has_error(dpy)) {
@@ -1285,6 +1288,7 @@ void move_up(Client *c)
  */
 void focus_next_client(const Arg *arg)
 {
+	UNUSED(arg);
 	if (!wss[cw].current || !wss[cw].head->next)
 		return;
 	log_info("Focusing next client");
@@ -1299,6 +1303,7 @@ void focus_next_client(const Arg *arg)
  */
 void focus_prev_client(const Arg *arg)
 {
+	UNUSED(arg);
 	if (!wss[cw].current || !wss[cw].head->next)
 		return;
 	log_info("Focusing previous client");
@@ -1342,6 +1347,7 @@ void change_ws(const Arg *arg)
  */
 void focus_prev_ws(const Arg *arg)
 {
+	UNUSED(arg);
 	const Arg a = {.i = correct_ws(cw - 1)};
 
 	log_info("Focusing previous workspace");
@@ -1355,6 +1361,7 @@ void focus_prev_ws(const Arg *arg)
  */
 void focus_last_ws(const Arg *arg)
 {
+	UNUSED(arg);
 	const Arg a = { .i = last_ws };
 
 	log_info("Focusing last workspace");
@@ -1368,6 +1375,7 @@ void focus_last_ws(const Arg *arg)
  */
 void focus_next_ws(const Arg *arg)
 {
+	UNUSED(arg);
 	const Arg a = {.i = correct_ws(cw + 1)};
 
 	log_info("Focusing previous workspace");
@@ -1398,6 +1406,7 @@ void change_layout(const Arg *arg)
  */
 void previous_layout(const Arg *arg)
 {
+	UNUSED(arg);
 	const Arg a = { .i = wss[cw].layout < 1 ? END_LAYOUT - 1 : wss[cw].layout - 1 };
 
 	log_info("Changing to previous layout (%d)", a.i);
@@ -1411,6 +1420,7 @@ void previous_layout(const Arg *arg)
  */
 void next_layout(const Arg *arg)
 {
+	UNUSED(arg);
 	const Arg a = { .i = (wss[cw].layout + 1) % END_LAYOUT };
 
 	log_info("Changing to next layout (%d)", a.i);
@@ -1424,6 +1434,7 @@ void next_layout(const Arg *arg)
  */
 void last_layout(const Arg *arg)
 {
+	UNUSED(arg);
 	const Arg a = { .i = prev_layout };
 
 	log_info("Changing to last layout (%d)", a.i);
@@ -1517,7 +1528,8 @@ void kill_ws(const int ws)
 /**
  * @brief Move client/s down.
  *
- * @param type Unused
+ * @param type We don't support moving workspaces, so this should only be
+ * client.
  * @param cnt How many "things" to move.
  */
 void op_move_down(const unsigned int type, int cnt)
@@ -1530,7 +1542,8 @@ void op_move_down(const unsigned int type, int cnt)
 /**
  * @brief Move client/s up.
  *
- * @param type Unused
+ * @param type We don't support moving workspaces, so this should only be
+ * client.
  * @param cnt How many "things" to move.
  */
 void op_move_up(const unsigned int type, int cnt)
@@ -1580,6 +1593,7 @@ void move_client(int cnt, bool up)
  */
 void move_current_down(const Arg *arg)
 {
+	UNUSED(arg);
 	move_down(wss[cw].current);
 }
 
@@ -1590,6 +1604,7 @@ void move_current_down(const Arg *arg)
  */
 void move_current_up(const Arg *arg)
 {
+	UNUSED(arg);
 	move_up(wss[cw].current);
 }
 
@@ -1921,6 +1936,7 @@ static void change_gaps(const unsigned int type, int cnt, int size)
  */
 static void toggle_float(const Arg *arg)
 {
+	UNUSED(arg);
 	if (!wss[cw].current)
 		return;
 	log_info("Toggling floating state of client <%p>", wss[cw].current);
@@ -2138,6 +2154,7 @@ static void resize_master(const Arg *arg)
  */
 static void toggle_bar(const Arg *arg)
 {
+	UNUSED(arg);
 	if (wss[cw].bar_height == 0 && BAR_HEIGHT > 0) {
 		wss[cw].bar_height = BAR_HEIGHT;
 		log_info("Toggled bar to shown");
@@ -2195,6 +2212,7 @@ Client *create_client(xcb_window_t w)
  */
 static void make_master(const Arg *arg)
 {
+	UNUSED(arg);
 	if (!wss[cw].current || !wss[cw].head->next
 			|| wss[cw].head == wss[cw].current
 			|| !(wss[cw].layout == HSTACK
@@ -2285,6 +2303,7 @@ static void set_fullscreen(Client *c, bool fscr)
  */
 static void toggle_fullscreen(const Arg *arg)
 {
+	UNUSED(arg);
 	if (wss[cw].current != NULL)
 		set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
 }
@@ -2356,6 +2375,7 @@ static void save_last_cmd(void (*cmd)(const Arg *arg), const Arg *arg) {
  * @param arg Unused
  */
 static void replay(const Arg *arg) {
+	UNUSED(arg);
 	if (rep_state.last_cmd)
 		rep_state.last_cmd(rep_state.last_arg);
 	else
