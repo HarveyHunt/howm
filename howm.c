@@ -343,7 +343,7 @@ static struct replay_state rep_state;
 #endif
 
 
-#if LOG_LEVEL == LOG_INFO
+#if LOG_LEVEL <= LOG_INFO
 #define log_info(M, ...) fprintf(stderr, "[INFO] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #else
 #define log_info(x, ...) do {} while (0)
