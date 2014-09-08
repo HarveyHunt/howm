@@ -1192,7 +1192,7 @@ found:
  */
 void howm_info(void)
 {
-	unsigned int w=0, n;
+	unsigned int w = 0, n;
 	Client *c;
 #if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
@@ -1633,10 +1633,8 @@ void client_to_ws(Client *c, const int ws)
 
 	/* Current workspace. */
 	if (c == wss[cw].head || !prev)
-		//wss[cw].head = next_client(c);
 		wss[cw].head = c->next;
 	else
-		//prev->next = next_client(c);
 		prev->next = c->next;
 	c->next = NULL;
 	xcb_unmap_window(dpy, c->win);
@@ -2348,7 +2346,8 @@ static void client_message_event(xcb_generic_event_t *ev)
  * @param type The last type (defined by a motion).
  * @param cnt The last count.
  */
-static void save_last_ocm(void (*op)(const unsigned int, int), const unsigned int type, int cnt) {
+static void save_last_ocm(void (*op)(const unsigned int, int), const unsigned int type, int cnt)
+{
 	rep_state.last_op = op;
 	rep_state.last_type = type;
 	rep_state.last_cnt = cnt;
@@ -2362,7 +2361,8 @@ static void save_last_ocm(void (*op)(const unsigned int, int), const unsigned in
  * @param cmd The last command.
  * @param arg The argument passed to the last command.
  */
-static void save_last_cmd(void (*cmd)(const Arg *arg), const Arg *arg) {
+static void save_last_cmd(void (*cmd)(const Arg *arg), const Arg *arg)
+{
 	rep_state.last_cmd = cmd;
 	rep_state.last_arg = arg;
 	rep_state.last_op = NULL;
@@ -2374,7 +2374,8 @@ static void save_last_cmd(void (*cmd)(const Arg *arg), const Arg *arg) {
  *
  * @param arg Unused
  */
-static void replay(const Arg *arg) {
+static void replay(const Arg *arg)
+{
 	UNUSED(arg);
 	if (rep_state.last_cmd)
 		rep_state.last_cmd(rep_state.last_arg);
