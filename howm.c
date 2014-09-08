@@ -50,7 +50,7 @@
  * result of a keypress.
  */
 typedef union {
-	const char **cmd;  /**< Represents a command that will be called by a shell.  */
+	const char * const * const cmd; /**< Represents a command that will be called by a shell.  */
 	int i; /**< Usually used for specifying workspaces or clients. */
 } Arg;
 
