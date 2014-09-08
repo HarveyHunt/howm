@@ -828,7 +828,7 @@ void zoom(void)
 	/* When zoom is called because there aren't enough clients for other
 	 * layouts to work, draw a border to be consistent with other layouts.
 	 * */
-	if (wss[cw].layout != ZOOM)
+	if (wss[cw].layout != ZOOM && !wss[cw].head->is_fullscreen)
 		set_border_width(wss[cw].head->win, BORDER_PX);
 
 	for (c = wss[cw].head; c; c = c->next)
@@ -2281,8 +2281,8 @@ static void set_fullscreen(Client *c, bool fscr)
  */
 static void toggle_fullscreen(const Arg *arg)
 {
-	if (wss[cw].current != NULL) 
-            set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
+	if (wss[cw].current != NULL)
+		set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
 }
 
 /**
