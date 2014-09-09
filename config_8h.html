@@ -160,6 +160,8 @@ Macros</h2></td></tr>
 <tr class="separator:adae8d130d5d4ad25af97350c423842d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86bcb818d48071798a826b93da6ed9c3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a86bcb818d48071798a826b93da6ed9c3">FLOAT_SPAWN_HEIGHT</a>&#160;&#160;&#160;500</td></tr>
 <tr class="separator:a86bcb818d48071798a826b93da6ed9c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9dd5ac5acab5b89d170ce59ccc1e73bf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a9dd5ac5acab5b89d170ce59ccc1e73bf">HOWM_PATH</a>&#160;&#160;&#160;&quot;/usr/bin/howm&quot;</td></tr>
+<tr class="separator:a9dd5ac5acab5b89d170ce59ccc1e73bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -389,6 +391,19 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a9dd5ac5acab5b89d170ce59ccc1e73bf"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define HOWM_PATH&#160;&#160;&#160;&quot;/usr/bin/howm&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The path at which the howm binary (or script that started howm) is stored at. This is used for restarts. </p>
+
+</div>
+</div>
 <a class="anchor" id="a0b87e0d3bf5853bcbb0b66a7c48fdc05"></a>
 <div class="memitem">
 <div class="memproto">
@@ -555,8 +570,8 @@ Variables</h2></td></tr>
 <div class="line">        {<a class="code" href="config_8h.html#a744480773fdf4a7094b0b665f6bd6da9">OTHER_MOD</a> | ShiftMask, XK_w, <a class="code" href="howm_8c.html#a0aa5bfdbf166c07f5c2a60dd1a8ff1dfa873ff4c3199f6649b435f6da5e0e265c">WORKSPACE</a>}</div>
 <div class="line">}</div>
 <div class="ttc" id="config_8h_html_a744480773fdf4a7094b0b665f6bd6da9"><div class="ttname"><a href="config_8h.html#a744480773fdf4a7094b0b665f6bd6da9">OTHER_MOD</a></div><div class="ttdeci">#define OTHER_MOD</div><div class="ttdef"><b>Definition:</b> config.h:21</div></div>
-<div class="ttc" id="howm_8c_html_a0aa5bfdbf166c07f5c2a60dd1a8ff1dfa48e4cb37544c8e69715d45e5a83b2109"><div class="ttname"><a href="howm_8c.html#a0aa5bfdbf166c07f5c2a60dd1a8ff1dfa48e4cb37544c8e69715d45e5a83b2109">CLIENT</a></div><div class="ttdef"><b>Definition:</b> howm.c:273</div></div>
-<div class="ttc" id="howm_8c_html_a0aa5bfdbf166c07f5c2a60dd1a8ff1dfa873ff4c3199f6649b435f6da5e0e265c"><div class="ttname"><a href="howm_8c.html#a0aa5bfdbf166c07f5c2a60dd1a8ff1dfa873ff4c3199f6649b435f6da5e0e265c">WORKSPACE</a></div><div class="ttdef"><b>Definition:</b> howm.c:273</div></div>
+<div class="ttc" id="howm_8c_html_a0aa5bfdbf166c07f5c2a60dd1a8ff1dfa48e4cb37544c8e69715d45e5a83b2109"><div class="ttname"><a href="howm_8c.html#a0aa5bfdbf166c07f5c2a60dd1a8ff1dfa48e4cb37544c8e69715d45e5a83b2109">CLIENT</a></div><div class="ttdef"><b>Definition:</b> howm.c:276</div></div>
+<div class="ttc" id="howm_8c_html_a0aa5bfdbf166c07f5c2a60dd1a8ff1dfa873ff4c3199f6649b435f6da5e0e265c"><div class="ttname"><a href="howm_8c.html#a0aa5bfdbf166c07f5c2a60dd1a8ff1dfa873ff4c3199f6649b435f6da5e0e265c">WORKSPACE</a></div><div class="ttdef"><b>Definition:</b> howm.c:276</div></div>
 </div><!-- fragment -->
 <p>Motions can be used to show that an operation should be performed on a certain target- such as a client. </p>
 <p>For example:</p>
@@ -590,16 +605,16 @@ Variables</h2></td></tr>
 <div class="line">        {<a class="code" href="config_8h.html#a744480773fdf4a7094b0b665f6bd6da9">OTHER_MOD</a>, XK_j, <a class="code" href="howm_8c.html#a811fe196a5d9d37857c2f8adeeaac3c6ab92406776d6051345e2bfaff03419b36">FOCUS</a>, <a class="code" href="howm_8c.html#a392722843c4ce60ba48435a4fde8a3d2">op_focus_down</a>},</div>
 <div class="line">        {<a class="code" href="config_8h.html#a744480773fdf4a7094b0b665f6bd6da9">OTHER_MOD</a>, XK_k, <a class="code" href="howm_8c.html#a811fe196a5d9d37857c2f8adeeaac3c6ab92406776d6051345e2bfaff03419b36">FOCUS</a>, <a class="code" href="howm_8c.html#aed77f754ba60f2dc0417fe2c47e1c2d7">op_focus_up</a>}</div>
 <div class="line">}</div>
-<div class="ttc" id="howm_8c_html_a4e7484f0ad0af807e17de8d5a44cbffa"><div class="ttname"><a href="howm_8c.html#a4e7484f0ad0af807e17de8d5a44cbffa">op_move_down</a></div><div class="ttdeci">static void op_move_down(const unsigned int type, int cnt)</div><div class="ttdoc">Move client/s down. </div><div class="ttdef"><b>Definition:</b> howm.c:1521</div></div>
-<div class="ttc" id="howm_8c_html_a811fe196a5d9d37857c2f8adeeaac3c6ab92406776d6051345e2bfaff03419b36"><div class="ttname"><a href="howm_8c.html#a811fe196a5d9d37857c2f8adeeaac3c6ab92406776d6051345e2bfaff03419b36">FOCUS</a></div><div class="ttdef"><b>Definition:</b> howm.c:272</div></div>
+<div class="ttc" id="howm_8c_html_a4e7484f0ad0af807e17de8d5a44cbffa"><div class="ttname"><a href="howm_8c.html#a4e7484f0ad0af807e17de8d5a44cbffa">op_move_down</a></div><div class="ttdeci">static void op_move_down(const unsigned int type, int cnt)</div><div class="ttdoc">Move client/s down. </div><div class="ttdef"><b>Definition:</b> howm.c:1541</div></div>
+<div class="ttc" id="howm_8c_html_a811fe196a5d9d37857c2f8adeeaac3c6ab92406776d6051345e2bfaff03419b36"><div class="ttname"><a href="howm_8c.html#a811fe196a5d9d37857c2f8adeeaac3c6ab92406776d6051345e2bfaff03419b36">FOCUS</a></div><div class="ttdef"><b>Definition:</b> howm.c:275</div></div>
 <div class="ttc" id="config_8h_html_a744480773fdf4a7094b0b665f6bd6da9"><div class="ttname"><a href="config_8h.html#a744480773fdf4a7094b0b665f6bd6da9">OTHER_MOD</a></div><div class="ttdeci">#define OTHER_MOD</div><div class="ttdef"><b>Definition:</b> config.h:21</div></div>
-<div class="ttc" id="howm_8c_html_a392722843c4ce60ba48435a4fde8a3d2"><div class="ttname"><a href="howm_8c.html#a392722843c4ce60ba48435a4fde8a3d2">op_focus_down</a></div><div class="ttdeci">static void op_focus_down(const unsigned int type, int cnt)</div><div class="ttdoc">Operator function to move the current focus down. </div><div class="ttdef"><b>Definition:</b> howm.c:1709</div></div>
-<div class="ttc" id="howm_8c_html_ae9fb691f34221e1bbf14b0dd50ee4058"><div class="ttname"><a href="howm_8c.html#ae9fb691f34221e1bbf14b0dd50ee4058">op_grow_gaps</a></div><div class="ttdeci">static void op_grow_gaps(const unsigned int type, int cnt)</div><div class="ttdoc">An operator to grow the gaps of either workspaces or clients by OP_GAP_SIZE. </div><div class="ttdef"><b>Definition:</b> howm.c:1852</div></div>
-<div class="ttc" id="howm_8c_html_a1c1087d4b07b0fc5362082c8280a001c"><div class="ttname"><a href="howm_8c.html#a1c1087d4b07b0fc5362082c8280a001c">op_shrink_gaps</a></div><div class="ttdeci">static void op_shrink_gaps(const unsigned int type, int cnt)</div><div class="ttdoc">An operator to shrink the gaps of either workspaces or clients by OP_GAP_SIZE. </div><div class="ttdef"><b>Definition:</b> howm.c:1836</div></div>
-<div class="ttc" id="howm_8c_html_aed77f754ba60f2dc0417fe2c47e1c2d7"><div class="ttname"><a href="howm_8c.html#aed77f754ba60f2dc0417fe2c47e1c2d7">op_focus_up</a></div><div class="ttdeci">static void op_focus_up(const unsigned int type, int cnt)</div><div class="ttdoc">Operator function to move the current focus up. </div><div class="ttdef"><b>Definition:</b> howm.c:1690</div></div>
-<div class="ttc" id="howm_8c_html_aa424f8fc9772b2c90c7c07b67856fa8b"><div class="ttname"><a href="howm_8c.html#aa424f8fc9772b2c90c7c07b67856fa8b">op_kill</a></div><div class="ttdeci">static void op_kill(const unsigned int type, int cnt)</div><div class="ttdoc">An operator that kills an arbitrary amount of clients or workspaces. </div><div class="ttdef"><b>Definition:</b> howm.c:1454</div></div>
-<div class="ttc" id="howm_8c_html_a509accc2a74d0de101458100edc5dadf"><div class="ttname"><a href="howm_8c.html#a509accc2a74d0de101458100edc5dadf">op_move_up</a></div><div class="ttdeci">static void op_move_up(const unsigned int type, int cnt)</div><div class="ttdoc">Move client/s up. </div><div class="ttdef"><b>Definition:</b> howm.c:1534</div></div>
-<div class="ttc" id="howm_8c_html_a811fe196a5d9d37857c2f8adeeaac3c6a50d1448013c6f17125caee18aa418af7"><div class="ttname"><a href="howm_8c.html#a811fe196a5d9d37857c2f8adeeaac3c6a50d1448013c6f17125caee18aa418af7">NORMAL</a></div><div class="ttdef"><b>Definition:</b> howm.c:272</div></div>
+<div class="ttc" id="howm_8c_html_a392722843c4ce60ba48435a4fde8a3d2"><div class="ttname"><a href="howm_8c.html#a392722843c4ce60ba48435a4fde8a3d2">op_focus_down</a></div><div class="ttdeci">static void op_focus_down(const unsigned int type, int cnt)</div><div class="ttdoc">Operator function to move the current focus down. </div><div class="ttdef"><b>Definition:</b> howm.c:1732</div></div>
+<div class="ttc" id="howm_8c_html_ae9fb691f34221e1bbf14b0dd50ee4058"><div class="ttname"><a href="howm_8c.html#ae9fb691f34221e1bbf14b0dd50ee4058">op_grow_gaps</a></div><div class="ttdeci">static void op_grow_gaps(const unsigned int type, int cnt)</div><div class="ttdoc">An operator to grow the gaps of either workspaces or clients by OP_GAP_SIZE. </div><div class="ttdef"><b>Definition:</b> howm.c:1875</div></div>
+<div class="ttc" id="howm_8c_html_a1c1087d4b07b0fc5362082c8280a001c"><div class="ttname"><a href="howm_8c.html#a1c1087d4b07b0fc5362082c8280a001c">op_shrink_gaps</a></div><div class="ttdeci">static void op_shrink_gaps(const unsigned int type, int cnt)</div><div class="ttdoc">An operator to shrink the gaps of either workspaces or clients by OP_GAP_SIZE. </div><div class="ttdef"><b>Definition:</b> howm.c:1859</div></div>
+<div class="ttc" id="howm_8c_html_aed77f754ba60f2dc0417fe2c47e1c2d7"><div class="ttname"><a href="howm_8c.html#aed77f754ba60f2dc0417fe2c47e1c2d7">op_focus_up</a></div><div class="ttdeci">static void op_focus_up(const unsigned int type, int cnt)</div><div class="ttdoc">Operator function to move the current focus up. </div><div class="ttdef"><b>Definition:</b> howm.c:1713</div></div>
+<div class="ttc" id="howm_8c_html_aa424f8fc9772b2c90c7c07b67856fa8b"><div class="ttname"><a href="howm_8c.html#aa424f8fc9772b2c90c7c07b67856fa8b">op_kill</a></div><div class="ttdeci">static void op_kill(const unsigned int type, int cnt)</div><div class="ttdoc">An operator that kills an arbitrary amount of clients or workspaces. </div><div class="ttdef"><b>Definition:</b> howm.c:1473</div></div>
+<div class="ttc" id="howm_8c_html_a509accc2a74d0de101458100edc5dadf"><div class="ttname"><a href="howm_8c.html#a509accc2a74d0de101458100edc5dadf">op_move_up</a></div><div class="ttdeci">static void op_move_up(const unsigned int type, int cnt)</div><div class="ttdoc">Move client/s up. </div><div class="ttdef"><b>Definition:</b> howm.c:1555</div></div>
+<div class="ttc" id="howm_8c_html_a811fe196a5d9d37857c2f8adeeaac3c6a50d1448013c6f17125caee18aa418af7"><div class="ttname"><a href="howm_8c.html#a811fe196a5d9d37857c2f8adeeaac3c6a50d1448013c6f17125caee18aa418af7">NORMAL</a></div><div class="ttdef"><b>Definition:</b> howm.c:275</div></div>
 </div><!-- fragment -->
 <p>The operations to be performed on a target. All functions that are operators begin with op_*. </p>
 <p>Vim's built in help is useful for understanding this:</p>
@@ -645,14 +660,14 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div>
-<div class="line">        {NULL},</div>
+<div class="line">        {0, 0, 0, 0, NULL, NULL, NULL},</div>
 <div class="line">        {.layout = <a class="code" href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3">HSTACK</a>, .gap = <a class="code" href="config_8h.html#a2a2129b3f6b7ce06869b7f16b81aff6f">GAP</a>, .master_ratio = 0.6, .bar_height = <a class="code" href="config_8h.html#af6614c9d6fc4f2ec7e3a70230c05b3f7">BAR_HEIGHT</a>},</div>
 <div class="line">        {.layout = <a class="code" href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3">HSTACK</a>, .gap = <a class="code" href="config_8h.html#a2a2129b3f6b7ce06869b7f16b81aff6f">GAP</a>, .master_ratio = 0.6, .bar_height = <a class="code" href="config_8h.html#af6614c9d6fc4f2ec7e3a70230c05b3f7">BAR_HEIGHT</a>},</div>
 <div class="line">        {.layout = <a class="code" href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3">HSTACK</a>, .gap = <a class="code" href="config_8h.html#a2a2129b3f6b7ce06869b7f16b81aff6f">GAP</a>, .master_ratio = 0.6, .bar_height = <a class="code" href="config_8h.html#af6614c9d6fc4f2ec7e3a70230c05b3f7">BAR_HEIGHT</a>},</div>
 <div class="line">        {.layout = <a class="code" href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3">HSTACK</a>, .gap = <a class="code" href="config_8h.html#a2a2129b3f6b7ce06869b7f16b81aff6f">GAP</a>, .master_ratio = 0.6, .bar_height = <a class="code" href="config_8h.html#af6614c9d6fc4f2ec7e3a70230c05b3f7">BAR_HEIGHT</a>},</div>
 <div class="line">        {.layout = <a class="code" href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3">HSTACK</a>, .gap = <a class="code" href="config_8h.html#a2a2129b3f6b7ce06869b7f16b81aff6f">GAP</a>, .master_ratio = 0.6, .bar_height = <a class="code" href="config_8h.html#af6614c9d6fc4f2ec7e3a70230c05b3f7">BAR_HEIGHT</a>}</div>
 <div class="line">}</div>
-<div class="ttc" id="howm_8c_html_a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3"><div class="ttname"><a href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3">HSTACK</a></div><div class="ttdef"><b>Definition:</b> howm.c:270</div></div>
+<div class="ttc" id="howm_8c_html_a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3"><div class="ttname"><a href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3">HSTACK</a></div><div class="ttdef"><b>Definition:</b> howm.c:273</div></div>
 <div class="ttc" id="config_8h_html_af6614c9d6fc4f2ec7e3a70230c05b3f7"><div class="ttname"><a href="config_8h.html#af6614c9d6fc4f2ec7e3a70230c05b3f7">BAR_HEIGHT</a></div><div class="ttdeci">#define BAR_HEIGHT</div><div class="ttdef"><b>Definition:</b> config.h:43</div></div>
 <div class="ttc" id="config_8h_html_a2a2129b3f6b7ce06869b7f16b81aff6f"><div class="ttname"><a href="config_8h.html#a2a2129b3f6b7ce06869b7f16b81aff6f">GAP</a></div><div class="ttdeci">#define GAP</div><div class="ttdef"><b>Definition:</b> config.h:31</div></div>
 </div><!-- fragment -->
@@ -667,7 +682,7 @@ Variables</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="config_8h.html">config.h</a></li>
-    <li class="footer">Generated on Fri Sep 5 2014 14:10:33 for howm by
+    <li class="footer">Generated on Tue Sep 9 2014 13:52:50 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

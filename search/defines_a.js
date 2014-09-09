@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zoom_5fgap',['ZOOM_GAP',['../config_8h.html#aefa8bdc2e078ef4c75104d00e6e0a9ed',1,'config.h']]]
+  ['unused',['UNUSED',['../howm_8c.html#a86d500a34c624c2cae56bc25a31b12f3',1,'howm.c']]]
 ];

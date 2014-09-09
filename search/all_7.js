@@ -5,5 +5,6 @@ var searchData=
   ['head',['head',['../structWorkspace.html#a7fbd58a8406bbc296bc19f755483eb10',1,'Workspace']]],
   ['howm_2ec',['howm.c',['../howm_8c.html',1,'']]],
   ['howm_5finfo',['howm_info',['../howm_8c.html#ad3e9a50dca7e98460b9fc05b288b9c2e',1,'howm.c']]],
+  ['howm_5fpath',['HOWM_PATH',['../config_8h.html#a9dd5ac5acab5b89d170ce59ccc1e73bf',1,'config.h']]],
   ['hstack',['HSTACK',['../howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3',1,'howm.c']]]
 ];

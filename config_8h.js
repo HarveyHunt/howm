@@ -16,6 +16,7 @@ var config_8h =
     [ "FOCUS_MOUSE_CLICK", "config_8h.html#a4ff775a3fc12134f26051be581778c58", null ],
     [ "FOLLOW_SPAWN", "config_8h.html#a64cc10cd9532b09a7af338b0a40eb495", null ],
     [ "GAP", "config_8h.html#a2a2129b3f6b7ce06869b7f16b81aff6f", null ],
+    [ "HOWM_PATH", "config_8h.html#a9dd5ac5acab5b89d170ce59ccc1e73bf", null ],
     [ "LOG_LEVEL", "config_8h.html#a0b87e0d3bf5853bcbb0b66a7c48fdc05", null ],
     [ "MASTER_RATIO", "config_8h.html#ac6b6a7dcda6464ab1bb02cdc549f8043", null ],
     [ "MODKEY", "config_8h.html#a4d69648ee1215681edf62db4809e8f1a", null ],

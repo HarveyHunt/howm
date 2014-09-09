@@ -108,6 +108,11 @@ $(document).ready(function(){initNavTree('md_CONTRIBUTING.html','');});
 <p>Alternatively, change into the newly cloned howm directory and run: </p><pre class="fragment">doxygen
 </pre><p>To have the documentation automatically generated locally.</p>
 <p>Then it is time to hack away until your heart is content.</p>
+<h2>Tools of the trade</h2>
+<p>It's important to have some tools to test howm with. I like to use <a href="http://www.freedesktop.org/wiki/Software/Xephyr/">Xephyr</a> and <a href="http://xtrace.alioth.debian.org/">x11trace</a>.</p>
+<p>Xephyr is an X server in a window and makes it easy to test howm without having to change to a different X server. I invoke Xephyr using the following command: </p><pre class="fragment">Xephyr -ac -br -screen 1024x768 :1
+</pre><p>Then I change into the directory that howm is in and run the following: </p><pre class="fragment">DISPLAY=:1 gdb howm
+</pre><p>x11trace is used for seeing the communication between an X server and its clients. This is useful when trying to track down bugs involving communication with X clients as well as implementing EWMH compliance. For normal development, it isn't necessary to use x11trace.</p>
 <h2>Code Style</h2>
 <p>I try to follow the <a href="https://www.kernel.org/doc/Documentation/CodingStyle">Linux Kernel Guide</a> as closely as sanely possible.</p>
 <p>I run checkpatch.pl from the Linux Kernel against the code and strive for no errors- you should do the same.</p>
@@ -133,7 +138,7 @@ $(document).ready(function(){initNavTree('md_CONTRIBUTING.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Sep 5 2014 14:10:33 for howm by
+    <li class="footer">Generated on Tue Sep 9 2014 13:52:50 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

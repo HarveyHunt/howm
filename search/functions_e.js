@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['quit',['quit',['../howm_8c.html#aa627dfbc1cc3b10df84f054d633dca20',1,'howm.c']]]
+  ['quit_5fhowm',['quit_howm',['../howm_8c.html#ad231ec67ed8b8bc3c289b4bf0cfa5cb0',1,'howm.c']]]
 ];
