@@ -213,6 +213,7 @@ static void make_master(const Arg *arg);
 static void grab_buttons(Client *c);
 static void set_fullscreen(Client *c, bool fscr);
 static void toggle_fullscreen(const Arg *arg);
+static void focus_urgent(const Arg *arg);
 
 /* Workspaces */
 static void kill_ws(const int ws);
@@ -320,7 +321,7 @@ static int cw = DEFAULT_WORKSPACE;
 static uint32_t border_focus, border_unfocus, border_prev_focus;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE, cur_cnt = 1;
 static uint16_t screen_height, screen_width;
-static bool running = true, restart = false;
+static bool running = true, restart;
 
 static struct replay_state rep_state;
 
@@ -458,7 +459,7 @@ int main(int argc, char *argv[])
 			log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
 		free(ev);
 	}
-	if (!running && ! restart) {
+	if (!running && !restart) {
 		cleanup();
 		xcb_disconnect(dpy);
 		return retval;
@@ -2429,5 +2430,26 @@ static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action)
 			c->is_urgent = !c->is_urgent;
 	} else {
 		log_warn("Unhandled wm state <%d> with action <%d>.", a, action);
+	}
+}
+
+/**
+ * @brief Focus a client that has an urgent hint.
+ *
+ * @param arg Unused.
+ */
+static void focus_urgent(const Arg *arg)
+{
+	Client *c;
+	int w;
+	UNUSED(arg);
+
+	for (w = 1; w <= WORKSPACES; w++)
+		for (c = wss[w].head; c && !c->is_urgent; c = c->next)
+			;
+	if (c) {
+		log_info("Focusing urgent client <%p> on workspace <%d>", c, w);
+		change_ws(&(Arg){.i = w});
+		update_focused_client(c);
 	}
 }
