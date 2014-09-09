@@ -1354,10 +1354,9 @@ void change_ws(const Arg *arg)
 void focus_prev_ws(const Arg *arg)
 {
 	UNUSED(arg);
-	const Arg a = {.i = correct_ws(cw - 1)};
 
 	log_info("Focusing previous workspace");
-	change_ws(&a);
+	change_ws(&(Arg){ .i = correct_ws(cw - 1) });
 }
 
 /**
@@ -1368,10 +1367,10 @@ void focus_prev_ws(const Arg *arg)
 void focus_last_ws(const Arg *arg)
 {
 	UNUSED(arg);
-	const Arg a = { .i = last_ws };
 
 	log_info("Focusing last workspace");
-	change_ws(&a);
+	change_ws(&(Arg){ .i = last_ws });
+
 }
 
 /**
@@ -1382,10 +1381,9 @@ void focus_last_ws(const Arg *arg)
 void focus_next_ws(const Arg *arg)
 {
 	UNUSED(arg);
-	const Arg a = {.i = correct_ws(cw + 1)};
 
 	log_info("Focusing previous workspace");
-	change_ws(&a);
+	change_ws(&(Arg){ .i = correct_ws(cw + 1) });
 }
 
 /**
@@ -1441,10 +1439,9 @@ void next_layout(const Arg *arg)
 void last_layout(const Arg *arg)
 {
 	UNUSED(arg);
-	const Arg a = { .i = prev_layout };
 
-	log_info("Changing to last layout (%d)", a.i);
-	change_layout(&a);
+	log_info("Changing to last layout (%d)", prev_layout);
+	change_layout(&(Arg){ .i = prev_layout });
 }
 
 /**
@@ -1647,9 +1644,7 @@ void client_to_ws(Client *c, const int ws)
 	update_focused_client(wss[cw].prev_foc);
 	log_info("Moved client <%p> from <%d> to <%d>", c, cw, ws);
 	if (FOLLOW_SPAWN) {
-		Arg arg = { .i = ws };
-
-		change_ws(&arg);
+		change_ws(&(Arg){ .i = ws });
 		update_focused_client(c);
 	} else {
 		arrange_windows();
