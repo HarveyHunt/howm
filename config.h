@@ -69,6 +69,9 @@
 /** The minimum height of a floating window that is spawned, if it doesn't
  * respond to geometry requests in a satisfactory manner. */
 #define FLOAT_SPAWN_HEIGHT 500
+/** The path at which the howm binary (or script that started howm) is stored
+ * at. This is used for restarts. */
+#define HOWM_PATH "/usr/bin/howm"
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
@@ -96,8 +99,9 @@ static const Key keys[] = {
 	{ MODKEY, NORMAL, XK_f, change_mode, {.i = FOCUS} },
 	{ MODKEY | ShiftMask, NORMAL, XK_f, change_mode, {.i = FLOATING} },
 	{ MODKEY, NORMAL, XK_space, toggle_float, {NULL} },
-	{ MODKEY, NORMAL, XK_Delete, quit, {.i = EXIT_SUCCESS} },
-	{ MODKEY | ShiftMask, NORMAL, XK_Delete, quit, {.i = EXIT_FAILURE} },
+	{ MODKEY, NORMAL, XK_Delete, quit_howm, {.i = EXIT_SUCCESS} },
+	{ MODKEY | ShiftMask, NORMAL, XK_Delete, quit_howm, {.i = EXIT_FAILURE} },
+	{ MODKEY, NORMAL, XK_BackSpace, restart_howm, {NULL} },
 	{ MODKEY, NORMAL, XK_m, resize_master, {.i = 5} },
 	{ MODKEY | ShiftMask, NORMAL, XK_m, resize_master, {.i = -5} },
 	{ MODKEY, NORMAL, XK_b, toggle_bar, {NULL} },

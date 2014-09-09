@@ -264,7 +264,8 @@ static void spawn(const Arg *arg);
 static void setup(void);
 static void move_client(int cnt, bool up);
 static void focus_window(xcb_window_t win);
-static void quit(const Arg *arg);
+static void quit_howm(const Arg *arg);
+static void restart_howm(const Arg *arg);
 static void cleanup(void);
 static void delete_win(xcb_window_t win);
 static void setup_ewmh(void);
@@ -313,7 +314,7 @@ static int cw = DEFAULT_WORKSPACE;
 static uint32_t border_focus, border_unfocus, border_prev_focus;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE, cur_cnt = 1;
 static uint16_t screen_height, screen_width;
-static bool running = true;
+static bool running = true, restart = false;
 
 static struct replay_state rep_state;
 
@@ -450,10 +451,15 @@ int main(int argc, char *argv[])
 			log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
 		free(ev);
 	}
-	if (!running) {
+	if (!running && ! restart) {
 		cleanup();
 		xcb_disconnect(dpy);
 		return retval;
+	} else if (!running && restart) {
+		cleanup();
+		xcb_disconnect(dpy);
+		char *const argv[] = {HOWM_PATH, NULL};
+		execv(argv[0], argv);
 	}
 	return EXIT_FAILURE;
 }
@@ -2065,7 +2071,7 @@ static void teleport_client(const Arg *arg)
  *
  * @param arg The return value that howm will send.
  */
-static void quit(const Arg *arg)
+static void quit_howm(const Arg *arg)
 {
 	log_warn("Quitting");
 	retval = arg->i;
@@ -2381,4 +2387,17 @@ static void replay(const Arg *arg)
 		rep_state.last_cmd(rep_state.last_arg);
 	else
 		rep_state.last_op(rep_state.last_type, rep_state.last_cnt);
+}
+
+/**
+ * @brief Restart howm.
+ *
+ * @param arg Unused.
+ */
+static void restart_howm(const Arg *arg)
+{
+	UNUSED(arg);
+	log_warn("Restarting.");
+	running = false;
+	restart = true;
 }
