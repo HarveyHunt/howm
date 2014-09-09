@@ -44,6 +44,10 @@
 /** Supresses the unused variable compiler warnings. */
 #define UNUSED(x) (void)(x)
 
+#define _NET_WM_STATE_REMOVE 0
+#define _NET_WM_STATE_ADD 1
+#define _NET_WM_STATE_TOGGLE 2
+
 /**
  * @brief Represents an argument.
  *
@@ -125,6 +129,7 @@ typedef struct Client {
 	bool is_floating; /**< Is the client floating? */
 	bool is_transient; /**< Is the client transient?
 					* Defined at: http://standards.freedesktop.org/wm-spec/wm-spec-latest.html*/
+	bool is_urgent; /** This is set by a client that wants focus for some reason. */
 	xcb_window_t win; /**< The window that this client represents. */
 	uint16_t x; /**< The x coordinate of the client. */
 	uint16_t y; /**< The y coordinate of the client. */
@@ -208,6 +213,7 @@ static void make_master(const Arg *arg);
 static void grab_buttons(Client *c);
 static void set_fullscreen(Client *c, bool fscr);
 static void toggle_fullscreen(const Arg *arg);
+static void focus_urgent(const Arg *arg);
 
 /* Workspaces */
 static void kill_ws(const int ws);
@@ -252,6 +258,7 @@ static void set_border_width(xcb_window_t win, uint16_t w);
 static void get_atoms(char **names, xcb_atom_t *atoms);
 static void check_other_wm(void);
 static xcb_keysym_t keycode_to_keysym(xcb_keycode_t keycode);
+static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action);
 
 /* Misc */
 static void howm_info(void);
@@ -314,7 +321,7 @@ static int cw = DEFAULT_WORKSPACE;
 static uint32_t border_focus, border_unfocus, border_prev_focus;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE, cur_cnt = 1;
 static uint16_t screen_height, screen_width;
-static bool running = true, restart = false;
+static bool running = true, restart;
 
 static struct replay_state rep_state;
 
@@ -362,6 +369,7 @@ static struct replay_state rep_state;
 #else
 #define log_err(x, ...) do {} while (0)
 #endif
+
 /*@end@*/
 
 /**
@@ -451,7 +459,7 @@ int main(int argc, char *argv[])
 			log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
 		free(ev);
 	}
-	if (!running && ! restart) {
+	if (!running && !restart) {
 		cleanup();
 		xcb_disconnect(dpy);
 		return retval;
@@ -2317,17 +2325,10 @@ static void client_message_event(xcb_generic_event_t *ev)
 	xcb_client_message_event_t *cm = (xcb_client_message_event_t *)ev;
 	Client *c = find_client_by_win(cm->window);
 
-	if (c && cm->type == ewmh->_NET_WM_STATE
-			&& cm->data.data32[1] == ewmh->_NET_WM_STATE_FULLSCREEN) {
-		/* Disable fullscreen. */
-		if (cm->data.data32[0] == 0)
-			set_fullscreen(c, false);
-		/* Enable fullscreen. */
-		else if (cm->data.data32[0] == 1)
-			set_fullscreen(c, true);
-		/* Toggle fullscreen. */
-		else if (cm->data.data32[0] == 2)
-			set_fullscreen(c, !c->is_fullscreen);
+	if (c && cm->type == ewmh->_NET_WM_STATE) {
+		ewmh_process_wm_state(c, (xcb_atom_t) cm->data.data32[1], cm->data.data32[0]);
+		if (cm->data.data32[2])
+			ewmh_process_wm_state(c, (xcb_atom_t) cm->data.data32[2], cm->data.data32[0]);
 	} else if (c && cm->type == ewmh->_NET_CLOSE_WINDOW) {
 		log_info("_NET_CLOSE_WINDOW: Removing client <%p>", c);
 		remove_client(c);
@@ -2395,4 +2396,55 @@ static void restart_howm(const Arg *arg)
 	log_warn("Restarting.");
 	running = false;
 	restart = true;
+}
+
+/**
+ * @brief Handle client messages that are related to WM_STATE.
+ *
+ * TODO: Add more WM_STATE hints.
+ *
+ * @param c The client that is to have its WM_STATE modified.
+ * @param a The atom representing which WM_STATE hint should be modified.
+ * @param action Whether to remove, add or toggle the WM_STATE hint.
+ */
+static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action)
+{
+	if (a == ewmh->_NET_WM_STATE_FULLSCREEN) {
+		if (action == _NET_WM_STATE_REMOVE)
+			set_fullscreen(c, false);
+		else if (action == _NET_WM_STATE_ADD)
+			set_fullscreen(c, true);
+		else if (action == _NET_WM_STATE_TOGGLE)
+			set_fullscreen(c, !c->is_fullscreen);
+	} else if (a == ewmh->_NET_WM_STATE_DEMANDS_ATTENTION) {
+		if (action == _NET_WM_STATE_REMOVE)
+			c->is_urgent = false;
+		else if (action == _NET_WM_STATE_ADD)
+			c->is_urgent = true;
+		else if (action == _NET_WM_STATE_TOGGLE)
+			c->is_urgent = !c->is_urgent;
+	} else {
+		log_warn("Unhandled wm state <%d> with action <%d>.", a, action);
+	}
+}
+
+/**
+ * @brief Focus a client that has an urgent hint.
+ *
+ * @param arg Unused.
+ */
+static void focus_urgent(const Arg *arg)
+{
+	Client *c;
+	int w;
+	UNUSED(arg);
+
+	for (w = 1; w <= WORKSPACES; w++)
+		for (c = wss[w].head; c && !c->is_urgent; c = c->next)
+			;
+	if (c) {
+		log_info("Focusing urgent client <%p> on workspace <%d>", c, w);
+		change_ws(&(Arg){.i = w});
+		update_focused_client(c);
+	}
 }
