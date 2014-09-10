@@ -395,8 +395,7 @@ void setup(void)
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
 
 	setup_ewmh();
-	if (BORDER_PX % 2 == 1)
-		log_warn("Odd value for border pixels.");
+
 	border_focus = get_colour(BORDER_FOCUS);
 	border_unfocus = get_colour(BORDER_UNFOCUS);
 	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
