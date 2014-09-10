@@ -39,6 +39,8 @@
 #define BORDER_UNFOCUS "#555555"
 /** The border colour of the last focused window.. */
 #define BORDER_PREV_FOCUS "#74718E"
+/** The border colour when the window is urgent. */
+#define BORDER_URGENT "#FF0000"
 /** The height of the status bar to be displayed. */
 #define BAR_HEIGHT 20
 /** Whether the status bar is at the top or bottom of the screen. */

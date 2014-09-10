@@ -212,6 +212,7 @@ static void move_float_x(const Arg *arg);
 static void make_master(const Arg *arg);
 static void grab_buttons(Client *c);
 static void set_fullscreen(Client *c, bool fscr);
+static void set_urgent(Client *c, bool urg);
 static void toggle_fullscreen(const Arg *arg);
 static void focus_urgent(const Arg *arg);
 
@@ -318,7 +319,7 @@ static int numlockmask, retval;
 /* We don't need the range of unsigned, so this prevents a conversion later. */
 static int last_ws, prev_layout;
 static int cw = DEFAULT_WORKSPACE;
-static uint32_t border_focus, border_unfocus, border_prev_focus;
+static uint32_t border_focus, border_unfocus, border_prev_focus, border_urgent;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE, cur_cnt = 1;
 static uint16_t screen_height, screen_width;
 static bool running = true, restart;
@@ -399,6 +400,7 @@ void setup(void)
 	border_focus = get_colour(BORDER_FOCUS);
 	border_unfocus = get_colour(BORDER_UNFOCUS);
 	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
+	border_urgent = get_colour(BORDER_URGENT);
 }
 
 /**
@@ -2298,7 +2300,17 @@ static void set_fullscreen(Client *c, bool fscr)
 		draw_clients();
 	}
 	update_focused_client(c);
+}
 
+static void set_urgent(Client *c, bool urg)
+{
+	if (!c || urg == c->is_urgent)
+		return;
+
+	c->is_urgent = urg;
+	xcb_change_window_attributes(dpy, c->win, XCB_CW_BORDER_PIXEL,
+			urg ? &border_urgent : c == wss[cw].current
+			? &border_focus : &border_unfocus);
 }
 
 /**
@@ -2416,11 +2428,11 @@ static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action)
 			set_fullscreen(c, !c->is_fullscreen);
 	} else if (a == ewmh->_NET_WM_STATE_DEMANDS_ATTENTION) {
 		if (action == _NET_WM_STATE_REMOVE)
-			c->is_urgent = false;
+			set_urgent(c, false);
 		else if (action == _NET_WM_STATE_ADD)
-			c->is_urgent = true;
+			set_urgent(c, true);
 		else if (action == _NET_WM_STATE_TOGGLE)
-			c->is_urgent = !c->is_urgent;
+			set_urgent(c, !c->is_urgent);
 	} else {
 		log_warn("Unhandled wm state <%d> with action <%d>.", a, action);
 	}
