@@ -1100,7 +1100,6 @@ void stack(void)
 
 
 	/* TODO: Need to take into account when this has remainders. */
-	/* TODO: Fix gaps between windows. */
 	client_span = (span / (n - 1));
 
 	log_info("Arranging %d clients in %sstack layout", n, vert ? "v" : "h");
