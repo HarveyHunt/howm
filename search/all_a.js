@@ -1,20 +1,10 @@
 var searchData=
 [
-  ['last_5farg',['last_arg',['../structreplay__state.html#ae0f280b8e2183f3662806943d7565ce0',1,'replay_state']]],
-  ['last_5fcmd',['last_cmd',['../structreplay__state.html#a28e4866cabc68cd15cbcc4dcffc8684e',1,'replay_state']]],
-  ['last_5fcnt',['last_cnt',['../structreplay__state.html#af5df7daf1b8b524d29ce0438f5c21dbd',1,'replay_state']]],
-  ['last_5flayout',['last_layout',['../howm_8c.html#a5eb5e5306d337b27fbb2feb79ba385d2',1,'howm.c']]],
-  ['last_5fop',['last_op',['../structreplay__state.html#ac6d6a0655320f2e69863451ee977a7eb',1,'replay_state']]],
-  ['last_5ftype',['last_type',['../structreplay__state.html#acb29784a85e414bf8c86590349b8219a',1,'replay_state']]],
-  ['last_5fws',['last_ws',['../howm_8c.html#ad9cdce4d561e999e5d5194cb98ac9f7d',1,'howm.c']]],
-  ['layout',['layout',['../structWorkspace.html#aad2c7403d6b52c34a1f46354adb7e99e',1,'Workspace']]],
-  ['layout_5fhandler',['layout_handler',['../howm_8c.html#a933c2ae97b5e7ad6d639e5f325c69b11',1,'howm.c']]],
-  ['layouts',['layouts',['../howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6',1,'howm.c']]],
-  ['length',['LENGTH',['../howm_8c.html#a33c8dff98e7a3a432e8f8d26714c31fe',1,'howm.c']]],
-  ['log_5fdebug',['LOG_DEBUG',['../howm_8c.html#a6ff63e8955665c4a58b1598f2b07c51a',1,'LOG_DEBUG():&#160;howm.c'],['../howm_8c.html#a4429cf7171bbcd650457cdb674d073cf',1,'log_debug():&#160;howm.c']]],
-  ['log_5ferr',['LOG_ERR',['../howm_8c.html#a96fad55b3f5adf08c39e4c877cf185e3',1,'LOG_ERR():&#160;howm.c'],['../howm_8c.html#aab82a35ff3e94d1028501db189a4b021',1,'log_err():&#160;howm.c']]],
-  ['log_5finfo',['LOG_INFO',['../howm_8c.html#aeb4f36db01bd128c7afeac5889dac311',1,'LOG_INFO():&#160;howm.c'],['../howm_8c.html#ab906bb1655b428369efbca0b73b5f09a',1,'log_info():&#160;howm.c']]],
-  ['log_5flevel',['LOG_LEVEL',['../config_8h.html#a0b87e0d3bf5853bcbb0b66a7c48fdc05',1,'config.h']]],
-  ['log_5fnone',['LOG_NONE',['../howm_8c.html#a1632479322efa3952798f98177b54471',1,'howm.c']]],
-  ['log_5fwarn',['LOG_WARN',['../howm_8c.html#aea3f57d6dcc5b4ac957e2679e87dde27',1,'LOG_WARN():&#160;howm.c'],['../howm_8c.html#a0b9b49791ddc1aac7caa31cfb10f173f',1,'log_warn():&#160;howm.c']]]
+  ['key',['Key',['../structKey.html',1,'']]],
+  ['key_5fpress_5fevent',['key_press_event',['../howm_8c.html#af018244ddc47fc5fe84e1078ded37f0b',1,'howm.c']]],
+  ['keycode_5fto_5fkeysym',['keycode_to_keysym',['../howm_8c.html#ab43240884263a82b10d1c4ae7642d3a2',1,'howm.c']]],
+  ['keys',['keys',['../config_8h.html#ab56654f4cbd5ccdf809022aaef745f60',1,'config.h']]],
+  ['keysym_5fto_5fkeycode',['keysym_to_keycode',['../howm_8c.html#a4febe1089f4d65637ed12566263165a0',1,'howm.c']]],
+  ['kill_5fclient',['kill_client',['../howm_8c.html#acdc8fcf358ff4da61bdbe312dc82e423',1,'howm.c']]],
+  ['kill_5fws',['kill_ws',['../howm_8c.html#a5848d90f0f94a3515e31c545ae6d1760',1,'howm.c']]]
 ];

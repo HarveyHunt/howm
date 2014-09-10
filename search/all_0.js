@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['arg',['Arg',['../unionArg.html',1,'Arg'],['../structKey.html#aeb8c5425a854d13d080a37989862df2d',1,'Key::arg()'],['../structButton.html#a9ec2f41542947da749ef2527b8636653',1,'Button::arg()']]],
-  ['arrange_5fwindows',['arrange_windows',['../howm_8c.html#a9cbba6a5611436c6663a31ed06301efb',1,'howm.c']]]
+  ['_5fnet_5fwm_5fstate_5fadd',['_NET_WM_STATE_ADD',['../howm_8c.html#af01584d4487719bb38125d1c5176a823',1,'howm.c']]],
+  ['_5fnet_5fwm_5fstate_5fremove',['_NET_WM_STATE_REMOVE',['../howm_8c.html#a50026537f9f2afdb4a6a4f3bc5dad6d3',1,'howm.c']]],
+  ['_5fnet_5fwm_5fstate_5ftoggle',['_NET_WM_STATE_TOGGLE',['../howm_8c.html#a3e923d9844fde85f4a21c204f1f8dbd2',1,'howm.c']]]
 ];

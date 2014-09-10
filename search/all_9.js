@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['key',['Key',['../structKey.html',1,'']]],
-  ['key_5fpress_5fevent',['key_press_event',['../howm_8c.html#af018244ddc47fc5fe84e1078ded37f0b',1,'howm.c']]],
-  ['keycode_5fto_5fkeysym',['keycode_to_keysym',['../howm_8c.html#ab43240884263a82b10d1c4ae7642d3a2',1,'howm.c']]],
-  ['keys',['keys',['../config_8h.html#ab56654f4cbd5ccdf809022aaef745f60',1,'config.h']]],
-  ['keysym_5fto_5fkeycode',['keysym_to_keycode',['../howm_8c.html#a4febe1089f4d65637ed12566263165a0',1,'howm.c']]],
-  ['kill_5fclient',['kill_client',['../howm_8c.html#acdc8fcf358ff4da61bdbe312dc82e423',1,'howm.c']]],
-  ['kill_5fws',['kill_ws',['../howm_8c.html#a5848d90f0f94a3515e31c545ae6d1760',1,'howm.c']]]
+  ['i',['i',['../unionArg.html#a9fc90466ebe59415acda831056fdb9ca',1,'Arg']]],
+  ['is_5ffloating',['is_floating',['../structClient.html#ae94f2af79c9f8e5d78fdf4d773e5c86a',1,'Client']]],
+  ['is_5ffullscreen',['is_fullscreen',['../structClient.html#a8404996cd607f0bd5a7b916af378d275',1,'Client']]],
+  ['is_5ftransient',['is_transient',['../structClient.html#a23bbc3f4ed5cd87bc791e72dfc51e73c',1,'Client']]],
+  ['is_5furgent',['is_urgent',['../structClient.html#ae8c4c491ba67c22e6e6eba8fe40e6270',1,'Client']]]
 ];

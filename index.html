@@ -185,6 +185,10 @@ $(document).ready(function(){initNavTree('index.html','');});
 </ul>
 <p>``` #define BORDER_PREV_FOCUS #0000FF ```</p>
 <ul>
+<li><b>BORDER_URGENT</b>: The colour (in the form #RRGGBB) that the border around urgent windows should be.</li>
+</ul>
+<p>``` #define BORDER_URGENT #0000FF ```</p>
+<ul>
 <li><b>BAR_HEIGHT</b>: The height of a status bar that can be displayed at the bottom or top of the screen.</li>
 </ul>
 <p>``` #define BAR_HEIGHT 20 ```</p>
@@ -226,6 +230,10 @@ $(document).ready(function(){initNavTree('index.html','');});
 <li><b>FLOAT_SPAWN_HEIGHT</b>: This represents the height of a floating window when it is spawned, if no geometry information is known about it.</li>
 </ul>
 <p>``` #define FLOAT_SPAWN_HEIGHT 400 ```</p>
+<ul>
+<li><b>HOWM_PATH</b>: A string containing the path to howm's binary, so that it can restart itself.</li>
+</ul>
+<p>``` #define HOWM_PATH "/usr/bin/howm" ```</p>
 <h2>Motions</h2>
 <p>For a good primer on motions, vim's <a href="http://vimdoc.sourceforge.net/htmldoc/motion.html">documentation</a> explains them well.</p>
 <p><b>Please note: The modifier key that is OTHER_MOD needs to be held down whilst entering a motion.</b></p>
@@ -325,7 +333,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Sep 9 2014 13:52:50 for howm by
+    <li class="footer">Generated on Wed Sep 10 2014 15:14:22 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

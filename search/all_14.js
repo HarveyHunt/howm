@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['vstack',['VSTACK',['../howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a3c25942291ac61d0c3611824f29cf928',1,'howm.c']]]
+  ['unmap_5fevent',['unmap_event',['../howm_8c.html#a24c4b6cb37067adf558eb4b71ead4337',1,'howm.c']]],
+  ['unused',['UNUSED',['../howm_8c.html#a86d500a34c624c2cae56bc25a31b12f3',1,'howm.c']]],
+  ['update_5ffocused_5fclient',['update_focused_client',['../howm_8c.html#a1e7d3fa7926ad79ac3155378c6082ba0',1,'howm.c']]]
 ];

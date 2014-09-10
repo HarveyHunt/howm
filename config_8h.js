@@ -6,6 +6,7 @@ var config_8h =
     [ "BORDER_PREV_FOCUS", "config_8h.html#acede8ce230fa0d242fe798caa63ea833", null ],
     [ "BORDER_PX", "config_8h.html#af9c20643015972c3c6215367ec638e9c", null ],
     [ "BORDER_UNFOCUS", "config_8h.html#a5a0cdf71a12f88adf433f47c28c0dd97", null ],
+    [ "BORDER_URGENT", "config_8h.html#a126d306e4fc84c89e9bf04e3a34a001d", null ],
     [ "CENTER_FLOATING", "config_8h.html#ab3a2c131a5aacdd0aa794db9cafe8745", null ],
     [ "COUNT_MOD", "config_8h.html#a68c232b8a153b7cdccf6f8b023fcfc32", null ],
     [ "DEBUG_ENABLE", "config_8h.html#a92f1452fef4b184124fa2334beb53a60", null ],

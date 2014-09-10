@@ -1,13 +1,23 @@
 var searchData=
 [
-  ['net_5factive_5fwindow',['NET_ACTIVE_WINDOW',['../howm_8c.html#abb9728c05efa28b2276c14ebd16a27efa461c9a37953f29f55d3d18c09772ca05',1,'howm.c']]],
-  ['net_5fatom_5fenum',['net_atom_enum',['../howm_8c.html#abb9728c05efa28b2276c14ebd16a27ef',1,'howm.c']]],
-  ['net_5fsupported',['NET_SUPPORTED',['../howm_8c.html#abb9728c05efa28b2276c14ebd16a27efa4ba3363dfed9500fe60c17aecbc590f5',1,'howm.c']]],
-  ['net_5fwm_5fstate',['NET_WM_STATE',['../howm_8c.html#abb9728c05efa28b2276c14ebd16a27efa6da0739df11d11c7cce17c62f0a21551',1,'howm.c']]],
-  ['net_5fwm_5fstate_5ffullscreen',['NET_WM_STATE_FULLSCREEN',['../howm_8c.html#abb9728c05efa28b2276c14ebd16a27efa113d21874d46ae8366b5362b1f2d7430',1,'howm.c']]],
-  ['next',['next',['../structClient.html#aa6f9fae53c3cef86d88c0bce02eed80e',1,'Client']]],
-  ['next_5fclient',['next_client',['../howm_8c.html#a679922df9e0a2d0180437324a548a4c5',1,'howm.c']]],
-  ['next_5flayout',['next_layout',['../howm_8c.html#af91027ed9404d39160d624561e29f719',1,'howm.c']]],
-  ['normal',['NORMAL',['../howm_8c.html#a811fe196a5d9d37857c2f8adeeaac3c6a50d1448013c6f17125caee18aa418af7',1,'howm.c']]],
-  ['numlockmask',['numlockmask',['../howm_8c.html#addc4d00de842e042008ccf5b5f2b32af',1,'howm.c']]]
+  ['main',['main',['../howm_8c.html#a0ddf1224851353fc92bfbff6f499fa97',1,'howm.c']]],
+  ['make_5fmaster',['make_master',['../howm_8c.html#a47e2c461ae878adf7f181881667b4b20',1,'howm.c']]],
+  ['map_5fevent',['map_event',['../howm_8c.html#adee8a7dc86d9a63a1a835d261f0f859e',1,'howm.c']]],
+  ['master_5fratio',['master_ratio',['../structWorkspace.html#aa9a4cb16c33eb7f75d89794768981f72',1,'Workspace::master_ratio()'],['../config_8h.html#ac6b6a7dcda6464ab1bb02cdc549f8043',1,'MASTER_RATIO():&#160;config.h']]],
+  ['mod',['mod',['../structKey.html#a009df210bdaf418fadf7ce5f1fb3adf3',1,'Key::mod()'],['../structOperator.html#aa873a11c67e91882b71a569826ca2d05',1,'Operator::mod()'],['../structMotion.html#a0ea7aa95c35b1f9a561c903c82d53705',1,'Motion::mod()'],['../structButton.html#a83d6f15fa2649232bf423dd3478b084a',1,'Button::mod()']]],
+  ['mode',['mode',['../structKey.html#aa405aabada2f774685ca015b2b6283ff',1,'Key::mode()'],['../structOperator.html#a55d9168505350538ca951a0bc4d84c31',1,'Operator::mode()']]],
+  ['modes',['modes',['../howm_8c.html#a811fe196a5d9d37857c2f8adeeaac3c6',1,'howm.c']]],
+  ['modkey',['MODKEY',['../config_8h.html#a4d69648ee1215681edf62db4809e8f1a',1,'config.h']]],
+  ['motion',['Motion',['../structMotion.html',1,'']]],
+  ['motion_5fstate',['MOTION_STATE',['../howm_8c.html#aa19be6305a5a4485e1e70de70ed7d677aa2b24250e93a31be352eb1bce2a40c90',1,'howm.c']]],
+  ['motions',['motions',['../howm_8c.html#a0aa5bfdbf166c07f5c2a60dd1a8ff1df',1,'motions():&#160;howm.c'],['../config_8h.html#a2b9049e146b329121586d1bb630c2ddb',1,'motions():&#160;config.h']]],
+  ['move_5fclient',['move_client',['../howm_8c.html#a343ff4a1c95b06b703435df386ed6662',1,'howm.c']]],
+  ['move_5fcurrent_5fdown',['move_current_down',['../howm_8c.html#ac7ec1179507f8a4940310ee95ddd1353',1,'howm.c']]],
+  ['move_5fcurrent_5fup',['move_current_up',['../howm_8c.html#aafa5de5d09fd4ce9dac93046127bebca',1,'howm.c']]],
+  ['move_5fdown',['move_down',['../howm_8c.html#a91cec4d228068d6606647a53d3ea731a',1,'howm.c']]],
+  ['move_5ffloat_5fx',['move_float_x',['../howm_8c.html#ad174a89c1ebe87286d0aba8fd5e81e20',1,'howm.c']]],
+  ['move_5ffloat_5fy',['move_float_y',['../howm_8c.html#abf37a76334e582662731e4f2103020e8',1,'howm.c']]],
+  ['move_5fresize',['move_resize',['../howm_8c.html#a6844eed146ace6bed65a324f55f3f46f',1,'howm.c']]],
+  ['move_5fresize_5fmask',['MOVE_RESIZE_MASK',['../howm_8c.html#ac183e4677102c4eddc2dbc93087f1ba3',1,'howm.c']]],
+  ['move_5fup',['move_up',['../howm_8c.html#a6af201b0cc002e5968644b322a3a982d',1,'howm.c']]]
 ];

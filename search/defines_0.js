@@ -1,9 +1,6 @@
 var searchData=
 [
-  ['bar_5fbottom',['BAR_BOTTOM',['../config_8h.html#a8be51576ea8b4034bfc7f6fcdaa730e1',1,'config.h']]],
-  ['bar_5fheight',['BAR_HEIGHT',['../config_8h.html#af6614c9d6fc4f2ec7e3a70230c05b3f7',1,'config.h']]],
-  ['border_5ffocus',['BORDER_FOCUS',['../config_8h.html#aa8797aaa78360b592d3c12fa148a7617',1,'config.h']]],
-  ['border_5fprev_5ffocus',['BORDER_PREV_FOCUS',['../config_8h.html#acede8ce230fa0d242fe798caa63ea833',1,'config.h']]],
-  ['border_5fpx',['BORDER_PX',['../config_8h.html#af9c20643015972c3c6215367ec638e9c',1,'config.h']]],
-  ['border_5funfocus',['BORDER_UNFOCUS',['../config_8h.html#a5a0cdf71a12f88adf433f47c28c0dd97',1,'config.h']]]
+  ['_5fnet_5fwm_5fstate_5fadd',['_NET_WM_STATE_ADD',['../howm_8c.html#af01584d4487719bb38125d1c5176a823',1,'howm.c']]],
+  ['_5fnet_5fwm_5fstate_5fremove',['_NET_WM_STATE_REMOVE',['../howm_8c.html#a50026537f9f2afdb4a6a4f3bc5dad6d3',1,'howm.c']]],
+  ['_5fnet_5fwm_5fstate_5ftoggle',['_NET_WM_STATE_TOGGLE',['../howm_8c.html#a3e923d9844fde85f4a21c204f1f8dbd2',1,'howm.c']]]
 ];

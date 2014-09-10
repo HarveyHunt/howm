@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['i',['i',['../unionArg.html#a9fc90466ebe59415acda831056fdb9ca',1,'Arg']]],
-  ['is_5ffloating',['is_floating',['../structClient.html#ae94f2af79c9f8e5d78fdf4d773e5c86a',1,'Client']]],
-  ['is_5ffullscreen',['is_fullscreen',['../structClient.html#a8404996cd607f0bd5a7b916af378d275',1,'Client']]],
-  ['is_5ftransient',['is_transient',['../structClient.html#a23bbc3f4ed5cd87bc791e72dfc51e73c',1,'Client']]]
+  ['h',['h',['../structClient.html#abd6a8cd0cb27c2f2cd7f016f1499cd53',1,'Client']]],
+  ['handler',['handler',['../howm_8c.html#aba3cd62bf658fd698f44ee2365685469',1,'howm.c']]],
+  ['head',['head',['../structWorkspace.html#a7fbd58a8406bbc296bc19f755483eb10',1,'Workspace']]],
+  ['howm_2ec',['howm.c',['../howm_8c.html',1,'']]],
+  ['howm_5finfo',['howm_info',['../howm_8c.html#ad3e9a50dca7e98460b9fc05b288b9c2e',1,'howm.c']]],
+  ['howm_5fpath',['HOWM_PATH',['../config_8h.html#a9dd5ac5acab5b89d170ce59ccc1e73bf',1,'config.h']]],
+  ['hstack',['HSTACK',['../howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3',1,'howm.c']]]
 ];

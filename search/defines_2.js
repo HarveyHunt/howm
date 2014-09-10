@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['debug',['DEBUG',['../howm_8c.html#a3dfa58b1c5c2943dd49d8aa1981d377d',1,'howm.c']]],
-  ['debug_5fenable',['DEBUG_ENABLE',['../config_8h.html#a92f1452fef4b184124fa2334beb53a60',1,'config.h']]],
-  ['debugp',['DEBUGP',['../howm_8c.html#ad4fa1248b75846c1d3039c028672d69a',1,'howm.c']]],
-  ['default_5fworkspace',['DEFAULT_WORKSPACE',['../config_8h.html#abc4d2d5ed714367df2fac763dadc24fa',1,'config.h']]]
+  ['center_5ffloating',['CENTER_FLOATING',['../config_8h.html#ab3a2c131a5aacdd0aa794db9cafe8745',1,'config.h']]],
+  ['cleanmask',['CLEANMASK',['../howm_8c.html#a02e75104c38a5869d0082a74c51e2d85',1,'howm.c']]],
+  ['count_5fmod',['COUNT_MOD',['../config_8h.html#a68c232b8a153b7cdccf6f8b023fcfc32',1,'config.h']]]
 ];

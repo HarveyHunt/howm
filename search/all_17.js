@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['y',['y',['../structClient.html#abed024c567703e3edfcd9b6d46383db2',1,'Client']]]
+  ['x',['x',['../structClient.html#a43343444ae783c3749dbcbb1475eb656',1,'Client']]]
 ];

@@ -1,10 +1,12 @@
 var searchData=
 [
-  ['elevate_5fwindow',['elevate_window',['../howm_8c.html#aaad900b918475f6802fcf31938c1b168',1,'howm.c']]],
-  ['end_5flayout',['END_LAYOUT',['../howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a0fab96667cb113395cf9fe4b20a9d1f8',1,'howm.c']]],
-  ['end_5fmodes',['END_MODES',['../howm_8c.html#a811fe196a5d9d37857c2f8adeeaac3c6a622144ba7304ead2db525cbde4e3190c',1,'howm.c']]],
-  ['end_5fstate',['END_STATE',['../howm_8c.html#aa19be6305a5a4485e1e70de70ed7d677a3b8fcb01cbfafaacda7074a210e8b1de',1,'howm.c']]],
-  ['enter_5fevent',['enter_event',['../howm_8c.html#aaa38a4492a56c1b41edc7135ec23d614',1,'howm.c']]],
-  ['equalmods',['EQUALMODS',['../howm_8c.html#a918c8a9a844a1ede0c0f7837260ed4e9',1,'howm.c']]],
-  ['ewmh',['ewmh',['../howm_8c.html#a9ff7518503929d6e1fdb1d7f41e9a118',1,'howm.c']]]
+  ['debug',['DEBUG',['../howm_8c.html#a3dfa58b1c5c2943dd49d8aa1981d377d',1,'howm.c']]],
+  ['debug_5fenable',['DEBUG_ENABLE',['../config_8h.html#a92f1452fef4b184124fa2334beb53a60',1,'config.h']]],
+  ['debugp',['DEBUGP',['../howm_8c.html#ad4fa1248b75846c1d3039c028672d69a',1,'howm.c']]],
+  ['default_5fworkspace',['DEFAULT_WORKSPACE',['../config_8h.html#abc4d2d5ed714367df2fac763dadc24fa',1,'config.h']]],
+  ['delete_5fwin',['delete_win',['../howm_8c.html#a8f948d4093726f1ff7bf016ed002ba9c',1,'howm.c']]],
+  ['destroy_5fevent',['destroy_event',['../howm_8c.html#a0fcc506f33b7bc5ce065fc46954655d8',1,'howm.c']]],
+  ['dmenu_5fcmd',['dmenu_cmd',['../config_8h.html#ae88f9a5d130a3f541e8602e0bc5081f5',1,'config.h']]],
+  ['dpy',['dpy',['../howm_8c.html#a502c62a5c7817d977e6700fb0cb4db0e',1,'howm.c']]],
+  ['draw_5fclients',['draw_clients',['../howm_8c.html#a776b0942e0f25214cf930b3bf1cd6238',1,'howm.c']]]
 ];
