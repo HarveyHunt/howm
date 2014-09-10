@@ -30,7 +30,7 @@
 /** The size (in pixels) of the useless gaps. */
 #define GAP 2
 /** Enable debugging output */
-#define DEBUG_ENABLE 0
+#define DEBUG_ENABLE true
 /** The size (in pixels) of the border. */
 #define BORDER_PX 2
 /** The border colour when the window is focused. */
@@ -200,4 +200,14 @@ static Workspace wss[] = {
 	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT}
 };
 
+_Static_assert(MASTER_RATIO > 0 && MASTER_RATIO < 1, "MASTER_RATIO should be between 0 and 1.");
+_Static_assert(WORKSPACES >= 1, "WORKSPACES must be at least 1.");
+_Static_assert(DEFAULT_WORKSPACE > 0 && DEFAULT_WORKSPACE <= WORKSPACES, "DEFAULT_WORKSPACE must be between 1 and WORKSPACES.");
+_Static_assert(GAP >= 0, "GAP can't be negative.");
+_Static_assert(BORDER_PX >= 0, "BORDER_PX can't be negative.");
+_Static_assert(OP_GAP_SIZE >= 0, "OP_GAP_SIZE can't be negative.");
+_Static_assert(BAR_HEIGHT >= 0, "BAR_HEIGHT can't be negative.");
+_Static_assert(FLOAT_SPAWN_HEIGHT >= 0, "FLOAT_SPAWN_HEIGHT can't be negative.");
+_Static_assert(FLOAT_SPAWN_WIDTH >= 0, "FLOAT_SPAWN_WIDTH can't be negative.");
+_Static_assert(LENGTH(wss) == WORKSPACES + 1, "wss must contain one more workspace than WORKSPACES.");
 #endif
