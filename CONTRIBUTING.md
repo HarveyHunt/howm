@@ -64,6 +64,7 @@ Please don't change any version numbers anywhere within the project.
 
 howm uses [Doxygen](http://www.stack.nl/~dimitri/doxygen/) for documentation of the code, keep this up to date as you go.
 
+If you add new #defines to the config file, it might be a good idea to add some _Static_assert()s to correct users if they enter illegal values in the config file.
 
 ## Sending PRs
 
