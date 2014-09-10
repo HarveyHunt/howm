@@ -207,4 +207,5 @@ _Static_assert(OP_GAP_SIZE >= 0, "OP_GAP_SIZE can't be negative.");
 _Static_assert(BAR_HEIGHT >= 0, "BAR_HEIGHT can't be negative.");
 _Static_assert(FLOAT_SPAWN_HEIGHT >= 0, "FLOAT_SPAWN_HEIGHT can't be negative.");
 _Static_assert(FLOAT_SPAWN_WIDTH >= 0, "FLOAT_SPAWN_WIDTH can't be negative.");
+_Static_assert(LENGTH(wss) == WORKSPACES + 1, "wss must contain one more workspace than WORKSPACES.");
 #endif
