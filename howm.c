@@ -1913,21 +1913,19 @@ static void change_gaps(const unsigned int type, int cnt, int size)
 {
 	Client *c = NULL;
 
-	log_info("Changing gaps by %dpx", size);
 	if (type == WORKSPACE) {
-		int cur_ws = cw;
-
 		while (cnt > 0) {
 			cnt--;
-			cw = correct_ws(cur_ws + cnt);
-			wss[correct_ws(cur_ws + cnt)].gap += size;
-			for (c = wss[cw].head; c; c = c->next)
+			wss[correct_ws(cw + cnt)].gap += size;
+			log_info("Changing gaps of workspace <%d> by %dpx",
+					correct_ws(cw + cnt), size);
+			for (c = wss[correct_ws(cw + cnt)].head; c; c = c->next)
 				change_client_gaps(c, size);
 		}
-		cw = cur_ws;
 	} else if (type == CLIENT) {
 		c = wss[cw].current;
 		while (cnt > 0) {
+			log_info("Changing gaps of client <%p> by %dpx", c, size);
 			change_client_gaps(c, size);
 			c = next_client(c);
 			cnt--;
