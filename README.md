@@ -116,6 +116,12 @@ Each option is described in detail below:
 #define BORDER_PREV_FOCUS #0000FF
 ```
 
+* **BORDER_URGENT**: The colour (in the form #RRGGBB) that the border around urgent windows should be.
+
+```
+#define BORDER_URGENT #0000FF
+```
+
 * **BAR_HEIGHT**: The height of a status bar that can be displayed at the bottom or top of the screen.
 
 ```
@@ -176,6 +182,12 @@ Can be from 0 to 1.
 
 ```
 #define FLOAT_SPAWN_HEIGHT 400
+```
+
+* **HOWM_PATH**: A string containing the path to howm's binary, so that it can restart itself.
+
+```
+#define HOWM_PATH "/usr/bin/howm"
 ```
 
 ##Motions
