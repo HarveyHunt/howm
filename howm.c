@@ -1033,6 +1033,7 @@ void grab_keycode(xcb_keycode_t *keycode, const int mod)
 			xcb_grab_key(dpy, 1, screen->root, mod |
 				     mods[k], keycode[j], XCB_GRAB_MODE_ASYNC,
 				     XCB_GRAB_MODE_ASYNC);
+	free(keycode);
 }
 
 /**
