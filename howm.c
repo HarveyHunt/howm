@@ -2563,6 +2563,7 @@ static void op_cut(const unsigned int type, int cnt)
 				xcb_unmap_window(dpy, tail->win);
 			stack_push(&del_reg, head);
 			wss[correct_ws(cw + cnt - 1)].head = NULL;
+			wss[correct_ws(cw + cnt - 1)].prev_foc = NULL;
 			wss[correct_ws(cw + cnt - 1)].current = NULL;
 			cnt--;
 			wss[correct_ws(cw + cnt - 1)].client_cnt = 0;
@@ -2574,6 +2575,8 @@ static void op_cut(const unsigned int type, int cnt)
 		while (cnt > 1) {
 			if (!tail->next && next_client(tail))
 				wrap = true;
+			if (tail == wss[cw].prev_foc)
+				wss[cw].prev_foc = NULL;
 			tail = next_client(tail);
 			xcb_unmap_window(dpy, tail->win);
 			cnt--;
