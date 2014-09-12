@@ -148,6 +148,7 @@ typedef struct Client {
 typedef struct {
 	int layout; /**< The current layout of the WS, as defined in the
 				* layout enum. */
+	unsigned int client_cnt; /** The amount of clients on this workspace. */
 	uint16_t gap; /**< The size of the useless gap between windows for this workspace. */
 	float master_ratio; /** The ratio of the size of the master window
 				 compared to the screen's size. */
@@ -1194,6 +1195,7 @@ found:
 		update_focused_client(wss[w].prev_foc);
 	free(c);
 	c = NULL;
+	wss[cw].client_cnt--;
 	if (cw == w)
 		arrange_windows();
 }
@@ -1206,22 +1208,17 @@ found:
  */
 void howm_info(void)
 {
-	unsigned int w = 0, n;
-	Client *c;
+	unsigned int w = 0;
 #if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
-		for (c = wss[w].head, n = 0; c; c = c->next, n++)
-			;
 		fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
-		       wss[w].layout, w, cur_state, n);
+		       wss[w].layout, w, cur_state, wss[w].client_cnt);
 	}
 	fflush(stdout);
 #else
 	UNUSED(w);
-	for (c = wss[cw].head, n = 0; c; c = c->next, n++)
-		;
 	fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
-		wss[cw].layout, cw, cur_state, n);
+		wss[cw].layout, cw, cur_state, wss[cw].client_cnt);
 	fflush(stdout);
 #endif
 }
@@ -2207,6 +2204,7 @@ Client *create_client(xcb_window_t w)
 
 	xcb_ewmh_set_frame_extents(ewmh, c->win, space, space, space, space);
 	log_info("Created client <%p>", c);
+	wss[cw].client_cnt++;
 	return c;
 }
 
