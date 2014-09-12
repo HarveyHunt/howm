@@ -148,7 +148,7 @@ typedef struct Client {
 typedef struct {
 	int layout; /**< The current layout of the WS, as defined in the
 				* layout enum. */
-	unsigned int client_cnt; /** The amount of clients on this workspace. */
+	int client_cnt; /** The amount of clients on this workspace. */
 	uint16_t gap; /**< The size of the useless gap between windows for this workspace. */
 	float master_ratio; /** The ratio of the size of the master window
 				 compared to the screen's size. */
@@ -2542,6 +2542,7 @@ static void op_cut(const unsigned int type, int cnt)
 	Client *tail = wss[cw].current;
 	Client *head = wss[cw].current;
 	Client *head_prev = prev_client(wss[cw].current);
+	bool wrap = false;
 
 	if (!head)
 		return;
@@ -2551,7 +2552,7 @@ static void op_cut(const unsigned int type, int cnt)
 		return;
 	}
 
-	if (type == WORKSPACE) {
+	if ((type == CLIENT && cnt >= wss[cw].client_cnt) || type == WORKSPACE) {
 		if (cnt + del_reg.size > DELETE_REGISTER_SIZE)
 			return;
 
@@ -2567,28 +2568,26 @@ static void op_cut(const unsigned int type, int cnt)
 
 	} else if (type == CLIENT) {
 		xcb_unmap_window(dpy, head->win);
-		/* TODO: Fix weird behaviour when cnt is greater than the
-		 * number of clients. */
 		while (cnt > 1) {
+			if (!tail->next && next_client(tail))
+				wrap = true;
 			tail = next_client(tail);
 			xcb_unmap_window(dpy, tail->win);
 			cnt--;
-			if (head == next_client(tail))
-				break;
 		}
 
 		/* If cnt was greater than 1 and we have reached the end of the
 		 * client list, we need to make it "circular".*/
-		if (tail != head && head->next == NULL && next_client(head))
+		if (tail != head && head->next == NULL)
 			head->next = next_client(head);
 
 		if (head == wss[cw].head) {
 			wss[cw].head = head == next_client(tail) ? NULL : next_client(tail);
-		} else if (tail->next != head_prev) {
-			head_prev->next = tail->next;
-		} else if (tail->next && tail->next == head_prev) {
-			wss[cw].head = head_prev;
+		} else if (wrap) {
+			wss[cw].head = tail->next;
 			head_prev->next = NULL;
+		} else if (tail->next != head_prev) {
+			head_prev->next = wrap ? NULL : tail->next;
 		}
 
 		wss[cw].current = head_prev;
