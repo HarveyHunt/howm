@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['elevate_5fwindow',['elevate_window',['../howm_8c.html#aaad900b918475f6802fcf31938c1b168',1,'howm.c']]],
-  ['enter_5fevent',['enter_event',['../howm_8c.html#aaa38a4492a56c1b41edc7135ec23d614',1,'howm.c']]],
-  ['ewmh_5fprocess_5fwm_5fstate',['ewmh_process_wm_state',['../howm_8c.html#afba768ba281ee8e50a5feec0e85a0d34',1,'howm.c']]]
+  ['delete_5fwin',['delete_win',['../howm_8c.html#a8f948d4093726f1ff7bf016ed002ba9c',1,'howm.c']]],
+  ['destroy_5fevent',['destroy_event',['../howm_8c.html#a0fcc506f33b7bc5ce065fc46954655d8',1,'howm.c']]],
+  ['draw_5fclients',['draw_clients',['../howm_8c.html#a776b0942e0f25214cf930b3bf1cd6238',1,'howm.c']]]
 ];

@@ -234,6 +234,10 @@ $(document).ready(function(){initNavTree('index.html','');});
 <li><b>HOWM_PATH</b>: A string containing the path to howm's binary, so that it can restart itself.</li>
 </ul>
 <p>``` #define HOWM_PATH "/usr/bin/howm" ```</p>
+<ul>
+<li><b>DELETE_REGISTER_SIZE</b>: The amount of times that a cut operation can be performed before a paste is required. This is the size of the stack that clients are placed onto after being cut.</li>
+</ul>
+<p>``` #define DELETE_REGISTER_SIZE 5 ```</p>
 <h2>Motions</h2>
 <p>For a good primer on motions, vim's <a href="http://vimdoc.sourceforge.net/htmldoc/motion.html">documentation</a> explains them well.</p>
 <p><b>Please note: The modifier key that is OTHER_MOD needs to be held down whilst entering a motion.</b></p>
@@ -302,7 +306,17 @@ $(document).ready(function(){initNavTree('index.html','');});
 <p>The above command will move the current focus down 3 clients.</p>
 <ul>
 <li><b>op_focus_down</b>: Performs the opposite of op_focus_up and is instead bound to j.</li>
+<li><p class="startli"><b>op_cut</b>: Cut a group of clients or workspaces and store them on the delete register stack. Can be used on:</p><ul>
+<li>Clients</li>
+<li>Workspaces</li>
 </ul>
+<p class="startli">Used in mode:</p><ul>
+<li>Normal</li>
+</ul>
+</li>
+</ul>
+<p>``` d2c ```</p>
+<p>The above command will cut 2 clients and place them onto the delete register stack. One use of the cut operation takes up one place on the stack.</p>
 <h2>Modes</h2>
 <p>A good primer on modes is available <a href="http://vimdoc.sourceforge.net/htmldoc/intro.html#vim-modes-intro">here</a>.</p>
 <p>In howm, modes are used to allow the same keys to be bound to multiple functions. Modes also help to logically separate what needs to be done to a window. The available modes are as follows:</p>
@@ -333,7 +347,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Wed Sep 10 2014 15:14:22 for howm by
+    <li class="footer">Generated on Fri Sep 12 2014 18:54:14 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

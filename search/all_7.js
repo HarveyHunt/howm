@@ -7,5 +7,5 @@ var searchData=
   ['grab_5fbuttons',['grab_buttons',['../howm_8c.html#aa088f6bc2a852443636d417e70036648',1,'howm.c']]],
   ['grab_5fkeycode',['grab_keycode',['../howm_8c.html#afb965255cfcb0ecce6085ecd6dd26915',1,'howm.c']]],
   ['grab_5fkeys',['grab_keys',['../howm_8c.html#a369598a94c84b922ccb37e56da2c995a',1,'howm.c']]],
-  ['grid',['GRID',['../howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6afbf4fa9eb81ba842a80a29b45064e348',1,'GRID():&#160;howm.c'],['../howm_8c.html#af8a99ab08db52dd5988c2e00bebdd165',1,'grid(void):&#160;howm.c']]]
+  ['grid',['grid',['../howm_8c.html#af8a99ab08db52dd5988c2e00bebdd165',1,'grid(void):&#160;howm.c'],['../howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6afbf4fa9eb81ba842a80a29b45064e348',1,'GRID():&#160;howm.c']]]
 ];

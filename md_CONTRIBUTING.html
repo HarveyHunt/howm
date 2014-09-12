@@ -130,6 +130,7 @@ $(document).ready(function(){initNavTree('md_CONTRIBUTING.html','');});
 <p>Documentation is an important part of any project, howm is no different. Document all new features, as has been done in the README already.</p>
 <p>Please don't change any version numbers anywhere within the project.</p>
 <p>howm uses <a href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a> for documentation of the code, keep this up to date as you go.</p>
+<p>If you add new #defines to the config file, it might be a good idea to add some <a class="el" href="config_8h.html#a69033626504e5bcee04c7a5204d9baf7">_Static_assert()</a>s to correct users if they enter illegal values in the config file.</p>
 <h2>Sending PRs</h2>
 <p>Once you have made some cool changes, push to github and send a PR.</p>
 <p>Make sure that the PR is targeted at the develop branch, as packages are built from the master branch and that should be kept as stable as possible. </p>
@@ -138,7 +139,7 @@ $(document).ready(function(){initNavTree('md_CONTRIBUTING.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Wed Sep 10 2014 15:14:22 for howm by
+    <li class="footer">Generated on Fri Sep 12 2014 18:54:14 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

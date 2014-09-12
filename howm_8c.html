@@ -154,6 +154,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structreplay__state.html">replay_state</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents the last command (and its arguments) or the last combination of operator, count and motion (ocm).  <a href="structreplay__state.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstack.html">stack</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a stack. This stack is going to hold linked lists of clients. An example of the stack is below:  <a href="structstack.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
@@ -279,6 +282,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ae9fb691f34221e1bbf14b0dd50ee4058"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#ae9fb691f34221e1bbf14b0dd50ee4058">op_grow_gaps</a> (const unsigned int type, int cnt)</td></tr>
 <tr class="memdesc:ae9fb691f34221e1bbf14b0dd50ee4058"><td class="mdescLeft">&#160;</td><td class="mdescRight">An operator to grow the gaps of either workspaces or clients by OP_GAP_SIZE.  <a href="#ae9fb691f34221e1bbf14b0dd50ee4058">More...</a><br /></td></tr>
 <tr class="separator:ae9fb691f34221e1bbf14b0dd50ee4058"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a176b47f348fa3d575284660e0d20139d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#a176b47f348fa3d575284660e0d20139d">op_cut</a> (const unsigned int type, int cnt)</td></tr>
+<tr class="memdesc:a176b47f348fa3d575284660e0d20139d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cut one or more clients and add them onto howm's delete register stack (if there is space).  <a href="#a176b47f348fa3d575284660e0d20139d">More...</a><br /></td></tr>
+<tr class="separator:a176b47f348fa3d575284660e0d20139d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae744a89f9d4a873347868ff8e25bff06"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#ae744a89f9d4a873347868ff8e25bff06">teleport_client</a> (const <a class="el" href="unionArg.html">Arg</a> *arg)</td></tr>
 <tr class="memdesc:ae744a89f9d4a873347868ff8e25bff06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Teleport a floating client's window to a location on the screen.  <a href="#ae744a89f9d4a873347868ff8e25bff06">More...</a><br /></td></tr>
 <tr class="separator:ae744a89f9d4a873347868ff8e25bff06"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -422,6 +428,18 @@ Functions</h2></td></tr>
 <tr class="memitem:a8379915ce1bf7766abe9e20259772dc4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#a8379915ce1bf7766abe9e20259772dc4">change_mode</a> (const <a class="el" href="unionArg.html">Arg</a> *arg)</td></tr>
 <tr class="memdesc:a8379915ce1bf7766abe9e20259772dc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the mode of howm.  <a href="#a8379915ce1bf7766abe9e20259772dc4">More...</a><br /></td></tr>
 <tr class="separator:a8379915ce1bf7766abe9e20259772dc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2fadc8d3a84995eb9e5ed342f0dda59"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#aa2fadc8d3a84995eb9e5ed342f0dda59">stack_push</a> (struct <a class="el" href="structstack.html">stack</a> *s, <a class="el" href="structClient.html">Client</a> *c)</td></tr>
+<tr class="memdesc:aa2fadc8d3a84995eb9e5ed342f0dda59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pushes a client onto the stack, as long as it isn't full.  <a href="#aa2fadc8d3a84995eb9e5ed342f0dda59">More...</a><br /></td></tr>
+<tr class="separator:aa2fadc8d3a84995eb9e5ed342f0dda59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8a00c18274b07be5f8cc59bf9783715"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structClient.html">Client</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#ac8a00c18274b07be5f8cc59bf9783715">stack_pop</a> (struct <a class="el" href="structstack.html">stack</a> *s)</td></tr>
+<tr class="memdesc:ac8a00c18274b07be5f8cc59bf9783715"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the top item from the stack and return it.  <a href="#ac8a00c18274b07be5f8cc59bf9783715">More...</a><br /></td></tr>
+<tr class="separator:ac8a00c18274b07be5f8cc59bf9783715"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5f104b5a1849e00a223c7f589c6dce0"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#ac5f104b5a1849e00a223c7f589c6dce0">stack_init</a> (struct <a class="el" href="structstack.html">stack</a> *s)</td></tr>
+<tr class="memdesc:ac5f104b5a1849e00a223c7f589c6dce0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dynamically allocate space for the contents of the stack.  <a href="#ac5f104b5a1849e00a223c7f589c6dce0">More...</a><br /></td></tr>
+<tr class="separator:ac5f104b5a1849e00a223c7f589c6dce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bcadd5b96daeda57103fad3a1c79e6b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#a1bcadd5b96daeda57103fad3a1c79e6b">stack_free</a> (struct <a class="el" href="structstack.html">stack</a> *s)</td></tr>
+<tr class="memdesc:a1bcadd5b96daeda57103fad3a1c79e6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the allocated contents.  <a href="#a1bcadd5b96daeda57103fad3a1c79e6b">More...</a><br /></td></tr>
+<tr class="separator:a1bcadd5b96daeda57103fad3a1c79e6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa38a4492a56c1b41edc7135ec23d614"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#aaa38a4492a56c1b41edc7135ec23d614">enter_event</a> (xcb_generic_event_t *ev)</td></tr>
 <tr class="memdesc:aaa38a4492a56c1b41edc7135ec23d614"><td class="mdescLeft">&#160;</td><td class="mdescRight">The event that occurs when the mouse pointer enters a window.  <a href="#aaa38a4492a56c1b41edc7135ec23d614">More...</a><br /></td></tr>
 <tr class="separator:aaa38a4492a56c1b41edc7135ec23d614"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -486,6 +504,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ac9b9dbbe1b73a1e4f2b52634d71c0a72"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#ac9b9dbbe1b73a1e4f2b52634d71c0a72">replay</a> (const <a class="el" href="unionArg.html">Arg</a> *arg)</td></tr>
 <tr class="memdesc:ac9b9dbbe1b73a1e4f2b52634d71c0a72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replay the last command or operator, complete with the last arguments passed to them.  <a href="#ac9b9dbbe1b73a1e4f2b52634d71c0a72">More...</a><br /></td></tr>
 <tr class="separator:ac9b9dbbe1b73a1e4f2b52634d71c0a72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b387c075d1ccb87d7b475534a21dd54"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#a4b387c075d1ccb87d7b475534a21dd54">paste</a> (const <a class="el" href="unionArg.html">Arg</a> *arg)</td></tr>
+<tr class="memdesc:a4b387c075d1ccb87d7b475534a21dd54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a list of clients from howm's delete register stack and paste them after the currently focused window.  <a href="#a4b387c075d1ccb87d7b475534a21dd54">More...</a><br /></td></tr>
+<tr class="separator:a4b387c075d1ccb87d7b475534a21dd54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af42ff327d6049e08d5cf652ec21950c2"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#af42ff327d6049e08d5cf652ec21950c2">get_non_tff_count</a> (void)</td></tr>
 <tr class="memdesc:af42ff327d6049e08d5cf652ec21950c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Count how many clients aren't Transient, Floating or Fullscreen.  <a href="#af42ff327d6049e08d5cf652ec21950c2">More...</a><br /></td></tr>
 <tr class="separator:af42ff327d6049e08d5cf652ec21950c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -537,6 +558,8 @@ Variables</h2></td></tr>
 <tr class="separator:a933c2ae97b5e7ad6d639e5f325c69b11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc011a049a879668ddc2d1498888e97c"><td class="memItemLeft" align="right" valign="top">static void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#afc011a049a879668ddc2d1498888e97c">operator_func</a> )(const unsigned int type, int cnt)</td></tr>
 <tr class="separator:afc011a049a879668ddc2d1498888e97c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37639c27cc1514fddabd4a972b317331"><td class="memItemLeft" align="right" valign="top">static struct <a class="el" href="structstack.html">stack</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#a37639c27cc1514fddabd4a972b317331">del_reg</a></td></tr>
+<tr class="separator:a37639c27cc1514fddabd4a972b317331"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a502c62a5c7817d977e6700fb0cb4db0e"><td class="memItemLeft" align="right" valign="top">static xcb_connection_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#a502c62a5c7817d977e6700fb0cb4db0e">dpy</a></td></tr>
 <tr class="separator:a502c62a5c7817d977e6700fb0cb4db0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41bfc3a7a8abf189944e1eab37f66764"><td class="memItemLeft" align="right" valign="top">static char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="howm_8c.html#a41bfc3a7a8abf189944e1eab37f66764">WM_ATOM_NAMES</a> [] = { &quot;WM_DELETE_WINDOW&quot;, &quot;<a class="el" href="howm_8c.html#a09801009b7a17c45708aabfc2891fb7ea5d7366da3deea67253099a5c730d4297">WM_PROTOCOLS</a>&quot; }</td></tr>
@@ -3064,6 +3087,50 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a176b47f348fa3d575284660e0d20139d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void op_cut </td>
+          <td>(</td>
+          <td class="paramtype">const unsigned int&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cnt</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Cut one or more clients and add them onto howm's delete register stack (if there is space). </p>
+<p>A segment of howm's internal client list is taken and placed onto the delete register stack. All clients from the list segment must be unmapped and the remaining clients must be refocused.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">type</td><td>Whether to cut an entire workspace or client. </td></tr>
+    <tr><td class="paramname">cnt</td><td>The amount of clients or workspaces to cut. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a392722843c4ce60ba48435a4fde8a3d2"></a>
 <div class="memitem">
 <div class="memproto">
@@ -3361,6 +3428,38 @@ Variables</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">type</td><td>Whether the operation should be performed on a client or workspace. </td></tr>
     <tr><td class="paramname">cnt</td><td>The amount of clients or workspaces to perform the operation on. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a4b387c075d1ccb87d7b475534a21dd54"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void paste </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="unionArg.html">Arg</a> *&#160;</td>
+          <td class="paramname"><em>arg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Remove a list of clients from howm's delete register stack and paste them after the currently focused window. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">arg</td><td>Unused </td></tr>
   </table>
   </dd>
 </dl>
@@ -4033,7 +4132,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void stack </td>
+          <td class="memname">void <a class="el" href="structstack.html">stack</a> </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -4048,6 +4147,147 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Arrange the windows in a stack, whether that be horizontal or vertical is decided by the current_layout. </p>
+
+</div>
+</div>
+<a class="anchor" id="a1bcadd5b96daeda57103fad3a1c79e6b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void stack_free </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structstack.html">stack</a> *&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Free the allocated contents. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>The stack that needs to have its contents freed. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ac5f104b5a1849e00a223c7f589c6dce0"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void stack_init </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structstack.html">stack</a> *&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Dynamically allocate space for the contents of the stack. </p>
+<p>We don't know how big the stack will be when the struct is defined, so we need to allocate it dynamically.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>The stack that needs to have its contents allocated. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ac8a00c18274b07be5f8cc59bf9783715"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structClient.html">Client</a> * stack_pop </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structstack.html">stack</a> *&#160;</td>
+          <td class="paramname"><em>s</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Remove the top item from the stack and return it. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>The stack to be popped from.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The client that was at the top of the stack. It acts as the head of the linked list of clients. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aa2fadc8d3a84995eb9e5ed342f0dda59"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void stack_push </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structstack.html">stack</a> *&#160;</td>
+          <td class="paramname"><em>s</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structClient.html">Client</a> *&#160;</td>
+          <td class="paramname"><em>c</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Pushes a client onto the stack, as long as it isn't full. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>The stack. </td></tr>
+    <tr><td class="paramname">c</td><td>The client to be pushed on. This client is treated as the head of a linked list. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -4431,6 +4671,26 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a37639c27cc1514fddabd4a972b317331"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct <a class="el" href="structstack.html">stack</a> del_reg</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a502c62a5c7817d977e6700fb0cb4db0e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -4498,14 +4758,14 @@ Variables</h2></td></tr>
 <div class="line">        [XCB_UNMAP_NOTIFY] = <a class="code" href="howm_8c.html#a24c4b6cb37067adf558eb4b71ead4337">unmap_event</a>,</div>
 <div class="line">        [XCB_CLIENT_MESSAGE] = <a class="code" href="howm_8c.html#a400d4632ac2776e12e8e83094892a1b0">client_message_event</a></div>
 <div class="line">}</div>
-<div class="ttc" id="howm_8c_html_af018244ddc47fc5fe84e1078ded37f0b"><div class="ttname"><a href="howm_8c.html#af018244ddc47fc5fe84e1078ded37f0b">key_press_event</a></div><div class="ttdeci">static void key_press_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Process a key press. </div><div class="ttdef"><b>Definition:</b> howm.c:537</div></div>
-<div class="ttc" id="howm_8c_html_a24c4b6cb37067adf558eb4b71ead4337"><div class="ttname"><a href="howm_8c.html#a24c4b6cb37067adf558eb4b71ead4337">unmap_event</a></div><div class="ttdeci">static void unmap_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Remove clients that wish to be unmapped. </div><div class="ttdef"><b>Definition:</b> howm.c:1788</div></div>
-<div class="ttc" id="howm_8c_html_a0fcc506f33b7bc5ce065fc46954655d8"><div class="ttname"><a href="howm_8c.html#a0fcc506f33b7bc5ce065fc46954655d8">destroy_event</a></div><div class="ttdeci">static void destroy_event(xcb_generic_event_t *ev)</div><div class="ttdoc">The handler for destroy events. </div><div class="ttdef"><b>Definition:</b> howm.c:1160</div></div>
-<div class="ttc" id="howm_8c_html_adee8a7dc86d9a63a1a835d261f0f859e"><div class="ttname"><a href="howm_8c.html#adee8a7dc86d9a63a1a835d261f0f859e">map_event</a></div><div class="ttdeci">static void map_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Handles mapping requests. </div><div class="ttdef"><b>Definition:</b> howm.c:610</div></div>
-<div class="ttc" id="howm_8c_html_aa7176ca0c00b1e36f0dd890b0d53b43e"><div class="ttname"><a href="howm_8c.html#aa7176ca0c00b1e36f0dd890b0d53b43e">configure_event</a></div><div class="ttdeci">static void configure_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Deal with a window&#39;s request to change its geometry. </div><div class="ttdef"><b>Definition:</b> howm.c:1753</div></div>
-<div class="ttc" id="howm_8c_html_a400d4632ac2776e12e8e83094892a1b0"><div class="ttname"><a href="howm_8c.html#a400d4632ac2776e12e8e83094892a1b0">client_message_event</a></div><div class="ttdeci">static void client_message_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Handle messages sent by the client to alter its state. </div><div class="ttdef"><b>Definition:</b> howm.c:2333</div></div>
-<div class="ttc" id="howm_8c_html_a1fcbf3bab4a7a08199ea115a2cfad059"><div class="ttname"><a href="howm_8c.html#a1fcbf3bab4a7a08199ea115a2cfad059">button_press_event</a></div><div class="ttdeci">static void button_press_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Process a button press. </div><div class="ttdef"><b>Definition:</b> howm.c:507</div></div>
-<div class="ttc" id="howm_8c_html_aaa38a4492a56c1b41edc7135ec23d614"><div class="ttname"><a href="howm_8c.html#aaa38a4492a56c1b41edc7135ec23d614">enter_event</a></div><div class="ttdeci">static void enter_event(xcb_generic_event_t *ev)</div><div class="ttdoc">The event that occurs when the mouse pointer enters a window. </div><div class="ttdef"><b>Definition:</b> howm.c:1234</div></div>
+<div class="ttc" id="howm_8c_html_af018244ddc47fc5fe84e1078ded37f0b"><div class="ttname"><a href="howm_8c.html#af018244ddc47fc5fe84e1078ded37f0b">key_press_event</a></div><div class="ttdeci">static void key_press_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Process a key press. </div><div class="ttdef"><b>Definition:</b> howm.c:569</div></div>
+<div class="ttc" id="howm_8c_html_a24c4b6cb37067adf558eb4b71ead4337"><div class="ttname"><a href="howm_8c.html#a24c4b6cb37067adf558eb4b71ead4337">unmap_event</a></div><div class="ttdeci">static void unmap_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Remove clients that wish to be unmapped. </div><div class="ttdef"><b>Definition:</b> howm.c:1815</div></div>
+<div class="ttc" id="howm_8c_html_a0fcc506f33b7bc5ce065fc46954655d8"><div class="ttname"><a href="howm_8c.html#a0fcc506f33b7bc5ce065fc46954655d8">destroy_event</a></div><div class="ttdeci">static void destroy_event(xcb_generic_event_t *ev)</div><div class="ttdoc">The handler for destroy events. </div><div class="ttdef"><b>Definition:</b> howm.c:1193</div></div>
+<div class="ttc" id="howm_8c_html_adee8a7dc86d9a63a1a835d261f0f859e"><div class="ttname"><a href="howm_8c.html#adee8a7dc86d9a63a1a835d261f0f859e">map_event</a></div><div class="ttdeci">static void map_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Handles mapping requests. </div><div class="ttdef"><b>Definition:</b> howm.c:642</div></div>
+<div class="ttc" id="howm_8c_html_aa7176ca0c00b1e36f0dd890b0d53b43e"><div class="ttname"><a href="howm_8c.html#aa7176ca0c00b1e36f0dd890b0d53b43e">configure_event</a></div><div class="ttdeci">static void configure_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Deal with a window&#39;s request to change its geometry. </div><div class="ttdef"><b>Definition:</b> howm.c:1780</div></div>
+<div class="ttc" id="howm_8c_html_a400d4632ac2776e12e8e83094892a1b0"><div class="ttname"><a href="howm_8c.html#a400d4632ac2776e12e8e83094892a1b0">client_message_event</a></div><div class="ttdeci">static void client_message_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Handle messages sent by the client to alter its state. </div><div class="ttdef"><b>Definition:</b> howm.c:2360</div></div>
+<div class="ttc" id="howm_8c_html_a1fcbf3bab4a7a08199ea115a2cfad059"><div class="ttname"><a href="howm_8c.html#a1fcbf3bab4a7a08199ea115a2cfad059">button_press_event</a></div><div class="ttdeci">static void button_press_event(xcb_generic_event_t *ev)</div><div class="ttdoc">Process a button press. </div><div class="ttdef"><b>Definition:</b> howm.c:539</div></div>
+<div class="ttc" id="howm_8c_html_aaa38a4492a56c1b41edc7135ec23d614"><div class="ttname"><a href="howm_8c.html#aaa38a4492a56c1b41edc7135ec23d614">enter_event</a></div><div class="ttdeci">static void enter_event(xcb_generic_event_t *ev)</div><div class="ttdoc">The event that occurs when the mouse pointer enters a window. </div><div class="ttdef"><b>Definition:</b> howm.c:1263</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -4550,15 +4810,16 @@ Variables</h2></td></tr>
 <div class="line">        [<a class="code" href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6afbf4fa9eb81ba842a80a29b45064e348">GRID</a>] = <a class="code" href="howm_8c.html#af8a99ab08db52dd5988c2e00bebdd165">grid</a>,</div>
 <div class="line">        [<a class="code" href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a604adefe799fe794cab6b76ed1108201">ZOOM</a>] = <a class="code" href="howm_8c.html#a36b7c65ccd608b603caa4e34ded4be76">zoom</a>,</div>
 <div class="line">        [<a class="code" href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3">HSTACK</a>] = <a class="code" href="howm_8c.html#a3fb6958326395f97103d30c8805c96e9">stack</a>,</div>
-<div class="line">        [<a class="code" href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a3c25942291ac61d0c3611824f29cf928">VSTACK</a>] = <a class="code" href="howm_8c.html#a3fb6958326395f97103d30c8805c96e9">stack</a></div>
+<div class="line">        [<a class="code" href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a3c25942291ac61d0c3611824f29cf928">VSTACK</a>] = <a class="code" href="structstack.html">stack</a></div>
 <div class="line">}</div>
-<div class="ttc" id="howm_8c_html_a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3"><div class="ttname"><a href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3">HSTACK</a></div><div class="ttdef"><b>Definition:</b> howm.c:281</div></div>
-<div class="ttc" id="howm_8c_html_af8a99ab08db52dd5988c2e00bebdd165"><div class="ttname"><a href="howm_8c.html#af8a99ab08db52dd5988c2e00bebdd165">grid</a></div><div class="ttdeci">static void grid(void)</div><div class="ttdoc">Arrange the windows into a grid layout. </div><div class="ttdef"><b>Definition:</b> howm.c:796</div></div>
-<div class="ttc" id="howm_8c_html_a36b7c65ccd608b603caa4e34ded4be76"><div class="ttname"><a href="howm_8c.html#a36b7c65ccd608b603caa4e34ded4be76">zoom</a></div><div class="ttdeci">static void zoom(void)</div><div class="ttdoc">Have one window at a time taking up the entire screen. </div><div class="ttdef"><b>Definition:</b> howm.c:841</div></div>
-<div class="ttc" id="howm_8c_html_a3fb6958326395f97103d30c8805c96e9"><div class="ttname"><a href="howm_8c.html#a3fb6958326395f97103d30c8805c96e9">stack</a></div><div class="ttdeci">static void stack(void)</div><div class="ttdoc">Arrange the windows in a stack, whether that be horizontal or vertical is decided by the current_layo...</div><div class="ttdef"><b>Definition:</b> howm.c:1066</div></div>
-<div class="ttc" id="howm_8c_html_a83aced0fc8f07bf0028fdc9881bef8d6a3c25942291ac61d0c3611824f29cf928"><div class="ttname"><a href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a3c25942291ac61d0c3611824f29cf928">VSTACK</a></div><div class="ttdef"><b>Definition:</b> howm.c:281</div></div>
-<div class="ttc" id="howm_8c_html_a83aced0fc8f07bf0028fdc9881bef8d6a604adefe799fe794cab6b76ed1108201"><div class="ttname"><a href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a604adefe799fe794cab6b76ed1108201">ZOOM</a></div><div class="ttdef"><b>Definition:</b> howm.c:281</div></div>
-<div class="ttc" id="howm_8c_html_a83aced0fc8f07bf0028fdc9881bef8d6afbf4fa9eb81ba842a80a29b45064e348"><div class="ttname"><a href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6afbf4fa9eb81ba842a80a29b45064e348">GRID</a></div><div class="ttdef"><b>Definition:</b> howm.c:281</div></div>
+<div class="ttc" id="howm_8c_html_a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3"><div class="ttname"><a href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3">HSTACK</a></div><div class="ttdef"><b>Definition:</b> howm.c:310</div></div>
+<div class="ttc" id="howm_8c_html_af8a99ab08db52dd5988c2e00bebdd165"><div class="ttname"><a href="howm_8c.html#af8a99ab08db52dd5988c2e00bebdd165">grid</a></div><div class="ttdeci">static void grid(void)</div><div class="ttdoc">Arrange the windows into a grid layout. </div><div class="ttdef"><b>Definition:</b> howm.c:828</div></div>
+<div class="ttc" id="howm_8c_html_a36b7c65ccd608b603caa4e34ded4be76"><div class="ttname"><a href="howm_8c.html#a36b7c65ccd608b603caa4e34ded4be76">zoom</a></div><div class="ttdeci">static void zoom(void)</div><div class="ttdoc">Have one window at a time taking up the entire screen. </div><div class="ttdef"><b>Definition:</b> howm.c:873</div></div>
+<div class="ttc" id="howm_8c_html_a3fb6958326395f97103d30c8805c96e9"><div class="ttname"><a href="howm_8c.html#a3fb6958326395f97103d30c8805c96e9">stack</a></div><div class="ttdeci">static void stack(void)</div><div class="ttdoc">Arrange the windows in a stack, whether that be horizontal or vertical is decided by the current_layo...</div><div class="ttdef"><b>Definition:</b> howm.c:1099</div></div>
+<div class="ttc" id="howm_8c_html_a83aced0fc8f07bf0028fdc9881bef8d6a3c25942291ac61d0c3611824f29cf928"><div class="ttname"><a href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a3c25942291ac61d0c3611824f29cf928">VSTACK</a></div><div class="ttdef"><b>Definition:</b> howm.c:310</div></div>
+<div class="ttc" id="howm_8c_html_a83aced0fc8f07bf0028fdc9881bef8d6a604adefe799fe794cab6b76ed1108201"><div class="ttname"><a href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6a604adefe799fe794cab6b76ed1108201">ZOOM</a></div><div class="ttdef"><b>Definition:</b> howm.c:310</div></div>
+<div class="ttc" id="structstack_html"><div class="ttname"><a href="structstack.html">stack</a></div><div class="ttdoc">Represents a stack. This stack is going to hold linked lists of clients. An example of the stack is b...</div><div class="ttdef"><b>Definition:</b> howm.c:191</div></div>
+<div class="ttc" id="howm_8c_html_a83aced0fc8f07bf0028fdc9881bef8d6afbf4fa9eb81ba842a80a29b45064e348"><div class="ttname"><a href="howm_8c.html#a83aced0fc8f07bf0028fdc9881bef8d6afbf4fa9eb81ba842a80a29b45064e348">GRID</a></div><div class="ttdef"><b>Definition:</b> howm.c:310</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -4808,7 +5069,7 @@ Variables</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="howm_8c.html">howm.c</a></li>
-    <li class="footer">Generated on Wed Sep 10 2014 15:14:22 for howm by
+    <li class="footer">Generated on Fri Sep 12 2014 18:54:14 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

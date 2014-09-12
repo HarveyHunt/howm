@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['op_5fcut',['op_cut',['../howm_8c.html#a176b47f348fa3d575284660e0d20139d',1,'howm.c']]],
   ['op_5ffocus_5fdown',['op_focus_down',['../howm_8c.html#a392722843c4ce60ba48435a4fde8a3d2',1,'howm.c']]],
   ['op_5ffocus_5fup',['op_focus_up',['../howm_8c.html#aed77f754ba60f2dc0417fe2c47e1c2d7',1,'howm.c']]],
   ['op_5fgap_5fsize',['OP_GAP_SIZE',['../config_8h.html#a19f3c8926cd1b1d9a4095f8667cda577',1,'config.h']]],

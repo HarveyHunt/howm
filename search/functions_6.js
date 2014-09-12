@@ -1,10 +1,11 @@
 var searchData=
 [
-  ['get_5fatoms',['get_atoms',['../howm_8c.html#aeac56307dd4a28ecb2ca993794d8f567',1,'howm.c']]],
-  ['get_5fcolour',['get_colour',['../howm_8c.html#a85e0bbafd9d22e881df3a09d09a94c55',1,'howm.c']]],
-  ['get_5fnon_5ftff_5fcount',['get_non_tff_count',['../howm_8c.html#af42ff327d6049e08d5cf652ec21950c2',1,'howm.c']]],
-  ['grab_5fbuttons',['grab_buttons',['../howm_8c.html#aa088f6bc2a852443636d417e70036648',1,'howm.c']]],
-  ['grab_5fkeycode',['grab_keycode',['../howm_8c.html#afb965255cfcb0ecce6085ecd6dd26915',1,'howm.c']]],
-  ['grab_5fkeys',['grab_keys',['../howm_8c.html#a369598a94c84b922ccb37e56da2c995a',1,'howm.c']]],
-  ['grid',['grid',['../howm_8c.html#af8a99ab08db52dd5988c2e00bebdd165',1,'howm.c']]]
+  ['find_5fclient_5fby_5fwin',['find_client_by_win',['../howm_8c.html#a58daaa6f47a67b3ab6bdb7103c1f1f57',1,'howm.c']]],
+  ['focus_5flast_5fws',['focus_last_ws',['../howm_8c.html#a9b4d1f6bd742c7c0e1487707c526c1fc',1,'howm.c']]],
+  ['focus_5fnext_5fclient',['focus_next_client',['../howm_8c.html#a54957d5d6465f3710df3ecb29156b763',1,'howm.c']]],
+  ['focus_5fnext_5fws',['focus_next_ws',['../howm_8c.html#aee293a216f82a9d06f7fdf57c5965e89',1,'howm.c']]],
+  ['focus_5fprev_5fclient',['focus_prev_client',['../howm_8c.html#a8170fa9f228fa0ad87c02704cd9977e7',1,'howm.c']]],
+  ['focus_5fprev_5fws',['focus_prev_ws',['../howm_8c.html#a20843a8ffb337e389940282900d57408',1,'howm.c']]],
+  ['focus_5furgent',['focus_urgent',['../howm_8c.html#a50230a4ca5c8baf43aea337ecf332d06',1,'howm.c']]],
+  ['focus_5fwindow',['focus_window',['../howm_8c.html#aa6e0efcc31fc894c7a877005cb143c36',1,'howm.c']]]
 ];
