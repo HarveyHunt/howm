@@ -2564,16 +2564,19 @@ static void op_cut(const unsigned int type, int cnt)
 			wss[correct_ws(cw + cnt - 1)].head = NULL;
 			wss[correct_ws(cw + cnt - 1)].current = NULL;
 			cnt--;
+			wss[cw].client_cnt = 0;
 		}
 
 	} else if (type == CLIENT) {
 		xcb_unmap_window(dpy, head->win);
+		wss[cw].client_cnt--;
 		while (cnt > 1) {
 			if (!tail->next && next_client(tail))
 				wrap = true;
 			tail = next_client(tail);
 			xcb_unmap_window(dpy, tail->win);
 			cnt--;
+			wss[cw].client_cnt--;
 		}
 
 		/* If cnt was greater than 1 and we have reached the end of the
