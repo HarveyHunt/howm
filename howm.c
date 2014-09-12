@@ -2564,7 +2564,7 @@ static void op_cut(const unsigned int type, int cnt)
 			wss[correct_ws(cw + cnt - 1)].head = NULL;
 			wss[correct_ws(cw + cnt - 1)].current = NULL;
 			cnt--;
-			wss[cw].client_cnt = 0;
+			wss[correct_ws(cw + cnt - 1)].client_cnt = 0;
 		}
 
 	} else if (type == CLIENT) {
