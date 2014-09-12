@@ -190,6 +190,12 @@ Can be from 0 to 1.
 #define HOWM_PATH "/usr/bin/howm"
 ```
 
+* **DELETE_REGISTER_SIZE**: The amount of times that a cut operation can be performed before a paste is required. This is the size of the stack that clients are placed onto after being cut.
+
+```
+#define DELETE_REGISTER_SIZE 5
+```
+
 ##Motions
 
 For a good primer on motions, vim's [documentation](http://vimdoc.sourceforge.net/htmldoc/motion.html) explains them well.
@@ -289,6 +295,20 @@ j3c
 The above command will move the current focus down 3 clients.
 
 * **op_focus_down**: Performs the opposite of op\_focus\_up and is instead bound to j.
+
+* **op_cut**: Cut a group of clients or workspaces and store them on the delete register stack.
+Can be used on:
+  * Clients
+  * Workspaces
+  
+  Used in mode:
+    * Normal
+
+```
+d2c
+```
+
+The above command will cut 2 clients and place them onto the delete register stack. One use of the cut operation takes up one place on the stack.
 
 
 ##Modes

@@ -74,6 +74,9 @@
 /** The path at which the howm binary (or script that started howm) is stored
  * at. This is used for restarts. */
 #define HOWM_PATH "/usr/bin/howm"
+/** The amount of client lists that can be stored in the register before
+ * needing to be pasted back. */
+#define DELETE_REGISTER_SIZE 5
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
@@ -108,6 +111,7 @@ static const Key keys[] = {
 	{ MODKEY | ShiftMask, NORMAL, XK_m, resize_master, {.i = -5} },
 	{ MODKEY, NORMAL, XK_b, toggle_bar, {NULL} },
 	{ MODKEY, NORMAL, XK_period, replay, {NULL} },
+	{ MODKEY, NORMAL, XK_p, paste, {NULL} },
 
 	{ MODKEY | ShiftMask, FLOATING, XK_k, resize_float_height, {.i = -10} },
 	{ MODKEY | ShiftMask, FLOATING, XK_j, resize_float_height, {.i = 10} },
@@ -162,9 +166,10 @@ static const Key keys[] = {
 static const Operator operators[] = {
 	{OTHER_MOD, XK_q, NORMAL, op_kill},
 	{OTHER_MOD, XK_j, NORMAL, op_move_down},
+	{OTHER_MOD, XK_k, NORMAL, op_move_up},
 	{OTHER_MOD, XK_g, NORMAL, op_shrink_gaps},
 	{OTHER_MOD | ShiftMask, XK_g, NORMAL, op_grow_gaps},
-	{OTHER_MOD, XK_k, NORMAL, op_move_up},
+	{OTHER_MOD, XK_d, NORMAL, op_cut},
 	{OTHER_MOD, XK_j, FOCUS, op_focus_down},
 	{OTHER_MOD, XK_k, FOCUS, op_focus_up}
 };
