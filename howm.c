@@ -1568,7 +1568,7 @@ void kill_ws(const int ws)
  *
  * @param type We don't support moving workspaces, so this should only be
  * client.
- * @param cnt How many "things" to move.
+ * @param cnt How many clients to move.
  */
 void op_move_down(const unsigned int type, int cnt)
 {
@@ -1582,7 +1582,7 @@ void op_move_down(const unsigned int type, int cnt)
  *
  * @param type We don't support moving workspaces, so this should only be
  * client.
- * @param cnt How many "things" to move.
+ * @param cnt How many clients to move.
  */
 void op_move_up(const unsigned int type, int cnt)
 {
@@ -1595,10 +1595,10 @@ void op_move_up(const unsigned int type, int cnt)
  * @brief Moves a client either upwards or down.
  *
  * Moves a single client or multiple clients either up or
- * down. The op_move_* functions server as simple wrappers to this.
+ * down. The op_move_* functions serves as simple wrappers to this.
  *
- * @param cnt How many "things" to move.
- * @param up Whether to move the "things" up or down. True is up.
+ * @param cnt How many clients to move.
+ * @param up Whether to move the clients up or down. True is up.
  */
 void move_client(int cnt, bool up)
 {
