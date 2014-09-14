@@ -433,6 +433,8 @@ void setup(void)
 	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
 	border_urgent = get_colour(BORDER_URGENT);
 	stack_init(&del_reg);
+
+	howm_info();
 }
 
 /**
@@ -1166,7 +1168,7 @@ void stack(void)
 /**
  * @brief Count how many clients aren't Transient, Floating or Fullscreen
  *
- * @return The amount of clients in the current workspace that aren't TTF.
+ * @return The amount of clients in the current workspace that aren't TFF.
  */
 int get_non_tff_count(void)
 {
@@ -1500,7 +1502,7 @@ void change_mode(const Arg *arg)
  * @brief An operator that kills an arbitrary amount of clients or workspaces.
  *
  * @param type Whether to kill workspaces or clients.
- * @param cnt How many "things" to kill.
+ * @param cnt How many workspaces or clients to kill.
  */
 void op_kill(const unsigned int type, int cnt)
 {
@@ -1568,7 +1570,7 @@ void kill_ws(const int ws)
  *
  * @param type We don't support moving workspaces, so this should only be
  * client.
- * @param cnt How many "things" to move.
+ * @param cnt How many clients to move.
  */
 void op_move_down(const unsigned int type, int cnt)
 {
@@ -1582,7 +1584,7 @@ void op_move_down(const unsigned int type, int cnt)
  *
  * @param type We don't support moving workspaces, so this should only be
  * client.
- * @param cnt How many "things" to move.
+ * @param cnt How many clients to move.
  */
 void op_move_up(const unsigned int type, int cnt)
 {
@@ -1595,10 +1597,10 @@ void op_move_up(const unsigned int type, int cnt)
  * @brief Moves a client either upwards or down.
  *
  * Moves a single client or multiple clients either up or
- * down. The op_move_* functions server as simple wrappers to this.
+ * down. The op_move_* functions serves as simple wrappers to this.
  *
- * @param cnt How many "things" to move.
- * @param up Whether to move the "things" up or down. True is up.
+ * @param cnt How many clients to move.
+ * @param up Whether to move the clients up or down. True is up.
  */
 void move_client(int cnt, bool up)
 {
