@@ -433,6 +433,8 @@ void setup(void)
 	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
 	border_urgent = get_colour(BORDER_URGENT);
 	stack_init(&del_reg);
+
+	howm_info();
 }
 
 /**
