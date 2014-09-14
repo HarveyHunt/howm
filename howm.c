@@ -1500,7 +1500,7 @@ void change_mode(const Arg *arg)
  * @brief An operator that kills an arbitrary amount of clients or workspaces.
  *
  * @param type Whether to kill workspaces or clients.
- * @param cnt How many "things" to kill.
+ * @param cnt How many workspaces or clients to kill.
  */
 void op_kill(const unsigned int type, int cnt)
 {
