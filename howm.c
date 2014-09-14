@@ -1166,7 +1166,7 @@ void stack(void)
 /**
  * @brief Count how many clients aren't Transient, Floating or Fullscreen
  *
- * @return The amount of clients in the current workspace that aren't TTF.
+ * @return The amount of clients in the current workspace that aren't TFF.
  */
 int get_non_tff_count(void)
 {
