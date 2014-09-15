@@ -30,7 +30,7 @@
 /** The size (in pixels) of the useless gaps. */
 #define GAP 2
 /** Enable debugging output */
-#define DEBUG_ENABLE true
+#define DEBUG_ENABLE false
 /** The size (in pixels) of the border. */
 #define BORDER_PX 2
 /** The border colour when the window is focused. */

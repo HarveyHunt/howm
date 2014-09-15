@@ -211,7 +211,7 @@ static void change_client_gaps(Client *c, int size);
 static void change_gaps(const unsigned int type, int cnt, int size);
 static void move_current_down(const Arg *arg);
 static void move_current_up(const Arg *arg);
-static void kill_client(const int ws);
+static void kill_client(const int ws, bool arrange);
 static void move_down(Client *c);
 static void move_up(Client *c);
 static Client *next_client(Client *c);
@@ -1201,6 +1201,7 @@ void destroy_event(xcb_generic_event_t *ev)
 		return;
 	log_info("Client <%p> wants to be destroyed", c);
 	remove_client(c);
+	arrange_windows();
 }
 
 /**
@@ -1230,8 +1231,6 @@ found:
 	free(c);
 	c = NULL;
 	wss[cw].client_cnt--;
-	if (cw == w)
-		arrange_windows();
 }
 
 /**
@@ -1515,7 +1514,7 @@ void op_kill(const unsigned int type, int cnt)
 	} else if (type == CLIENT) {
 		log_info("Killing %d clients", cnt);
 		while (cnt > 0) {
-			kill_client(cw);
+			kill_client(cw, cnt == 1);
 			cnt--;
 		}
 	}
@@ -1525,8 +1524,10 @@ void op_kill(const unsigned int type, int cnt)
  * @brief Kills the current client on the workspace ws.
  *
  * @param ws The workspace that the current client to be killed is on.
+ *
+ * @param arrange Whether the windows should be rearranged.
  */
-void kill_client(const int ws)
+void kill_client(const int ws, bool arrange)
 {
 	xcb_icccm_get_wm_protocols_reply_t rep;
 	unsigned int i;
@@ -1551,6 +1552,8 @@ void kill_client(const int ws)
 		xcb_kill_client(dpy, wss[ws].current->win);
 	log_info("Killing Client <%p>", wss[ws].current);
 	remove_client(wss[ws].current);
+	if (arrange)
+		arrange_windows();
 }
 
 /**
@@ -1562,7 +1565,8 @@ void kill_ws(const int ws)
 {
 	log_info("Killing off workspace <%d>", ws);
 	while (wss[ws].head)
-		kill_client(ws);
+		kill_client(ws, wss[ws].client_cnt == 1
+				&& cw == ws);
 }
 
 /**
@@ -1823,8 +1827,10 @@ void unmap_event(xcb_generic_event_t *ev)
 		return;
 	log_info("Received unmap request for client <%p>", c);
 
-	if (!ue->event == screen->root)
+	if (!ue->event == screen->root) {
 		remove_client(c);
+		arrange_windows();
+	}
 	howm_info();
 }
 
@@ -2371,6 +2377,7 @@ static void client_message_event(xcb_generic_event_t *ev)
 	} else if (c && cm->type == ewmh->_NET_CLOSE_WINDOW) {
 		log_info("_NET_CLOSE_WINDOW: Removing client <%p>", c);
 		remove_client(c);
+		arrange_windows();
 	} else if (c && cm->type == ewmh->_NET_ACTIVE_WINDOW) {
 		log_info("_NET_ACTIVE_WINDOW: Focusing client <%p>", c);
 		update_focused_client(find_client_by_win(cm->window));
