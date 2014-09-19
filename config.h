@@ -79,10 +79,9 @@
 #define DELETE_REGISTER_SIZE 5
 
 static const char * const term_cmd[] = {"urxvt", NULL};
-static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-h", "21", "-b",
+static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
 		    "-nb", "#70898f", "-nf", "black",
-		    "-sf", "#74718e", "-fn",
-		    "'Droid Sans Mono-10'", NULL};
+		    "-sf", "#74718e", NULL};
 
 /** @brief The standard key map, feel free to change them.
  *
