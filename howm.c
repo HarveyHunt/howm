@@ -2069,34 +2069,41 @@ static void teleport_client(const Arg *arg)
 	if (!wss[cw].current || !wss[cw].current->is_floating
 			|| wss[cw].current->is_transient)
 		return;
+
+	/* A bit naughty, but it looks nicer- doesn't it?*/
+	uint16_t g = wss[cw].current->gap;
+	uint16_t w = wss[cw].current->w;
+	uint16_t h = wss[cw].current->h;
+	uint16_t bh = wss[cw].bar_height;
+
 	switch (arg->i) {
 	case TOP_LEFT:
-		wss[cw].current->x = 0;
-		wss[cw].current->y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
+		wss[cw].current->x = g;
+		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g;
 		break;
 	case TOP_CENTER:
-		wss[cw].current->x = (screen_width - wss[cw].current->w) / 2;
-		wss[cw].current->y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
+		wss[cw].current->x = (screen_width - w) / 2;
+		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g;
 		break;
 	case TOP_RIGHT:
-		wss[cw].current->x = screen_width - wss[cw].current->w;
-		wss[cw].current->y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
+		wss[cw].current->x = screen_width - w - g;
+		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g;
 		break;
 	case CENTER:
-		wss[cw].current->x = (screen_width - wss[cw].current->w) / 2;
-		wss[cw].current->y = (screen_height - wss[cw].bar_height - wss[cw].current->h) / 2;
+		wss[cw].current->x = (screen_width - w) / 2;
+		wss[cw].current->y = (screen_height - bh - h) / 2;
 		break;
 	case BOTTOM_LEFT:
-		wss[cw].current->x = 0;
-		wss[cw].current->y = (BAR_BOTTOM ? screen_height - wss[cw].bar_height : screen_height) - wss[cw].current->h;
+		wss[cw].current->x = g;
+		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g;
 		break;
 	case BOTTOM_CENTER:
-		wss[cw].current->x = (screen_width / 2) - (wss[cw].current->w / 2);
-		wss[cw].current->y = (BAR_BOTTOM ? screen_height - wss[cw].bar_height : screen_height) - wss[cw].current->h;
+		wss[cw].current->x = (screen_width / 2) - (w / 2);
+		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g;
 		break;
 	case BOTTOM_RIGHT:
-		wss[cw].current->x = screen_width - wss[cw].current->w;
-		wss[cw].current->y = (BAR_BOTTOM ? screen_height - wss[cw].bar_height : screen_height) - wss[cw].current->h;
+		wss[cw].current->x = screen_width - w;
+		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g;
 		break;
 	};
 	draw_clients();
