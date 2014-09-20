@@ -296,6 +296,7 @@ static void save_last_cmd(void (*cmd)(const Arg *), const Arg *arg);
 static void replay(const Arg *arg);
 static void paste(const Arg *arg);
 static int get_non_tff_count(void);
+static Client *get_first_non_tff(void);
 static uint32_t get_colour(char *colour);
 static void spawn(const Arg *arg);
 static void setup(void);
@@ -1100,11 +1101,11 @@ void get_atoms(char **names, xcb_atom_t *atoms)
  */
 void stack(void)
 {
-	Client *c = NULL;
+	Client *c = get_first_non_tff();
 	bool vert = (wss[cw].layout == VSTACK);
 	uint16_t h = screen_height - wss[cw].bar_height;
 	uint16_t w = screen_width;
-	int i, n = get_non_tff_count();
+	int n = get_non_tff_count();
 	uint16_t client_x = 0, client_span = 0;
 	uint16_t client_y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
 	uint16_t ms = (vert ? w : h) * wss[cw].master_ratio;
@@ -1135,21 +1136,21 @@ void stack(void)
 		return;
 	}
 
-
 	/* TODO: Need to take into account when this has remainders. */
 	client_span = (span / (n - 1));
 
 	log_info("Arranging %d clients in %sstack layout", n, vert ? "v" : "h");
 	if (vert) {
-		change_client_geom(wss[cw].head, 0, client_y,
+		change_client_geom(c, 0, client_y,
 			    ms, span);
 	} else {
-		change_client_geom(wss[cw].head, 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+		change_client_geom(c, 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
 			span, ms);
 	}
 
-
-	for (c = wss[cw].head->next, i = 0; i < n - 1; c = c->next, i++) {
+	for (c = c->next; c; c = c->next) {
+		if (FFT(c))
+			continue;
 		if (vert) {
 			change_client_geom(c, ms, client_y,
 				    screen_width - ms,
@@ -1166,7 +1167,7 @@ void stack(void)
 }
 
 /**
- * @brief Count how many clients aren't Transient, Floating or Fullscreen
+ * @brief Count how many clients aren't Transient, Floating or Fullscreen.
  *
  * @return The amount of clients in the current workspace that aren't TFF.
  */
@@ -1178,9 +1179,21 @@ int get_non_tff_count(void)
 	for (c = wss[cw].head; c; c = c->next)
 		if (!FFT(c))
 			n++;
-		else
-			break;
 	return n;
+}
+
+/**
+ * @brief Returns the first client that isn't transient, floating or
+ * fullscreen.
+ *
+ * @return The first client that isn't TFF. NULL if none.
+ */
+static Client *get_first_non_tff(void)
+{
+	Client *c = NULL;
+	for (c = wss[cw].head; c && FFT(c); c = c->next)
+		;
+	return c;
 }
 
 /**
