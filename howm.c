@@ -1860,16 +1860,17 @@ void draw_clients(void)
 
 	log_debug("Drawing clients");
 	for (c = wss[cw].head; c; c = c->next)
-		if (wss[cw].layout == ZOOM && ZOOM_GAP) {
+		if (wss[cw].layout == ZOOM && ZOOM_GAP && !c->is_floating) {
 			set_border_width(c->win, 0);
 			move_resize(c->win, c->x + c->gap, c->y + c->gap,
 					c->w - (2 * c->gap), c->h - (2 * c->gap));
+		} else if (c->is_floating) {
+			set_border_width(c->win, BORDER_PX);
+			move_resize(c->win, c->x, c->y,
+					c->w, c->h);
 		} else if (c->is_fullscreen || wss[cw].layout == ZOOM) {
 			set_border_width(c->win, 0);
 			move_resize(c->win, c->x, c->y, c->w, c->h);
-		} else if (c->is_floating) {
-			move_resize(c->win, c->x + BORDER_PX, c->y + BORDER_PX,
-					c->w - BORDER_PX, c->h - BORDER_PX);
 		} else {
 			move_resize(c->win, c->x + c->gap, c->y + c->gap,
 					c->w - (2 * (c->gap + BORDER_PX)),
@@ -2091,23 +2092,23 @@ static void teleport_client(const Arg *arg)
 
 	switch (arg->i) {
 	case TOP_LEFT:
-		wss[cw].current->x = g - BORDER_PX;
-		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g - BORDER_PX;
+		wss[cw].current->x = g;
+		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g;
 		break;
 	case TOP_CENTER:
 		wss[cw].current->x = (screen_width - w) / 2;
-		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g - BORDER_PX;
+		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g;
 		break;
 	case TOP_RIGHT:
 		wss[cw].current->x = screen_width - w - g - (2 * BORDER_PX);
-		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g - BORDER_PX;
+		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g;
 		break;
 	case CENTER:
 		wss[cw].current->x = (screen_width - w) / 2;
 		wss[cw].current->y = (screen_height - bh - h) / 2;
 		break;
 	case BOTTOM_LEFT:
-		wss[cw].current->x = g - BORDER_PX;
+		wss[cw].current->x = g;
 		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g - (2 * BORDER_PX);
 		break;
 	case BOTTOM_CENTER:
