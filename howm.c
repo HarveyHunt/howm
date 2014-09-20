@@ -1923,7 +1923,7 @@ static void op_grow_gaps(const unsigned int type, int cnt)
  */
 static void change_client_gaps(Client *c, int size)
 {
-	if (c->is_fullscreen || c->is_floating)
+	if (c->is_fullscreen)
 		return;
 	if ((int)c->gap + size <= 0)
 		c->gap = 0;
@@ -2078,32 +2078,32 @@ static void teleport_client(const Arg *arg)
 
 	switch (arg->i) {
 	case TOP_LEFT:
-		wss[cw].current->x = g;
-		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g;
+		wss[cw].current->x = g - BORDER_PX;
+		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g - BORDER_PX;
 		break;
 	case TOP_CENTER:
 		wss[cw].current->x = (screen_width - w) / 2;
-		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g;
+		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g - BORDER_PX;
 		break;
 	case TOP_RIGHT:
-		wss[cw].current->x = screen_width - w - g;
-		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g;
+		wss[cw].current->x = screen_width - w - g - (2 * BORDER_PX);
+		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g - BORDER_PX;
 		break;
 	case CENTER:
 		wss[cw].current->x = (screen_width - w) / 2;
 		wss[cw].current->y = (screen_height - bh - h) / 2;
 		break;
 	case BOTTOM_LEFT:
-		wss[cw].current->x = g;
-		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g;
+		wss[cw].current->x = g - BORDER_PX;
+		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g - (2 * BORDER_PX);
 		break;
 	case BOTTOM_CENTER:
 		wss[cw].current->x = (screen_width / 2) - (w / 2);
-		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g;
+		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g - (2 * BORDER_PX);
 		break;
 	case BOTTOM_RIGHT:
-		wss[cw].current->x = screen_width - w;
-		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g;
+		wss[cw].current->x = screen_width - w - g - (2 * BORDER_PX);
+		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g - (2 * BORDER_PX);
 		break;
 	};
 	draw_clients();
