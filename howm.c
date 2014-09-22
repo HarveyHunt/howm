@@ -690,7 +690,7 @@ void map_event(xcb_generic_event_t *ev)
 	c->is_transient = transient ? true : false;
 	c->is_floating = c->is_transient || floating;
 
-	geom = xcb_get_geometry_reply(dpy, xcb_get_geometry(dpy, me->window), NULL);
+	geom = xcb_get_geometry_reply(dpy, xcb_get_geometry_unchecked(dpy, me->window), NULL);
 	if (geom) {
 		log_info("Mapped client's initial geom is %ux%u+%d+%d\n", geom->width, geom->height, geom->x, geom->y);
 		if (c->is_floating) {
