@@ -74,6 +74,18 @@ typedef struct {
 } Key;
 
 /**
+ * @brief Represents a rule that is applied to a client upon it starting.
+ */
+typedef struct {
+	const char *class; /**<	The class or name of the client. */
+	int ws; /**<  The workspace that the client should be spawned
+				on (0 means current workspace). */
+	bool follow; /**< If the client is spawned on another ws, shall we follow? */
+	bool is_floating; /**< Spawn the client in a floating state? */
+	bool is_fullscreen; /**< Spawn the client in a fullscreen state? */
+} Rule;
+
+/**
  * @brief Represents an operator.
  *
  * Operators perform an action upon one or more targets (identified by
@@ -222,7 +234,7 @@ static Client *prev_client(Client *c, int ws);
 static Client *create_client(xcb_window_t w);
 static void remove_client(Client *c);
 static Client *find_client_by_win(xcb_window_t w);
-static void client_to_ws(Client *c, const int ws);
+static void client_to_ws(Client *c, const int ws, bool follow);
 static void current_to_ws(const Arg *arg);
 static void draw_clients(void);
 static void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
@@ -290,6 +302,7 @@ static xcb_keysym_t keycode_to_keysym(xcb_keycode_t keycode);
 static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action);
 
 /* Misc */
+static void apply_rules(Client *c);
 static void howm_info(void);
 static void save_last_ocm(void (*op) (const int unsigned, int), const unsigned int type, int cnt);
 static void save_last_cmd(void (*cmd)(const Arg *), const Arg *arg);
@@ -649,7 +662,6 @@ void map_event(xcb_generic_event_t *ev)
 	xcb_get_window_attributes_reply_t *wa;
 	xcb_map_request_event_t *me = (xcb_map_request_event_t *)ev;
 	xcb_ewmh_get_atoms_reply_t type;
-	bool floating = false;
 	unsigned int i;
 	Client *c;
 
@@ -660,12 +672,15 @@ void map_event(xcb_generic_event_t *ev)
 	}
 	free(wa);
 
+	log_info("Mapping request for window <%d>", me->window);
+
+	c = create_client(me->window);
+
 	if (xcb_ewmh_get_wm_window_type_reply(ewmh,
 				xcb_ewmh_get_wm_window_type(ewmh, me->window),
 				&type, NULL) == 1) {
 		for (i = 0; i < type.atoms_len; i++) {
 			xcb_atom_t a = type.atoms[i];
-
 			if (a == ewmh->_NET_WM_WINDOW_TYPE_DOCK
 				|| a == ewmh->_NET_WM_WINDOW_TYPE_TOOLBAR) {
 				return;
@@ -675,20 +690,17 @@ void map_event(xcb_generic_event_t *ev)
 				|| a == ewmh->_NET_WM_WINDOW_TYPE_POPUP_MENU
 				|| a == ewmh->_NET_WM_WINDOW_TYPE_TOOLTIP
 				|| a == ewmh->_NET_WM_WINDOW_TYPE_DIALOG) {
-				floating = true;
+				c->is_floating = true;
 			}
 		}
 	}
 
 
-	log_info("Mapping request for window <%d>", me->window);
-	/* Rule stuff needs to be here. */
-	c = create_client(me->window);
-
 	/* Assume that transient windows MUST float. */
 	xcb_icccm_get_wm_transient_for_reply(dpy, xcb_icccm_get_wm_transient_for_unchecked(dpy, me->window), &transient, NULL);
 	c->is_transient = transient ? true : false;
-	c->is_floating = c->is_transient || floating;
+	if (c->is_transient)
+		c->is_floating = true;
 
 	geom = xcb_get_geometry_reply(dpy, xcb_get_geometry_unchecked(dpy, me->window), NULL);
 	if (geom) {
@@ -703,6 +715,7 @@ void map_event(xcb_generic_event_t *ev)
 	}
 
 	grab_buttons(c);
+	apply_rules(c);
 	arrange_windows();
 	xcb_map_window(dpy, c->win);
 	update_focused_client(c);
@@ -727,7 +740,7 @@ Client *find_client_by_win(xcb_window_t win)
 	int w = 1, cur_ws = cw;
 	Client *c = NULL;
 
-	for (found = false; w < WORKSPACES && !found; w++)
+	for (found = false; w <= WORKSPACES && !found; w++)
 		for (c = wss[w].head; c && !(found = (win == c->win)); c = c->next)
 			;
 	if (cur_ws != w)
@@ -1193,6 +1206,7 @@ int get_non_tff_count(void)
 static Client *get_first_non_tff(void)
 {
 	Client *c = NULL;
+
 	for (c = wss[cw].head; c && FFT(c); c = c->next)
 		;
 	return c;
@@ -1673,7 +1687,7 @@ void move_current_up(const Arg *arg)
  * @param c The client to be moved.
  * @param ws The ws that the client should be moved to.
  */
-void client_to_ws(Client *c, const int ws)
+void client_to_ws(Client *c, const int ws, bool follow)
 {
 	Client *last;
 	Client *prev = prev_client(c, cw);
@@ -1689,6 +1703,7 @@ void client_to_ws(Client *c, const int ws)
 		last->next = c;
 	else
 		wss[ws].head->next = c;
+	wss[ws].client_cnt++;
 
 	/* Current workspace. */
 	if (c == wss[cw].head || !prev)
@@ -1697,9 +1712,10 @@ void client_to_ws(Client *c, const int ws)
 		prev->next = c->next;
 	c->next = NULL;
 	xcb_unmap_window(dpy, c->win);
+	wss[cw].client_cnt--;
 	update_focused_client(wss[cw].prev_foc);
 	log_info("Moved client <%p> from <%d> to <%d>", c, cw, ws);
-	if (FOLLOW_SPAWN) {
+	if (follow) {
 		change_ws(&(Arg){ .i = ws });
 		update_focused_client(c);
 	} else {
@@ -1715,7 +1731,7 @@ void client_to_ws(Client *c, const int ws)
 void current_to_ws(const Arg *arg)
 {
 
-	client_to_ws(wss[cw].current, arg->i);
+	client_to_ws(wss[cw].current, arg->i, FOLLOW_SPAWN);
 }
 
 /**
@@ -2643,9 +2659,9 @@ static void op_cut(const unsigned int type, int cnt)
  */
 static void focus_urgent(const Arg *arg)
 {
+	UNUSED(arg);
 	Client *c;
 	int w;
-	UNUSED(arg);
 
 	for (w = 1; w <= WORKSPACES; w++)
 		for (c = wss[w].head; c && !c->is_urgent; c = c->next)
@@ -2668,6 +2684,7 @@ static void paste(const Arg *arg)
 	UNUSED(arg);
 	Client *head = stack_pop(&del_reg);
 	Client *t, *c = head;
+
 	if (!head) {
 		log_warn("No clients on stack.");
 		return;
@@ -2705,4 +2722,25 @@ static void paste(const Arg *arg)
 	}
 	xcb_flush(dpy);
 	update_focused_client(wss[cw].current);
+}
+
+static void apply_rules(Client *c)
+{
+	xcb_icccm_get_wm_class_reply_t wc;
+	unsigned int i;
+
+	if (xcb_icccm_get_wm_class_reply(dpy, xcb_icccm_get_wm_class(dpy,
+					c->win), &wc, NULL)) {
+		for (i = 0; i < LENGTH(rules); i++) {
+			if (strstr(wc.instance_name, rules[i].class)
+					|| strstr(wc.class_name, rules[i].class)) {
+				c->is_floating = rules[i].is_floating;
+				c->is_fullscreen = rules[i].is_fullscreen;
+				client_to_ws(c, rules[i].ws == 0 ? cw
+						: rules[i].ws, rules[i].follow);
+				break;
+			}
+		}
+	}
+	xcb_icccm_get_wm_class_reply_wipe(&wc);
 }

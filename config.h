@@ -83,6 +83,10 @@ static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
 		    "-nb", "#70898f", "-nf", "black",
 		    "-sf", "#74718e", NULL};
 
+static const Rule rules[] = {
+	{"mpv", 5, false, false, false}
+};
+
 /** @brief The standard key map, feel free to change them.
  *
  * In the form:
