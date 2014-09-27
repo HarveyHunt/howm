@@ -692,7 +692,7 @@ void map_event(xcb_generic_event_t *ev)
 
 	geom = xcb_get_geometry_reply(dpy, xcb_get_geometry_unchecked(dpy, me->window), NULL);
 	if (geom) {
-		log_info("Mapped client's initial geom is %ux%u+%d+%d\n", geom->width, geom->height, geom->x, geom->y);
+		log_info("Mapped client's initial geom is %ux%u+%d+%d", geom->width, geom->height, geom->x, geom->y);
 		if (c->is_floating) {
 			c->w = geom->width > 1 ? geom->width : FLOAT_SPAWN_WIDTH;
 			c->h = geom->height > 1 ? geom->height : FLOAT_SPAWN_HEIGHT;
@@ -928,8 +928,7 @@ void update_focused_client(Client *c)
 		xcb_delete_property(dpy, screen->root, ewmh->_NET_ACTIVE_WINDOW);
 		return;
 	} else if (c == wss[cw].prev_foc) {
-		wss[cw].current = (wss[cw].prev_foc ? wss[cw].prev_foc : wss[cw].head);
-		wss[cw].prev_foc = prev_client(wss[cw].current, cw);
+		wss[cw].prev_foc = prev_client(wss[cw].current = wss[cw].prev_foc, cw);
 	} else if (c != wss[cw].current) {
 		wss[cw].prev_foc = wss[cw].current;
 		wss[cw].current = c;
@@ -1239,13 +1238,12 @@ found:
 	*temp = c->next;
 	log_info("Removing client <%p>", c);
 	if (c == wss[w].prev_foc)
-		wss[w].prev_foc = prev_client(wss[w].current, cw);
+		wss[w].prev_foc = prev_client(wss[w].current, w);
 	if (c == wss[w].current || !wss[w].head->next)
-		wss[w].current = NULL;
-		update_focused_client(wss[w].prev_foc);
+		wss[w].current = wss[w].prev_foc ? wss[w].prev_foc : wss[w].head;
 	free(c);
 	c = NULL;
-	wss[cw].client_cnt--;
+	wss[w].client_cnt--;
 }
 
 /**
