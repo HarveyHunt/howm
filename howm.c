@@ -715,9 +715,9 @@ void map_event(xcb_generic_event_t *ev)
 	}
 
 	grab_buttons(c);
+	xcb_map_window(dpy, c->win);
 	apply_rules(c);
 	arrange_windows();
-	xcb_map_window(dpy, c->win);
 	update_focused_client(c);
 }
 
@@ -1703,6 +1703,7 @@ void client_to_ws(Client *c, const int ws, bool follow)
 		last->next = c;
 	else
 		wss[ws].head->next = c;
+	wss[ws].current = c;
 	wss[ws].client_cnt++;
 
 	/* Current workspace. */
@@ -1710,16 +1711,18 @@ void client_to_ws(Client *c, const int ws, bool follow)
 		wss[cw].head = c->next;
 	else
 		prev->next = c->next;
+	wss[cw].current = prev;
+	wss[cw].client_cnt--;
+
 	c->next = NULL;
 	xcb_unmap_window(dpy, c->win);
-	wss[cw].client_cnt--;
-	update_focused_client(wss[cw].prev_foc);
+
 	log_info("Moved client <%p> from <%d> to <%d>", c, cw, ws);
 	if (follow) {
+		wss[ws].current = c;
 		change_ws(&(Arg){ .i = ws });
-		update_focused_client(c);
 	} else {
-		arrange_windows();
+		update_focused_client(prev);
 	}
 }
 
@@ -1731,7 +1734,7 @@ void client_to_ws(Client *c, const int ws, bool follow)
 void current_to_ws(const Arg *arg)
 {
 
-	client_to_ws(wss[cw].current, arg->i, FOLLOW_SPAWN);
+	client_to_ws(wss[cw].current, arg->i, FOLLOW_MOVE);
 }
 
 /**

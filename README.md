@@ -68,10 +68,10 @@ Each option is described in detail below:
 #define FOCUS_MOUSE_CLICK false
 ```
 
-* **FOLLOW_SPAWN**: When true, focus will change to a new window when it is spawned.
+* **FOLLOW_MOVE**: When true, focus will change to a a different workspace when a client is sent there.
 
 ```
-#define FOLLOW_SPAWN false
+#define FOLLOW_MOVE false
 ```
 
 * **GAP**: The size (in pixels) of the "useless gap" to place between windows.

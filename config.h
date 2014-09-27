@@ -25,8 +25,9 @@
 #define FOCUS_MOUSE false
 /** Clicking a window will focus it. */
 #define FOCUS_MOUSE_CLICK true
-/** Upon spawning a new window, move the mouse to the new window? */
-#define FOLLOW_SPAWN true
+/** Upon moving a window to a different workspace, move the focus to the
+ * workspace? */
+#define FOLLOW_MOVE true
 /** The size (in pixels) of the useless gaps. */
 #define GAP 2
 /** Enable debugging output */
@@ -83,7 +84,10 @@ static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
 		    "-nb", "#70898f", "-nf", "black",
 		    "-sf", "#74718e", NULL};
 
+/* Rules that are applied to clients as they are spawned. */
 static const Rule rules[] = {
+	/* Class, WS, follow, float, fullscreen */
+	{"dwb", 3, false, false, false}
 	{"mpv", 5, false, false, false}
 };
 
