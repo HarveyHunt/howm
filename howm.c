@@ -2730,6 +2730,12 @@ static void paste(const Arg *arg)
 	update_focused_client(wss[cw].current);
 }
 
+/**
+ * @brief Set the properties of a client that has just been created,
+ * according to the rules defined in the config file.
+ *
+ * @param c The client that has been created.
+ */
 static void apply_rules(Client *c)
 {
 	xcb_icccm_get_wm_class_reply_t wc;
