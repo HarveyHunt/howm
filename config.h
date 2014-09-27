@@ -87,7 +87,7 @@ static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
 /* Rules that are applied to clients as they are spawned. */
 static const Rule rules[] = {
 	/* Class, WS, follow, float, fullscreen */
-	{"dwb", 3, false, false, false}
+	{"dwb", 3, false, false, false},
 	{"mpv", 5, false, false, false}
 };
 
