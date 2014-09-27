@@ -2605,8 +2605,13 @@ static void op_cut(const unsigned int type, int cnt)
 		xcb_unmap_window(dpy, head->win);
 		wss[cw].client_cnt--;
 		while (cnt > 1) {
-			if (!tail->next && next_client(tail))
+			if (!tail->next && next_client(tail)) {
 				wrap = true;
+				/* Join the list into a circular linked list,
+				 * just for now so that we don't miss any
+				 * clients. */
+				tail->next = next_client(tail);
+			}
 			if (tail == wss[cw].prev_foc)
 				wss[cw].prev_foc = NULL;
 			tail = next_client(tail);
@@ -2614,11 +2619,6 @@ static void op_cut(const unsigned int type, int cnt)
 			cnt--;
 			wss[cw].client_cnt--;
 		}
-
-		/* If cnt was greater than 1 and we have reached the end of the
-		 * client list, we need to make it "circular".*/
-		if (tail != head && head->next == NULL)
-			head->next = next_client(head);
 
 		if (head == wss[cw].head) {
 			wss[cw].head = head == next_client(tail) ? NULL : next_client(tail);
@@ -2680,6 +2680,7 @@ static void paste(const Arg *arg)
 			xcb_map_window(dpy, c->win);
 			wss[cw].current = c;
 			c = c->next;
+			wss[cw].client_cnt++;
 		}
 	} else if (!wss[cw].current->next) {
 		wss[cw].current->next = head;
@@ -2687,12 +2688,14 @@ static void paste(const Arg *arg)
 			xcb_map_window(dpy, c->win);
 			wss[cw].current = c;
 			c = c->next;
+			wss[cw].client_cnt++;
 		}
 	} else {
 		t = wss[cw].current->next;
 		wss[cw].current->next = head;
 		while (c) {
 			xcb_map_window(dpy, c->win);
+			wss[cw].client_cnt++;
 			if (!c->next) {
 				c->next = t;
 				wss[cw].current = c;
