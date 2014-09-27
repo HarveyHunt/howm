@@ -18,6 +18,7 @@ Contents
 =====
 * [Contributing](CONTRIBUTING.md)
 * [Configuration](#configuration)
+* [Rules](#rules)
 * [Motions](#motions)
 * [Counts](#counts)
 * [Operators](#operators)
@@ -195,6 +196,17 @@ Can be from 0 to 1.
 ```
 #define DELETE_REGISTER_SIZE 5
 ```
+
+##Rules
+
+Rules can be used to tell howm to open certain applications on different workspaces and with certain properties set.
+
+A rule is made up of the following sections:
+* **Name**: This is string that can be used to identify a window. It treats name as a substring, so "dw" would still work for the client "dwb".
+* **Workspace**: When set to 0, the client will be opened on the current workspace. Otherwise, the client will be opened on the specified workspace.
+* **Follow**: Should howm focus on the new client when it is spawned?
+* **Floating**: Should the client be floating when it is spawned?
+* **Fullscreen**: Should the client be fullscreen when it is spawned?
 
 ##Motions
 
