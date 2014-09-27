@@ -927,6 +927,9 @@ void move_resize(xcb_window_t win,
  * @brief Sets c to the active window and gives it input focus. Sorts out
  * border colours as well.
  *
+ * WARNING: Do NOT use this to focus a client on another workspace. Instead,
+ * set wss[ws].current to the client that you want focused.
+ *
  * @param c The client that is currently in focus.
  */
 void update_focused_client(Client *c)
