@@ -2770,14 +2770,15 @@ void send_to_scratchpad(const Arg *arg)
 	/* TODO: This should be in a reusable function. */
 	if (c == wss[cw].prev_foc)
 		wss[cw].prev_foc = prev_client(wss[cw].current, cw);
-	if (c == wss[cw].head)
-		wss[cw].head = c->next;
 	if (c == wss[cw].current || !wss[cw].head->next)
 		wss[cw].current = wss[cw].prev_foc ? wss[cw].prev_foc : wss[cw].head;
+	if (c == wss[cw].head) {
+		wss[cw].head = c->next;
+		wss[cw].current = c->next;
+	}
 
 	xcb_unmap_window(dpy, c->win);
 	wss[cw].client_cnt--;
-	/* FIXME: Infinite loop if c is head as current is set to NULL. */
 	update_focused_client(wss[cw].current);
 	scratchpad = c;
 }
@@ -2789,13 +2790,13 @@ void get_from_scratchpad(const Arg *arg)
 		return;
 
 	/* TODO: This should be in a reusable function. */
-	if (!wss[cw].head) {
+	if (!wss[cw].head)
 		wss[cw].head = scratchpad;
-	} else if (!wss[cw].head->next) {
+	else if (!wss[cw].head->next)
 		wss[cw].head->next = scratchpad;
-	} else {
+	else
 		prev_client(wss[cw].head, cw)->next = scratchpad;
-	}
+
 
 	wss[cw].prev_foc = wss[cw].current;
 	wss[cw].current = scratchpad;
