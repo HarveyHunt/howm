@@ -249,6 +249,8 @@ static void set_fullscreen(Client *c, bool fscr);
 static void set_urgent(Client *c, bool urg);
 static void toggle_fullscreen(const Arg *arg);
 static void focus_urgent(const Arg *arg);
+static void send_to_scratchpad(const Arg *arg);
+static void get_from_scratchpad(const Arg *arg);
 
 /* Workspaces */
 static void kill_ws(const int ws);
@@ -353,17 +355,14 @@ static void(*layout_handler[]) (void) = {
 
 static void (*operator_func)(const unsigned int type, int cnt);
 
+static Client *scratchpad;
 static struct stack del_reg;
-
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 static xcb_screen_t *screen;
 static xcb_ewmh_connection_t *ewmh;
-static int numlockmask, retval;
-/* We don't need the range of unsigned, so this prevents a conversion later. */
-static int last_ws, prev_layout;
-static int cw = DEFAULT_WORKSPACE;
+static int numlockmask, retval, last_ws, prev_layout, cw = DEFAULT_WORKSPACE;
 static uint32_t border_focus, border_unfocus, border_prev_focus, border_urgent;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE, cur_cnt = 1;
 static uint16_t screen_height, screen_width;
@@ -2755,4 +2754,61 @@ static void apply_rules(Client *c)
 		}
 	}
 	xcb_icccm_get_wm_class_reply_wipe(&wc);
+}
+
+void send_to_scratchpad(const Arg *arg)
+{
+	UNUSED(arg);
+	Client *c = wss[cw].current;
+	if (scratchpad || !c)
+		return;
+
+	log_info("Sending client <%p> to scratchpad", c);
+	if (prev_client(c, cw))
+		prev_client(c, cw)->next = c->next;
+
+	/* TODO: This should be in a reusable function. */
+	if (c == wss[cw].prev_foc)
+		wss[cw].prev_foc = prev_client(wss[cw].current, cw);
+	if (c == wss[cw].head)
+		wss[cw].head = c->next;
+	if (c == wss[cw].current || !wss[cw].head->next)
+		wss[cw].current = wss[cw].prev_foc ? wss[cw].prev_foc : wss[cw].head;
+
+	xcb_unmap_window(dpy, c->win);
+	wss[cw].client_cnt--;
+	/* FIXME: Infinite loop if c is head as current is set to NULL. */
+	update_focused_client(wss[cw].current);
+	scratchpad = c;
+}
+
+void get_from_scratchpad(const Arg *arg)
+{
+	UNUSED(arg);
+	if (!scratchpad)
+		return;
+
+	/* TODO: This should be in a reusable function. */
+	if (!wss[cw].head) {
+		wss[cw].head = scratchpad;
+	} else if (!wss[cw].head->next) {
+		wss[cw].head->next = scratchpad;
+	} else {
+		prev_client(wss[cw].head, cw)->next = scratchpad;
+	}
+
+	wss[cw].prev_foc = wss[cw].current;
+	wss[cw].current = scratchpad;
+
+	scratchpad = NULL;
+	wss[cw].client_cnt++;
+
+	wss[cw].current->is_floating = true;
+	wss[cw].current->w = SCRATCHPAD_WIDTH;
+	wss[cw].current->h = SCRATCHPAD_HEIGHT;
+	wss[cw].current->x = (screen_width / 2) - (wss[cw].current->w / 2);
+	wss[cw].current->y = (screen_height - wss[cw].bar_height - wss[cw].current->h) / 2;
+
+	xcb_map_window(dpy, wss[cw].current->win);
+	update_focused_client(wss[cw].current);
 }

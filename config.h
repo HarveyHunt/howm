@@ -78,6 +78,8 @@
 /** The amount of client lists that can be stored in the register before
  * needing to be pasted back. */
 #define DELETE_REGISTER_SIZE 5
+#define SCRATCHPAD_HEIGHT 500
+#define SCRATCHPAD_WIDTH 500
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
@@ -119,6 +121,8 @@ static const Key keys[] = {
 	{ MODKEY, NORMAL, XK_b, toggle_bar, {NULL} },
 	{ MODKEY, NORMAL, XK_period, replay, {NULL} },
 	{ MODKEY, NORMAL, XK_p, paste, {NULL} },
+	{ MODKEY, NORMAL, XK_q, send_to_scratchpad, {NULL} },
+	{ MODKEY | ShiftMask, NORMAL, XK_q, get_from_scratchpad, {NULL} },
 
 	{ MODKEY | ShiftMask, FLOATING, XK_k, resize_float_height, {.i = -10} },
 	{ MODKEY | ShiftMask, FLOATING, XK_j, resize_float_height, {.i = 10} },
