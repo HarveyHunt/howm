@@ -218,7 +218,7 @@ static Client *next_client(Client *c);
 static void focus_next_client(const Arg *arg);
 static void focus_prev_client(const Arg *arg);
 static void update_focused_client(Client *c);
-static Client *prev_client(Client *c);
+static Client *prev_client(Client *c, int ws);
 static Client *create_client(xcb_window_t w);
 static void remove_client(Client *c);
 static Client *find_client_by_win(xcb_window_t w);
@@ -778,16 +778,18 @@ xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym)
  *
  * @param c The client which needs to have its previous found.
  *
+ * @param ws The workspace that the client is on.
+ *
  * @return The previous client, so long as the given client isn't NULL and
  * there is more than one client. Else, NULL.
  */
-Client *prev_client(Client *c)
+Client *prev_client(Client *c, int ws)
 {
 	Client *p = NULL;
 
-	if (!c || !wss[cw].head || !wss[cw].head->next)
+	if (!c || !wss[ws].head || !wss[ws].head->next)
 		return NULL;
-	for (p = wss[cw].head; p->next && p->next != c; p = p->next)
+	for (p = wss[ws].head; p->next && p->next != c; p = p->next)
 		;
 	return p;
 }
@@ -927,7 +929,7 @@ void update_focused_client(Client *c)
 		return;
 	} else if (c == wss[cw].prev_foc) {
 		wss[cw].current = (wss[cw].prev_foc ? wss[cw].prev_foc : wss[cw].head);
-		wss[cw].prev_foc = prev_client(wss[cw].current);
+		wss[cw].prev_foc = prev_client(wss[cw].current, cw);
 	} else if (c != wss[cw].current) {
 		wss[cw].prev_foc = wss[cw].current;
 		wss[cw].current = c;
@@ -1237,7 +1239,7 @@ found:
 	*temp = c->next;
 	log_info("Removing client <%p>", c);
 	if (c == wss[w].prev_foc)
-		wss[w].prev_foc = prev_client(wss[w].current);
+		wss[w].prev_foc = prev_client(wss[w].current, cw);
 	if (c == wss[w].current || !wss[w].head->next)
 		wss[w].current = NULL;
 		update_focused_client(wss[w].prev_foc);
@@ -1290,7 +1292,7 @@ void enter_event(xcb_generic_event_t *ev)
  */
 void move_down(Client *c)
 {
-	Client *prev = prev_client(c);
+	Client *prev = prev_client(c, cw);
 	Client *n = (c->next) ? c->next : wss[cw].head;
 
 	if (!c)
@@ -1317,7 +1319,7 @@ void move_down(Client *c)
  */
 void move_up(Client *c)
 {
-	Client *p = prev_client(c);
+	Client *p = prev_client(c, cw);
 	Client *pp = NULL;
 
 	if (!c)
@@ -1365,7 +1367,7 @@ void focus_prev_client(const Arg *arg)
 		return;
 	log_info("Focusing previous client");
 	wss[cw].prev_foc = wss[cw].current;
-	update_focused_client(prev_client(wss[cw].prev_foc));
+	update_focused_client(prev_client(wss[cw].prev_foc, cw));
 }
 
 /**
@@ -1627,13 +1629,13 @@ void move_client(int cnt, bool up)
 	if (up) {
 		if (wss[cw].current == wss[cw].head)
 			return;
-		c = prev_client(wss[cw].current);
+		c = prev_client(wss[cw].current, cw);
 		/* TODO optimise this by inserting the client only once
 			* and in the correct location.*/
 		for (; cnt > 0; move_down(c), cnt--)
 			;
 	} else {
-		if (wss[cw].current == prev_client(wss[cw].head))
+		if (wss[cw].current == prev_client(wss[cw].head, cw))
 			return;
 		cntcopy = cnt;
 		for (c = wss[cw].current; cntcopy > 0; c = next_client(c), cntcopy--)
@@ -1674,13 +1676,13 @@ void move_current_up(const Arg *arg)
 void client_to_ws(Client *c, const int ws)
 {
 	Client *last;
-	Client *prev = prev_client(c);
+	Client *prev = prev_client(c, cw);
 
 	/* Performed for the current workspace. */
 	if (!c || ws == cw)
 		return;
 	/* Target workspace. */
-	last = prev_client(wss[ws].head);
+	last = prev_client(wss[ws].head, ws);
 	if (!wss[ws].head)
 		wss[ws].head = c;
 	else if (last)
@@ -2243,7 +2245,7 @@ static void toggle_bar(const Arg *arg)
 Client *create_client(xcb_window_t w)
 {
 	Client *c = (Client *)calloc(1, sizeof(Client));
-	Client *t = prev_client(wss[cw].head); /* Get the last element. */
+	Client *t = prev_client(wss[cw].head, cw); /* Get the last element. */
 	uint32_t vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
 				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0)};
 
@@ -2572,7 +2574,7 @@ static void op_cut(const unsigned int type, int cnt)
 {
 	Client *tail = wss[cw].current;
 	Client *head = wss[cw].current;
-	Client *head_prev = prev_client(wss[cw].current);
+	Client *head_prev = prev_client(wss[cw].current, cw);
 	bool wrap = false;
 
 	if (!head)
