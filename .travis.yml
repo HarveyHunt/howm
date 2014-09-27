@@ -11,3 +11,6 @@ before_install:
     - sudo apt-get install -y libxcb-ewmh1-dev
     - sudo apt-get install -y xcb-proto
 script: make debug
+notifications:
+    irc:
+        "chat.freenode.net#howm"
