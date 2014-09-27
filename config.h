@@ -78,7 +78,9 @@
 /** The amount of client lists that can be stored in the register before
  * needing to be pasted back. */
 #define DELETE_REGISTER_SIZE 5
+/** The height of the floating scratchpad window. */
 #define SCRATCHPAD_HEIGHT 500
+/** The width of the floating scratchpad window. */
 #define SCRATCHPAD_WIDTH 500
 
 static const char * const term_cmd[] = {"urxvt", NULL};

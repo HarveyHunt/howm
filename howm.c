@@ -2756,6 +2756,11 @@ static void apply_rules(Client *c)
 	xcb_icccm_get_wm_class_reply_wipe(&wc);
 }
 
+/**
+ * @brief Send a client to the scratchpad and unmap it.
+ *
+ * @param arg Unused.
+ */
 void send_to_scratchpad(const Arg *arg)
 {
 	UNUSED(arg);
@@ -2783,6 +2788,12 @@ void send_to_scratchpad(const Arg *arg)
 	scratchpad = c;
 }
 
+/**
+ * @brief Get a client from the scratchpad, attach it as the last item in the
+ * client list and set it to float.
+ *
+ * @param arg Unused.
+ */
 void get_from_scratchpad(const Arg *arg)
 {
 	UNUSED(arg);
