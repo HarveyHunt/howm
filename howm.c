@@ -703,7 +703,6 @@ void map_event(xcb_generic_event_t *ev)
 	}
 
 	grab_buttons(c);
-	arrange_windows();
 	xcb_map_window(dpy, c->win);
 	update_focused_client(c);
 }
@@ -2355,7 +2354,6 @@ static void set_fullscreen(Client *c, bool fscr)
 		arrange_windows();
 		draw_clients();
 	}
-	update_focused_client(c);
 }
 
 static void set_urgent(Client *c, bool urg)
