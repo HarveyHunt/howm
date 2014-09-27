@@ -9,7 +9,7 @@ var searchData=
   ['check_5fother_5fwm',['check_other_wm',['../howm_8c.html#a4e516f5a545cc0be2327f31bdd8cf96c',1,'howm.c']]],
   ['cleanup',['cleanup',['../howm_8c.html#a5c6551bf9ea9cf51ae7f2076c4cbe8ef',1,'howm.c']]],
   ['client_5fmessage_5fevent',['client_message_event',['../howm_8c.html#a400d4632ac2776e12e8e83094892a1b0',1,'howm.c']]],
-  ['client_5fto_5fws',['client_to_ws',['../howm_8c.html#a3ea9a3ae042f63a838a67b2ecb31c6d1',1,'howm.c']]],
+  ['client_5fto_5fws',['client_to_ws',['../howm_8c.html#ab36a1d705b302ca1c1c3a21f3b0e2b70',1,'howm.c']]],
   ['configure_5fevent',['configure_event',['../howm_8c.html#aa7176ca0c00b1e36f0dd890b0d53b43e',1,'howm.c']]],
   ['correct_5fws',['correct_ws',['../howm_8c.html#a688e1f851e61d1aa3230a16f900b3faf',1,'howm.c']]],
   ['create_5fclient',['create_client',['../howm_8c.html#af6e406bcedf8bf3fc6b6f15213f778e4',1,'howm.c']]],

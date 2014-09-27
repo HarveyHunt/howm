@@ -15,6 +15,7 @@ var searchData=
   ['focus_5fprev_5fws',['focus_prev_ws',['../howm_8c.html#a20843a8ffb337e389940282900d57408',1,'howm.c']]],
   ['focus_5furgent',['focus_urgent',['../howm_8c.html#a50230a4ca5c8baf43aea337ecf332d06',1,'howm.c']]],
   ['focus_5fwindow',['focus_window',['../howm_8c.html#aa6e0efcc31fc894c7a877005cb143c36',1,'howm.c']]],
-  ['follow_5fspawn',['FOLLOW_SPAWN',['../config_8h.html#a64cc10cd9532b09a7af338b0a40eb495',1,'config.h']]],
+  ['follow',['follow',['../structRule.html#aecc3f4b59eb1d7cf0c4968f1f91e7b9f',1,'Rule']]],
+  ['follow_5fmove',['FOLLOW_MOVE',['../config_8h.html#a3833e6fd67db6812da5485eab90697c4',1,'config.h']]],
   ['func',['func',['../structKey.html#a1dfd7bcbd12163d2f36e1b09777055ad',1,'Key::func()'],['../structOperator.html#a05ca5a06dd09d0de07bfbecf224c0d51',1,'Operator::func()'],['../structButton.html#a2a2ac98305f37d9e198097e7fc0fdf06',1,'Button::func()']]]
 ];

@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['class',['class',['../structRule.html#ae00889bf8e40da0fbde7b051c5171af6',1,'Rule']]],
   ['client_5fcnt',['client_cnt',['../structWorkspace.html#acd08931cfea0d1e66fe9f11a5fa62c1b',1,'Workspace']]],
   ['cmd',['cmd',['../unionArg.html#aa7db39154155f40bdd1dd6b48f9c003e',1,'Arg']]],
   ['contents',['contents',['../structstack.html#aa2c4ce0b9c289d21b7eaa860efc363bf',1,'stack']]],

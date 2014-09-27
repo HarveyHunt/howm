@@ -16,7 +16,7 @@ var config_8h =
     [ "FLOAT_SPAWN_WIDTH", "config_8h.html#adae8d130d5d4ad25af97350c423842d7", null ],
     [ "FOCUS_MOUSE", "config_8h.html#aa6cfebec13c8c0f3e8ac9e668aef46fb", null ],
     [ "FOCUS_MOUSE_CLICK", "config_8h.html#a4ff775a3fc12134f26051be581778c58", null ],
-    [ "FOLLOW_SPAWN", "config_8h.html#a64cc10cd9532b09a7af338b0a40eb495", null ],
+    [ "FOLLOW_MOVE", "config_8h.html#a3833e6fd67db6812da5485eab90697c4", null ],
     [ "GAP", "config_8h.html#a2a2129b3f6b7ce06869b7f16b81aff6f", null ],
     [ "HOWM_PATH", "config_8h.html#a9dd5ac5acab5b89d170ce59ccc1e73bf", null ],
     [ "LOG_LEVEL", "config_8h.html#a0b87e0d3bf5853bcbb0b66a7c48fdc05", null ],
@@ -40,6 +40,7 @@ var config_8h =
     [ "keys", "config_8h.html#ab56654f4cbd5ccdf809022aaef745f60", null ],
     [ "motions", "config_8h.html#a2b9049e146b329121586d1bb630c2ddb", null ],
     [ "operators", "config_8h.html#a2af861537bf101ca10db31129ed5ded5", null ],
+    [ "rules", "config_8h.html#ae2fb107a311ec7e35a4febb9b3dbb7b9", null ],
     [ "term_cmd", "config_8h.html#a2f59d1f10645069b75419e07745d4c36", null ],
     [ "wss", "config_8h.html#ab787e0404ed38c2ea9e657da457fe12a", null ]
 ];

@@ -118,6 +118,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <ul>
 <li><a class="el" href="md_CONTRIBUTING.html">Contributing</a></li>
 <li><a href="#configuration">Configuration</a></li>
+<li><a href="#rules">Rules</a></li>
 <li><a href="#motions">Motions</a></li>
 <li><a href="#counts">Counts</a></li>
 <li><a href="#operators">Operators</a></li>
@@ -153,9 +154,9 @@ $(document).ready(function(){initNavTree('index.html','');});
 </ul>
 <p>``` #define FOCUS_MOUSE_CLICK false ```</p>
 <ul>
-<li><b>FOLLOW_SPAWN</b>: When true, focus will change to a new window when it is spawned.</li>
+<li><b>FOLLOW_MOVE</b>: When true, focus will change to a a different workspace when a client is sent there.</li>
 </ul>
-<p>``` #define FOLLOW_SPAWN false ```</p>
+<p>``` #define FOLLOW_MOVE false ```</p>
 <ul>
 <li><b>GAP</b>: The size (in pixels) of the "useless gap" to place between windows.</li>
 </ul>
@@ -238,6 +239,15 @@ $(document).ready(function(){initNavTree('index.html','');});
 <li><b>DELETE_REGISTER_SIZE</b>: The amount of times that a cut operation can be performed before a paste is required. This is the size of the stack that clients are placed onto after being cut.</li>
 </ul>
 <p>``` #define DELETE_REGISTER_SIZE 5 ```</p>
+<h2>Rules</h2>
+<p>Rules can be used to tell howm to open certain applications on different workspaces and with certain properties set.</p>
+<p>A rule is made up of the following sections:</p><ul>
+<li><b>Name</b>: This is string that can be used to identify a window. It treats name as a substring, so "dw" would still work for the client "dwb".</li>
+<li><b><a class="el" href="structWorkspace.html" title="Represents a workspace, which stores clients. ">Workspace</a></b>: When set to 0, the client will be opened on the current workspace. Otherwise, the client will be opened on the specified workspace.</li>
+<li><b>Follow</b>: Should howm focus on the new client when it is spawned?</li>
+<li><b>Floating</b>: Should the client be floating when it is spawned?</li>
+<li><b>Fullscreen</b>: Should the client be fullscreen when it is spawned?</li>
+</ul>
 <h2>Motions</h2>
 <p>For a good primer on motions, vim's <a href="http://vimdoc.sourceforge.net/htmldoc/motion.html">documentation</a> explains them well.</p>
 <p><b>Please note: The modifier key that is OTHER_MOD needs to be held down whilst entering a motion.</b></p>
@@ -347,7 +357,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Sep 12 2014 18:54:14 for howm by
+    <li class="footer">Generated on Sat Sep 27 2014 22:25:23 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>
