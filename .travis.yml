@@ -10,6 +10,9 @@ before_install:
     - sudo apt-get install -y libxcb-icccm4-dev
     - sudo apt-get install -y libxcb-ewmh1-dev
     - sudo apt-get install -y xcb-proto
-script: make debug
+before_script:
+    - wget https://raw.githubusercontent.com/torvalds/linux/master/scripts/checkpatch.pl
+    - chmod +x checkpatch.pl
+script: make debug && make check
 notifications:
     irc: "irc.freenode.net#howm"
