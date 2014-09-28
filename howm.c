@@ -95,7 +95,7 @@ typedef struct {
 	int mod; /**< The mask of the modifiers pressed. */
 	xcb_keysym_t sym; /**< The keysym of the pressed key. */
 	unsigned int mode; /**< The mode within which this keypress is valid. */
-	void (*func)(const int unsigned type, const int cnt); /**< The function to be
+	void (*func)(const unsigned int type, const int cnt); /**< The function to be
 								 * called when the key is pressed. */
 } Operator;
 
@@ -177,7 +177,7 @@ typedef struct {
  * combination of operator, count and motion (ocm).
  */
 struct replay_state {
-	void (*last_op)(const int unsigned type, int cnt); /** The last operator to be called. */
+	void (*last_op)(const unsigned int type, int cnt); /** The last operator to be called. */
 	void (*last_cmd)(const Arg *arg); /** The last command to be called. */
 	const Arg *last_arg; /** The last argument, passed to the last command. */
 	unsigned int last_type; /** The value determine by the last motion
@@ -304,7 +304,7 @@ static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action);
 /* Misc */
 static void apply_rules(Client *c);
 static void howm_info(void);
-static void save_last_ocm(void (*op) (const int unsigned, int), const unsigned int type, int cnt);
+static void save_last_ocm(void (*op) (const unsigned int, int), const unsigned int type, int cnt);
 static void save_last_cmd(void (*cmd)(const Arg *), const Arg *arg);
 static void replay(const Arg *arg);
 static void paste(const Arg *arg);
@@ -487,9 +487,9 @@ uint32_t get_colour(char *colour)
  */
 int main(int argc, char *argv[])
 {
-	xcb_generic_event_t *ev;
 	UNUSED(argc);
 	UNUSED(argv);
+	xcb_generic_event_t *ev;
 
 	dpy = xcb_connect(NULL, NULL);
 	if (xcb_connection_has_error(dpy)) {
@@ -516,6 +516,7 @@ int main(int argc, char *argv[])
 		cleanup();
 		xcb_disconnect(dpy);
 		char *const argv[] = {HOWM_PATH, NULL};
+
 		execv(argv[0], argv);
 	}
 	return EXIT_FAILURE;
@@ -681,6 +682,7 @@ void map_event(xcb_generic_event_t *ev)
 				&type, NULL) == 1) {
 		for (i = 0; i < type.atoms_len; i++) {
 			xcb_atom_t a = type.atoms[i];
+
 			if (a == ewmh->_NET_WM_WINDOW_TYPE_DOCK
 				|| a == ewmh->_NET_WM_WINDOW_TYPE_TOOLBAR) {
 				return;
@@ -1752,10 +1754,10 @@ int correct_ws(int ws)
 {
 	if (ws > WORKSPACES)
 		return ws - WORKSPACES;
-	else if (ws < 1)
+	if (ws < 1)
 		return ws + WORKSPACES;
-	else
-		return ws;
+
+	return ws;
 }
 
 /**
