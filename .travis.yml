@@ -15,4 +15,9 @@ before_script:
     - chmod +x checkpatch.pl
 script: make debug && make check
 notifications:
-    irc: "irc.freenode.org#howm"
+    irc:
+        channels:
+            - "irc.freenode.org#howm"
+        template:
+            - "%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
+            - "Build details : %{build_url}"
