@@ -15,4 +15,4 @@ before_script:
     - chmod +x checkpatch.pl
 script: make debug && make check
 notifications:
-    irc: "irc.freenode.net#howm"
+    irc: "irc.freenode.org#howm"
