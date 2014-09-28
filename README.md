@@ -198,14 +198,13 @@ Can be from 0 to 1.
 #define DELETE_REGISTER_SIZE 5
 ```
 
-* **SCRATCHPAD_WIDTH**: The width of the floating scratchpad window. Read more [here](#scratchpad).
+* **SCRATCHPAD_WIDTH**: The width of the floating scratchpad window.
 
 ```
 #define SCRATCHPAD_WIDTH 500
 ```
 
-* **SCRATCHPAD_HEIGHT**: The height of the floating scratchpad window. Read more [here](#scratchpad).
-
+* **SCRATCHPAD_HEIGHT**: The height of the floating scratchpad window.
 ```
 #define SCRATCHPAD_HEIGHT 500
 ```
