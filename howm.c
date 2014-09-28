@@ -2765,6 +2765,7 @@ void send_to_scratchpad(const Arg *arg)
 {
 	UNUSED(arg);
 	Client *c = wss[cw].current;
+
 	if (scratchpad || !c)
 		return;
 
