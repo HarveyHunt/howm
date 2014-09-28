@@ -78,6 +78,10 @@
 /** The amount of client lists that can be stored in the register before
  * needing to be pasted back. */
 #define DELETE_REGISTER_SIZE 5
+/** The height of the floating scratchpad window. */
+#define SCRATCHPAD_HEIGHT 500
+/** The width of the floating scratchpad window. */
+#define SCRATCHPAD_WIDTH 500
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
@@ -119,6 +123,8 @@ static const Key keys[] = {
 	{ MODKEY, NORMAL, XK_b, toggle_bar, {NULL} },
 	{ MODKEY, NORMAL, XK_period, replay, {NULL} },
 	{ MODKEY, NORMAL, XK_p, paste, {NULL} },
+	{ MODKEY, NORMAL, XK_q, send_to_scratchpad, {NULL} },
+	{ MODKEY | ShiftMask, NORMAL, XK_q, get_from_scratchpad, {NULL} },
 
 	{ MODKEY | ShiftMask, FLOATING, XK_k, resize_float_height, {.i = -10} },
 	{ MODKEY | ShiftMask, FLOATING, XK_j, resize_float_height, {.i = 10} },
@@ -222,4 +228,6 @@ _Static_assert(BAR_HEIGHT >= 0, "BAR_HEIGHT can't be negative.");
 _Static_assert(FLOAT_SPAWN_HEIGHT >= 0, "FLOAT_SPAWN_HEIGHT can't be negative.");
 _Static_assert(FLOAT_SPAWN_WIDTH >= 0, "FLOAT_SPAWN_WIDTH can't be negative.");
 _Static_assert(LENGTH(wss) == WORKSPACES + 1, "wss must contain one more workspace than WORKSPACES.");
+_Static_assert(SCRATCHPAD_WIDTH >= 0, "SCRATCHPAD_WIDTH can't be negative.");
+_Static_assert(SCRATCHPAD_HEIGHT >= 0, "SCRATCHPAD_HEIGHT can't be negative.");
 #endif

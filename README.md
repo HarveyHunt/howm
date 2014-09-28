@@ -19,6 +19,7 @@ Contents
 * [Contributing](CONTRIBUTING.md)
 * [Configuration](#configuration)
 * [Rules](#rules)
+* [Scratchpad](#scratchpad)
 * [Motions](#motions)
 * [Counts](#counts)
 * [Operators](#operators)
@@ -197,6 +198,17 @@ Can be from 0 to 1.
 #define DELETE_REGISTER_SIZE 5
 ```
 
+* **SCRATCHPAD_WIDTH**: The width of the floating scratchpad window.
+
+```
+#define SCRATCHPAD_WIDTH 500
+```
+
+* **SCRATCHPAD_HEIGHT**: The height of the floating scratchpad window.
+```
+#define SCRATCHPAD_HEIGHT 500
+```
+
 ##Rules
 
 Rules can be used to tell howm to open certain applications on different workspaces and with certain properties set.
@@ -207,6 +219,12 @@ A rule is made up of the following sections:
 * **Follow**: Should howm focus on the new client when it is spawned?
 * **Floating**: Should the client be floating when it is spawned?
 * **Fullscreen**: Should the client be fullscreen when it is spawned?
+
+##Scratchpad
+
+The scratchpad is a location to store a single client out of view. When requesting a client back from the scratchpad, it will float in the center of the screen. This is useful for keeping a terminal handy or hiding your music player- only displaying it when it is really needed.
+
+The size of the scratchpad's client is defined by SCRATCHPAD_WIDTH and SCRATCHPAD_HEIGHT.
 
 ##Motions
 
