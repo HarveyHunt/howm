@@ -14,6 +14,12 @@
 
 /**
  * @file howm.c
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief howm
  */
 
 /*
@@ -23,10 +29,6 @@
  *│╹ ╹┗━┛┗┻┛╹ ╹│
  *└────────────┘
 */
-
-/**
- * @brief howm
- */
 
 /** Calculates a mask that can be applied to a window in order to reconfigure a
  * window. */
@@ -44,8 +46,11 @@
 /** Supresses the unused variable compiler warnings. */
 #define UNUSED(x) (void)(x)
 
+/** The remove action for a WM_STATE request. */
 #define _NET_WM_STATE_REMOVE 0
+/** The add action for a WM_STATE request. */
 #define _NET_WM_STATE_ADD 1
+/** The toggle action for a WM_STATE request. */
 #define _NET_WM_STATE_TOGGLE 2
 
 /**
@@ -141,13 +146,13 @@ typedef struct Client {
 	bool is_floating; /**< Is the client floating? */
 	bool is_transient; /**< Is the client transient?
 					* Defined at: http://standards.freedesktop.org/wm-spec/wm-spec-latest.html*/
-	bool is_urgent; /** This is set by a client that wants focus for some reason. */
+	bool is_urgent; /**< This is set by a client that wants focus for some reason. */
 	xcb_window_t win; /**< The window that this client represents. */
 	uint16_t x; /**< The x coordinate of the client. */
 	uint16_t y; /**< The y coordinate of the client. */
-	uint16_t w; /**< The width of the client.*/
-	uint16_t h; /**< The height of the client.*/
-	uint16_t gap; /** The size of the useless gap between this client and
+	uint16_t w; /**< The width of the client. */
+	uint16_t h; /**< The height of the client. */
+	uint16_t gap; /**< The size of the useless gap between this client and
 			the others. */
 } Client;
 
@@ -160,11 +165,11 @@ typedef struct Client {
 typedef struct {
 	int layout; /**< The current layout of the WS, as defined in the
 				* layout enum. */
-	int client_cnt; /** The amount of clients on this workspace. */
+	int client_cnt; /**< The amount of clients on this workspace. */
 	uint16_t gap; /**< The size of the useless gap between windows for this workspace. */
-	float master_ratio; /** The ratio of the size of the master window
+	float master_ratio; /**< The ratio of the size of the master window
 				 compared to the screen's size. */
-	uint16_t bar_height; /** The height of the space left for a bar. Stored
+	uint16_t bar_height; /**< The height of the space left for a bar. Stored
 			      here so it can be toggled per ws. */
 	Client *head; /**< The start of the linked list. */
 	Client *prev_foc; /**< The last focused client. This is seperate to
@@ -177,12 +182,12 @@ typedef struct {
  * combination of operator, count and motion (ocm).
  */
 struct replay_state {
-	void (*last_op)(const unsigned int type, int cnt); /** The last operator to be called. */
-	void (*last_cmd)(const Arg *arg); /** The last command to be called. */
-	const Arg *last_arg; /** The last argument, passed to the last command. */
-	unsigned int last_type; /** The value determine by the last motion
+	void (*last_op)(const unsigned int type, int cnt); /**< The last operator to be called. */
+	void (*last_cmd)(const Arg *arg); /**< The last command to be called. */
+	const Arg *last_arg; /**< The last argument, passed to the last command. */
+	unsigned int last_type; /**< The value determine by the last motion
 				(workspace, client etc).*/
-	int last_cnt; /** The last count passed to the last operator function. */
+	int last_cnt; /**< The last count passed to the last operator function. */
 };
 
 /**
@@ -201,8 +206,8 @@ struct replay_state {
  *
  */
 struct stack {
-	int size; /** The amount of items in the stack. */
-	Client **contents; /** The contents is an array of linked lists. Storage
+	int size; /**< The amount of items in the stack. */
+	Client **contents; /**< The contents is an array of linked lists. Storage
 			is malloced later as we don't know the size yet.*/
 };
 
