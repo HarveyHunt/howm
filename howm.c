@@ -74,6 +74,18 @@ typedef struct {
 } Key;
 
 /**
+ * @brief Represents a rule that is applied to a client upon it starting.
+ */
+typedef struct {
+	const char *class; /**<	The class or name of the client. */
+	int ws; /**<  The workspace that the client should be spawned
+				on (0 means current workspace). */
+	bool follow; /**< If the client is spawned on another ws, shall we follow? */
+	bool is_floating; /**< Spawn the client in a floating state? */
+	bool is_fullscreen; /**< Spawn the client in a fullscreen state? */
+} Rule;
+
+/**
  * @brief Represents an operator.
  *
  * Operators perform an action upon one or more targets (identified by
@@ -83,7 +95,7 @@ typedef struct {
 	int mod; /**< The mask of the modifiers pressed. */
 	xcb_keysym_t sym; /**< The keysym of the pressed key. */
 	unsigned int mode; /**< The mode within which this keypress is valid. */
-	void (*func)(const int unsigned type, const int cnt); /**< The function to be
+	void (*func)(const unsigned int type, const int cnt); /**< The function to be
 								 * called when the key is pressed. */
 } Operator;
 
@@ -165,7 +177,7 @@ typedef struct {
  * combination of operator, count and motion (ocm).
  */
 struct replay_state {
-	void (*last_op)(const int unsigned type, int cnt); /** The last operator to be called. */
+	void (*last_op)(const unsigned int type, int cnt); /** The last operator to be called. */
 	void (*last_cmd)(const Arg *arg); /** The last command to be called. */
 	const Arg *last_arg; /** The last argument, passed to the last command. */
 	unsigned int last_type; /** The value determine by the last motion
@@ -218,11 +230,11 @@ static Client *next_client(Client *c);
 static void focus_next_client(const Arg *arg);
 static void focus_prev_client(const Arg *arg);
 static void update_focused_client(Client *c);
-static Client *prev_client(Client *c);
+static Client *prev_client(Client *c, int ws);
 static Client *create_client(xcb_window_t w);
 static void remove_client(Client *c);
 static Client *find_client_by_win(xcb_window_t w);
-static void client_to_ws(Client *c, const int ws);
+static void client_to_ws(Client *c, const int ws, bool follow);
 static void current_to_ws(const Arg *arg);
 static void draw_clients(void);
 static void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
@@ -237,6 +249,8 @@ static void set_fullscreen(Client *c, bool fscr);
 static void set_urgent(Client *c, bool urg);
 static void toggle_fullscreen(const Arg *arg);
 static void focus_urgent(const Arg *arg);
+static void send_to_scratchpad(const Arg *arg);
+static void get_from_scratchpad(const Arg *arg);
 
 /* Workspaces */
 static void kill_ws(const int ws);
@@ -290,8 +304,9 @@ static xcb_keysym_t keycode_to_keysym(xcb_keycode_t keycode);
 static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action);
 
 /* Misc */
+static void apply_rules(Client *c);
 static void howm_info(void);
-static void save_last_ocm(void (*op) (const int unsigned, int), const unsigned int type, int cnt);
+static void save_last_ocm(void (*op) (const unsigned int, int), const unsigned int type, int cnt);
 static void save_last_cmd(void (*cmd)(const Arg *), const Arg *arg);
 static void replay(const Arg *arg);
 static void paste(const Arg *arg);
@@ -340,17 +355,14 @@ static void(*layout_handler[]) (void) = {
 
 static void (*operator_func)(const unsigned int type, int cnt);
 
+static Client *scratchpad;
 static struct stack del_reg;
-
 static xcb_connection_t *dpy;
 static char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 static xcb_screen_t *screen;
 static xcb_ewmh_connection_t *ewmh;
-static int numlockmask, retval;
-/* We don't need the range of unsigned, so this prevents a conversion later. */
-static int last_ws, prev_layout;
-static int cw = DEFAULT_WORKSPACE;
+static int numlockmask, retval, last_ws, prev_layout, cw = DEFAULT_WORKSPACE;
 static uint32_t border_focus, border_unfocus, border_prev_focus, border_urgent;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE, cur_cnt = 1;
 static uint16_t screen_height, screen_width;
@@ -474,9 +486,9 @@ uint32_t get_colour(char *colour)
  */
 int main(int argc, char *argv[])
 {
-	xcb_generic_event_t *ev;
 	UNUSED(argc);
 	UNUSED(argv);
+	xcb_generic_event_t *ev;
 
 	dpy = xcb_connect(NULL, NULL);
 	if (xcb_connection_has_error(dpy)) {
@@ -503,6 +515,7 @@ int main(int argc, char *argv[])
 		cleanup();
 		xcb_disconnect(dpy);
 		char *const argv[] = {HOWM_PATH, NULL};
+
 		execv(argv[0], argv);
 	}
 	return EXIT_FAILURE;
@@ -649,7 +662,6 @@ void map_event(xcb_generic_event_t *ev)
 	xcb_get_window_attributes_reply_t *wa;
 	xcb_map_request_event_t *me = (xcb_map_request_event_t *)ev;
 	xcb_ewmh_get_atoms_reply_t type;
-	bool floating = false;
 	unsigned int i;
 	Client *c;
 
@@ -659,6 +671,10 @@ void map_event(xcb_generic_event_t *ev)
 		return;
 	}
 	free(wa);
+
+	log_info("Mapping request for window <%d>", me->window);
+
+	c = create_client(me->window);
 
 	if (xcb_ewmh_get_wm_window_type_reply(ewmh,
 				xcb_ewmh_get_wm_window_type(ewmh, me->window),
@@ -675,24 +691,21 @@ void map_event(xcb_generic_event_t *ev)
 				|| a == ewmh->_NET_WM_WINDOW_TYPE_POPUP_MENU
 				|| a == ewmh->_NET_WM_WINDOW_TYPE_TOOLTIP
 				|| a == ewmh->_NET_WM_WINDOW_TYPE_DIALOG) {
-				floating = true;
+				c->is_floating = true;
 			}
 		}
 	}
 
 
-	log_info("Mapping request for window <%d>", me->window);
-	/* Rule stuff needs to be here. */
-	c = create_client(me->window);
-
 	/* Assume that transient windows MUST float. */
 	xcb_icccm_get_wm_transient_for_reply(dpy, xcb_icccm_get_wm_transient_for_unchecked(dpy, me->window), &transient, NULL);
 	c->is_transient = transient ? true : false;
-	c->is_floating = c->is_transient || floating;
+	if (c->is_transient)
+		c->is_floating = true;
 
 	geom = xcb_get_geometry_reply(dpy, xcb_get_geometry_unchecked(dpy, me->window), NULL);
 	if (geom) {
-		log_info("Mapped client's initial geom is %ux%u+%d+%d\n", geom->width, geom->height, geom->x, geom->y);
+		log_info("Mapped client's initial geom is %ux%u+%d+%d", geom->width, geom->height, geom->x, geom->y);
 		if (c->is_floating) {
 			c->w = geom->width > 1 ? geom->width : FLOAT_SPAWN_WIDTH;
 			c->h = geom->height > 1 ? geom->height : FLOAT_SPAWN_HEIGHT;
@@ -703,18 +716,15 @@ void map_event(xcb_generic_event_t *ev)
 	}
 
 	grab_buttons(c);
-	arrange_windows();
 	xcb_map_window(dpy, c->win);
+	apply_rules(c);
+	arrange_windows();
 	update_focused_client(c);
 }
 
 /**
  * @brief Search workspaces for a window, returning the client that it belongs
  * to.
- *
- * During searching, the current workspace is changed so that all workspaces
- * can be searched. Upon finding the client, the original workspace is
- * restored.
  *
  * @param win A valid XCB window that is used when searching all clients across
  * all desktops.
@@ -724,14 +734,12 @@ void map_event(xcb_generic_event_t *ev)
 Client *find_client_by_win(xcb_window_t win)
 {
 	bool found;
-	int w = 1, cur_ws = cw;
+	int w = 1;
 	Client *c = NULL;
 
-	for (found = false; w < WORKSPACES && !found; ++w)
+	for (found = false; w <= WORKSPACES && !found; w++)
 		for (c = wss[w].head; c && !(found = (win == c->win)); c = c->next)
 			;
-	if (cur_ws != w)
-		cw = cur_ws;
 	return c;
 }
 
@@ -778,16 +786,18 @@ xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym)
  *
  * @param c The client which needs to have its previous found.
  *
+ * @param ws The workspace that the client is on.
+ *
  * @return The previous client, so long as the given client isn't NULL and
  * there is more than one client. Else, NULL.
  */
-Client *prev_client(Client *c)
+Client *prev_client(Client *c, int ws)
 {
 	Client *p = NULL;
 
-	if (!c || !wss[cw].head || !wss[cw].head->next)
+	if (!c || !wss[ws].head || !wss[ws].head->next)
 		return NULL;
-	for (p = wss[cw].head; p->next && p->next != c; p = p->next)
+	for (p = wss[ws].head; p->next && p->next != c; p = p->next)
 		;
 	return p;
 }
@@ -912,6 +922,9 @@ void move_resize(xcb_window_t win,
  * @brief Sets c to the active window and gives it input focus. Sorts out
  * border colours as well.
  *
+ * WARNING: Do NOT use this to focus a client on another workspace. Instead,
+ * set wss[ws].current to the client that you want focused.
+ *
  * @param c The client that is currently in focus.
  */
 void update_focused_client(Client *c)
@@ -926,8 +939,7 @@ void update_focused_client(Client *c)
 		xcb_delete_property(dpy, screen->root, ewmh->_NET_ACTIVE_WINDOW);
 		return;
 	} else if (c == wss[cw].prev_foc) {
-		wss[cw].current = (wss[cw].prev_foc ? wss[cw].prev_foc : wss[cw].head);
-		wss[cw].prev_foc = prev_client(wss[cw].current);
+		wss[cw].prev_foc = prev_client(wss[cw].current = wss[cw].prev_foc, cw);
 	} else if (c != wss[cw].current) {
 		wss[cw].prev_foc = wss[cw].current;
 		wss[cw].current = c;
@@ -1191,6 +1203,7 @@ int get_non_tff_count(void)
 static Client *get_first_non_tff(void)
 {
 	Client *c = NULL;
+
 	for (c = wss[cw].head; c && FFT(c); c = c->next)
 		;
 	return c;
@@ -1227,7 +1240,7 @@ void remove_client(Client *c)
 	Client **temp = NULL;
 	int w = 1;
 
-	for (; w <= WORKSPACES; ++w)
+	for (; w <= WORKSPACES; w++)
 		for (temp = &wss[w].head; *temp; temp = &(*temp)->next)
 			if (*temp == c)
 				goto found;
@@ -1237,13 +1250,12 @@ found:
 	*temp = c->next;
 	log_info("Removing client <%p>", c);
 	if (c == wss[w].prev_foc)
-		wss[w].prev_foc = prev_client(wss[w].current);
+		wss[w].prev_foc = prev_client(wss[w].current, w);
 	if (c == wss[w].current || !wss[w].head->next)
-		wss[w].current = NULL;
-		update_focused_client(wss[w].prev_foc);
+		wss[w].current = wss[w].prev_foc ? wss[w].prev_foc : wss[w].head;
 	free(c);
 	c = NULL;
-	wss[cw].client_cnt--;
+	wss[w].client_cnt--;
 }
 
 /**
@@ -1290,7 +1302,7 @@ void enter_event(xcb_generic_event_t *ev)
  */
 void move_down(Client *c)
 {
-	Client *prev = prev_client(c);
+	Client *prev = prev_client(c, cw);
 	Client *n = (c->next) ? c->next : wss[cw].head;
 
 	if (!c)
@@ -1317,7 +1329,7 @@ void move_down(Client *c)
  */
 void move_up(Client *c)
 {
-	Client *p = prev_client(c);
+	Client *p = prev_client(c, cw);
 	Client *pp = NULL;
 
 	if (!c)
@@ -1365,7 +1377,7 @@ void focus_prev_client(const Arg *arg)
 		return;
 	log_info("Focusing previous client");
 	wss[cw].prev_foc = wss[cw].current;
-	update_focused_client(prev_client(wss[cw].prev_foc));
+	update_focused_client(prev_client(wss[cw].prev_foc, cw));
 }
 
 /**
@@ -1627,13 +1639,13 @@ void move_client(int cnt, bool up)
 	if (up) {
 		if (wss[cw].current == wss[cw].head)
 			return;
-		c = prev_client(wss[cw].current);
+		c = prev_client(wss[cw].current, cw);
 		/* TODO optimise this by inserting the client only once
 			* and in the correct location.*/
 		for (; cnt > 0; move_down(c), cnt--)
 			;
 	} else {
-		if (wss[cw].current == prev_client(wss[cw].head))
+		if (wss[cw].current == prev_client(wss[cw].head, cw))
 			return;
 		cntcopy = cnt;
 		for (c = wss[cw].current; cntcopy > 0; c = next_client(c), cntcopy--)
@@ -1671,37 +1683,42 @@ void move_current_up(const Arg *arg)
  * @param c The client to be moved.
  * @param ws The ws that the client should be moved to.
  */
-void client_to_ws(Client *c, const int ws)
+void client_to_ws(Client *c, const int ws, bool follow)
 {
 	Client *last;
-	Client *prev = prev_client(c);
+	Client *prev = prev_client(c, cw);
 
 	/* Performed for the current workspace. */
 	if (!c || ws == cw)
 		return;
 	/* Target workspace. */
-	last = prev_client(wss[ws].head);
+	last = prev_client(wss[ws].head, ws);
 	if (!wss[ws].head)
 		wss[ws].head = c;
 	else if (last)
 		last->next = c;
 	else
 		wss[ws].head->next = c;
+	wss[ws].current = c;
+	wss[ws].client_cnt++;
 
 	/* Current workspace. */
 	if (c == wss[cw].head || !prev)
 		wss[cw].head = c->next;
 	else
 		prev->next = c->next;
+	wss[cw].current = prev;
+	wss[cw].client_cnt--;
+
 	c->next = NULL;
 	xcb_unmap_window(dpy, c->win);
-	update_focused_client(wss[cw].prev_foc);
+
 	log_info("Moved client <%p> from <%d> to <%d>", c, cw, ws);
-	if (FOLLOW_SPAWN) {
+	if (follow) {
+		wss[ws].current = c;
 		change_ws(&(Arg){ .i = ws });
-		update_focused_client(c);
 	} else {
-		arrange_windows();
+		update_focused_client(prev);
 	}
 }
 
@@ -1713,7 +1730,7 @@ void client_to_ws(Client *c, const int ws)
 void current_to_ws(const Arg *arg)
 {
 
-	client_to_ws(wss[cw].current, arg->i);
+	client_to_ws(wss[cw].current, arg->i, FOLLOW_MOVE);
 }
 
 /**
@@ -1730,10 +1747,10 @@ int correct_ws(int ws)
 {
 	if (ws > WORKSPACES)
 		return ws - WORKSPACES;
-	else if (ws < 1)
+	if (ws < 1)
 		return ws + WORKSPACES;
-	else
-		return ws;
+
+	return ws;
 }
 
 /**
@@ -2243,7 +2260,7 @@ static void toggle_bar(const Arg *arg)
 Client *create_client(xcb_window_t w)
 {
 	Client *c = (Client *)calloc(1, sizeof(Client));
-	Client *t = prev_client(wss[cw].head); /* Get the last element. */
+	Client *t = prev_client(wss[cw].head, cw); /* Get the last element. */
 	uint32_t vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
 				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0)};
 
@@ -2355,7 +2372,6 @@ static void set_fullscreen(Client *c, bool fscr)
 		arrange_windows();
 		draw_clients();
 	}
-	update_focused_client(c);
 }
 
 static void set_urgent(Client *c, bool urg)
@@ -2572,7 +2588,7 @@ static void op_cut(const unsigned int type, int cnt)
 {
 	Client *tail = wss[cw].current;
 	Client *head = wss[cw].current;
-	Client *head_prev = prev_client(wss[cw].current);
+	Client *head_prev = prev_client(wss[cw].current, cw);
 	bool wrap = false;
 
 	if (!head)
@@ -2603,8 +2619,13 @@ static void op_cut(const unsigned int type, int cnt)
 		xcb_unmap_window(dpy, head->win);
 		wss[cw].client_cnt--;
 		while (cnt > 1) {
-			if (!tail->next && next_client(tail))
+			if (!tail->next && next_client(tail)) {
 				wrap = true;
+				/* Join the list into a circular linked list,
+				 * just for now so that we don't miss any
+				 * clients. */
+				tail->next = next_client(tail);
+			}
 			if (tail == wss[cw].prev_foc)
 				wss[cw].prev_foc = NULL;
 			tail = next_client(tail);
@@ -2612,11 +2633,6 @@ static void op_cut(const unsigned int type, int cnt)
 			cnt--;
 			wss[cw].client_cnt--;
 		}
-
-		/* If cnt was greater than 1 and we have reached the end of the
-		 * client list, we need to make it "circular".*/
-		if (tail != head && head->next == NULL)
-			head->next = next_client(head);
 
 		if (head == wss[cw].head) {
 			wss[cw].head = head == next_client(tail) ? NULL : next_client(tail);
@@ -2641,9 +2657,9 @@ static void op_cut(const unsigned int type, int cnt)
  */
 static void focus_urgent(const Arg *arg)
 {
+	UNUSED(arg);
 	Client *c;
 	int w;
-	UNUSED(arg);
 
 	for (w = 1; w <= WORKSPACES; w++)
 		for (c = wss[w].head; c && !c->is_urgent; c = c->next)
@@ -2666,6 +2682,7 @@ static void paste(const Arg *arg)
 	UNUSED(arg);
 	Client *head = stack_pop(&del_reg);
 	Client *t, *c = head;
+
 	if (!head) {
 		log_warn("No clients on stack.");
 		return;
@@ -2678,6 +2695,7 @@ static void paste(const Arg *arg)
 			xcb_map_window(dpy, c->win);
 			wss[cw].current = c;
 			c = c->next;
+			wss[cw].client_cnt++;
 		}
 	} else if (!wss[cw].current->next) {
 		wss[cw].current->next = head;
@@ -2685,12 +2703,14 @@ static void paste(const Arg *arg)
 			xcb_map_window(dpy, c->win);
 			wss[cw].current = c;
 			c = c->next;
+			wss[cw].client_cnt++;
 		}
 	} else {
 		t = wss[cw].current->next;
 		wss[cw].current->next = head;
 		while (c) {
 			xcb_map_window(dpy, c->win);
+			wss[cw].client_cnt++;
 			if (!c->next) {
 				c->next = t;
 				wss[cw].current = c;
@@ -2702,5 +2722,102 @@ static void paste(const Arg *arg)
 		}
 	}
 	xcb_flush(dpy);
+	update_focused_client(wss[cw].current);
+}
+
+/**
+ * @brief Set the properties of a client that has just been created,
+ * according to the rules defined in the config file.
+ *
+ * @param c The client that has been created.
+ */
+static void apply_rules(Client *c)
+{
+	xcb_icccm_get_wm_class_reply_t wc;
+	unsigned int i;
+
+	if (xcb_icccm_get_wm_class_reply(dpy, xcb_icccm_get_wm_class(dpy,
+					c->win), &wc, NULL)) {
+		for (i = 0; i < LENGTH(rules); i++) {
+			if (strstr(wc.instance_name, rules[i].class)
+					|| strstr(wc.class_name, rules[i].class)) {
+				c->is_floating = rules[i].is_floating;
+				c->is_fullscreen = rules[i].is_fullscreen;
+				client_to_ws(c, rules[i].ws == 0 ? cw
+						: rules[i].ws, rules[i].follow);
+				break;
+			}
+		}
+	}
+	xcb_icccm_get_wm_class_reply_wipe(&wc);
+}
+
+/**
+ * @brief Send a client to the scratchpad and unmap it.
+ *
+ * @param arg Unused.
+ */
+void send_to_scratchpad(const Arg *arg)
+{
+	UNUSED(arg);
+	Client *c = wss[cw].current;
+
+	if (scratchpad || !c)
+		return;
+
+	log_info("Sending client <%p> to scratchpad", c);
+	if (prev_client(c, cw))
+		prev_client(c, cw)->next = c->next;
+
+	/* TODO: This should be in a reusable function. */
+	if (c == wss[cw].prev_foc)
+		wss[cw].prev_foc = prev_client(wss[cw].current, cw);
+	if (c == wss[cw].current || !wss[cw].head->next)
+		wss[cw].current = wss[cw].prev_foc ? wss[cw].prev_foc : wss[cw].head;
+	if (c == wss[cw].head) {
+		wss[cw].head = c->next;
+		wss[cw].current = c->next;
+	}
+
+	xcb_unmap_window(dpy, c->win);
+	wss[cw].client_cnt--;
+	update_focused_client(wss[cw].current);
+	scratchpad = c;
+}
+
+/**
+ * @brief Get a client from the scratchpad, attach it as the last item in the
+ * client list and set it to float.
+ *
+ * @param arg Unused.
+ */
+void get_from_scratchpad(const Arg *arg)
+{
+	UNUSED(arg);
+	if (!scratchpad)
+		return;
+
+	/* TODO: This should be in a reusable function. */
+	if (!wss[cw].head)
+		wss[cw].head = scratchpad;
+	else if (!wss[cw].head->next)
+		wss[cw].head->next = scratchpad;
+	else
+		prev_client(wss[cw].head, cw)->next = scratchpad;
+
+
+	wss[cw].prev_foc = wss[cw].current;
+	wss[cw].current = scratchpad;
+
+	scratchpad = NULL;
+	wss[cw].client_cnt++;
+
+	wss[cw].current->is_floating = true;
+	wss[cw].current->w = SCRATCHPAD_WIDTH;
+	wss[cw].current->h = SCRATCHPAD_HEIGHT;
+	wss[cw].current->x = (screen_width / 2) - (wss[cw].current->w / 2);
+	wss[cw].current->y = (screen_height - wss[cw].bar_height - wss[cw].current->h) / 2;
+
+	xcb_map_window(dpy, wss[cw].current->win);
 	update_focused_client(wss[cw].current);
 }

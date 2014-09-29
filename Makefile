@@ -114,6 +114,12 @@ install:
 	@echo "Installing to $(DESTDIR)$(INSTALL_PREFIX)/bin"
 	@install -m 0755 $(BIN_PATH)/$(BIN_NAME) $(DESTDIR)$(INSTALL_PREFIX)/bin
 
+.PHONY: check
+check:
+	@echo "Using checkpatch.pl to check style."
+	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE -f howm.c
+	
+
 # Removes all build files
 .PHONY: clean
 clean:
