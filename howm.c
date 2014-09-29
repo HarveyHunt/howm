@@ -726,10 +726,6 @@ void map_event(xcb_generic_event_t *ev)
  * @brief Search workspaces for a window, returning the client that it belongs
  * to.
  *
- * During searching, the current workspace is changed so that all workspaces
- * can be searched. Upon finding the client, the original workspace is
- * restored.
- *
  * @param win A valid XCB window that is used when searching all clients across
  * all desktops.
  *
@@ -738,14 +734,12 @@ void map_event(xcb_generic_event_t *ev)
 Client *find_client_by_win(xcb_window_t win)
 {
 	bool found;
-	int w = 1, cur_ws = cw;
+	int w = 1;
 	Client *c = NULL;
 
 	for (found = false; w <= WORKSPACES && !found; w++)
 		for (c = wss[w].head; c && !(found = (win == c->win)); c = c->next)
 			;
-	if (cur_ws != w)
-		cw = cur_ws;
 	return c;
 }
 
