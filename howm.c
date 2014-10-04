@@ -237,7 +237,7 @@ static void focus_prev_client(const Arg *arg);
 static void update_focused_client(Client *c);
 static Client *prev_client(Client *c, int ws);
 static Client *create_client(xcb_window_t w);
-static void remove_client(Client *c);
+static void remove_client(Client *c, bool refocus);
 static Client *find_client_by_win(xcb_window_t w);
 static void client_to_ws(Client *c, const int ws, bool follow);
 static void current_to_ws(const Arg *arg);
@@ -1231,7 +1231,7 @@ void destroy_event(xcb_generic_event_t *ev)
 	if (!c)
 		return;
 	log_info("Client <%p> wants to be destroyed", c);
-	remove_client(c);
+	remove_client(c, true);
 	arrange_windows();
 }
 
@@ -1239,8 +1239,11 @@ void destroy_event(xcb_generic_event_t *ev)
  * @brief Remove a client from its workspace client list.
  *
  * @param c The client to be removed.
+ *
+ * @param refocus Whether the clients should be rearranged and focus be
+ * updated.
  */
-void remove_client(Client *c)
+void remove_client(Client *c, bool refocus)
 {
 	Client **temp = NULL;
 	int w = 1;
@@ -1256,8 +1259,11 @@ found:
 	log_info("Removing client <%p>", c);
 	if (c == wss[w].prev_foc)
 		wss[w].prev_foc = prev_client(wss[w].current, w);
-	if (c == wss[w].current || !wss[w].head->next)
+	if (c == wss[w].current || !wss[w].head->next) {
 		wss[w].current = wss[w].prev_foc ? wss[w].prev_foc : wss[w].head;
+		if (refocus)
+			update_focused_client(wss[w].current);
+	}
 	free(c);
 	c = NULL;
 	wss[w].client_cnt--;
@@ -1581,9 +1587,7 @@ void kill_client(const int ws, bool arrange)
 	if (!found)
 		xcb_kill_client(dpy, wss[ws].current->win);
 	log_info("Killing Client <%p>", wss[ws].current);
-	remove_client(wss[ws].current);
-	if (arrange)
-		arrange_windows();
+	remove_client(wss[ws].current, arrange);
 }
 
 /**
@@ -1863,7 +1867,7 @@ void unmap_event(xcb_generic_event_t *ev)
 	log_info("Received unmap request for client <%p>", c);
 
 	if (!ue->event == screen->root) {
-		remove_client(c);
+		remove_client(c, true);
 		arrange_windows();
 	}
 	howm_info();
@@ -2418,7 +2422,7 @@ static void client_message_event(xcb_generic_event_t *ev)
 			ewmh_process_wm_state(c, (xcb_atom_t) cm->data.data32[2], cm->data.data32[0]);
 	} else if (c && cm->type == ewmh->_NET_CLOSE_WINDOW) {
 		log_info("_NET_CLOSE_WINDOW: Removing client <%p>", c);
-		remove_client(c);
+		remove_client(c, true);
 		arrange_windows();
 	} else if (c && cm->type == ewmh->_NET_ACTIVE_WINDOW) {
 		log_info("_NET_ACTIVE_WINDOW: Focusing client <%p>", c);
