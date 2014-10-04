@@ -2753,8 +2753,8 @@ static void apply_rules(Client *c)
 				break;
 			}
 		}
+		xcb_icccm_get_wm_class_reply_wipe(&wc);
 	}
-	xcb_icccm_get_wm_class_reply_wipe(&wc);
 }
 
 /**
