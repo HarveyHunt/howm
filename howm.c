@@ -500,7 +500,8 @@ int main(int argc, char *argv[])
 	UNUSED(argc);
 	UNUSED(argv);
 	fd_set descs;
-	int sock_fd, dpy_fd;
+	int sock_fd, dpy_fd, cmd_fd, n;
+	char data[1024] = {0};
 	xcb_generic_event_t *ev;
 
 	dpy = xcb_connect(NULL, NULL);
@@ -521,32 +522,42 @@ int main(int argc, char *argv[])
 		FD_SET(sock_fd, &descs);
 
 		if (select(MAX_FD(dpy_fd, sock_fd), &descs, NULL, NULL, NULL) > 0) {
+			if (FD_ISSET(sock_fd, &descs)) {
+				cmd_fd = accept(sock_fd, NULL, 0);
+				if (cmd_fd == -1) {
+					log_err("Failed to accept connection");
+					continue;
+				}
+				n = recv(cmd_fd, data, sizeof(data) - 1, 0);
+				if (n > 0) {
+					data[n] = '\0';
+					/* TODO: Handle commands here. */
+					printf("%s\n", data);
+				}
+			}
+
 			if (FD_ISSET(dpy_fd, &descs)) {
-				/* TODO: Add socket receiving code here. */
+				ev = xcb_wait_for_event(dpy);
+				if (ev && handler[ev->response_type & ~0x80])
+					handler[ev->response_type & ~0x80](ev);
+				else
+					log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
+				free(ev);
 			}
 		}
-
-		if (FD_ISSET(dpy_fd, &descs)) {
-			ev = xcb_wait_for_event(dpy);
-			if (ev && handler[ev->response_type & ~0x80])
-				handler[ev->response_type & ~0x80](ev);
-			else
-				log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
-			free(ev);
-		}
-
 	}
 
+	cleanup();
+	xcb_disconnect(dpy);
+	close(sock_fd);
+
 	if (!running && !restart) {
-		cleanup();
-		xcb_disconnect(dpy);
 		return retval;
 	} else if (!running && restart) {
-		cleanup();
-		xcb_disconnect(dpy);
 		char *const argv[] = {HOWM_PATH, NULL};
 
 		execv(argv[0], argv);
+		return EXIT_SUCCESS;
 	}
 	return EXIT_FAILURE;
 }
