@@ -1,9 +1,12 @@
 #include <err.h>
 #include <errno.h>
+#include <sys/select.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <sys/un.h>
 #include <unistd.h>
 #include <X11/keysym.h>
 #include <X11/X.h>
@@ -309,6 +312,7 @@ static xcb_keysym_t keycode_to_keysym(xcb_keycode_t keycode);
 static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action);
 
 /* Misc */
+static void ipc_init(void);
 static void apply_rules(Client *c);
 static void howm_info(void);
 static void save_last_ocm(void (*op) (const unsigned int, int), const unsigned int type, int cnt);
@@ -431,6 +435,7 @@ static struct replay_state rep_state;
  */
 void setup(void)
 {
+	ipc_init();
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (!screen)
 		log_err("Can't acquire the default screen.");
@@ -493,6 +498,8 @@ int main(int argc, char *argv[])
 {
 	UNUSED(argc);
 	UNUSED(argv);
+	fd_set descs;
+	int sock_fd, dpy_fd;
 	xcb_generic_event_t *ev;
 
 	dpy = xcb_connect(NULL, NULL);
@@ -502,6 +509,7 @@ int main(int argc, char *argv[])
 	}
 	setup();
 	check_other_wm();
+	dpy_fd = xcb_get_file_descriptor(dpy);
 	while (running && !xcb_connection_has_error(dpy)) {
 		if (!xcb_flush(dpy))
 			log_err("Failed to flush X connection");
@@ -2829,4 +2837,31 @@ void get_from_scratchpad(const Arg *arg)
 
 	xcb_map_window(dpy, wss[cw].current->win);
 	update_focused_client(wss[cw].current);
+}
+
+static void ipc_init(void)
+{
+	struct sockaddr_un addr;
+	int sock_fd;
+
+	memset(&addr, 0, sizeof(addr));
+	addr.sun_family = AF_UNIX;
+	snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", SOCK_PATH);
+	unlink(SOCK_PATH);
+	sock_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+
+	if (sock_fd == -1) {
+		log_err("Couldn't create the socket.");
+		exit(EXIT_FAILURE);
+	}
+
+	if (bind(sock_fd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
+		log_err("Couldn't bind a name to the socket.");
+		exit(EXIT_FAILURE);
+	}
+
+	if (listen(sock_fd, 1) == -1) {
+		log_err("Listening error.");
+		exit(EXIT_FAILURE);
+	}
 }

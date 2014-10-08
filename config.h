@@ -82,6 +82,8 @@
 #define SCRATCHPAD_HEIGHT 500
 /** The width of the floating scratchpad window. */
 #define SCRATCHPAD_WIDTH 500
+/** The path that howm's unix socket is at. */
+#define SOCK_PATH "/tmp/howm"
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
