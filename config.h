@@ -84,6 +84,8 @@
 #define SCRATCHPAD_WIDTH 500
 /** The path that howm's unix socket is at. */
 #define SOCK_PATH "/tmp/howm"
+/** The size of the socket buffer. */
+#define IPC_BUF_SIZE 1024
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",

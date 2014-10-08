@@ -182,6 +182,16 @@ typedef struct {
 	Client *current; /**< The client that is currently in focus. */
 } Workspace;
 
+typedef struct {
+	char *name; /**< The function's name. */
+	void (*func)(const Arg *); /**< The function to be called when a command
+				     comes in from the socket. */
+	void (*operator)(const unsigned int type, const int cnt); /**< The
+			operator to be called when a command comes in from
+			the socket. */
+	int argc; /**< The amount of args this command expects. */
+} Command;
+
 /**
  * @brief Represents the last command (and its arguments) or the last
  * combination of operator, count and motion (ocm).
@@ -315,6 +325,8 @@ static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action);
 
 /* Misc */
 static int ipc_init(void);
+static void ipc_process_cmd(char *msg);
+static int ipc_arg_to_int(char *arg);
 static void apply_rules(Client *c);
 static void howm_info(void);
 static void save_last_ocm(void (*op) (const unsigned int, int), const unsigned int type, int cnt);
@@ -363,6 +375,10 @@ static void(*layout_handler[]) (void) = {
 };
 
 #include "config.h"
+
+static Command commands[] = {
+	{"resize_master", resize_master, NULL, 1}
+};
 
 static void (*operator_func)(const unsigned int type, int cnt);
 
@@ -500,9 +516,14 @@ int main(int argc, char *argv[])
 	UNUSED(argc);
 	UNUSED(argv);
 	fd_set descs;
-	int sock_fd, dpy_fd, cmd_fd, n;
-	char data[1024] = {0};
+	int sock_fd, dpy_fd, cmd_fd;
+	ssize_t n;
 	xcb_generic_event_t *ev;
+	char *data = calloc(IPC_BUF_SIZE, sizeof(char));
+	if (!data){
+		log_err("Can't allocate memory for socket buffer.");
+		exit(EXIT_FAILURE);
+	}
 
 	dpy = xcb_connect(NULL, NULL);
 	if (xcb_connection_has_error(dpy)) {
@@ -528,11 +549,10 @@ int main(int argc, char *argv[])
 					log_err("Failed to accept connection");
 					continue;
 				}
-				n = recv(cmd_fd, data, sizeof(data) - 1, 0);
+				n = recv(cmd_fd, data, IPC_BUF_SIZE - 1, 0);
 				if (n > 0) {
 					data[n] = '\0';
-					/* TODO: Handle commands here. */
-					printf("%s\n", data);
+					ipc_process_cmd(data);
 				}
 			}
 
@@ -550,6 +570,7 @@ int main(int argc, char *argv[])
 	cleanup();
 	xcb_disconnect(dpy);
 	close(sock_fd);
+	free(data);
 
 	if (!running && !restart) {
 		return retval;
@@ -2894,4 +2915,33 @@ static int ipc_init(void)
 	}
 
 	return sock_fd;
+}
+
+static void ipc_process_cmd(char *msg)
+{
+	unsigned int i;
+	char *func_name = msg;
+	char *arg = strchr(msg, 0) + 1;
+	char *arg2 = strchr(arg, 0) + 1;
+
+	for (i = 0; i < LENGTH(commands); i++)
+		if (strcmp(func_name, commands[i].name) == 0)
+			if (commands[i].argc == 1 && arg)
+				commands[i].func(&(Arg){ .i = ipc_arg_to_int(arg) });
+			if (commands[i].argc == 2 && arg && *arg2 == 'w')
+				commands[i].operator(ipc_arg_to_int(arg), WORKSPACE);
+			if (commands[i].argc == 2 && arg && *arg2 == 'c')
+				commands[i].operator(ipc_arg_to_int(arg), CLIENT);
+}
+
+static int ipc_arg_to_int(char *arg)
+	/* TODO: Only handles positive numbers. */
+{
+	if (strlen(arg) == 1 && '0' < *arg && *arg <= '9') {
+		return *arg - '0';
+	} else if (strlen(arg) == 2 && '0' < arg[0] && arg[0] <= '9'
+			&& '0' <= arg[1] && arg[1] <= '9')
+		return 10 * (arg[0] - '0') + (arg[1] - '0');
+	else
+		return 0;
 }
