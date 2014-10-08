@@ -48,6 +48,8 @@
 #define FFT(c) (c->is_transient || c->is_floating || c->is_fullscreen)
 /** Supresses the unused variable compiler warnings. */
 #define UNUSED(x) (void)(x)
+/** Determine which file descriptor is the largest and add one to it. */
+#define MAX_FD(x, y) ((x) > (y) ? (x + 1) : (y + 1))
 
 /** The remove action for a WM_STATE request. */
 #define _NET_WM_STATE_REMOVE 0
@@ -312,7 +314,7 @@ static xcb_keysym_t keycode_to_keysym(xcb_keycode_t keycode);
 static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action);
 
 /* Misc */
-static void ipc_init(void);
+static int ipc_init(void);
 static void apply_rules(Client *c);
 static void howm_info(void);
 static void save_last_ocm(void (*op) (const unsigned int, int), const unsigned int type, int cnt);
@@ -435,7 +437,6 @@ static struct replay_state rep_state;
  */
 void setup(void)
 {
-	ipc_init();
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (!screen)
 		log_err("Can't acquire the default screen.");
@@ -507,19 +508,35 @@ int main(int argc, char *argv[])
 		log_err("Can't open X connection");
 		exit(EXIT_FAILURE);
 	}
+	sock_fd = ipc_init();
 	setup();
 	check_other_wm();
 	dpy_fd = xcb_get_file_descriptor(dpy);
-	while (running && !xcb_connection_has_error(dpy)) {
+	while (running) {
 		if (!xcb_flush(dpy))
 			log_err("Failed to flush X connection");
-		ev = xcb_wait_for_event(dpy);
-		if (ev && handler[ev->response_type & ~0x80])
-			handler[ev->response_type & ~0x80](ev);
-		else
-			log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
-		free(ev);
+
+		FD_ZERO(&descs);
+		FD_SET(dpy_fd, &descs);
+		FD_SET(sock_fd, &descs);
+
+		if (select(MAX_FD(dpy_fd, sock_fd), &descs, NULL, NULL, NULL) > 0) {
+			if (FD_ISSET(dpy_fd, &descs)) {
+				/* TODO: Add socket receiving code here. */
+			}
+		}
+
+		if (FD_ISSET(dpy_fd, &descs)) {
+			ev = xcb_wait_for_event(dpy);
+			if (ev && handler[ev->response_type & ~0x80])
+				handler[ev->response_type & ~0x80](ev);
+			else
+				log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
+			free(ev);
+		}
+
 	}
+
 	if (!running && !restart) {
 		cleanup();
 		xcb_disconnect(dpy);
@@ -2839,7 +2856,7 @@ void get_from_scratchpad(const Arg *arg)
 	update_focused_client(wss[cw].current);
 }
 
-static void ipc_init(void)
+static int ipc_init(void)
 {
 	struct sockaddr_un addr;
 	int sock_fd;
@@ -2864,4 +2881,6 @@ static void ipc_init(void)
 		log_err("Listening error.");
 		exit(EXIT_FAILURE);
 	}
+
+	return sock_fd;
 }
