@@ -25,6 +25,8 @@ DLINK_FLAGS =
 DESTDIR = /
 # Install path (bin/ is appended automatically)
 INSTALL_PREFIX = usr/local
+# Xsession entries path
+XSESSION_PREFIX = usr/share
 #### END PROJECT SETTINGS ####
 
 # Generally should not need to edit below this line
@@ -113,6 +115,8 @@ dirs:
 install:
 	@echo "Installing to $(DESTDIR)$(INSTALL_PREFIX)/bin"
 	@install -m 0755 $(BIN_PATH)/$(BIN_NAME) $(DESTDIR)$(INSTALL_PREFIX)/bin
+	@install -d -m 0755 $(DESTDIR)$(XSESSION_PREFIX)/xsessions
+	@install -m 0644 howm.xsession.desktop $(DESTDIR)$(XSESSION_PREFIX)/xsessions/howm.desktop
 
 .PHONY: check
 check:

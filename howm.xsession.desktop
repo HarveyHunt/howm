@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=howm
+Comment=A lightweight, X11 tiling window manager that behaves like vim
+Exec=howm
+TryExec=howm
+Type=XSession
+X-LightDM-DesktopName=howm
