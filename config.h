@@ -218,7 +218,6 @@ static Workspace wss[] = {
 	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT}
 };
 
-_Static_assert(MASTER_RATIO > 0 && MASTER_RATIO < 1, "MASTER_RATIO should be between 0 and 1.");
 _Static_assert(WORKSPACES >= 1, "WORKSPACES must be at least 1.");
 _Static_assert(DEFAULT_WORKSPACE > 0 && DEFAULT_WORKSPACE <= WORKSPACES, "DEFAULT_WORKSPACE must be between 1 and WORKSPACES.");
 _Static_assert(GAP >= 0, "GAP can't be negative.");

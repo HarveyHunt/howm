@@ -32,7 +32,7 @@ XSESSION_PREFIX = usr/share
 # Generally should not need to edit below this line
 
 # Verbose option, to output compile and link commands
-export V = false
+export V = true
 export CMD_PREFIX = @
 ifeq ($(V),true)
 	CMD_PREFIX =
@@ -121,7 +121,7 @@ install:
 .PHONY: check
 check:
 	@echo "Using checkpatch.pl to check style."
-	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE -f {howm.c,config.h}
+	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE -f howm.c
 	
 
 # Removes all build files
