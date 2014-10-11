@@ -2230,7 +2230,7 @@ static void resize_master(const Arg *arg)
 	if (wss[cw].master_ratio + change >= 1
 			|| wss[cw].master_ratio + change <= 0.1)
 		return;
-	log_info("Resizing master_ratio from <%f.2> to <%f.2>", wss[cw].master_ratio, wss[cw].master_ratio + change);
+	log_info("Resizing master_ratio from <%.2f> to <%.2f>", wss[cw].master_ratio, wss[cw].master_ratio + change);
 	wss[cw].master_ratio += change;
 	arrange_windows();
 }
