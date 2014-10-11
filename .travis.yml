@@ -21,3 +21,4 @@ notifications:
         template:
             - "%{repository}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
             - "Build details : %{build_url}"
+        on_success: never
