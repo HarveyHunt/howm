@@ -384,34 +384,34 @@ static void(*layout_handler[]) (void) = {
 static Command commands[] = {
 	{"resize_master", resize_master, NULL, 1, TYPE_INT},
 	{"change_layout", change_layout, NULL, 1, TYPE_INT},
-	{"next_layout", next_layout, NULL, 1, TYPE_INT},
-	{"previous_layout", previous_layout, NULL, 1, TYPE_INT},
-	{"last_layout", last_layout, NULL, 1, TYPE_INT},
+	{"next_layout", next_layout, NULL, 0, TYPE_INT},
+	{"previous_layout", previous_layout, NULL, 0, TYPE_INT},
+	{"last_layout", last_layout, NULL, 0, TYPE_INT},
 	{"change_mode", change_mode, NULL, 1, TYPE_INT},
-	{"toggle_float", toggle_float, NULL, 1, TYPE_INT},
-	{"toggle_fullscreen", toggle_fullscreen, NULL, 1, TYPE_INT},
+	{"toggle_float", toggle_float, NULL, 0, TYPE_INT},
+	{"toggle_fullscreen", toggle_fullscreen, NULL, 0, TYPE_INT},
 	{"quit_howm", quit_howm, NULL, 1, TYPE_INT},
 	{"restart_howm", restart_howm, NULL, 1, TYPE_INT},
 	{"resize_master", resize_master, NULL, 1, TYPE_INT},
-	{"toggle_bar", toggle_bar, NULL, 1, TYPE_INT},
-	{"replay", replay, NULL, 1, TYPE_INT},
-	{"paste", paste, NULL, 1, TYPE_INT},
-	{"send_to_scratchpad", send_to_scratchpad, NULL, 1, TYPE_INT},
-	{"get_from_scratchpad", get_from_scratchpad, NULL, 1, TYPE_INT},
+	{"toggle_bar", toggle_bar, NULL, 0, TYPE_INT},
+	{"replay", replay, NULL, 0, TYPE_INT},
+	{"paste", paste, NULL, 0, TYPE_INT},
+	{"send_to_scratchpad", send_to_scratchpad, NULL, 0, TYPE_INT},
+	{"get_from_scratchpad", get_from_scratchpad, NULL, 0, TYPE_INT},
 	{"resize_float_height", resize_float_height, NULL, 1, TYPE_INT},
 	{"resize_float_width", resize_float_width, NULL, 1, TYPE_INT},
 	{"move_float_x", move_float_x, NULL, 1, TYPE_INT},
 	{"move_float_y", move_float_y, NULL, 1, TYPE_INT},
 	{"teleport_client", teleport_client, NULL, 1, TYPE_INT},
-	{"focus_urgent", focus_urgent, NULL, 1, TYPE_INT},
-	{"focus_prev_client", focus_prev_client, NULL, 1, TYPE_INT},
-	{"focus_next_client", focus_next_client, NULL, 1, TYPE_INT},
-	{"move_current_up", move_current_up, NULL, 1, TYPE_INT},
-	{"move_current_down", move_current_down, NULL, 1, TYPE_INT},
-	{"focus_last_ws", focus_last_ws, NULL, 1, TYPE_INT},
-	{"focus_next_ws", focus_next_ws, NULL, 1, TYPE_INT},
-	{"focus_prev_ws", focus_prev_ws, NULL, 1, TYPE_INT},
-	{"make_master", make_master, NULL, 1, TYPE_INT},
+	{"focus_urgent", focus_urgent, NULL, 0, TYPE_INT},
+	{"focus_prev_client", focus_prev_client, NULL, 0, TYPE_INT},
+	{"focus_next_client", focus_next_client, NULL, 0, TYPE_INT},
+	{"move_current_up", move_current_up, NULL, 0, TYPE_INT},
+	{"move_current_down", move_current_down, NULL, 0, TYPE_INT},
+	{"focus_last_ws", focus_last_ws, NULL, 0, TYPE_INT},
+	{"focus_next_ws", focus_next_ws, NULL, 0, TYPE_INT},
+	{"focus_prev_ws", focus_prev_ws, NULL, 0, TYPE_INT},
+	{"make_master", make_master, NULL, 0, TYPE_INT},
 	{"change_ws", change_ws, NULL, 1, TYPE_INT},
 	{"current_to_ws", current_to_ws, NULL, 1, TYPE_INT},
 	{"spawn", spawn, NULL, 1, TYPE_CMD},
@@ -2971,7 +2971,6 @@ static int ipc_process_cmd(char *msg, int len)
 	unsigned int i;
 	bool found = false;
 	int err = IPC_ERR_NONE;
-	/* TODO: Add error handling. */
 	char **args = ipc_process_args(msg, len, &err);
 
 	if (err != IPC_ERR_NONE)
@@ -2980,6 +2979,8 @@ static int ipc_process_cmd(char *msg, int len)
 	for (i = 0; i < LENGTH(commands); i++)
 		if (strcmp(args[0], commands[i].name) == 0) {
 			found = true;
+			if (commands[i].argc == 0)
+				commands[i].func(&(Arg){ NULL });
 			if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_INT)
 				commands[i].func(&(Arg){ .i = ipc_arg_to_int(args[1], &err) });
 			else if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_CMD)
@@ -3072,7 +3073,7 @@ static char **ipc_process_args(char *msg, int len, int *err)
 	 * Use argc here as args are zero indexed. */
 	args[argc] = NULL;
 
-	if (argc <= 1) {
+	if (argc < 1) {
 		*err = IPC_ERR_TOO_FEW_ARGS;
 		free(args);
 		return NULL;
