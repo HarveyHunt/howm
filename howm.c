@@ -2967,13 +2967,25 @@ static int ipc_init(void)
 	return sock_fd;
 }
 
+/**
+ * @brief Receive a char array from a UNIX socket  and subsequently call a
+ * function, passing the args from within msg.
+ *
+ * @param msg A char array from the UNIX socket. In the form:
+ *
+ * COMMAND\0ARG1\0ARG2\0 ....
+ *
+ * @param len The length of the msg.
+ *
+ * @return The error code, as set by this function itself or those that it
+ * calls.
+ */
 static int ipc_process_cmd(char *msg, int len)
 {
 	unsigned int i;
 	bool found = false;
 	int err = IPC_ERR_NONE;
 	char **args = ipc_process_args(msg, len, &err);
-	printf("%p\n", args);
 
 	if (err != IPC_ERR_NONE)
 		goto end;
@@ -2984,7 +2996,7 @@ static int ipc_process_cmd(char *msg, int len)
 			if (commands[i].argc == 0) {
 				commands[i].func(&(Arg){ NULL });
 				break;
-			} if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_INT) {
+			} else if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_INT) {
 				commands[i].func(&(Arg){ .i = ipc_arg_to_int(args[1], &err) });
 				break;
 			} else if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_CMD) {
@@ -3013,6 +3025,19 @@ end:
 	return err;
 }
 
+/**
+ * @brief Convert a numerical string into a decimal value, such as "12"
+ * becoming 12.
+ *
+ * Minus signs are handled. It is assumed that a two digit number won't start
+ * with a zero. Args with more than two digits will not be accepted, nor will
+ * args that aren't numerical.
+ *
+ * @param arg The string to be converted.
+ * @param err Where errors are reported.
+ *
+ * @return The decimal representation of arg.
+ */
 static int ipc_arg_to_int(char *arg, int *err)
 {
 	int sign = 1;
@@ -3039,6 +3064,22 @@ static int ipc_arg_to_int(char *arg, int *err)
 	}
 }
 
+/**
+ * @brief Accepts a char array and convert it into an array of strings.
+ *
+ * msg is split into strings (delimited by a null character) and placed in an
+ * array. err is set with a corresponding error (such as args too few args), or
+ * nothing.
+ *
+ * XXX: args must be freed by the caller.
+ *
+ * @param msg A char array that is read from a UNIX socket.
+ * @param len The length of data in msg.
+ * @param err Where any errors will be stored.
+ *
+ * @return A pointer to an array of strings, each one representing an argument
+ * that has been passed over a UNIX socket.
+ */
 static char **ipc_process_args(char *msg, int len, int *err)
 {
 	int argc = 0, i = 0, arg_start = 0, lim = 2;
