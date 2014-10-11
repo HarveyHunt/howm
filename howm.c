@@ -520,7 +520,8 @@ int main(int argc, char *argv[])
 	ssize_t n;
 	xcb_generic_event_t *ev;
 	char *data = calloc(IPC_BUF_SIZE, sizeof(char));
-	if (!data){
+
+	if (!data) {
 		log_err("Can't allocate memory for socket buffer.");
 		exit(EXIT_FAILURE);
 	}
@@ -2924,6 +2925,8 @@ static void ipc_process_cmd(char *msg)
 	char *arg = strchr(msg, 0) + 1;
 	char *arg2 = strchr(arg, 0) + 1;
 
+	log_info("Received %s %s %s over IPC", func_name, arg, arg2);
+
 	for (i = 0; i < LENGTH(commands); i++)
 		if (strcmp(func_name, commands[i].name) == 0)
 			if (commands[i].argc == 1 && arg)
@@ -2935,13 +2938,18 @@ static void ipc_process_cmd(char *msg)
 }
 
 static int ipc_arg_to_int(char *arg)
-	/* TODO: Only handles positive numbers. */
 {
+	int sign = 1;
+
+	if (arg[0] == '-') {
+		sign = -1;
+		arg++;
+	}
 	if (strlen(arg) == 1 && '0' < *arg && *arg <= '9') {
-		return *arg - '0';
+		return sign * (*arg - '0');
 	} else if (strlen(arg) == 2 && '0' < arg[0] && arg[0] <= '9'
 			&& '0' <= arg[1] && arg[1] <= '9')
-		return 10 * (arg[0] - '0') + (arg[1] - '0');
+		return sign * (10 * (arg[0] - '0') + (arg[1] - '0'));
 	else
 		return 0;
 }
