@@ -522,7 +522,7 @@ int main(int argc, char *argv[])
 	UNUSED(argc);
 	UNUSED(argv);
 	fd_set descs;
-	int sock_fd, dpy_fd, cmd_fd;
+	int sock_fd, dpy_fd, cmd_fd, ret;
 	ssize_t n;
 	xcb_generic_event_t *ev;
 	char *data = calloc(IPC_BUF_SIZE, sizeof(char));
@@ -559,7 +559,11 @@ int main(int argc, char *argv[])
 				n = recv(cmd_fd, data, IPC_BUF_SIZE - 1, 0);
 				if (n > 0) {
 					data[n] = '\0';
-					ipc_process_cmd(data, n);
+					ret = ipc_process_cmd(data, n);
+					if (write(cmd_fd, &ret, sizeof(int)) == -1) {
+						log_err("Unable to send response. errno: %d", errno);
+					}
+					close(cmd_fd);
 				}
 			}
 
@@ -2927,6 +2931,7 @@ static int ipc_init(void)
 static int ipc_process_cmd(char *msg, int len)
 {
 	unsigned int i;
+	bool found = false;
 	int err = IPC_ERR_NONE;
 	/* TODO: Add error handling. */
 	char **args = ipc_process_args(msg, len, &err);
@@ -2936,6 +2941,7 @@ static int ipc_process_cmd(char *msg, int len)
 
 	for (i = 0; i < LENGTH(commands); i++)
 		if (strcmp(args[0], commands[i].name) == 0) {
+			found = true;
 			if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_INT)
 				commands[i].func(&(Arg){ .i = ipc_arg_to_int(args[1], &err) });
 			else if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_CMD)
@@ -2944,7 +2950,10 @@ static int ipc_process_cmd(char *msg, int len)
 				commands[i].operator(ipc_arg_to_int(args[1], &err), WORKSPACE);
 			else if (commands[i].argc == 2 && args[1] && *args[2] == 'c')
 				commands[i].operator(ipc_arg_to_int(args[1], &err), CLIENT);
+			else
+				return IPC_ERR_SYNTAX;
 		}
+	return found == true ? err : IPC_ERR_NO_CMD;
 }
 
 static int ipc_arg_to_int(char *arg, int *err)
