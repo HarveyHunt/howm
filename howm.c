@@ -2930,6 +2930,7 @@ static int ipc_process_cmd(char *msg, int len)
 	int err = IPC_ERR_NONE;
 	/* TODO: Add error handling. */
 	char **args = ipc_process_args(msg, len, &err);
+
 	if (err != IPC_ERR_NONE)
 		return err;
 
@@ -2982,7 +2983,7 @@ static char **ipc_process_args(char *msg, int len, int *err)
 		return NULL;
 	}
 
-	for(; i < len; i++) {
+	for (; i < len; i++) {
 		if (msg[i] == 0) {
 			args[argc++] = msg + arg_start;
 			arg_start = i + 1;
@@ -2990,6 +2991,7 @@ static char **ipc_process_args(char *msg, int len, int *err)
 			if (argc == lim) {
 				lim *= 2;
 				char **new = realloc(args, lim * sizeof(char *));
+
 				if (!new) {
 					*err = IPC_ERR_ALLOC;
 					return NULL;
@@ -2999,8 +3001,10 @@ static char **ipc_process_args(char *msg, int len, int *err)
 		}
 	}
 
+	/* Make room to add the NULL after the last character. */
 	if (argc == lim) {
 		char **new = realloc(args, (lim + 1) * sizeof(char *));
+
 		if (!new) {
 			*err = IPC_ERR_ALLOC;
 			return NULL;
