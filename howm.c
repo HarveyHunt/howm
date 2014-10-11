@@ -325,7 +325,7 @@ static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action);
 
 /* Misc */
 static int ipc_init(void);
-static void ipc_process_cmd(char *msg, int len);
+static int ipc_process_cmd(char *msg, int len);
 static char **ipc_process_args(char *msg, int len, int *err);
 static int ipc_arg_to_int(char *arg, int *err);
 static void apply_rules(Client *c);
@@ -355,8 +355,8 @@ enum net_atom_enum { NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
 	NET_ACTIVE_WINDOW };
 enum wm_atom_enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
 enum teleport_locations { TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT };
-enum ipc_err { IPC_ERR_SYNTAX, IPC_ERR_ALLOC, IPC_ERR_NO_CMD, IPC_ERR_TOO_MANY_ARGS,
-	IPC_ERR_TOO_FEW_ARGS };
+enum ipc_err { IPC_ERR_NONE, IPC_ERR_SYNTAX, IPC_ERR_ALLOC, IPC_ERR_NO_CMD, IPC_ERR_TOO_MANY_ARGS,
+	IPC_ERR_TOO_FEW_ARGS, IPC_ERR_ARG_NOT_INT, IPC_ERR_ARG_TOO_LARGE };
 
 /* Handlers */
 static void(*handler[XCB_NO_OPERATION]) (xcb_generic_event_t *) = {
@@ -2921,12 +2921,14 @@ static int ipc_init(void)
 	return sock_fd;
 }
 
-static void ipc_process_cmd(char *msg, int len)
+static int ipc_process_cmd(char *msg, int len)
 {
 	unsigned int i;
 	int err;
 	/* TODO: Add error handling. */
 	char **args = ipc_process_args(msg, len, &err);
+	if (err != IPC_ERR_NONE)
+		return err;
 
 	for (i = 0; i < LENGTH(commands); i++)
 		if (strcmp(args[0], commands[i].name) == 0)
@@ -2940,20 +2942,28 @@ static void ipc_process_cmd(char *msg, int len)
 
 static int ipc_arg_to_int(char *arg, int *err)
 {
-	/* TODO: Add error handling. */
 	int sign = 1;
 
 	if (arg[0] == '-') {
 		sign = -1;
 		arg++;
 	}
+
 	if (strlen(arg) == 1 && '0' < *arg && *arg <= '9') {
-		return sign * (*arg - '0');
-	} else if (strlen(arg) == 2 && '0' < arg[0] && arg[0] <= '9'
-			&& '0' <= arg[1] && arg[1] <= '9')
-		return sign * (10 * (arg[0] - '0') + (arg[1] - '0'));
-	else
+		if ('0' <= *arg && *arg <= '9')
+			return sign * (*arg - '0');
+		*err = IPC_ERR_ARG_NOT_INT;
 		return 0;
+	} else if (strlen(arg) == 2 && '0' < arg[0] && arg[0] <= '9'
+			&& '0' <= arg[1] && arg[1] <= '9') {
+		if ('0' < arg[0] && arg[0] <= '9' && '0' <= arg[1] && arg[1] <= '9')
+			return sign * (10 * (arg[0] - '0') + (arg[1] - '0'));
+		*err = IPC_ERR_ARG_NOT_INT;
+		return 0;
+	} else {
+		*err = IPC_ERR_ARG_TOO_LARGE;
+		return 0;
+	}
 }
 
 static char **ipc_process_args(char *msg, int len, int *err)
