@@ -3007,10 +3007,10 @@ static int ipc_process_cmd(char *msg, int len)
 				commands[i].func(&(Arg){ .cmd = args });
 				break;
 			} else if (commands[i].argc == 2 && args[1] && *args[2] == 'w') {
-				commands[i].operator(ipc_arg_to_int(args[1], &err), WORKSPACE);
+				commands[i].operator(WORKSPACE, ipc_arg_to_int(args[1], &err));
 				break;
 			} else if (commands[i].argc == 2 && args[1] && *args[2] == 'c') {
-				commands[i].operator(ipc_arg_to_int(args[1], &err), CLIENT);
+				commands[i].operator(CLIENT, ipc_arg_to_int(args[1], &err));
 				break;
 			} else {
 				err = IPC_ERR_SYNTAX;
