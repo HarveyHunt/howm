@@ -190,6 +190,7 @@ typedef struct {
 			operator to be called when a command comes in from
 			the socket. */
 	int argc; /**< The amount of args this command expects. */
+	int arg_type; /**< The argument's type for commands that use the union Arg. */
 } Command;
 
 /**
@@ -355,8 +356,9 @@ enum net_atom_enum { NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
 	NET_ACTIVE_WINDOW };
 enum wm_atom_enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
 enum teleport_locations { TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT };
-enum ipc_err { IPC_ERR_NONE, IPC_ERR_SYNTAX, IPC_ERR_ALLOC, IPC_ERR_NO_CMD, IPC_ERR_TOO_MANY_ARGS,
+enum ipc_errs { IPC_ERR_NONE, IPC_ERR_SYNTAX, IPC_ERR_ALLOC, IPC_ERR_NO_CMD, IPC_ERR_TOO_MANY_ARGS,
 	IPC_ERR_TOO_FEW_ARGS, IPC_ERR_ARG_NOT_INT, IPC_ERR_ARG_TOO_LARGE };
+enum arg_types {TYPE_INT, TYPE_CMD};
 
 /* Handlers */
 static void(*handler[XCB_NO_OPERATION]) (xcb_generic_event_t *) = {
@@ -380,7 +382,8 @@ static void(*layout_handler[]) (void) = {
 #include "config.h"
 
 static Command commands[] = {
-	{"resize_master", resize_master, NULL, 1}
+	{"resize_master", resize_master, NULL, 1, TYPE_INT},
+	{"spawn", spawn, NULL, 1, TYPE_CMD}
 };
 
 static void (*operator_func)(const unsigned int type, int cnt);
@@ -2924,20 +2927,23 @@ static int ipc_init(void)
 static int ipc_process_cmd(char *msg, int len)
 {
 	unsigned int i;
-	int err;
+	int err = IPC_ERR_NONE;
 	/* TODO: Add error handling. */
 	char **args = ipc_process_args(msg, len, &err);
 	if (err != IPC_ERR_NONE)
 		return err;
 
 	for (i = 0; i < LENGTH(commands); i++)
-		if (strcmp(args[0], commands[i].name) == 0)
-			if (commands[i].argc == 1 && args[1])
+		if (strcmp(args[0], commands[i].name) == 0) {
+			if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_INT)
 				commands[i].func(&(Arg){ .i = ipc_arg_to_int(args[1], &err) });
-			if (commands[i].argc == 2 && args[1] && *args[2] == 'w')
+			else if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_CMD)
+				commands[i].func(&(Arg){ .cmd = ++args });
+			else if (commands[i].argc == 2 && args[1] && *args[2] == 'w')
 				commands[i].operator(ipc_arg_to_int(args[1], &err), WORKSPACE);
-			if (commands[i].argc == 2 && args[1] && *args[2] == 'c')
+			else if (commands[i].argc == 2 && args[1] && *args[2] == 'c')
 				commands[i].operator(ipc_arg_to_int(args[1], &err), CLIENT);
+		}
 }
 
 static int ipc_arg_to_int(char *arg, int *err)
@@ -2991,8 +2997,22 @@ static char **ipc_process_args(char *msg, int len, int *err)
 				args = new;
 			}
 		}
-
 	}
+
+	if (argc == lim) {
+		char **new = realloc(args, (lim + 1) * sizeof(char *));
+		if (!new) {
+			*err = IPC_ERR_ALLOC;
+			return NULL;
+		}
+		args = new;
+	}
+
+	/* The end of the array should be NULL, as the whole array can be passed to
+	 * spawn() and that expects a NULL terminated array.
+	 *
+	 * Use argc here as args are zero indexed. */
+	args[argc] = NULL;
 
 	if (argc <= 1) {
 		*err = IPC_ERR_TOO_FEW_ARGS;
