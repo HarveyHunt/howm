@@ -325,8 +325,9 @@ static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action);
 
 /* Misc */
 static int ipc_init(void);
-static void ipc_process_cmd(char *msg);
-static int ipc_arg_to_int(char *arg);
+static void ipc_process_cmd(char *msg, int len);
+static char **ipc_process_args(char *msg, int len, int *err);
+static int ipc_arg_to_int(char *arg, int *err);
 static void apply_rules(Client *c);
 static void howm_info(void);
 static void save_last_ocm(void (*op) (const unsigned int, int), const unsigned int type, int cnt);
@@ -354,6 +355,8 @@ enum net_atom_enum { NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
 	NET_ACTIVE_WINDOW };
 enum wm_atom_enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
 enum teleport_locations { TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT };
+enum ipc_err { IPC_ERR_SYNTAX, IPC_ERR_ALLOC, IPC_ERR_NO_CMD, IPC_ERR_TOO_MANY_ARGS,
+	IPC_ERR_TOO_FEW_ARGS };
 
 /* Handlers */
 static void(*handler[XCB_NO_OPERATION]) (xcb_generic_event_t *) = {
@@ -553,7 +556,7 @@ int main(int argc, char *argv[])
 				n = recv(cmd_fd, data, IPC_BUF_SIZE - 1, 0);
 				if (n > 0) {
 					data[n] = '\0';
-					ipc_process_cmd(data);
+					ipc_process_cmd(data, n);
 				}
 			}
 
@@ -2918,27 +2921,26 @@ static int ipc_init(void)
 	return sock_fd;
 }
 
-static void ipc_process_cmd(char *msg)
+static void ipc_process_cmd(char *msg, int len)
 {
 	unsigned int i;
-	char *func_name = msg;
-	char *arg = strchr(msg, 0) + 1;
-	char *arg2 = strchr(arg, 0) + 1;
-
-	log_info("Received %s %s %s over IPC", func_name, arg, arg2);
+	int err;
+	/* TODO: Add error handling. */
+	char **args = ipc_process_args(msg, len, &err);
 
 	for (i = 0; i < LENGTH(commands); i++)
-		if (strcmp(func_name, commands[i].name) == 0)
-			if (commands[i].argc == 1 && arg)
-				commands[i].func(&(Arg){ .i = ipc_arg_to_int(arg) });
-			if (commands[i].argc == 2 && arg && *arg2 == 'w')
-				commands[i].operator(ipc_arg_to_int(arg), WORKSPACE);
-			if (commands[i].argc == 2 && arg && *arg2 == 'c')
-				commands[i].operator(ipc_arg_to_int(arg), CLIENT);
+		if (strcmp(args[0], commands[i].name) == 0)
+			if (commands[i].argc == 1 && args[1])
+				commands[i].func(&(Arg){ .i = ipc_arg_to_int(args[1], &err) });
+			if (commands[i].argc == 2 && args[1] && *args[2] == 'w')
+				commands[i].operator(ipc_arg_to_int(args[1], &err), WORKSPACE);
+			if (commands[i].argc == 2 && args[1] && *args[2] == 'c')
+				commands[i].operator(ipc_arg_to_int(args[1], &err), CLIENT);
 }
 
-static int ipc_arg_to_int(char *arg)
+static int ipc_arg_to_int(char *arg, int *err)
 {
+	/* TODO: Add error handling. */
 	int sign = 1;
 
 	if (arg[0] == '-') {
@@ -2952,4 +2954,41 @@ static int ipc_arg_to_int(char *arg)
 		return sign * (10 * (arg[0] - '0') + (arg[1] - '0'));
 	else
 		return 0;
+}
+
+static char **ipc_process_args(char *msg, int len, int *err)
+{
+	int argc = 0, i = 0, arg_start = 0, lim = 2;
+	char **args = malloc(lim * sizeof(char *));
+
+	if (!args) {
+		*err = IPC_ERR_ALLOC;
+		return NULL;
+	}
+
+	for(; i < len; i++) {
+		if (msg[i] == 0) {
+			args[argc++] = msg + arg_start;
+			arg_start = i + 1;
+
+			if (argc == lim) {
+				lim *= 2;
+				char **new = realloc(args, lim * sizeof(char *));
+				if (!new) {
+					*err = IPC_ERR_ALLOC;
+					return NULL;
+				}
+				args = new;
+			}
+		}
+
+	}
+
+	if (argc <= 1) {
+		*err = IPC_ERR_TOO_FEW_ARGS;
+		free(args);
+		return NULL;
+	}
+
+	return args;
 }
