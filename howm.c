@@ -556,17 +556,15 @@ int main(int argc, char *argv[])
 					log_err("Failed to accept connection");
 					continue;
 				}
-				n = recv(cmd_fd, data, IPC_BUF_SIZE - 1, 0);
+				n = read(cmd_fd, data, IPC_BUF_SIZE - 1);
 				if (n > 0) {
 					data[n] = '\0';
 					ret = ipc_process_cmd(data, n);
-					if (write(cmd_fd, &ret, sizeof(int)) == -1) {
+					if (write(cmd_fd, &ret, sizeof(int)) == -1)
 						log_err("Unable to send response. errno: %d", errno);
-					}
 					close(cmd_fd);
 				}
 			}
-
 			if (FD_ISSET(dpy_fd, &descs)) {
 				ev = xcb_wait_for_event(dpy);
 				if (ev && handler[ev->response_type & ~0x80])
@@ -2937,7 +2935,7 @@ static int ipc_process_cmd(char *msg, int len)
 	char **args = ipc_process_args(msg, len, &err);
 
 	if (err != IPC_ERR_NONE)
-		return err;
+		goto end;
 
 	for (i = 0; i < LENGTH(commands); i++)
 		if (strcmp(args[0], commands[i].name) == 0) {
@@ -2950,10 +2948,17 @@ static int ipc_process_cmd(char *msg, int len)
 				commands[i].operator(ipc_arg_to_int(args[1], &err), WORKSPACE);
 			else if (commands[i].argc == 2 && args[1] && *args[2] == 'c')
 				commands[i].operator(ipc_arg_to_int(args[1], &err), CLIENT);
-			else
-				return IPC_ERR_SYNTAX;
+			else {
+				err = IPC_ERR_SYNTAX;
+				goto end;
+			}
 		}
-	return found == true ? err : IPC_ERR_NO_CMD;
+	err = found == true ? err : IPC_ERR_NO_CMD;
+	goto end;
+
+end:
+	free(args);
+	return err;
 }
 
 static int ipc_arg_to_int(char *arg, int *err)
