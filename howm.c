@@ -606,12 +606,13 @@ int main(int argc, char *argv[])
 				}
 			}
 			if (FD_ISSET(dpy_fd, &descs)) {
-				ev = xcb_wait_for_event(dpy);
-				if (ev && handler[ev->response_type & ~0x80])
-					handler[ev->response_type & ~0x80](ev);
-				else
-					log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
-				free(ev);
+				while ((ev = xcb_poll_for_event(dpy)) != NULL) {
+					if (ev && handler[ev->response_type & ~0x80])
+						handler[ev->response_type & ~0x80](ev);
+					else
+						log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
+					free(ev);
+				}
 			}
 		}
 	}
@@ -2979,17 +2980,22 @@ static int ipc_process_cmd(char *msg, int len)
 	for (i = 0; i < LENGTH(commands); i++)
 		if (strcmp(args[0], commands[i].name) == 0) {
 			found = true;
-			if (commands[i].argc == 0)
+			if (commands[i].argc == 0) {
 				commands[i].func(&(Arg){ NULL });
-			if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_INT)
+				break;
+			} if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_INT) {
 				commands[i].func(&(Arg){ .i = ipc_arg_to_int(args[1], &err) });
-			else if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_CMD)
+				break;
+			} else if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_CMD) {
 				commands[i].func(&(Arg){ .cmd = ++args });
-			else if (commands[i].argc == 2 && args[1] && *args[2] == 'w')
+				break;
+			} else if (commands[i].argc == 2 && args[1] && *args[2] == 'w') {
 				commands[i].operator(ipc_arg_to_int(args[1], &err), WORKSPACE);
-			else if (commands[i].argc == 2 && args[1] && *args[2] == 'c')
+				break;
+			} else if (commands[i].argc == 2 && args[1] && *args[2] == 'c') {
 				commands[i].operator(ipc_arg_to_int(args[1], &err), CLIENT);
-			else {
+				break;
+			} else {
 				err = IPC_ERR_SYNTAX;
 				goto end;
 			}
