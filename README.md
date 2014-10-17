@@ -18,6 +18,7 @@ Contents
 =====
 * [Contributing](CONTRIBUTING.md)
 * [Configuration](#configuration)
+* [Cottage] (https://github.com/HarveyHunt/cottage)
 * [Rules](#rules)
 * [Scratchpad](#scratchpad)
 * [Motions](#motions)
@@ -207,6 +208,18 @@ Can be from 0 to 1.
 * **SCRATCHPAD_HEIGHT**: The height of the floating scratchpad window.
 ```
 #define SCRATCHPAD_HEIGHT 500
+```
+
+* **SOCK_PATH**: The path at which howm's unix socket should be created. This should match the socket path used in cottage.
+
+```
+#define SOCK_PATH "/tmp/howm"
+```
+
+* **IPC_BUF_SIZE**: The size of howm's socket buffer.
+
+```
+#define IPC_BUF_SIZE 1024
 ```
 
 ##Rules
