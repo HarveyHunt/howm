@@ -2986,6 +2986,7 @@ static int ipc_process_cmd(char *msg, int len)
 	bool found = false;
 	int err = IPC_ERR_NONE;
 	char **args = ipc_process_args(msg, len, &err);
+	char **old_args = args;
 
 	if (err != IPC_ERR_NONE)
 		goto end;
@@ -3000,11 +3001,8 @@ static int ipc_process_cmd(char *msg, int len)
 				commands[i].func(&(Arg){ .i = ipc_arg_to_int(args[1], &err) });
 				break;
 			} else if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_CMD) {
-				/* TODO: This needs to be args[1:]. args[0] is
-				 * the func name "spawn". Using arg++ causes
-				 * pointer weirdness and, ultimately, a
-				 * segfault.*/
-				commands[i].func(&(Arg){ .cmd = args });
+				commands[i].func(&(Arg){ .cmd = ++args });
+				args = old_args;
 				break;
 			} else if (commands[i].argc == 2 && args[1] && *args[2] == 'w') {
 				commands[i].operator(WORKSPACE, ipc_arg_to_int(args[1], &err));
