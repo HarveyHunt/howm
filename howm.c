@@ -614,6 +614,10 @@ int main(int argc, char *argv[])
 					free(ev);
 				}
 			}
+			if (xcb_connection_has_error(dpy)) {
+				log_err("XCB connection encountered an error.");
+				running = false;
+			}
 		}
 	}
 
