@@ -1,9 +1,12 @@
 #include <err.h>
 #include <errno.h>
+#include <sys/select.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <sys/un.h>
 #include <unistd.h>
 #include <X11/keysym.h>
 #include <X11/X.h>
@@ -45,6 +48,8 @@
 #define FFT(c) (c->is_transient || c->is_floating || c->is_fullscreen)
 /** Supresses the unused variable compiler warnings. */
 #define UNUSED(x) (void)(x)
+/** Determine which file descriptor is the largest and add one to it. */
+#define MAX_FD(x, y) ((x) > (y) ? (x + 1) : (y + 1))
 
 /** The remove action for a WM_STATE request. */
 #define _NET_WM_STATE_REMOVE 0
@@ -176,6 +181,17 @@ typedef struct {
 				* the linked list structure. */
 	Client *current; /**< The client that is currently in focus. */
 } Workspace;
+
+typedef struct {
+	char *name; /**< The function's name. */
+	void (*func)(const Arg *); /**< The function to be called when a command
+				     comes in from the socket. */
+	void (*operator)(const unsigned int type, const int cnt); /**< The
+			operator to be called when a command comes in from
+			the socket. */
+	int argc; /**< The amount of args this command expects. */
+	int arg_type; /**< The argument's type for commands that use the union Arg. */
+} Command;
 
 /**
  * @brief Represents the last command (and its arguments) or the last
@@ -309,6 +325,10 @@ static xcb_keysym_t keycode_to_keysym(xcb_keycode_t keycode);
 static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action);
 
 /* Misc */
+static int ipc_init(void);
+static int ipc_process_cmd(char *msg, int len);
+static char **ipc_process_args(char *msg, int len, int *err);
+static int ipc_arg_to_int(char *arg, int *err);
 static void apply_rules(Client *c);
 static void howm_info(void);
 static void save_last_ocm(void (*op) (const unsigned int, int), const unsigned int type, int cnt);
@@ -336,6 +356,9 @@ enum net_atom_enum { NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
 	NET_ACTIVE_WINDOW };
 enum wm_atom_enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
 enum teleport_locations { TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT };
+enum ipc_errs { IPC_ERR_NONE, IPC_ERR_SYNTAX, IPC_ERR_ALLOC, IPC_ERR_NO_CMD, IPC_ERR_TOO_MANY_ARGS,
+	IPC_ERR_TOO_FEW_ARGS, IPC_ERR_ARG_NOT_INT, IPC_ERR_ARG_TOO_LARGE };
+enum arg_types {TYPE_IGNORE, TYPE_INT, TYPE_CMD};
 
 /* Handlers */
 static void(*handler[XCB_NO_OPERATION]) (xcb_generic_event_t *) = {
@@ -357,6 +380,51 @@ static void(*layout_handler[]) (void) = {
 };
 
 #include "config.h"
+
+static Command commands[] = {
+	{"resize_master", resize_master, NULL, 1, TYPE_INT},
+	{"change_layout", change_layout, NULL, 1, TYPE_INT},
+	{"next_layout", next_layout, NULL, 0, TYPE_INT},
+	{"previous_layout", previous_layout, NULL, 0, TYPE_INT},
+	{"last_layout", last_layout, NULL, 0, TYPE_INT},
+	{"change_mode", change_mode, NULL, 1, TYPE_INT},
+	{"toggle_float", toggle_float, NULL, 0, TYPE_INT},
+	{"toggle_fullscreen", toggle_fullscreen, NULL, 0, TYPE_INT},
+	{"quit_howm", quit_howm, NULL, 1, TYPE_INT},
+	{"restart_howm", restart_howm, NULL, 1, TYPE_INT},
+	{"resize_master", resize_master, NULL, 1, TYPE_INT},
+	{"toggle_bar", toggle_bar, NULL, 0, TYPE_INT},
+	{"replay", replay, NULL, 0, TYPE_INT},
+	{"paste", paste, NULL, 0, TYPE_INT},
+	{"send_to_scratchpad", send_to_scratchpad, NULL, 0, TYPE_INT},
+	{"get_from_scratchpad", get_from_scratchpad, NULL, 0, TYPE_INT},
+	{"resize_float_height", resize_float_height, NULL, 1, TYPE_INT},
+	{"resize_float_width", resize_float_width, NULL, 1, TYPE_INT},
+	{"move_float_x", move_float_x, NULL, 1, TYPE_INT},
+	{"move_float_y", move_float_y, NULL, 1, TYPE_INT},
+	{"teleport_client", teleport_client, NULL, 1, TYPE_INT},
+	{"focus_urgent", focus_urgent, NULL, 0, TYPE_INT},
+	{"focus_prev_client", focus_prev_client, NULL, 0, TYPE_INT},
+	{"focus_next_client", focus_next_client, NULL, 0, TYPE_INT},
+	{"move_current_up", move_current_up, NULL, 0, TYPE_INT},
+	{"move_current_down", move_current_down, NULL, 0, TYPE_INT},
+	{"focus_last_ws", focus_last_ws, NULL, 0, TYPE_INT},
+	{"focus_next_ws", focus_next_ws, NULL, 0, TYPE_INT},
+	{"focus_prev_ws", focus_prev_ws, NULL, 0, TYPE_INT},
+	{"make_master", make_master, NULL, 0, TYPE_INT},
+	{"change_ws", change_ws, NULL, 1, TYPE_INT},
+	{"current_to_ws", current_to_ws, NULL, 1, TYPE_INT},
+	{"spawn", spawn, NULL, 1, TYPE_CMD},
+
+	{"op_kill", NULL, op_kill, 2, TYPE_IGNORE},
+	{"op_move_up", NULL, op_move_up, 2, TYPE_IGNORE},
+	{"op_move_down", NULL, op_move_down, 2, TYPE_IGNORE},
+	{"op_shrink_gaps", NULL, op_shrink_gaps, 2, TYPE_IGNORE},
+	{"op_grow_gaps", NULL, op_grow_gaps, 2, TYPE_IGNORE},
+	{"op_cut", NULL, op_cut, 2, TYPE_IGNORE},
+	{"op_focus_down", NULL, op_focus_down, 2, TYPE_IGNORE},
+	{"op_focus_up", NULL, op_focus_up, 2, TYPE_IGNORE}
+};
 
 static void (*operator_func)(const unsigned int type, int cnt);
 
@@ -493,35 +561,78 @@ int main(int argc, char *argv[])
 {
 	UNUSED(argc);
 	UNUSED(argv);
+	fd_set descs;
+	int sock_fd, dpy_fd, cmd_fd, ret;
+	ssize_t n;
 	xcb_generic_event_t *ev;
+	char *data = calloc(IPC_BUF_SIZE, sizeof(char));
+
+	if (!data) {
+		log_err("Can't allocate memory for socket buffer.");
+		exit(EXIT_FAILURE);
+	}
 
 	dpy = xcb_connect(NULL, NULL);
 	if (xcb_connection_has_error(dpy)) {
 		log_err("Can't open X connection");
 		exit(EXIT_FAILURE);
 	}
+	sock_fd = ipc_init();
 	setup();
 	check_other_wm();
-	while (running && !xcb_connection_has_error(dpy)) {
+	dpy_fd = xcb_get_file_descriptor(dpy);
+	while (running) {
 		if (!xcb_flush(dpy))
 			log_err("Failed to flush X connection");
-		ev = xcb_wait_for_event(dpy);
-		if (ev && handler[ev->response_type & ~0x80])
-			handler[ev->response_type & ~0x80](ev);
-		else
-			log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
-		free(ev);
+
+		FD_ZERO(&descs);
+		FD_SET(dpy_fd, &descs);
+		FD_SET(sock_fd, &descs);
+
+		if (select(MAX_FD(dpy_fd, sock_fd), &descs, NULL, NULL, NULL) > 0) {
+			if (FD_ISSET(sock_fd, &descs)) {
+				cmd_fd = accept(sock_fd, NULL, 0);
+				if (cmd_fd == -1) {
+					log_err("Failed to accept connection");
+					continue;
+				}
+				n = read(cmd_fd, data, IPC_BUF_SIZE - 1);
+				if (n > 0) {
+					data[n] = '\0';
+					ret = ipc_process_cmd(data, n);
+					if (write(cmd_fd, &ret, sizeof(int)) == -1)
+						log_err("Unable to send response. errno: %d", errno);
+					close(cmd_fd);
+				}
+			}
+			if (FD_ISSET(dpy_fd, &descs)) {
+				while ((ev = xcb_poll_for_event(dpy)) != NULL) {
+					if (ev && handler[ev->response_type & ~0x80])
+						handler[ev->response_type & ~0x80](ev);
+					else
+						log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
+					free(ev);
+				}
+			}
+			if (xcb_connection_has_error(dpy)) {
+				log_err("XCB connection encountered an error.");
+				running = false;
+			}
+		}
 	}
+
+	cleanup();
+	xcb_disconnect(dpy);
+	close(sock_fd);
+	free(data);
+
 	if (!running && !restart) {
-		cleanup();
-		xcb_disconnect(dpy);
 		return retval;
 	} else if (!running && restart) {
-		cleanup();
-		xcb_disconnect(dpy);
 		char *const argv[] = {HOWM_PATH, NULL};
 
 		execv(argv[0], argv);
+		return EXIT_SUCCESS;
 	}
 	return EXIT_FAILURE;
 }
@@ -2829,4 +2940,196 @@ void get_from_scratchpad(const Arg *arg)
 
 	xcb_map_window(dpy, wss[cw].current->win);
 	update_focused_client(wss[cw].current);
+}
+
+static int ipc_init(void)
+{
+	struct sockaddr_un addr;
+	int sock_fd;
+
+	memset(&addr, 0, sizeof(addr));
+	addr.sun_family = AF_UNIX;
+	snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", SOCK_PATH);
+	unlink(SOCK_PATH);
+	sock_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+
+	if (sock_fd == -1) {
+		log_err("Couldn't create the socket.");
+		exit(EXIT_FAILURE);
+	}
+
+	if (bind(sock_fd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
+		log_err("Couldn't bind a name to the socket.");
+		exit(EXIT_FAILURE);
+	}
+
+	if (listen(sock_fd, 1) == -1) {
+		log_err("Listening error.");
+		exit(EXIT_FAILURE);
+	}
+
+	return sock_fd;
+}
+
+/**
+ * @brief Receive a char array from a UNIX socket  and subsequently call a
+ * function, passing the args from within msg.
+ *
+ * @param msg A char array from the UNIX socket. In the form:
+ *
+ * COMMAND\0ARG1\0ARG2\0 ....
+ *
+ * @param len The length of the msg.
+ *
+ * @return The error code, as set by this function itself or those that it
+ * calls.
+ */
+static int ipc_process_cmd(char *msg, int len)
+{
+	unsigned int i;
+	bool found = false;
+	int err = IPC_ERR_NONE;
+	char **args = ipc_process_args(msg, len, &err);
+
+	if (err != IPC_ERR_NONE)
+		goto end;
+
+	for (i = 0; i < LENGTH(commands); i++)
+		if (strcmp(args[0], commands[i].name) == 0) {
+			found = true;
+			if (commands[i].argc == 0) {
+				commands[i].func(&(Arg){ NULL });
+				break;
+			} else if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_INT) {
+				commands[i].func(&(Arg){ .i = ipc_arg_to_int(args[1], &err) });
+				break;
+			} else if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_CMD) {
+				commands[i].func(&(Arg){ .cmd = args + 1 });
+				break;
+			} else if (commands[i].argc == 2 && args[1] && args[2] && *args[2] == 'w') {
+				commands[i].operator(WORKSPACE, ipc_arg_to_int(args[1], &err));
+				break;
+			} else if (commands[i].argc == 2 && args[1] && args[2] && *args[2] == 'c') {
+				commands[i].operator(CLIENT, ipc_arg_to_int(args[1], &err));
+				break;
+			} else {
+				err = IPC_ERR_SYNTAX;
+				goto end;
+			}
+		}
+	err = found == true ? err : IPC_ERR_NO_CMD;
+	goto end;
+
+end:
+	free(args);
+	return err;
+}
+
+/**
+ * @brief Convert a numerical string into a decimal value, such as "12"
+ * becoming 12.
+ *
+ * Minus signs are handled. It is assumed that a two digit number won't start
+ * with a zero. Args with more than two digits will not be accepted, nor will
+ * args that aren't numerical.
+ *
+ * @param arg The string to be converted.
+ * @param err Where errors are reported.
+ *
+ * @return The decimal representation of arg.
+ */
+static int ipc_arg_to_int(char *arg, int *err)
+{
+	int sign = 1;
+
+	if (arg[0] == '-') {
+		sign = -1;
+		arg++;
+	}
+
+	if (strlen(arg) == 1 && '0' < *arg && *arg <= '9') {
+		if ('0' <= *arg && *arg <= '9')
+			return sign * (*arg - '0');
+		*err = IPC_ERR_ARG_NOT_INT;
+		return 0;
+	} else if (strlen(arg) == 2 && '0' < arg[0] && arg[0] <= '9'
+			&& '0' <= arg[1] && arg[1] <= '9') {
+		if ('0' < arg[0] && arg[0] <= '9' && '0' <= arg[1] && arg[1] <= '9')
+			return sign * (10 * (arg[0] - '0') + (arg[1] - '0'));
+		*err = IPC_ERR_ARG_NOT_INT;
+		return 0;
+	} else {
+		*err = IPC_ERR_ARG_TOO_LARGE;
+		return 0;
+	}
+}
+
+/**
+ * @brief Accepts a char array and convert it into an array of strings.
+ *
+ * msg is split into strings (delimited by a null character) and placed in an
+ * array. err is set with a corresponding error (such as args too few args), or
+ * nothing.
+ *
+ * XXX: args must be freed by the caller.
+ *
+ * @param msg A char array that is read from a UNIX socket.
+ * @param len The length of data in msg.
+ * @param err Where any errors will be stored.
+ *
+ * @return A pointer to an array of strings, each one representing an argument
+ * that has been passed over a UNIX socket.
+ */
+static char **ipc_process_args(char *msg, int len, int *err)
+{
+	int argc = 0, i = 0, arg_start = 0, lim = 2;
+	char **args = malloc(lim * sizeof(char *));
+
+	if (!args) {
+		*err = IPC_ERR_ALLOC;
+		return NULL;
+	}
+
+	for (; i < len; i++) {
+		if (msg[i] == 0) {
+			args[argc++] = msg + arg_start;
+			arg_start = i + 1;
+
+			if (argc == lim) {
+				lim *= 2;
+				char **new = realloc(args, lim * sizeof(char *));
+
+				if (!new) {
+					*err = IPC_ERR_ALLOC;
+					return NULL;
+				}
+				args = new;
+			}
+		}
+	}
+
+	/* Make room to add the NULL after the last character. */
+	if (argc == lim) {
+		char **new = realloc(args, (lim + 1) * sizeof(char *));
+
+		if (!new) {
+			*err = IPC_ERR_ALLOC;
+			return NULL;
+		}
+		args = new;
+	}
+
+	/* The end of the array should be NULL, as the whole array can be passed to
+	 * spawn() and that expects a NULL terminated array.
+	 *
+	 * Use argc here as args are zero indexed. */
+	args[argc] = NULL;
+
+	if (argc < 1) {
+		*err = IPC_ERR_TOO_FEW_ARGS;
+		free(args);
+		return NULL;
+	}
+
+	return args;
 }
