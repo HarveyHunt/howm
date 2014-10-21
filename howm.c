@@ -721,10 +721,10 @@ void map_event(xcb_generic_event_t *ev)
 	}
 
 	grab_buttons(c);
-	xcb_map_window(dpy, c->win);
 	apply_rules(c);
 	arrange_windows();
 	update_focused_client(c);
+	xcb_map_window(dpy, c->win);
 }
 
 /**
@@ -1771,7 +1771,7 @@ void focus_window(xcb_window_t win)
 {
 	Client *c = find_client_by_win(win);
 
-	if (c && !(c == wss[cw].current))
+	if (c && c != wss[cw].current)
 		update_focused_client(c);
 	else
 		/* We don't want warnings for clicking the root window... */
