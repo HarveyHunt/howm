@@ -834,8 +834,8 @@ void map_event(xcb_generic_event_t *ev)
 	grab_buttons(c);
 	apply_rules(c);
 	arrange_windows();
-	update_focused_client(c);
 	xcb_map_window(dpy, c->win);
+	update_focused_client(c);
 }
 
 /**
