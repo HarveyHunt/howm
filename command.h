@@ -68,8 +68,11 @@ typedef union {
 } Arg;
 
 static struct replay_state rep_state;
+void (*operator_func)(const unsigned int type, int cnt);
 
 static void teleport_client(const Arg *arg);
+void save_last_ocm(void (*op) (const unsigned int, int), const unsigned int type, int cnt);
+void save_last_cmd(void (*cmd)(const Arg *), const Arg *arg);
 static void move_current_down(const Arg *arg);
 static void move_current_up(const Arg *arg);
 static void focus_next_client(const Arg *arg);

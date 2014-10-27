@@ -54,7 +54,8 @@ static Client *find_client_by_win(xcb_window_t w);
 static void client_to_ws(Client *c, const int ws, bool follow);
 static void draw_clients(void);
 static void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
-static void set_fullscreen(Client *c, bool fscr);
-static void set_urgent(Client *c, bool urg);
+void set_fullscreen(Client *c, bool fscr);
+void set_urgent(Client *c, bool urg);
+void apply_rules(Client *c);
 
 #endif

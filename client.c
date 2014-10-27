@@ -2,12 +2,14 @@
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xcb_icccm.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "client.h"
 #include "workspace.h"
 #include "layout.h"
 #include "command.h"
 #include "config.h"
+#include "helper.h"
 #include "howm.h"
 #include "xcb.h"
 
@@ -558,7 +560,7 @@ Client *create_client(xcb_window_t w)
  * @param c The client which should have its fullscreen state altered.
  * @param fscr The fullscreen state that the client should be changed to.
  */
-static void set_fullscreen(Client *c, bool fscr)
+void set_fullscreen(Client *c, bool fscr)
 {
 	long data[] = {fscr ? ewmh->_NET_WM_STATE_FULLSCREEN : XCB_NONE };
 
@@ -581,7 +583,7 @@ static void set_fullscreen(Client *c, bool fscr)
 	}
 }
 
-static void set_urgent(Client *c, bool urg)
+void set_urgent(Client *c, bool urg)
 {
 	if (!c || urg == c->is_urgent)
 		return;

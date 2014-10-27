@@ -12,6 +12,7 @@
 #include <xcb/xcb_ewmh.h>
 
 #include "howm.h"
+#include "workspace.h"
 
 /**
  * @file howm.c
@@ -35,7 +36,6 @@ enum modes { NORMAL, FOCUS, FLOATING, END_MODES };
 
 #include "config.h"
 
-static void (*operator_func)(const unsigned int type, int cnt);
 
 /**
  * @brief Occurs when howm first starts.

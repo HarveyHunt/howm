@@ -33,6 +33,8 @@ typedef struct {
 	unsigned int type; /**< Represents whether the motion is for clients, WS etc. */
 } Motion;
 
+extern Operator operators[];
+extern Motion motions[];
 
 static void op_kill(const unsigned int type, int cnt);
 static void op_move_up(const unsigned int type, int cnt);

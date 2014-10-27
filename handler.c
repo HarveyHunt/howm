@@ -1,6 +1,20 @@
+#include <stdbool.h>
+#include <unistd.h>
 #include <xcb/xcb.h>
+#include <xcb/xcb_ewmh.h>
+#include <xcb/xcb_icccm.h>
+#include <X11/keysym.h>
+
 #include "handler.h"
+#include "command.h"
 #include "config.h"
+#include "client.h"
+#include "op.h"
+#include "howm.h"
+#include "helper.h"
+#include "workspace.h"
+#include "xcb.h"
+#include "layout.h"
 
 int cur_cnt = 1;
 

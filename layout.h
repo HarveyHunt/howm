@@ -10,7 +10,7 @@ static void last_layout(const Arg *arg);
 static void stack(void);
 static void grid(void);
 static void zoom(void);
-static void arrange_windows(void);
+void arrange_windows(void);
 
 static void(*layout_handler[]) (void) = {
 	[GRID] = grid,
