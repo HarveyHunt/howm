@@ -63,7 +63,7 @@
  *
  * LOG_DEBUG should be used by developers.
  */
-#define LOG_LEVEL LOG_DEBUG
+#define LOG_LEVEL LOG_INFO
 /** The workspace that should be focused upon startup. */
 #define DEFAULT_WORKSPACE 1
 /** The minimum width of a floating window that is spawned, if it doesn't
