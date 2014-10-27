@@ -91,5 +91,6 @@ static void focus_next_ws(const Arg *arg);
 static void focus_prev_ws(const Arg *arg);
 static void focus_last_ws(const Arg *arg);
 static void change_ws(const Arg *arg);
+static void change_mode(const Arg *arg);
 
 #endif

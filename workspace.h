@@ -25,5 +25,7 @@ typedef struct {
 static void kill_ws(const int ws);
 static int correct_ws(int ws);
 
+extern Workspace wss[];
+
 #endif
 

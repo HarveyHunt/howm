@@ -1,4 +1,8 @@
+#include <xcb/xcb.h>
 #include "handler.h"
+#include "config.h"
+
+int cur_cnt = 1;
 
 /**
  * @brief Process a button press.

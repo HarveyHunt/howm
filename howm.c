@@ -1,11 +1,7 @@
-#include <err.h>
-#include <errno.h>
 #include <sys/select.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
 #include <X11/keysym.h>
@@ -14,6 +10,8 @@
 #include <xcb/xcb_icccm.h>
 #include <xcb/xcb_keysyms.h>
 #include <xcb/xcb_ewmh.h>
+
+#include "howm.h"
 
 /**
  * @file howm.c
@@ -33,22 +31,11 @@
  *└────────────┘
 */
 
-/* Modes */
-static void change_mode(const Arg *arg);
-
 enum modes { NORMAL, FOCUS, FLOATING, END_MODES };
 
 #include "config.h"
 
 static void (*operator_func)(const unsigned int type, int cnt);
-
-static xcb_connection_t *dpy;
-static int numlockmask, retval, last_ws, prev_layout, cw = DEFAULT_WORKSPACE;
-static uint32_t border_focus, border_unfocus, border_prev_focus, border_urgent;
-static unsigned int cur_mode, cur_state = OPERATOR_STATE, cur_cnt = 1;
-static uint16_t screen_height, screen_width;
-static bool running = true, restart;
-
 
 /**
  * @brief Occurs when howm first starts.
@@ -59,6 +46,9 @@ static bool running = true, restart;
  */
 void setup(void)
 {
+	cw = DEFAULT_WORKSPACE;
+	cur_state = OPERATOR_STATE;
+
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (!screen)
 		log_err("Can't acquire the default screen.");

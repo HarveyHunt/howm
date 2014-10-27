@@ -1,4 +1,7 @@
 #include "op.h"
+#include "howm.h"
+#include "workspace.h"
+#include "client.h"
 
 /**
  * @brief An operator that kills an arbitrary amount of clients or workspaces.

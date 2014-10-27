@@ -1,6 +1,9 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include <xcb.h>
+#include "config.h"
+
 /**
  * @brief Represents a rule that is applied to a client upon it starting.
  */
@@ -35,6 +38,7 @@ typedef struct Client {
 			the others. */
 } Client;
 
+extern Rule rules[];
 
 static void change_client_gaps(Client *c, int size);
 static void change_gaps(const unsigned int type, int cnt, int size);

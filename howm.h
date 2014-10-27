@@ -1,6 +1,9 @@
 #ifndef HOWM_H
 #define HOWM_H
 
+#include <err.h>
+#include <errno.h>
+#include <stdio.h>
 #include "config.h"
 
 /** Calculates a mask that can be applied to a window in order to reconfigure a
@@ -66,7 +69,18 @@
 #else
 #define log_err(x, ...) do {} while (0)
 #endif
-
 /*@end@*/
+
+enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
+
+extern int numlockmask, retval, last_ws, prev_layout, cw;
+extern xcb_connection_t *dpy;
+extern uint32_t border_focus, border_unfocus, border_prev_focus, border_urgent;
+extern unsigned int cur_mode;
+extern uint16_t screen_height, screen_width;
+static bool running = true, restart;
+extern int cur_state;
+static xcb_screen_t *screen;
+static xcb_ewmh_connection_t *ewmh;
 
 #endif

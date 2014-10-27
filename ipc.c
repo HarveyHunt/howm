@@ -1,3 +1,4 @@
+#include <sys/socket.h>
 #include "ipc.h"
 
 static int ipc_init(void)

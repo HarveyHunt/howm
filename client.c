@@ -1,4 +1,15 @@
+#include <xcb/xcb.h>
+#include <xcb/xcb_ewmh.h>
+#include <xcb/xcb_icccm.h>
+#include <stdbool.h>
+
 #include "client.h"
+#include "workspace.h"
+#include "layout.h"
+#include "command.h"
+#include "config.h"
+#include "howm.h"
+#include "xcb.h"
 
 /**
  * @brief Search workspaces for a window, returning the client that it belongs

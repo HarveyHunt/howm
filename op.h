@@ -1,7 +1,6 @@
 #ifndef OP_H
 #define OP_H
 
-enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
 enum motions { CLIENT, WORKSPACE };
 
 /**
@@ -33,6 +32,7 @@ typedef struct {
 	xcb_keysym_t sym; /**< The keysym of the pressed key. */
 	unsigned int type; /**< Represents whether the motion is for clients, WS etc. */
 } Motion;
+
 
 static void op_kill(const unsigned int type, int cnt);
 static void op_move_up(const unsigned int type, int cnt);

@@ -1,5 +1,6 @@
 #ifndef HANDLER_H
 #define HANDLER_H
+
 static void enter_event(xcb_generic_event_t *ev);
 static void destroy_event(xcb_generic_event_t *ev);
 static void button_press_event(xcb_generic_event_t *ev);
