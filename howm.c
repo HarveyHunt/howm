@@ -1189,9 +1189,7 @@ void elevate_window(xcb_window_t win)
 {
 	uint32_t stack_mode[1] = { XCB_STACK_MODE_ABOVE };
 
-	if (!find_client_by_win(win))
-		return;
-	log_info("Moving window client <%p> to the front", find_client_by_win(win));
+	log_info("Moving window <0x%x> to the front", win);
 	xcb_configure_window(dpy, win, XCB_CONFIG_WINDOW_STACK_MODE, stack_mode);
 }
 
