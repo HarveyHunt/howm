@@ -12,6 +12,11 @@ enum net_atom_enum { NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
 	NET_ACTIVE_WINDOW };
 enum wm_atom_enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
 
+static char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
+static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
+static xcb_screen_t *screen;
+static xcb_ewmh_connection_t *ewmh;
+
 static void grab_keys(void);
 static xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym);
 static void grab_keycode(xcb_keycode_t *keycode, const int mod);

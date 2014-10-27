@@ -42,20 +42,13 @@ enum modes { NORMAL, FOCUS, FLOATING, END_MODES };
 
 static void (*operator_func)(const unsigned int type, int cnt);
 
-static Client *scratchpad;
-static struct stack del_reg;
 static xcb_connection_t *dpy;
-static char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
-static xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
-static xcb_screen_t *screen;
-static xcb_ewmh_connection_t *ewmh;
 static int numlockmask, retval, last_ws, prev_layout, cw = DEFAULT_WORKSPACE;
 static uint32_t border_focus, border_unfocus, border_prev_focus, border_urgent;
 static unsigned int cur_mode, cur_state = OPERATOR_STATE, cur_cnt = 1;
 static uint16_t screen_height, screen_width;
 static bool running = true, restart;
 
-static struct replay_state rep_state;
 
 /**
  * @brief Occurs when howm first starts.

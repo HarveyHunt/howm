@@ -22,6 +22,8 @@ struct stack {
 			is malloced later as we don't know the size yet.*/
 };
 
+static Client *scratchpad;
+static struct stack del_reg;
 
 static void stack_push(struct stack *s, Client *c);
 static Client *stack_pop(struct stack *s);
