@@ -1,5 +1,8 @@
 #ifndef LAYOUT_H
 #define LAYOUT_H
+
+enum layouts { ZOOM, GRID, HSTACK, VSTACK, END_LAYOUT };
+
 static void change_layout(const Arg *arg);
 static void next_layout(const Arg *arg);
 static void previous_layout(const Arg *arg);

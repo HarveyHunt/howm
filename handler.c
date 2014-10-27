@@ -293,33 +293,3 @@ static void client_message_event(xcb_generic_event_t *ev)
 	}
 }
 
-/**
- * @brief Handle client messages that are related to WM_STATE.
- *
- * TODO: Add more WM_STATE hints.
- *
- * @param c The client that is to have its WM_STATE modified.
- * @param a The atom representing which WM_STATE hint should be modified.
- * @param action Whether to remove, add or toggle the WM_STATE hint.
- */
-static void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action)
-{
-	if (a == ewmh->_NET_WM_STATE_FULLSCREEN) {
-		if (action == _NET_WM_STATE_REMOVE)
-			set_fullscreen(c, false);
-		else if (action == _NET_WM_STATE_ADD)
-			set_fullscreen(c, true);
-		else if (action == _NET_WM_STATE_TOGGLE)
-			set_fullscreen(c, !c->is_fullscreen);
-	} else if (a == ewmh->_NET_WM_STATE_DEMANDS_ATTENTION) {
-		if (action == _NET_WM_STATE_REMOVE)
-			set_urgent(c, false);
-		else if (action == _NET_WM_STATE_ADD)
-			set_urgent(c, true);
-		else if (action == _NET_WM_STATE_TOGGLE)
-			set_urgent(c, !c->is_urgent);
-	} else {
-		log_warn("Unhandled wm state <%d> with action <%d>.", a, action);
-	}
-}
-

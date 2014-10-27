@@ -1,5 +1,17 @@
 #ifndef XCB_H
 #define XCB_H
+
+/** The remove action for a WM_STATE request. */
+#define _NET_WM_STATE_REMOVE 0
+/** The add action for a WM_STATE request. */
+#define _NET_WM_STATE_ADD 1
+/** The toggle action for a WM_STATE request. */
+#define _NET_WM_STATE_TOGGLE 2
+
+enum net_atom_enum { NET_WM_STATE_FULLSCREEN, NET_SUPPORTED, NET_WM_STATE,
+	NET_ACTIVE_WINDOW };
+enum wm_atom_enum { WM_DELETE_WINDOW, WM_PROTOCOLS };
+
 static void grab_keys(void);
 static xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym);
 static void grab_keycode(xcb_keycode_t *keycode, const int mod);
