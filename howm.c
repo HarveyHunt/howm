@@ -788,7 +788,7 @@ void map_event(xcb_generic_event_t *ev)
 	}
 	free(wa);
 
-	log_info("Mapping request for window <%d>", me->window);
+	log_info("Mapping request for window <0x%x>", me->window);
 
 	c = create_client(me->window);
 
@@ -831,11 +831,11 @@ void map_event(xcb_generic_event_t *ev)
 		free(geom);
 	}
 
-	grab_buttons(c);
 	apply_rules(c);
 	arrange_windows();
 	xcb_map_window(dpy, c->win);
 	update_focused_client(c);
+	grab_buttons(c);
 }
 
 /**
@@ -1052,7 +1052,7 @@ void update_focused_client(Client *c)
 
 	if (!wss[cw].head) {
 		wss[cw].prev_foc = wss[cw].current = NULL;
-		xcb_delete_property(dpy, screen->root, ewmh->_NET_ACTIVE_WINDOW);
+		xcb_ewmh_set_active_window(ewmh, 0, XCB_NONE);
 		return;
 	} else if (c == wss[cw].prev_foc) {
 		wss[cw].prev_foc = prev_client(wss[cw].current = wss[cw].prev_foc, cw);
@@ -1412,7 +1412,7 @@ void enter_event(xcb_generic_event_t *ev)
 {
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *)ev;
 
-	log_debug("Enter event for window <%d>", ee->event);
+	log_debug("Enter event for window <0x%x>", ee->event);
 	if (FOCUS_MOUSE && wss[cw].layout != ZOOM)
 		focus_window(ee->event);
 }
@@ -1610,7 +1610,7 @@ void next_layout(const Arg *arg)
 	UNUSED(arg);
 	const Arg a = { .i = (wss[cw].layout + 1) % END_LAYOUT };
 
-	log_info("Changing to next layout (%d)", a.i);
+	log_info("Changing to layout (%d)", a.i);
 	change_layout(&a);
 }
 
@@ -1887,7 +1887,7 @@ void focus_window(xcb_window_t win)
 	else
 		/* We don't want warnings for clicking the root window... */
 		if (!win == screen->root)
-			log_warn("No client owns the window <%d>", win);
+			log_warn("No client owns the window <0x%x>", win);
 }
 
 /**
@@ -1937,11 +1937,7 @@ void configure_event(xcb_generic_event_t *ev)
 {
 	xcb_configure_request_event_t *ce = (xcb_configure_request_event_t *)ev;
 	uint32_t vals[7] = {0}, i = 0;
-	Client *c = find_client_by_win(ce->window);
-
-	if (!c)
-		return;
-	log_info("Received configure request for client <%p>", c);
+	log_info("Received configure request for window <0x%x>", ce->window);
 
 	/* TODO: Need to test whether gaps etc need to be taken into account
 	 * here. */
@@ -2311,7 +2307,7 @@ static void delete_win(xcb_window_t win)
 {
 	xcb_client_message_event_t ev;
 
-	log_info("Sending WM_DELETE_WINDOW to window <%d>", win);
+	log_info("Sending WM_DELETE_WINDOW to window <0x%x>", win);
 	ev.response_type = XCB_CLIENT_MESSAGE;
 	ev.sequence = 0;
 	ev.format = 32;
@@ -2320,7 +2316,6 @@ static void delete_win(xcb_window_t win)
 	ev.data.data32[0] = wm_atoms[WM_DELETE_WINDOW];
 	ev.data.data32[1] = XCB_CURRENT_TIME;
 	xcb_send_event(dpy, 0, win, XCB_EVENT_MASK_NO_EVENT, (char *)&ev);
-	xcb_flush(dpy);
 }
 
 /**
@@ -2539,7 +2534,7 @@ static void client_message_event(xcb_generic_event_t *ev)
 		log_info("_NET_ACTIVE_WINDOW: Focusing client <%p>", c);
 		update_focused_client(find_client_by_win(cm->window));
 	} else {
-		log_debug("Unhandled client message.");
+		log_debug("Unhandled client message: %d", cm->type);
 	}
 }
 
@@ -2841,7 +2836,6 @@ static void paste(const Arg *arg)
 			}
 		}
 	}
-	xcb_flush(dpy);
 	update_focused_client(wss[cw].current);
 }
 
