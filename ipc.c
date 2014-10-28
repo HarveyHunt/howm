@@ -11,7 +11,7 @@
 #include "helper.h"
 #include "config.h"
 
-static int ipc_init(void)
+int ipc_init(void)
 {
 	struct sockaddr_un addr;
 	int sock_fd;
@@ -53,7 +53,7 @@ static int ipc_init(void)
  * @return The error code, as set by this function itself or those that it
  * calls.
  */
-static int ipc_process_cmd(char *msg, int len)
+int ipc_process_cmd(char *msg, int len)
 {
 	unsigned int i;
 	bool found = false;

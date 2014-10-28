@@ -6,6 +6,8 @@
 #include "workspace.h"
 #include "howm.h"
 
+struct stack del_reg = {};
+
 /**
  * @brief Dynamically allocate space for the contents of the stack.
  *

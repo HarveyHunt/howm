@@ -97,8 +97,8 @@
 /** The size of the socket buffer. */
 #define IPC_BUF_SIZE 1024
 
-const char * const term_cmd[] = {"urxvt", NULL};
-const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
+static char * const term_cmd[] = {"urxvt", NULL};
+static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
 		    "-nb", "#70898f", "-nf", "black",
 		    "-sf", "#74718e", NULL};
 

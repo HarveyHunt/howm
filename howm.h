@@ -9,12 +9,19 @@
 
 enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
 
-extern int numlockmask, retval, last_ws, prev_layout;
+extern int numlockmask;
+extern int retval;
+extern int last_ws;
+extern int prev_layout;
 extern int cw;
 extern xcb_connection_t *dpy;
-extern uint32_t border_focus, border_unfocus, border_prev_focus, border_urgent;
+extern uint32_t border_focus;
+extern uint32_t border_unfocus;
+extern uint32_t border_prev_focus;
+extern uint32_t border_urgent;
 extern unsigned int cur_mode;
-extern uint16_t screen_height, screen_width;
+extern uint16_t screen_height;
+extern uint16_t screen_width;
 extern int cur_state;
 
 extern xcb_screen_t *screen;

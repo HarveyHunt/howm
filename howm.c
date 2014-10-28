@@ -17,6 +17,27 @@
 #include "ipc.h"
 #include "handler.h"
 
+bool running = true;
+bool restart = true;
+xcb_connection_t *dpy = NULL;
+xcb_screen_t *screen = NULL;
+xcb_ewmh_connection_t *ewmh = NULL;
+
+int numlockmask = 0;
+int retval = 0;
+int last_ws = 0;
+int prev_layout = 0;
+int cw = DEFAULT_WORKSPACE;
+uint32_t border_focus = 0;
+uint32_t border_unfocus = 0;
+uint32_t border_prev_focus = 0;
+uint32_t border_urgent = 0;
+unsigned int cur_mode = 0;
+uint16_t screen_height = 0;
+uint16_t screen_width = 0;
+int cur_state = OPERATOR_STATE;
+
+
 /**
  * @file howm.c
  *
@@ -44,9 +65,6 @@
  */
 void setup(void)
 {
-	cw = DEFAULT_WORKSPACE;
-	cur_state = OPERATOR_STATE;
-	running = true;
 
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (!screen)

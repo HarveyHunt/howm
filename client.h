@@ -42,8 +42,7 @@ extern const Rule rules[];
 
 int get_non_tff_count(void);
 Client *get_first_non_tff(void);
-static void change_client_gaps(Client *c, int size);
-static void change_gaps(const unsigned int type, int cnt, int size);
+void change_client_gaps(Client *c, int size);
 void kill_client(const int ws, bool arrange);
 static void move_down(Client *c);
 void move_up(Client *c);

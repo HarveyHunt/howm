@@ -206,7 +206,7 @@ found:
  *
  * @param c The client to be moved.
  */
-void move_down(Client *c)
+static void move_down(Client *c)
 {
 	Client *prev = prev_client(c, cw);
 	Client *n = (c->next) ? c->next : wss[cw].head;
@@ -381,7 +381,7 @@ void move_current_up(const Arg *arg)
  * @param c The client to be moved.
  * @param ws The ws that the client should be moved to.
  */
-void client_to_ws(Client *c, const int ws, bool follow)
+static void client_to_ws(Client *c, const int ws, bool follow)
 {
 	Client *last;
 	Client *prev = prev_client(c, cw);
@@ -486,7 +486,7 @@ void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t 
  * @param c The client who's gap size should be changed.
  * @param size The size by which the gap should be changed.
  */
-static void change_client_gaps(Client *c, int size)
+void change_client_gaps(Client *c, int size)
 {
 	if (c->is_fullscreen)
 		return;

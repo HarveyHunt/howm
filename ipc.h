@@ -4,8 +4,8 @@
 enum ipc_errs { IPC_ERR_NONE, IPC_ERR_SYNTAX, IPC_ERR_ALLOC, IPC_ERR_NO_CMD, IPC_ERR_TOO_MANY_ARGS,
 	IPC_ERR_TOO_FEW_ARGS, IPC_ERR_ARG_NOT_INT, IPC_ERR_ARG_TOO_LARGE };
 
-static int ipc_init(void);
-static int ipc_process_cmd(char *msg, int len);
+int ipc_init(void);
+int ipc_process_cmd(char *msg, int len);
 static char **ipc_process_args(char *msg, int len, int *err);
 static int ipc_arg_to_int(char *arg, int *err);
 
