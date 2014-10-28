@@ -2,32 +2,7 @@
 #define COMMAND_H
 
 #include <xcb/xcb.h>
-
-enum teleport_locations { TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT };
-enum arg_types { TYPE_IGNORE, TYPE_INT, TYPE_CMD };
-enum modes { NORMAL, FOCUS, FLOATING, END_MODES };
-
-/**
- * @brief Represents an argument.
- *
- * Used to hold data that is sent as a parameter to a function when called as a
- * result of a keypress.
- */
-typedef union {
-	const char * const * const cmd; /**< Represents a command that will be called by a shell.  */
-	int i; /**< Usually used for specifying workspaces or clients. */
-} Arg;
-
-typedef struct {
-	char *name; /**< The function's name. */
-	void (*func)(const Arg *); /**< The function to be called when a command
-				     comes in from the socket. */
-	void (*operator)(const unsigned int type, const int cnt); /**< The
-			operator to be called when a command comes in from
-			the socket. */
-	int argc; /**< The amount of args this command expects. */
-	int arg_type; /**< The argument's type for commands that use the union Arg. */
-} Command;
+#include "types.h"
 
 /**
  * @brief Represents the last command (and its arguments) or the last
@@ -42,33 +17,10 @@ struct replay_state {
 	int last_cnt; /**< The last count passed to the last operator function. */
 };
 
-/**
- * @brief Represents a button.
- *
- * Allows the mapping of a button to a function, as is done with the Key struct
- * for keys.
- */
-typedef struct {
-	int mod; /**< The mask of the modifiers pressed.  */
-	short int button; /**< The button that was pressed. */
-	void (*func)(const Arg *); /**< The function to be called when the
-					* button is pressed. */
-	const Arg arg; /**< The argument passed to the above function. */
-} Button;
 
-/**
- * @brief Represents a key.
- *
- * Holds information relative to a key, such as keysym and the mode during
- * which the keypress can be seen as valid.
- */
-typedef struct {
-	int mod; /**< The mask of the modifiers pressed. */
-	unsigned int mode; /**< The mode within which this keypress is valid. */
-	xcb_keysym_t sym;  /**< The keysym of the pressed key. */
-	void (*func)(const Arg *); /**< The function to be called when this key is pressed. */
-	const Arg arg; /**< The argument passed to the above function. */
-} Key;
+enum teleport_locations { TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT };
+enum arg_types { TYPE_IGNORE, TYPE_INT, TYPE_CMD };
+enum modes { NORMAL, FOCUS, FLOATING, END_MODES };
 
 struct replay_state rep_state;
 void (*operator_func)(const unsigned int type, int cnt);

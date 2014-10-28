@@ -4,6 +4,7 @@
 #include "client.h"
 #include "helper.h"
 #include "scratchpad.h"
+#include "types.h"
 
 /**
  * @brief An operator that kills an arbitrary amount of clients or workspaces.
