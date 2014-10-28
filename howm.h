@@ -34,6 +34,9 @@ extern bool restart;
 
 extern Workspace wss[];
 
+extern const char *WM_ATOM_NAMES[];
+extern xcb_atom_t wm_atoms[];
+
 void howm_info(void);
 void setup(void);
 void cleanup(void);

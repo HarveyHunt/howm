@@ -14,18 +14,6 @@
 #include "xcb_help.h"
 #include "layout.h"
 
-int cur_cnt = 1;
-
-void (*handler[XCB_NO_OPERATION])(xcb_generic_event_t *) = {
-	[XCB_BUTTON_PRESS] = button_press_event,
-	[XCB_KEY_PRESS] = key_press_event,
-	[XCB_MAP_REQUEST] = map_event,
-	[XCB_DESTROY_NOTIFY] = destroy_event,
-	[XCB_ENTER_NOTIFY] = enter_event,
-	[XCB_CONFIGURE_NOTIFY] = configure_event,
-	[XCB_UNMAP_NOTIFY] = unmap_event,
-	[XCB_CLIENT_MESSAGE] = client_message_event
-};
 
 /**
  * @brief Process a button press.
@@ -65,6 +53,7 @@ void button_press_event(xcb_generic_event_t *ev)
 void key_press_event(xcb_generic_event_t *ev)
 {
 	unsigned int i = 0;
+	static int cur_cnt = 1;
 	xcb_keysym_t keysym;
 	xcb_key_press_event_t *ke = (xcb_key_press_event_t *)ev;
 
@@ -304,8 +293,40 @@ void client_message_event(xcb_generic_event_t *ev)
 	}
 }
 
+void unhandled_event(xcb_generic_event_t *ev)
+{
+	log_debug("Unhandled event: %d", ev->response_type & ~0x80);
+}
+
 void handle_event(xcb_generic_event_t *ev)
 {
-	if (handler[ev->response_type & ~0x80])
-		handler[ev->response_type & ~0x80](ev);
+	switch (ev->response_type & ~0x80) {
+		case XCB_KEY_PRESS:
+			key_press_event(ev);
+			break;
+		case XCB_BUTTON_PRESS:
+			button_press_event(ev);
+			break;
+		case XCB_MAP_REQUEST:
+			map_event(ev);
+			break;
+		case XCB_DESTROY_NOTIFY:
+			destroy_event(ev);
+			break;
+		case XCB_ENTER_NOTIFY:
+			enter_event(ev);
+			break;
+		case XCB_CONFIGURE_NOTIFY:
+			configure_event(ev);
+			break;
+		case XCB_UNMAP_NOTIFY:
+			unmap_event(ev);
+			break;
+		case XCB_CLIENT_MESSAGE:
+			client_message_event(ev);
+			break;
+		default:
+			unhandled_event(ev);
+			break;
+	}
 }

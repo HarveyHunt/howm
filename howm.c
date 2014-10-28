@@ -8,9 +8,9 @@
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 
+#include "config.h"
 #include "howm.h"
 #include "workspace.h"
-#include "config.h"
 #include "helper.h"
 #include "xcb_help.h"
 #include "scratchpad.h"
@@ -23,6 +23,8 @@ xcb_connection_t *dpy = NULL;
 xcb_screen_t *screen = NULL;
 xcb_ewmh_connection_t *ewmh = NULL;
 Workspace wss[LENGTH(_wss)];
+const char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
+xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 
 int numlockmask = 0;
 int retval = 0;
@@ -65,6 +67,7 @@ int cur_state = OPERATOR_STATE;
  */
 void setup(void)
 {
+	/* FIXME: A nasty hack. */
 	memcpy(wss, _wss, sizeof(wss));
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (!screen)
@@ -76,9 +79,7 @@ void setup(void)
 	log_info("Screen's width is: %d", screen_width);
 
 	grab_keys();
-
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
-
 	setup_ewmh();
 
 	border_focus = get_colour(BORDER_FOCUS);

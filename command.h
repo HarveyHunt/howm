@@ -70,7 +70,7 @@ typedef struct {
 	const Arg arg; /**< The argument passed to the above function. */
 } Key;
 
-static struct replay_state rep_state;
+struct replay_state rep_state;
 void (*operator_func)(const unsigned int type, int cnt);
 
 void teleport_client(const Arg *arg);
