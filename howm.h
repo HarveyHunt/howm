@@ -4,6 +4,7 @@
 #include <err.h>
 #include <errno.h>
 #include <stdio.h>
+#include <xcb/xcb_ewmh.h>
 #include "config.h"
 
 enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
@@ -22,5 +23,8 @@ extern bool running;
 extern bool restart;
 
 void howm_info(void);
+static void setup(void);
+static void cleanup(void);
+static uint32_t get_colour(char *colour);
 
 #endif

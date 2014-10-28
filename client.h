@@ -2,6 +2,7 @@
 #define CLIENT_H
 
 #include <xcb/xcb.h>
+#include <stdbool.h>
 
 /**
  * @brief Represents a rule that is applied to a client upon it starting.
@@ -43,20 +44,21 @@ int get_non_tff_count(void);
 Client *get_first_non_tff(void);
 static void change_client_gaps(Client *c, int size);
 static void change_gaps(const unsigned int type, int cnt, int size);
-static void kill_client(const int ws, bool arrange);
+void kill_client(const int ws, bool arrange);
 static void move_down(Client *c);
-static void move_up(Client *c);
-static Client *next_client(Client *c);
-static void update_focused_client(Client *c);
+void move_up(Client *c);
+Client *next_client(Client *c);
+void update_focused_client(Client *c);
 Client *prev_client(Client *c, int ws);
-static Client *create_client(xcb_window_t w);
-static void remove_client(Client *c, bool refocus);
-static Client *find_client_by_win(xcb_window_t w);
+Client *create_client(xcb_window_t w);
+void remove_client(Client *c, bool refocus);
+Client *find_client_by_win(xcb_window_t w);
 static void client_to_ws(Client *c, const int ws, bool follow);
-static void draw_clients(void);
-static void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
+void draw_clients(void);
+void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
 void set_fullscreen(Client *c, bool fscr);
 void set_urgent(Client *c, bool urg);
 void apply_rules(Client *c);
+void move_client(int cnt, bool up);
 
 #endif

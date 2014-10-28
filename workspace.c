@@ -1,4 +1,7 @@
+#include <xcb/xcb_ewmh.h>
 #include "workspace.h"
+#include "howm.h"
+#include "helper.h"
 
 /**
  * @brief Change to a different workspace and map the correct windows.

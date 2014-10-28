@@ -9,6 +9,6 @@ static void map_event(xcb_generic_event_t *ev);
 static void configure_event(xcb_generic_event_t *ev);
 static void unmap_event(xcb_generic_event_t *ev);
 static void client_message_event(xcb_generic_event_t *ev);
-static void handle_event(xcb_generic_event_t *ev);
+void handle_event(xcb_generic_event_t *ev);
 
 #endif

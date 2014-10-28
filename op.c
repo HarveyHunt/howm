@@ -2,6 +2,8 @@
 #include "howm.h"
 #include "workspace.h"
 #include "client.h"
+#include "helper.h"
+#include "scratchpad.h"
 
 /**
  * @brief An operator that kills an arbitrary amount of clients or workspaces.
@@ -216,3 +218,20 @@ void op_cut(const unsigned int type, int cnt)
 		stack_push(&del_reg, head);
 	}
 }
+
+/**
+ * @brief An operator to shrink the gaps of either workspaces or clients by
+ * OP_GAP_SIZE.
+ *
+ * When the type is workspace, the gap size for that workspace is also changed.
+ * This means that new windows will be spawned in with the modified gap size.
+ *
+ * @param type Whether the operation should be performed on a client or
+ * workspace.
+ * @param cnt The amount of clients or workspaces to perform the operation on.
+ */
+void op_shrink_gaps(const unsigned int type, int cnt)
+{
+	change_gaps(type, cnt, -OP_GAP_SIZE);
+}
+

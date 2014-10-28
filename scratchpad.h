@@ -1,6 +1,8 @@
 #ifndef SCRATCHPAD_H
 #define SCRATCHPAD_H
 
+#include "client.h"
+
 /**
  * @brief Represents a stack. This stack is going to hold linked lists of
  * clients. An example of the stack is below:
@@ -25,9 +27,9 @@ struct stack {
 static Client *scratchpad;
 extern struct stack del_reg;
 
-static void stack_push(struct stack *s, Client *c);
-static Client *stack_pop(struct stack *s);
-static void stack_init(struct stack *s);
-static void stack_free(struct stack *s);
+void stack_push(struct stack *s, Client *c);
+Client *stack_pop(struct stack *s);
+void stack_init(struct stack *s);
+void stack_free(struct stack *s);
 
 #endif

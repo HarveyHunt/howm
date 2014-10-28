@@ -481,22 +481,6 @@ void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t 
 }
 
 /**
- * @brief An operator to shrink the gaps of either workspaces or clients by
- * OP_GAP_SIZE.
- *
- * When the type is workspace, the gap size for that workspace is also changed.
- * This means that new windows will be spawned in with the modified gap size.
- *
- * @param type Whether the operation should be performed on a client or
- * workspace.
- * @param cnt The amount of clients or workspaces to perform the operation on.
- */
-static void op_shrink_gaps(const unsigned int type, int cnt)
-{
-	change_gaps(type, cnt, -OP_GAP_SIZE);
-}
-
-/**
  * @brief A helper function to change the size of a client's gaps.
  *
  * @param c The client who's gap size should be changed.

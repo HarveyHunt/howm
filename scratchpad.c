@@ -1,4 +1,10 @@
-#include "stack.h"
+#include <stdlib.h>
+#include "scratchpad.h"
+#include "client.h"
+#include "config.h"
+#include "helper.h"
+#include "workspace.h"
+#include "howm.h"
 
 /**
  * @brief Dynamically allocate space for the contents of the stack.
@@ -8,7 +14,7 @@
  *
  * @param s The stack that needs to have its contents allocated.
  */
-static void stack_init(struct stack *s)
+void stack_init(struct stack *s)
 {
 	s->contents = (Client **)malloc(sizeof(Client) * DELETE_REGISTER_SIZE);
 	if (!s->contents)
@@ -20,7 +26,7 @@ static void stack_init(struct stack *s)
  *
  * @param s The stack that needs to have its contents freed.
  */
-static void stack_free(struct stack *s)
+void stack_free(struct stack *s)
 {
 	free(s->contents);
 }
@@ -32,7 +38,7 @@ static void stack_free(struct stack *s)
  * @param c The client to be pushed on. This client is treated as the head of a
  * linked list.
  */
-static void stack_push(struct stack *s, Client *c)
+void stack_push(struct stack *s, Client *c)
 {
 	if (!c || !s) {
 		return;
@@ -51,7 +57,7 @@ static void stack_push(struct stack *s, Client *c)
  * @return The client that was at the top of the stack. It acts as the head of
  * the linked list of clients.
  */
-static Client *stack_pop(struct stack *s)
+Client *stack_pop(struct stack *s)
 {
 	if (!s) {
 		return NULL;

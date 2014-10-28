@@ -25,8 +25,8 @@ typedef struct {
 	Client *current; /**< The client that is currently in focus. */
 } Workspace;
 
-static void kill_ws(const int ws);
-static int correct_ws(int ws);
+void kill_ws(const int ws);
+int correct_ws(int ws);
 
 extern Workspace wss[];
 
