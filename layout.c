@@ -27,7 +27,7 @@ void arrange_windows(void)
 /**
  * @brief Arrange the windows into a grid layout.
  */
-static void grid(void)
+void grid(void)
 {
 	int n = get_non_tff_count();
 	Client *c = NULL;
@@ -72,7 +72,7 @@ static void grid(void)
  * Sets the geometry of each window in order for the windows to be rendered to
  * take up the entire screen.
  */
-static void zoom(void)
+void zoom(void)
 {
 	Client *c;
 
@@ -94,7 +94,7 @@ static void zoom(void)
  * @brief Arrange the windows in a stack, whether that be horizontal or
  * vertical is decided by the current_layout.
  */
-static void stack(void)
+void stack(void)
 {
 	Client *c = get_first_non_tff();
 	bool vert = (wss[cw].layout == VSTACK);

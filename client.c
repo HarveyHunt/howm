@@ -206,7 +206,7 @@ found:
  *
  * @param c The client to be moved.
  */
-static void move_down(Client *c)
+void move_down(Client *c)
 {
 	Client *prev = prev_client(c, cw);
 	Client *n = (c->next) ? c->next : wss[cw].head;
@@ -381,7 +381,7 @@ void move_current_up(const Arg *arg)
  * @param c The client to be moved.
  * @param ws The ws that the client should be moved to.
  */
-static void client_to_ws(Client *c, const int ws, bool follow)
+void client_to_ws(Client *c, const int ws, bool follow)
 {
 	Client *last;
 	Client *prev = prev_client(c, cw);

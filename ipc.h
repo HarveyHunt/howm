@@ -6,8 +6,8 @@ enum ipc_errs { IPC_ERR_NONE, IPC_ERR_SYNTAX, IPC_ERR_ALLOC, IPC_ERR_NO_CMD, IPC
 
 int ipc_init(void);
 int ipc_process_cmd(char *msg, int len);
-static char **ipc_process_args(char *msg, int len, int *err);
-static int ipc_arg_to_int(char *arg, int *err);
+char **ipc_process_args(char *msg, int len, int *err);
+int ipc_arg_to_int(char *arg, int *err);
 
 static Command commands[] = {
 	{"resize_master", resize_master, NULL, 1, TYPE_INT},

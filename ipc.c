@@ -107,7 +107,7 @@ end:
  *
  * @return The decimal representation of arg.
  */
-static int ipc_arg_to_int(char *arg, int *err)
+int ipc_arg_to_int(char *arg, int *err)
 {
 	int sign = 1;
 
@@ -149,7 +149,7 @@ static int ipc_arg_to_int(char *arg, int *err)
  * @return A pointer to an array of strings, each one representing an argument
  * that has been passed over a UNIX socket.
  */
-static char **ipc_process_args(char *msg, int len, int *err)
+char **ipc_process_args(char *msg, int len, int *err)
 {
 	int argc = 0, i = 0, arg_start = 0, lim = 2;
 	char **args = malloc(lim * sizeof(char *));

@@ -115,7 +115,7 @@ static const Rule rules[] = {
  *
  * {Modifier, Mode, Key, Command, Args}
  */
-static static static static static static static static static const Key keys[] = {
+static Key keys[] = {
 	{ MODKEY, NORMAL, XK_Return, spawn, {.cmd = term_cmd} },
 	{ MODKEY, NORMAL, XK_d, spawn, {.cmd = dmenu_cmd} },
 
@@ -223,7 +223,7 @@ static const Motion motions[] = {
  *
  * Note: The first item is NULL as workspaces are indexed from 1.
  */
-static Workspace wss[] = {
+static Workspace _wss[] = {
 	{0, 0, 0, 0, 0, NULL, NULL, NULL},
 	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
 	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
@@ -240,7 +240,7 @@ _Static_assert(OP_GAP_SIZE >= 0, "OP_GAP_SIZE can't be negative.");
 _Static_assert(BAR_HEIGHT >= 0, "BAR_HEIGHT can't be negative.");
 _Static_assert(FLOAT_SPAWN_HEIGHT >= 0, "FLOAT_SPAWN_HEIGHT can't be negative.");
 _Static_assert(FLOAT_SPAWN_WIDTH >= 0, "FLOAT_SPAWN_WIDTH can't be negative.");
-_Static_assert((sizeof(wss) / sizeof(*wss)) == WORKSPACES + 1, "wss must contain one more workspace than WORKSPACES.");
+_Static_assert((sizeof(_wss) / sizeof(*_wss)) == WORKSPACES + 1, "wss must contain one more workspace than WORKSPACES.");
 _Static_assert(SCRATCHPAD_WIDTH >= 0, "SCRATCHPAD_WIDTH can't be negative.");
 _Static_assert(SCRATCHPAD_HEIGHT >= 0, "SCRATCHPAD_HEIGHT can't be negative.");
 #endif

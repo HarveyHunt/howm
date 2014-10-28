@@ -32,9 +32,11 @@ extern xcb_ewmh_connection_t *ewmh;
 extern bool running;
 extern bool restart;
 
+extern Workspace wss[];
+
 void howm_info(void);
-static void setup(void);
-static void cleanup(void);
-static uint32_t get_colour(char *colour);
+void setup(void);
+void cleanup(void);
+uint32_t get_colour(char *colour);
 
 #endif

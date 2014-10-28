@@ -22,6 +22,7 @@ bool restart = true;
 xcb_connection_t *dpy = NULL;
 xcb_screen_t *screen = NULL;
 xcb_ewmh_connection_t *ewmh = NULL;
+Workspace wss[LENGTH(_wss)];
 
 int numlockmask = 0;
 int retval = 0;
@@ -64,7 +65,7 @@ int cur_state = OPERATOR_STATE;
  */
 void setup(void)
 {
-
+	memcpy(wss, _wss, sizeof(wss));
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (!screen)
 		log_err("Can't acquire the default screen.");
@@ -201,7 +202,7 @@ void howm_info(void)
  * Delete all of the windows that have been created, remove button and key
  * grabs and remove pointer focus.
  */
-static void cleanup(void)
+void cleanup(void)
 {
 	xcb_window_t *w;
 	xcb_query_tree_reply_t *q;

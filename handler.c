@@ -279,7 +279,7 @@ void unmap_event(xcb_generic_event_t *ev)
  *
  * @param ev The client message as a generic event.
  */
-static void client_message_event(xcb_generic_event_t *ev)
+void client_message_event(xcb_generic_event_t *ev)
 {
 	xcb_client_message_event_t *cm = (xcb_client_message_event_t *)ev;
 	Client *c = find_client_by_win(cm->window);
@@ -306,6 +306,6 @@ static void client_message_event(xcb_generic_event_t *ev)
 
 void handle_event(xcb_generic_event_t *ev)
 {
-	handler[ev->response_type & ~0x80](ev);
+	if (handler[ev->response_type & ~0x80])
+		handler[ev->response_type & ~0x80](ev);
 }
-
