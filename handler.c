@@ -7,7 +7,6 @@
 #include "handler.h"
 #include "command.h"
 #include "client.h"
-#include "config.h"
 #include "op.h"
 #include "howm.h"
 #include "helper.h"

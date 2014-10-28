@@ -35,9 +35,6 @@ typedef struct {
 	unsigned int type; /**< Represents whether the motion is for clients, WS etc. */
 } Motion;
 
-extern const Operator operators[];
-extern const Motion motions[];
-
 void op_kill(const unsigned int type, int cnt);
 void op_move_up(const unsigned int type, int cnt);
 void op_move_down(const unsigned int type, int cnt);

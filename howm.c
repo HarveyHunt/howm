@@ -37,7 +37,6 @@ uint16_t screen_height = 0;
 uint16_t screen_width = 0;
 int cur_state = OPERATOR_STATE;
 
-
 /**
  * @file howm.c
  *

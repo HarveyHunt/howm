@@ -38,8 +38,6 @@ typedef struct Client {
 			the others. */
 } Client;
 
-extern const Rule rules[];
-
 int get_non_tff_count(void);
 Client *get_first_non_tff(void);
 void change_client_gaps(Client *c, int size);

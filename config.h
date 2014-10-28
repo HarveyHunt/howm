@@ -103,7 +103,7 @@ static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
 		    "-sf", "#74718e", NULL};
 
 /* Rules that are applied to clients as they are spawned. */
-const Rule rules[] = {
+static const Rule rules[] = {
 	/* Class, WS, follow, float, fullscreen */
 	{"dwb", 3, false, false, false},
 	{"mpv", 5, false, false, false}
@@ -115,7 +115,7 @@ const Rule rules[] = {
  *
  * {Modifier, Mode, Key, Command, Args}
  */
-const Key keys[] = {
+static static static static static static static static static const Key keys[] = {
 	{ MODKEY, NORMAL, XK_Return, spawn, {.cmd = term_cmd} },
 	{ MODKEY, NORMAL, XK_d, spawn, {.cmd = dmenu_cmd} },
 
@@ -190,7 +190,7 @@ const Key keys[] = {
  *
  * :help operators
  */
-const Operator operators[] = {
+static const Operator operators[] = {
 	{OTHER_MOD, XK_q, NORMAL, op_kill},
 	{OTHER_MOD, XK_j, NORMAL, op_move_down},
 	{OTHER_MOD, XK_k, NORMAL, op_move_up},
@@ -211,7 +211,7 @@ const Operator operators[] = {
  * q2w (QUIT, 2, Workspaces)
  *
  */
-const Motion motions[] = {
+static const Motion motions[] = {
 	{OTHER_MOD, XK_c, CLIENT},
 	{OTHER_MOD | ShiftMask, XK_c, CLIENT},
 	{OTHER_MOD, XK_w, WORKSPACE},
@@ -223,7 +223,7 @@ const Motion motions[] = {
  *
  * Note: The first item is NULL as workspaces are indexed from 1.
  */
-Workspace wss[] = {
+static Workspace wss[] = {
 	{0, 0, 0, 0, 0, NULL, NULL, NULL},
 	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
 	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},

@@ -5,6 +5,9 @@
 #include <errno.h>
 #include <stdio.h>
 #include <xcb/xcb_ewmh.h>
+#include "op.h"
+#include "command.h"
+#include "client.h"
 #include "config.h"
 
 enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
