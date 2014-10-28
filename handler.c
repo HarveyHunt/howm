@@ -1,5 +1,4 @@
 #include <stdbool.h>
-#include <unistd.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xcb_icccm.h>
@@ -7,16 +6,27 @@
 
 #include "handler.h"
 #include "command.h"
-#include "config.h"
 #include "client.h"
+#include "config.h"
 #include "op.h"
 #include "howm.h"
 #include "helper.h"
 #include "workspace.h"
-#include "xcb.h"
+#include "xcb_help.h"
 #include "layout.h"
 
 int cur_cnt = 1;
+
+void (*handler[XCB_NO_OPERATION])(xcb_generic_event_t *) = {
+	[XCB_BUTTON_PRESS] = button_press_event,
+	[XCB_KEY_PRESS] = key_press_event,
+	[XCB_MAP_REQUEST] = map_event,
+	[XCB_DESTROY_NOTIFY] = destroy_event,
+	[XCB_ENTER_NOTIFY] = enter_event,
+	[XCB_CONFIGURE_NOTIFY] = configure_event,
+	[XCB_UNMAP_NOTIFY] = unmap_event,
+	[XCB_CLIENT_MESSAGE] = client_message_event
+};
 
 /**
  * @brief Process a button press.
@@ -98,22 +108,6 @@ void key_press_event(xcb_generic_event_t *ev)
 			if (keys[i].func != replay)
 				save_last_cmd(keys[i].func, &keys[i].arg);
 		}
-}
-
-/**
- * @brief Spawns a command.
- */
-void spawn(const Arg *arg)
-{
-	if (fork())
-		return;
-	if (dpy)
-		close(screen->root);
-	setsid();
-	log_info("Spawning command: %s", (char *)arg->cmd[0]);
-	execvp((char *)arg->cmd[0], (char **)arg->cmd);
-	log_err("execvp of command: %s failed.", (char *)arg->cmd[0]);
-	exit(EXIT_FAILURE);
 }
 
 /**
@@ -309,5 +303,10 @@ static void client_message_event(xcb_generic_event_t *ev)
 	} else {
 		log_debug("Unhandled client message: %d", cm->type);
 	}
+}
+
+void handle_event(xcb_generic_event_t *ev)
+{
+	handler[ev->response_type & ~0x80](ev);
 }
 

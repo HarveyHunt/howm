@@ -1,6 +1,16 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <stdlib.h>
+#include <X11/keysym.h>
+#include <X11/X.h>
+#include "op.h"
+#include "command.h"
+#include "layout.h"
+#include "helper.h"
+#include "client.h"
+#include "workspace.h"
+
 /**
  * @file config.h
  */
@@ -87,13 +97,13 @@
 /** The size of the socket buffer. */
 #define IPC_BUF_SIZE 1024
 
-static const char * const term_cmd[] = {"urxvt", NULL};
-static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
+const char * const term_cmd[] = {"urxvt", NULL};
+const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
 		    "-nb", "#70898f", "-nf", "black",
 		    "-sf", "#74718e", NULL};
 
 /* Rules that are applied to clients as they are spawned. */
-static const Rule rules[] = {
+const Rule rules[] = {
 	/* Class, WS, follow, float, fullscreen */
 	{"dwb", 3, false, false, false},
 	{"mpv", 5, false, false, false}
@@ -105,7 +115,7 @@ static const Rule rules[] = {
  *
  * {Modifier, Mode, Key, Command, Args}
  */
-static const Key keys[] = {
+const Key keys[] = {
 	{ MODKEY, NORMAL, XK_Return, spawn, {.cmd = term_cmd} },
 	{ MODKEY, NORMAL, XK_d, spawn, {.cmd = dmenu_cmd} },
 
@@ -180,7 +190,7 @@ static const Key keys[] = {
  *
  * :help operators
  */
-static const Operator operators[] = {
+const Operator operators[] = {
 	{OTHER_MOD, XK_q, NORMAL, op_kill},
 	{OTHER_MOD, XK_j, NORMAL, op_move_down},
 	{OTHER_MOD, XK_k, NORMAL, op_move_up},
@@ -201,7 +211,7 @@ static const Operator operators[] = {
  * q2w (QUIT, 2, Workspaces)
  *
  */
-static const Motion motions[] = {
+const Motion motions[] = {
 	{OTHER_MOD, XK_c, CLIENT},
 	{OTHER_MOD | ShiftMask, XK_c, CLIENT},
 	{OTHER_MOD, XK_w, WORKSPACE},
@@ -213,7 +223,7 @@ static const Motion motions[] = {
  *
  * Note: The first item is NULL as workspaces are indexed from 1.
  */
-static Workspace wss[] = {
+Workspace wss[] = {
 	{0, 0, 0, 0, 0, NULL, NULL, NULL},
 	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},
 	{.layout = HSTACK, .gap = GAP, .master_ratio = 0.6, .bar_height = BAR_HEIGHT},

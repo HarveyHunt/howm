@@ -1,8 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include <xcb.h>
-#include "config.h"
+#include <xcb/xcb.h>
 
 /**
  * @brief Represents a rule that is applied to a client upon it starting.
@@ -38,8 +37,10 @@ typedef struct Client {
 			the others. */
 } Client;
 
-extern Rule rules[];
+extern const Rule rules[];
 
+int get_non_tff_count(void);
+Client *get_first_non_tff(void);
 static void change_client_gaps(Client *c, int size);
 static void change_gaps(const unsigned int type, int cnt, int size);
 static void kill_client(const int ws, bool arrange);
@@ -47,7 +48,7 @@ static void move_down(Client *c);
 static void move_up(Client *c);
 static Client *next_client(Client *c);
 static void update_focused_client(Client *c);
-static Client *prev_client(Client *c, int ws);
+Client *prev_client(Client *c, int ws);
 static Client *create_client(xcb_window_t w);
 static void remove_client(Client *c, bool refocus);
 static Client *find_client_by_win(xcb_window_t w);

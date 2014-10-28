@@ -103,7 +103,7 @@ void op_focus_down(const unsigned int type, int cnt)
  * workspace.
  * @param cnt The amount of clients or workspaces to perform the operation on.
  */
-static void op_grow_gaps(const unsigned int type, int cnt)
+void op_grow_gaps(const unsigned int type, int cnt)
 {
 	change_gaps(type, cnt, OP_GAP_SIZE);
 }
@@ -116,7 +116,7 @@ static void op_grow_gaps(const unsigned int type, int cnt)
  * @param size The amount of pixels to change the gap size by. This is
  * configured through OP_GAP_SIZE.
  */
-static void change_gaps(const unsigned int type, int cnt, int size)
+void change_gaps(const unsigned int type, int cnt, int size)
 {
 	Client *c = NULL;
 
@@ -151,7 +151,7 @@ static void change_gaps(const unsigned int type, int cnt, int size)
  * @param type Whether to cut an entire workspace or client.
  * @param cnt The amount of clients or workspaces to cut.
  */
-static void op_cut(const unsigned int type, int cnt)
+void op_cut(const unsigned int type, int cnt)
 {
 	Client *tail = wss[cw].current;
 	Client *head = wss[cw].current;
@@ -215,57 +215,4 @@ static void op_cut(const unsigned int type, int cnt)
 		update_focused_client(head_prev);
 		stack_push(&del_reg, head);
 	}
-}
-
-/**
- * @brief Remove a list of clients from howm's delete register stack and paste
- * them after the currently focused window.
- *
- * @param arg Unused
- */
-static void paste(const Arg *arg)
-{
-	UNUSED(arg);
-	Client *head = stack_pop(&del_reg);
-	Client *t, *c = head;
-
-	if (!head) {
-		log_warn("No clients on stack.");
-		return;
-	}
-
-	if (!wss[cw].current) {
-		wss[cw].head = head;
-		wss[cw].current = head;
-		while (c) {
-			xcb_map_window(dpy, c->win);
-			wss[cw].current = c;
-			c = c->next;
-			wss[cw].client_cnt++;
-		}
-	} else if (!wss[cw].current->next) {
-		wss[cw].current->next = head;
-		while (c) {
-			xcb_map_window(dpy, c->win);
-			wss[cw].current = c;
-			c = c->next;
-			wss[cw].client_cnt++;
-		}
-	} else {
-		t = wss[cw].current->next;
-		wss[cw].current->next = head;
-		while (c) {
-			xcb_map_window(dpy, c->win);
-			wss[cw].client_cnt++;
-			if (!c->next) {
-				c->next = t;
-				wss[cw].current = c;
-				break;
-			} else {
-				wss[cw].current = c;
-				c = c->next;
-			}
-		}
-	}
-	update_focused_client(wss[cw].current);
 }

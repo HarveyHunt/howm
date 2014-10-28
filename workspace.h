@@ -1,6 +1,9 @@
 #ifndef WORKSPACE_H
 #define WORKSPACE_H
 
+#include <stddef.h>
+#include <client.h>
+
 /**
  * @brief Represents a workspace, which stores clients.
  *

@@ -11,7 +11,7 @@
 #include "config.h"
 #include "helper.h"
 #include "howm.h"
-#include "xcb.h"
+#include "xcb_help.h"
 
 /**
  * @brief Search workspaces for a window, returning the client that it belongs
@@ -158,7 +158,7 @@ int get_non_tff_count(void)
  *
  * @return The first client that isn't TFF. NULL if none.
  */
-static Client *get_first_non_tff(void)
+Client *get_first_non_tff(void)
 {
 	Client *c = NULL;
 
@@ -595,45 +595,12 @@ void set_urgent(Client *c, bool urg)
 }
 
 /**
- * @brief Toggle the fullscreen state of the current client.
- *
- * @param arg Unused.
- */
-static void toggle_fullscreen(const Arg *arg)
-{
-	UNUSED(arg);
-	if (wss[cw].current != NULL)
-		set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
-}
-
-/**
- * @brief Focus a client that has an urgent hint.
- *
- * @param arg Unused.
- */
-static void focus_urgent(const Arg *arg)
-{
-	UNUSED(arg);
-	Client *c;
-	int w;
-
-	for (w = 1; w <= WORKSPACES; w++)
-		for (c = wss[w].head; c && !c->is_urgent; c = c->next)
-			;
-	if (c) {
-		log_info("Focusing urgent client <%p> on workspace <%d>", c, w);
-		change_ws(&(Arg){.i = w});
-		update_focused_client(c);
-	}
-}
-
-/**
  * @brief Set the properties of a client that has just been created,
  * according to the rules defined in the config file.
  *
  * @param c The client that has been created.
  */
-static void apply_rules(Client *c)
+void apply_rules(Client *c)
 {
 	xcb_icccm_get_wm_class_reply_t wc;
 	unsigned int i;

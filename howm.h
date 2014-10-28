@@ -16,9 +16,10 @@ extern unsigned int cur_mode;
 extern uint16_t screen_height, screen_width;
 extern int cur_state;
 
-static xcb_screen_t *screen;
-static xcb_ewmh_connection_t *ewmh;
-static bool running = true, restart;
+extern xcb_screen_t *screen;
+extern xcb_ewmh_connection_t *ewmh;
+extern bool running;
+extern bool restart;
 
 void howm_info(void);
 

@@ -1,4 +1,16 @@
 #include "layout.h"
+#include "workspace.h"
+#include "config.h"
+#include "helper.h"
+#include "howm.h"
+#include "client.h"
+
+void(*layout_handler[]) (void) = {
+	[GRID] = grid,
+	[ZOOM] = zoom,
+	[HSTACK] = stack,
+	[VSTACK] = stack
+};
 
 /**
  * @brief Call the appropriate layout handler for each layout.
@@ -15,7 +27,7 @@ void arrange_windows(void)
 /**
  * @brief Arrange the windows into a grid layout.
  */
-void grid(void)
+static void grid(void)
 {
 	int n = get_non_tff_count();
 	Client *c = NULL;
@@ -60,7 +72,7 @@ void grid(void)
  * Sets the geometry of each window in order for the windows to be rendered to
  * take up the entire screen.
  */
-void zoom(void)
+static void zoom(void)
 {
 	Client *c;
 
@@ -82,7 +94,7 @@ void zoom(void)
  * @brief Arrange the windows in a stack, whether that be horizontal or
  * vertical is decided by the current_layout.
  */
-void stack(void)
+static void stack(void)
 {
 	Client *c = get_first_non_tff();
 	bool vert = (wss[cw].layout == VSTACK);
@@ -147,62 +159,5 @@ void stack(void)
 		}
 	}
 	draw_clients();
-}
-
-/**
- * @brief Change the layout of the current workspace.
- *
- * @param arg A numerical value (arg->i) representing the layout that should be
- * used.
- */
-void change_layout(const Arg *arg)
-{
-	if (arg->i == wss[cw].layout || arg->i >= END_LAYOUT || arg->i < 0)
-		return;
-	prev_layout = wss[cw].layout;
-	wss[cw].layout = arg->i;
-	update_focused_client(wss[cw].current);
-	log_info("Changed layout from %d to %d", prev_layout,  wss[cw].layout);
-}
-
-/**
- * @brief Change to the previous layout.
- *
- * @param arg Unused.
- */
-void previous_layout(const Arg *arg)
-{
-	UNUSED(arg);
-	const Arg a = { .i = wss[cw].layout < 1 ? END_LAYOUT - 1 : wss[cw].layout - 1 };
-
-	log_info("Changing to previous layout (%d)", a.i);
-	change_layout(&a);
-}
-
-/**
- * @brief Change to the next layout.
- *
- * @param arg Unused.
- */
-void next_layout(const Arg *arg)
-{
-	UNUSED(arg);
-	const Arg a = { .i = (wss[cw].layout + 1) % END_LAYOUT };
-
-	log_info("Changing to layout (%d)", a.i);
-	change_layout(&a);
-}
-
-/**
- * @brief Change to the last used layout.
- *
- * @param arg Unused.
- */
-void last_layout(const Arg *arg)
-{
-	UNUSED(arg);
-
-	log_info("Changing to last layout (%d)", prev_layout);
-	change_layout(&(Arg){ .i = prev_layout });
 }
 

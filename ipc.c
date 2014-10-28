@@ -1,5 +1,15 @@
 #include <sys/socket.h>
+#include <sys/un.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include "command.h"
+#include "op.h"
 #include "ipc.h"
+#include "helper.h"
+#include "config.h"
 
 static int ipc_init(void)
 {

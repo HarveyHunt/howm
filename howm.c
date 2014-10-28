@@ -1,18 +1,22 @@
 #include <sys/select.h>
+#include <sys/socket.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/un.h>
 #include <unistd.h>
-#include <X11/keysym.h>
-#include <X11/X.h>
 #include <xcb/xcb.h>
-#include <xcb/xcb_icccm.h>
-#include <xcb/xcb_keysyms.h>
 #include <xcb/xcb_ewmh.h>
 
 #include "howm.h"
 #include "workspace.h"
+#include "config.h"
+#include "helper.h"
+#include "xcb_help.h"
+#include "misc.h"
+#include "scratchpad.h"
+#include "ipc.h"
+#include "handler.h"
 
 /**
  * @file howm.c
@@ -32,11 +36,6 @@
  *└────────────┘
 */
 
-enum modes { NORMAL, FOCUS, FLOATING, END_MODES };
-
-#include "config.h"
-
-
 /**
  * @brief Occurs when howm first starts.
  *
@@ -48,6 +47,7 @@ void setup(void)
 {
 	cw = DEFAULT_WORKSPACE;
 	cur_state = OPERATOR_STATE;
+	running = true;
 
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (!screen)
@@ -126,8 +126,8 @@ int main(int argc, char *argv[])
 			}
 			if (FD_ISSET(dpy_fd, &descs)) {
 				while ((ev = xcb_poll_for_event(dpy)) != NULL) {
-					if (ev && handler[ev->response_type & ~0x80])
-						handler[ev->response_type & ~0x80](ev);
+					if (ev)
+						handle_event(ev);
 					else
 						log_debug("Unimplemented event: %d", ev->response_type & ~0x80);
 					free(ev);
@@ -180,19 +180,6 @@ void howm_info(void)
 }
 
 /**
- * @brief Quit howm and set the return value.
- *
- * @param arg The return value that howm will send.
- */
-static void quit_howm(const Arg *arg)
-{
-	log_warn("Quitting");
-	retval = arg->i;
-	running = false;
-}
-
-
-/**
  * @brief Cleanup howm's resources.
  *
  * Delete all of the windows that have been created, remove button and key
@@ -220,17 +207,4 @@ static void cleanup(void)
 	if (ewmh)
 		free(ewmh);
 	stack_free(&del_reg);
-}
-
-/**
- * @brief Restart howm.
- *
- * @param arg Unused.
- */
-static void restart_howm(const Arg *arg)
-{
-	UNUSED(arg);
-	log_warn("Restarting.");
-	running = false;
-	restart = true;
 }
