@@ -9,7 +9,6 @@ int get_non_tff_count(void);
 Client *get_first_non_tff(void);
 void change_client_gaps(Client *c, int size);
 void kill_client(const int ws, bool arrange);
-void move_down(Client *c);
 void move_up(Client *c);
 Client *next_client(Client *c);
 void update_focused_client(Client *c);

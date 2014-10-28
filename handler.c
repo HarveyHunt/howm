@@ -14,13 +14,22 @@
 #include "xcb_help.h"
 #include "layout.h"
 
+static void enter_event(xcb_generic_event_t *ev);
+static void destroy_event(xcb_generic_event_t *ev);
+static void button_press_event(xcb_generic_event_t *ev);
+static void key_press_event(xcb_generic_event_t *ev);
+static void map_event(xcb_generic_event_t *ev);
+static void configure_event(xcb_generic_event_t *ev);
+static void unmap_event(xcb_generic_event_t *ev);
+static void client_message_event(xcb_generic_event_t *ev);
+static void unhandled_event(xcb_generic_event_t *ev);
 
 /**
  * @brief Process a button press.
  *
  * @param ev The button press event.
  */
-void button_press_event(xcb_generic_event_t *ev)
+static void button_press_event(xcb_generic_event_t *ev)
 {
 	/* FIXME: be->event doesn't seem to match with any windows managed by howm.*/
 	xcb_button_press_event_t *be = (xcb_button_press_event_t *)ev;
@@ -50,7 +59,7 @@ void button_press_event(xcb_generic_event_t *ev)
  *
  * @param ev A keypress event.
  */
-void key_press_event(xcb_generic_event_t *ev)
+static void key_press_event(xcb_generic_event_t *ev)
 {
 	unsigned int i = 0;
 	static int cur_cnt = 1;
@@ -108,7 +117,7 @@ void key_press_event(xcb_generic_event_t *ev)
  *
  * @param ev A mapping request event.
  */
-void map_event(xcb_generic_event_t *ev)
+static void map_event(xcb_generic_event_t *ev)
 {
 	xcb_window_t transient = 0;
 	xcb_get_geometry_reply_t *geom;
@@ -184,7 +193,7 @@ void map_event(xcb_generic_event_t *ev)
  *
  * @param ev The destroy event.
  */
-void destroy_event(xcb_generic_event_t *ev)
+static void destroy_event(xcb_generic_event_t *ev)
 {
 	xcb_destroy_notify_event_t *de = (xcb_destroy_notify_event_t *)ev;
 	Client *c = find_client_by_win(de->window);
@@ -201,7 +210,7 @@ void destroy_event(xcb_generic_event_t *ev)
  *
  * @param ev The enter event.
  */
-void enter_event(xcb_generic_event_t *ev)
+static void enter_event(xcb_generic_event_t *ev)
 {
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *)ev;
 
@@ -215,7 +224,7 @@ void enter_event(xcb_generic_event_t *ev)
  *
  * @param ev The event sent from the window.
  */
-void configure_event(xcb_generic_event_t *ev)
+static void configure_event(xcb_generic_event_t *ev)
 {
 	xcb_configure_request_event_t *ce = (xcb_configure_request_event_t *)ev;
 	uint32_t vals[7] = {0}, i = 0;
@@ -247,7 +256,7 @@ void configure_event(xcb_generic_event_t *ev)
  *
  * @param ev An event letting us know which client should be unmapped.
  */
-void unmap_event(xcb_generic_event_t *ev)
+static void unmap_event(xcb_generic_event_t *ev)
 {
 	xcb_unmap_notify_event_t *ue = (xcb_unmap_notify_event_t *)ev;
 	Client *c = find_client_by_win(ue->window);
@@ -268,7 +277,7 @@ void unmap_event(xcb_generic_event_t *ev)
  *
  * @param ev The client message as a generic event.
  */
-void client_message_event(xcb_generic_event_t *ev)
+static void client_message_event(xcb_generic_event_t *ev)
 {
 	xcb_client_message_event_t *cm = (xcb_client_message_event_t *)ev;
 	Client *c = find_client_by_win(cm->window);
@@ -293,7 +302,7 @@ void client_message_event(xcb_generic_event_t *ev)
 	}
 }
 
-void unhandled_event(xcb_generic_event_t *ev)
+static void unhandled_event(xcb_generic_event_t *ev)
 {
 	log_debug("Unhandled event: %d", ev->response_type & ~0x80);
 }

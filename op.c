@@ -6,6 +6,8 @@
 #include "scratchpad.h"
 #include "types.h"
 
+static void change_gaps(const unsigned int type, int cnt, int size);
+
 /**
  * @brief An operator that kills an arbitrary amount of clients or workspaces.
  *
@@ -119,7 +121,7 @@ void op_grow_gaps(const unsigned int type, int cnt)
  * @param size The amount of pixels to change the gap size by. This is
  * configured through OP_GAP_SIZE.
  */
-void change_gaps(const unsigned int type, int cnt, int size)
+static void change_gaps(const unsigned int type, int cnt, int size)
 {
 	Client *c = NULL;
 

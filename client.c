@@ -13,6 +13,8 @@
 #include "howm.h"
 #include "xcb_help.h"
 
+static void move_down(Client *c);
+
 /**
  * @brief Search workspaces for a window, returning the client that it belongs
  * to.
@@ -206,7 +208,7 @@ found:
  *
  * @param c The client to be moved.
  */
-void move_down(Client *c)
+static void move_down(Client *c)
 {
 	Client *prev = prev_client(c, cw);
 	Client *n = (c->next) ? c->next : wss[cw].head;

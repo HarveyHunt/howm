@@ -11,6 +11,9 @@
 #include "helper.h"
 #include "config.h"
 
+static char **ipc_process_args(char *msg, int len, int *err);
+static int ipc_arg_to_int(char *arg, int *err);
+
 int ipc_init(void)
 {
 	struct sockaddr_un addr;
@@ -107,7 +110,7 @@ end:
  *
  * @return The decimal representation of arg.
  */
-int ipc_arg_to_int(char *arg, int *err)
+static int ipc_arg_to_int(char *arg, int *err)
 {
 	int sign = 1;
 
@@ -149,7 +152,7 @@ int ipc_arg_to_int(char *arg, int *err)
  * @return A pointer to an array of strings, each one representing an argument
  * that has been passed over a UNIX socket.
  */
-char **ipc_process_args(char *msg, int len, int *err)
+static char **ipc_process_args(char *msg, int len, int *err)
 {
 	int argc = 0, i = 0, arg_start = 0, lim = 2;
 	char **args = malloc(lim * sizeof(char *));

@@ -5,6 +5,10 @@
 #include "howm.h"
 #include "client.h"
 
+static void stack(void);
+static void grid(void);
+static void zoom(void);
+
 void(*layout_handler[]) (void) = {
 	[GRID] = grid,
 	[ZOOM] = zoom,
@@ -27,7 +31,7 @@ void arrange_windows(void)
 /**
  * @brief Arrange the windows into a grid layout.
  */
-void grid(void)
+static void grid(void)
 {
 	int n = get_non_tff_count();
 	Client *c = NULL;
@@ -72,7 +76,7 @@ void grid(void)
  * Sets the geometry of each window in order for the windows to be rendered to
  * take up the entire screen.
  */
-void zoom(void)
+static void zoom(void)
 {
 	Client *c;
 
@@ -94,7 +98,7 @@ void zoom(void)
  * @brief Arrange the windows in a stack, whether that be horizontal or
  * vertical is decided by the current_layout.
  */
-void stack(void)
+static void stack(void)
 {
 	Client *c = get_first_non_tff();
 	bool vert = (wss[cw].layout == VSTACK);
@@ -160,4 +164,3 @@ void stack(void)
 	}
 	draw_clients();
 }
-

@@ -38,8 +38,5 @@ extern const char *WM_ATOM_NAMES[];
 extern xcb_atom_t wm_atoms[];
 
 void howm_info(void);
-void setup(void);
-void cleanup(void);
-uint32_t get_colour(char *colour);
 
 #endif

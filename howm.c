@@ -17,6 +17,10 @@
 #include "ipc.h"
 #include "handler.h"
 
+static uint32_t get_colour(char *colour);
+static void setup(void);
+static void cleanup(void);
+
 bool running = true;
 bool restart = true;
 xcb_connection_t *dpy = NULL;
@@ -65,7 +69,7 @@ int cur_state = OPERATOR_STATE;
  *
  * Atoms are gathered.
  */
-void setup(void)
+static void setup(void)
 {
 	/* FIXME: A nasty hack. */
 	memcpy(wss, _wss, sizeof(wss));
@@ -203,7 +207,7 @@ void howm_info(void)
  * Delete all of the windows that have been created, remove button and key
  * grabs and remove pointer focus.
  */
-void cleanup(void)
+static void cleanup(void)
 {
 	xcb_window_t *w;
 	xcb_query_tree_reply_t *q;
@@ -235,7 +239,7 @@ void cleanup(void)
  *
  * @return An X11 colourmap pixel.
  */
-uint32_t get_colour(char *colour)
+static uint32_t get_colour(char *colour)
 {
 	uint32_t pixel;
 	uint16_t r, g, b;
