@@ -310,32 +310,32 @@ static void unhandled_event(xcb_generic_event_t *ev)
 void handle_event(xcb_generic_event_t *ev)
 {
 	switch (ev->response_type & ~0x80) {
-		case XCB_KEY_PRESS:
-			key_press_event(ev);
-			break;
-		case XCB_BUTTON_PRESS:
-			button_press_event(ev);
-			break;
-		case XCB_MAP_REQUEST:
-			map_event(ev);
-			break;
-		case XCB_DESTROY_NOTIFY:
-			destroy_event(ev);
-			break;
-		case XCB_ENTER_NOTIFY:
-			enter_event(ev);
-			break;
-		case XCB_CONFIGURE_NOTIFY:
-			configure_event(ev);
-			break;
-		case XCB_UNMAP_NOTIFY:
-			unmap_event(ev);
-			break;
-		case XCB_CLIENT_MESSAGE:
-			client_message_event(ev);
-			break;
-		default:
-			unhandled_event(ev);
-			break;
+	case XCB_KEY_PRESS:
+		key_press_event(ev);
+		break;
+	case XCB_BUTTON_PRESS:
+		button_press_event(ev);
+		break;
+	case XCB_MAP_REQUEST:
+		map_event(ev);
+		break;
+	case XCB_DESTROY_NOTIFY:
+		destroy_event(ev);
+		break;
+	case XCB_ENTER_NOTIFY:
+		enter_event(ev);
+		break;
+	case XCB_CONFIGURE_NOTIFY:
+		configure_event(ev);
+		break;
+	case XCB_UNMAP_NOTIFY:
+		unmap_event(ev);
+		break;
+	case XCB_CLIENT_MESSAGE:
+		client_message_event(ev);
+		break;
+	default:
+		unhandled_event(ev);
+		break;
 	}
 }
