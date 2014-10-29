@@ -26,7 +26,7 @@ bool restart = true;
 xcb_connection_t *dpy = NULL;
 xcb_screen_t *screen = NULL;
 xcb_ewmh_connection_t *ewmh = NULL;
-Workspace wss[LENGTH(_wss)];
+Workspace wss[WORKSPACES + 1];
 const char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 
@@ -71,8 +71,9 @@ int cur_state = OPERATOR_STATE;
  */
 static void setup(void)
 {
-	/* FIXME: A nasty hack. */
-	memcpy(wss, _wss, sizeof(wss));
+	unsigned int i;
+	for (i = 1; i < WORKSPACES; i++)
+		wss[i].layout = WS_DEF_LAYOUT;
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (!screen)
 		log_err("Can't acquire the default screen.");
