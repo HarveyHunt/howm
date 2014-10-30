@@ -393,6 +393,7 @@ void move_current_up(const Arg *arg)
  *
  * @param c The client to be moved.
  * @param ws The ws that the client should be moved to.
+ * @param follow Should focus follow the client that has been moved?
  */
 void client_to_ws(Client *c, const int ws, bool follow)
 {
