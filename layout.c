@@ -4,6 +4,18 @@
 #include "helper.h"
 #include "howm.h"
 #include "client.h"
+#include "xcb_help.h"
+
+/**
+ * @file layout.c
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief All of howm's layouts (as well as layout handler) are implemented
+ * here.
+ */
 
 static void stack(void);
 static void grid(void);

@@ -10,6 +10,16 @@
 #include "client.h"
 #include "config.h"
 
+/**
+ * @file howm.h
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief howm
+ */
+
 enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
 
 extern int numlockmask;

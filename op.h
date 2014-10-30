@@ -3,6 +3,16 @@
 
 #include <xcb/xcb.h>
 
+/**
+ * @file op.h
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief howm
+ */
+
 enum motions { CLIENT, WORKSPACE };
 
 void op_kill(const unsigned int type, int cnt);

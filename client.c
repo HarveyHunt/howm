@@ -13,6 +13,17 @@
 #include "howm.h"
 #include "xcb_help.h"
 
+/**
+ * @file client.c
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief Operations that are to be performed on clients, such as moving them
+ * around in the client list.
+ */
+
 static void move_down(Client *c);
 
 /**

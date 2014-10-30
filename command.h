@@ -5,6 +5,16 @@
 #include "types.h"
 
 /**
+ * @file command.h
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief howm
+ */
+
+/**
  * @brief Represents the last command (and its arguments) or the last
  * combination of operator, count and motion (ocm).
  */

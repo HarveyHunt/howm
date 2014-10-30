@@ -5,6 +5,16 @@
 #include <stdbool.h>
 #include "types.h"
 
+/**
+ * @file client.h
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief howm
+ */
+
 int get_non_tff_count(void);
 Client *get_first_non_tff(void);
 void change_client_gaps(Client *c, int size);

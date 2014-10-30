@@ -4,6 +4,16 @@
 #include "client.h"
 
 /**
+ * @file scratchpad.h
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief howm
+ */
+
+/**
  * @brief Represents a stack. This stack is going to hold linked lists of
  * clients. An example of the stack is below:
  *
@@ -24,7 +34,6 @@ struct stack {
 			is malloced later as we don't know the size yet.*/
 };
 
-static Client *scratchpad;
 extern struct stack del_reg;
 
 void stack_push(struct stack *s, Client *c);

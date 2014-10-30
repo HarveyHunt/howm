@@ -4,6 +4,17 @@
 #include "helper.h"
 
 /**
+ * @file workspace.c
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief Helper functions for dealing with an entire workspace or being able
+ * to correctly calculate a workspace index.
+ */
+
+/**
  * @brief Kills the given workspace.
  *
  * @param ws The workspace to be killed.

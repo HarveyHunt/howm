@@ -6,7 +6,19 @@
 #include "workspace.h"
 #include "howm.h"
 
-struct stack del_reg = {};
+/**
+ * @file scratchpad.c
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief The stack implementation and appropriate functions required for
+ * sending clients (or groups of clients) to the scratchpad.
+ */
+
+struct stack del_reg;
+static Client *scratchpad;
 
 /**
  * @brief Dynamically allocate space for the contents of the stack.

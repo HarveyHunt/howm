@@ -6,6 +6,16 @@
 #include "scratchpad.h"
 #include "types.h"
 
+/**
+ * @file op.c
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief All of howm's operators are implemented here.
+ */
+
 static void change_gaps(const unsigned int type, int cnt, int size);
 
 /**

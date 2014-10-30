@@ -13,6 +13,12 @@
 
 /**
  * @file config.h
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief howm
  */
 
 /*
@@ -98,10 +104,10 @@
 /** The size of the socket buffer. */
 #define IPC_BUF_SIZE 1024
 
-static char * const term_cmd[] = {"urxvt", NULL};
+static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
-		    "-nb", "#70898f", "-nf", "black",
-		    "-sf", "#74718e", NULL};
+	"-nb", "#70898f", "-nf", "black",
+	"-sf", "#74718e", NULL};
 
 /* Rules that are applied to clients as they are spawned. */
 static const Rule rules[] = {

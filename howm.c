@@ -17,6 +17,25 @@
 #include "ipc.h"
 #include "handler.h"
 
+/**
+ * @file howm.c
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief The glue that holds howm together. This file houses the main event
+ * loop as well as setup and cleanup.
+ */
+
+/*
+ *┌────────────┐
+ *│╻ ╻┏━┓╻ ╻┏┳┓│
+ *│┣━┫┃ ┃┃╻┃┃┃┃│
+ *│╹ ╹┗━┛┗┻┛╹ ╹│
+ *└────────────┘
+*/
+
 static uint32_t get_colour(char *colour);
 static void setup(void);
 static void cleanup(void);
@@ -44,23 +63,6 @@ uint16_t screen_height = 0;
 uint16_t screen_width = 0;
 int cur_state = OPERATOR_STATE;
 
-/**
- * @file howm.c
- *
- * @author Harvey Hunt
- *
- * @date 2014
- *
- * @brief howm
- */
-
-/*
- *┌────────────┐
- *│╻ ╻┏━┓╻ ╻┏┳┓│
- *│┣━┫┃ ┃┃╻┃┃┃┃│
- *│╹ ╹┗━┛┗┻┛╹ ╹│
- *└────────────┘
-*/
 
 /**
  * @brief Occurs when howm first starts.
@@ -72,6 +74,7 @@ int cur_state = OPERATOR_STATE;
 static void setup(void)
 {
 	unsigned int i;
+
 	for (i = 1; i < WORKSPACES; i++)
 		wss[i].layout = WS_DEF_LAYOUT;
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
@@ -262,5 +265,3 @@ static uint32_t get_colour(char *colour)
 	free(rep);
 	return pixel;
 }
-
-

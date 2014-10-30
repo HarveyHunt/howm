@@ -11,6 +11,17 @@
 #include "helper.h"
 #include "config.h"
 
+/**
+ * @file ipc.c
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief Everything required to parse, interpret and respond to messages that
+ * are sent over IPC.
+ */
+
 static char **ipc_process_args(char *msg, int len, int *err);
 static int ipc_arg_to_int(char *arg, int *err);
 

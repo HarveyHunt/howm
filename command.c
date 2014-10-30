@@ -12,6 +12,17 @@
 #include "scratchpad.h"
 
 /**
+ * @file command.c
+ *
+ * @author Harvey Hunt
+ *
+ * @date 2014
+ *
+ * @brief Commands are bound to keybindings or are executed as a result of a
+ * message from IPC.
+ */
+
+/**
  * @brief Change the mode of howm.
  *
  * Modes should be thought of in the same way as they are in vi. Different
