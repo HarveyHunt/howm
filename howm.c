@@ -40,6 +40,35 @@ static uint32_t get_colour(char *colour);
 static void setup(void);
 static void cleanup(void);
 
+struct config conf = {
+	.workspaces = 5,
+	.focus_mouse = false,
+	.focus_mouse_click = true,
+	.follow_move = true,
+	.border_px = 2,
+	.border_focus = "#70898F",
+	.border_unfocus = "#555555",
+	.border_prev_focus = "#74718E",
+	.border_urgent = "#FF0000",
+	.bar_height = 20,
+	.bar_bottom = true,
+	.op_gap_size = 4,
+	.center_floating = true,
+	.zoom_gap = true,
+	.master_ratio = 0.7,
+	.log_level = LOG_DEBUG,
+	.default_workspace = 1,
+	.ws_def_layout = HSTACK,
+	.float_spawn_width = 500,
+	.float_spawn_height = 500,
+	.howm_path = "/usr/bin/howm",
+	.delete_register_size = 5,
+	.scratchpad_height = 500,
+	.scratchpad_width = 500,
+	.sock_path = "/tmp/howm",
+	.ipc_buf_size = 1024
+};
+
 bool running = true;
 bool restart = true;
 xcb_connection_t *dpy = NULL;
@@ -62,7 +91,6 @@ unsigned int cur_mode = 0;
 uint16_t screen_height = 0;
 uint16_t screen_width = 0;
 int cur_state = OPERATOR_STATE;
-
 
 /**
  * @brief Occurs when howm first starts.
