@@ -72,7 +72,7 @@ extern xcb_ewmh_connection_t *ewmh;
 extern bool running;
 extern bool restart;
 
-extern Workspace wss[];
+extern Workspace *wss;
 
 extern struct config conf;
 

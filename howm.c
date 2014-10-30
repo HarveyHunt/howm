@@ -69,12 +69,13 @@ struct config conf = {
 	.ipc_buf_size = 1024
 };
 
+
 bool running = true;
 bool restart = true;
 xcb_connection_t *dpy = NULL;
 xcb_screen_t *screen = NULL;
 xcb_ewmh_connection_t *ewmh = NULL;
-Workspace wss[WORKSPACES + 1];
+Workspace *wss;
 const char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 
@@ -102,6 +103,8 @@ int cur_state = OPERATOR_STATE;
 static void setup(void)
 {
 	unsigned int i;
+	wss = calloc((conf.workspaces + 1), sizeof(Workspace));
+
 
 	for (i = 1; i < WORKSPACES; i++)
 		wss[i].layout = WS_DEF_LAYOUT;
@@ -261,6 +264,7 @@ static void cleanup(void)
 	if (ewmh)
 		free(ewmh);
 	stack_free(&del_reg);
+	free(wss);
 }
 
 /**
