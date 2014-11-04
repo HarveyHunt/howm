@@ -12,10 +12,11 @@
  */
 
 enum ipc_errs { IPC_ERR_NONE, IPC_ERR_SYNTAX, IPC_ERR_ALLOC, IPC_ERR_NO_CMD, IPC_ERR_TOO_MANY_ARGS,
-	IPC_ERR_TOO_FEW_ARGS, IPC_ERR_ARG_NOT_INT, IPC_ERR_ARG_TOO_LARGE };
+	IPC_ERR_TOO_FEW_ARGS, IPC_ERR_ARG_NOT_INT, IPC_ERR_ARG_TOO_LARGE, IPC_ERR_UNKNOWN_TYPE };
+enum arg_types { TYPE_IGNORE, TYPE_INT, TYPE_CMD };
 
 int ipc_init(void);
-int ipc_process_cmd(char *msg, int len);
+int ipc_process(char *msg, int len);
 
 static Command commands[] = {
 	{"resize_master", resize_master, NULL, 1, TYPE_INT},

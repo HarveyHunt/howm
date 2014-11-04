@@ -11,6 +11,8 @@
 #include "helper.h"
 #include "config.h"
 
+enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
+
 /**
  * @file ipc.c
  *
@@ -24,6 +26,8 @@
 
 static char **ipc_process_args(char *msg, int len, int *err);
 static int ipc_arg_to_int(char *arg, int *err);
+static int ipc_process_function(char **args);
+static int ipc_process_config(char **args);
 
 int ipc_init(void)
 {
@@ -54,6 +58,26 @@ int ipc_init(void)
 	return sock_fd;
 }
 
+int ipc_process(char *msg, int len)
+{
+	unsigned int i;
+	bool found = false;
+	int err = IPC_ERR_NONE;
+	char **args = ipc_process_args(msg, len, &err);
+
+	if (*args[0] == MSG_FUNCTION)
+		err = ipc_process_function(args + 1);
+	else if (*args[0] == MSG_CONFIG)
+		err = ipc_process_config(args + 1);
+	else
+		err = IPC_ERR_UNKNOWN_TYPE;
+
+	free(args);
+
+	return err;
+}
+
+
 /**
  * @brief Receive a char array from a UNIX socket  and subsequently call a
  * function, passing the args from within msg.
@@ -67,15 +91,11 @@ int ipc_init(void)
  * @return The error code, as set by this function itself or those that it
  * calls.
  */
-int ipc_process_cmd(char *msg, int len)
+static int ipc_process_function(char **args)
 {
 	unsigned int i;
 	bool found = false;
 	int err = IPC_ERR_NONE;
-	char **args = ipc_process_args(msg, len, &err);
-
-	if (err != IPC_ERR_NONE)
-		goto end;
 
 	for (i = 0; i < LENGTH(commands); i++)
 		if (strcmp(args[0], commands[i].name) == 0) {
@@ -97,15 +117,9 @@ int ipc_process_cmd(char *msg, int len)
 				break;
 			} else {
 				err = IPC_ERR_SYNTAX;
-				goto end;
 			}
 		}
 	err = found == true ? err : IPC_ERR_NO_CMD;
-	goto end;
-
-end:
-	free(args);
-	return err;
 }
 
 /**
@@ -215,4 +229,9 @@ static char **ipc_process_args(char *msg, int len, int *err)
 	}
 
 	return args;
+}
+
+static int ipc_process_config(char **args)
+{
+	return 0;
 }

@@ -103,8 +103,8 @@ int cur_state = OPERATOR_STATE;
 static void setup(void)
 {
 	unsigned int i;
-	wss = calloc((conf.workspaces + 1), sizeof(Workspace));
 
+	wss = calloc((conf.workspaces + 1), sizeof(Workspace));
 
 	for (i = 1; i < WORKSPACES; i++)
 		wss[i].layout = WS_DEF_LAYOUT;
@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
 				n = read(cmd_fd, data, IPC_BUF_SIZE - 1);
 				if (n > 0) {
 					data[n] = '\0';
-					ret = ipc_process_cmd(data, n);
+					ret = ipc_process(data, n);
 					if (write(cmd_fd, &ret, sizeof(int)) == -1)
 						log_err("Unable to send response. errno: %d", errno);
 					close(cmd_fd);

@@ -29,7 +29,6 @@ struct replay_state {
 
 
 enum teleport_locations { TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT };
-enum arg_types { TYPE_IGNORE, TYPE_INT, TYPE_CMD };
 enum modes { NORMAL, FOCUS, FLOATING, END_MODES };
 
 struct replay_state rep_state;
