@@ -17,6 +17,11 @@
 		if (err == IPC_ERR_NONE) \
 			opt = i;
 
+#define SET_BOOL(opt, arg) \
+	b = ipc_arg_to_bool(arg, &err); \
+		if (err == IPC_ERR_NONE) \
+			opt = b;
+
 
 enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
 
@@ -247,6 +252,7 @@ static int ipc_process_config(char **args)
 {
 	int err = IPC_ERR_NONE;
 	int i = 0;
+	bool b = false;
 
 	if (!(args + 1))
 		return IPC_ERR_TOO_FEW_ARGS;
@@ -266,6 +272,18 @@ static int ipc_process_config(char **args)
 		SET_INT(conf.scratchpad_width, *(args + 1), screen_width, 1);
 	} else if (strcmp("op_gap_size", *args) == 0) {
 		SET_INT(conf.op_gap_size, *(args + 1), 32, 0);
+	} else if (strcmp("focus_mouse", *args) == 0) {
+		SET_BOOL(conf.focus_mouse, *(args + 1));
+	} else if (strcmp("focus_mouse_click", *args) == 0) {
+		SET_BOOL(conf.focus_mouse_click, *(args + 1));
+	} else if (strcmp("follow_move", *args) == 0) {
+		SET_BOOL(conf.follow_move, *(args + 1));
+	} else if (strcmp("bar_bottom", *args) == 0) {
+		SET_BOOL(conf.bar_bottom, *(args + 1));
+	} else if (strcmp("zoom_gap", *args) == 0) {
+		SET_BOOL(conf.zoom_gap, *(args + 1));
+	} else if (strcmp("center_floating", *args) == 0) {
+		SET_BOOL(conf.center_floating, *(args + 1));
 	}
 	return err;
 }
