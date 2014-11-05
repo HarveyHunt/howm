@@ -176,8 +176,8 @@ int main(int argc, char *argv[])
 		log_err("Can't open X connection");
 		exit(EXIT_FAILURE);
 	}
-	sock_fd = ipc_init();
 	setup();
+	sock_fd = ipc_init();
 	check_other_wm();
 	dpy_fd = xcb_get_file_descriptor(dpy);
 	if (conf_path[0] != '\0')

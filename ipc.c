@@ -12,6 +12,12 @@
 #include "howm.h"
 #include "config.h"
 
+#define SET_INT(opt, arg, upper, lower) \
+	i = ipc_arg_to_int(arg, &err, upper, lower); \
+		if (err == IPC_ERR_NONE) \
+			opt = i;
+
+
 enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
 
 /**
@@ -26,9 +32,10 @@ enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
  */
 
 static char **ipc_process_args(char *msg, int len, int *err);
-static int ipc_arg_to_int(char *arg, int *err);
+static int ipc_arg_to_int(char *arg, int *err, int upper, int lower);
 static int ipc_process_function(char **args);
 static int ipc_process_config(char **args);
+static bool ipc_arg_to_bool(char *arg, int *err);
 
 int ipc_init(void)
 {
@@ -102,16 +109,16 @@ static int ipc_process_function(char **args)
 				commands[i].func(&(Arg){ NULL });
 				break;
 			} else if (commands[i].argc == 1 && *(args + 1) && commands[i].arg_type == TYPE_INT) {
-				commands[i].func(&(Arg){ .i = ipc_arg_to_int(*(args + 1), &err) });
+				commands[i].func(&(Arg){ .i = ipc_arg_to_int(*(args + 1), &err, -100, 100) });
 				break;
 			} else if (commands[i].argc == 1 && *(args + 1) && commands[i].arg_type == TYPE_STR) {
 				commands[i].func(&(Arg){ .cmd = args + 1 });
 				break;
 			} else if (commands[i].argc == 2 && *(args + 1) && *(args + 2) && **(args + 2) == 'w') {
-				commands[i].operator(WORKSPACE, ipc_arg_to_int(*(args + 1), &err));
+				commands[i].operator(WORKSPACE, ipc_arg_to_int(*(args + 1), &err, -100, 100));
 				break;
 			} else if (commands[i].argc == 2 && *(args + 1) && *(args + 2) && **(args + 2) == 'c') {
-				commands[i].operator(CLIENT, ipc_arg_to_int(*(args + 1), &err));
+				commands[i].operator(CLIENT, ipc_arg_to_int(*(args + 1), &err, -100, 100));
 				break;
 			} else {
 				err = IPC_ERR_SYNTAX;
@@ -134,9 +141,10 @@ static int ipc_process_function(char **args)
  *
  * @return The decimal representation of arg.
  */
-static int ipc_arg_to_int(char *arg, int *err)
+static int ipc_arg_to_int(char *arg, int *err, int upper, int lower)
 {
 	int sign = 1;
+	int ret = 0;
 
 	if (arg[0] == '-') {
 		sign = -1;
@@ -145,19 +153,24 @@ static int ipc_arg_to_int(char *arg, int *err)
 
 	if (strlen(arg) == 1 && '0' < *arg && *arg <= '9') {
 		if ('0' <= *arg && *arg <= '9')
-			return sign * (*arg - '0');
-		*err = IPC_ERR_ARG_NOT_INT;
-		return 0;
+			ret = sign * (*arg - '0');
+		else
+			*err = IPC_ERR_ARG_NOT_INT;
 	} else if (strlen(arg) == 2 && '0' < arg[0] && arg[0] <= '9'
 			&& '0' <= arg[1] && arg[1] <= '9') {
 		if ('0' < arg[0] && arg[0] <= '9' && '0' <= arg[1] && arg[1] <= '9')
-			return sign * (10 * (arg[0] - '0') + (arg[1] - '0'));
-		*err = IPC_ERR_ARG_NOT_INT;
-		return 0;
+			ret = sign * (10 * (arg[0] - '0') + (arg[1] - '0'));
+		else
+			*err = IPC_ERR_ARG_NOT_INT;
 	} else {
 		*err = IPC_ERR_ARG_TOO_LARGE;
-		return 0;
 	}
+
+	if (ret > upper)
+		*err = IPC_ERR_ARG_TOO_LARGE;
+	else if (ret < lower)
+		*err = IPC_ERR_ARG_TOO_SMALL;
+	return ret;
 }
 
 /**
@@ -233,12 +246,36 @@ static char **ipc_process_args(char *msg, int len, int *err)
 static int ipc_process_config(char **args)
 {
 	int err = IPC_ERR_NONE;
+	int i = 0;
+
 	if (!(args + 1))
 		return IPC_ERR_TOO_FEW_ARGS;
 	if (strcmp("border_px", *args) == 0) {
-		conf.border_px = ipc_arg_to_int(*(args + 1), &err);
+		SET_INT(conf.border_px, *(args + 1), 32, 0);
 	} else if(strcmp("gap", *args) == 0) {
-		conf.gap = ipc_arg_to_int(*(args + 1), &err);
+		SET_INT(conf.gap, *(args + 1), 32, 0);
+	} else if(strcmp("workspaces", *args) == 0) {
+		SET_INT(conf.gap, *(args + 1), 9, 0);
+	} else if (strcmp("bar_height", *args) == 0) {
+		SET_INT(conf.bar_height, *(args + 1), 64, 0);
+	} else if (strcmp("op_gap_size", *args) == 0) {
+		SET_INT(conf.op_gap_size, *(args + 1), 32, 0);
 	}
 	return err;
+}
+
+static bool ipc_arg_to_bool(char *arg, int *err)
+{
+	if (strcmp("true", arg) == 0
+			|| strcmp("t", arg) == 0
+			|| strcmp("1", arg) == 0) {
+		return true;
+	} else if (strcmp("false", arg) == 0
+			|| strcmp("f", arg) == 0
+			|| strcmp("0", arg) == 0) {
+		return false;
+	} else {
+		*err = IPC_ERR_ARG_NOT_BOOL;
+		return false;
+	}
 }
