@@ -256,6 +256,14 @@ static int ipc_process_config(char **args)
 		SET_INT(conf.gap, *(args + 1), 32, 0);
 	} else if (strcmp("bar_height", *args) == 0) {
 		SET_INT(conf.bar_height, *(args + 1), 64, 0);
+	} else if (strcmp("float_spawn_height", *args) == 0) {
+		SET_INT(conf.float_spawn_height, *(args + 1), screen_height, 1);
+	} else if (strcmp("float_spawn_width", *args) == 0) {
+		SET_INT(conf.float_spawn_width, *(args + 1), screen_width, 1);
+	} else if (strcmp("scratchpad_height", *args) == 0) {
+		SET_INT(conf.scratchpad_height, *(args + 1), screen_height, 1);
+	} else if (strcmp("scratchpad_width", *args) == 0) {
+		SET_INT(conf.scratchpad_width, *(args + 1), screen_width, 1);
 	} else if (strcmp("op_gap_size", *args) == 0) {
 		SET_INT(conf.op_gap_size, *(args + 1), 32, 0);
 	}

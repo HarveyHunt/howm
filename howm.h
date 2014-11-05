@@ -15,6 +15,7 @@
 #define IPC_BUF_SIZE 1024
 #define HOWM_PATH "/usr/bin/howm"
 #define SOCK_PATH "/tmp/howm"
+#define WS_DEF_LAYOUT HSTACK
 
 /**
  * @file howm.h
@@ -43,7 +44,6 @@ struct config {
 	bool zoom_gap;
 	float master_ratio;
 	unsigned int log_level;
-	unsigned int ws_def_layout;
 	uint16_t float_spawn_width;
 	uint16_t float_spawn_height;
 	unsigned int delete_register_size;

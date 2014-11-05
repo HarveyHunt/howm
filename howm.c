@@ -59,7 +59,6 @@ struct config conf = {
 	.zoom_gap = true,
 	.master_ratio = 0.6,
 	.log_level = LOG_DEBUG,
-	.ws_def_layout = HSTACK,
 	.float_spawn_width = 500,
 	.float_spawn_height = 500,
 	.delete_register_size = 5,
@@ -101,11 +100,10 @@ int cur_state = OPERATOR_STATE;
  */
 static void setup(void)
 {
-
 	unsigned int i;
 
 	for (i = 1; i < WORKSPACES; i++) {
-		wss[i].layout = conf.ws_def_layout;
+		wss[i].layout = WS_DEF_LAYOUT;
 		wss[i].bar_height = conf.bar_height;
 		wss[i].master_ratio = conf.master_ratio;
 		wss[i].gap = conf.gap;
