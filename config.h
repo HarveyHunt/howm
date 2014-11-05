@@ -35,42 +35,8 @@
 #define COUNT_MOD Mod1Mask
 /** The modifier key that is used for motions and operators. */
 #define OTHER_MOD Mod1Mask
-/** Number of workspaces. */
-#define WORKSPACES 5
-/** When moving the mouse over a window, focus on the window? */
-#define FOCUS_MOUSE false
-/** Clicking a window will focus it. */
-#define FOCUS_MOUSE_CLICK true
-/** Upon moving a window to a different workspace, move the focus to the
- * workspace? */
-#define FOLLOW_MOVE true
-/** The size (in pixels) of the useless gaps. */
-#define GAP 2
 /** Enable debugging output */
 #define DEBUG_ENABLE false
-/** The size (in pixels) of the border. */
-#define BORDER_PX 2
-/** The border colour when the window is focused. */
-#define BORDER_FOCUS "#70898F"
-/** The border colour when the window is unfocused. */
-#define BORDER_UNFOCUS "#555555"
-/** The border colour of the last focused window.. */
-#define BORDER_PREV_FOCUS "#74718E"
-/** The border colour when the window is urgent. */
-#define BORDER_URGENT "#FF0000"
-/** The height of the status bar to be displayed. */
-#define BAR_HEIGHT 20
-/** Whether the status bar is at the top or bottom of the screen. */
-#define BAR_BOTTOM true
-/** The amount of pixels that the op_shrink_gap and op_grow_gap change the gap
- * size by. */
-#define OP_GAP_SIZE 4
-/** Upon converting a window to floating, should it be centered? */
-#define CENTER_FLOATING true
-/** Draw a gap around a window when in zoom mode. */
-#define ZOOM_GAP true
-/** The ratio of the size of the master window compared to the screen's size. */
-#define MASTER_RATIO 0.7
 /** How much detail should be logged. A LOG_LEVEL of INFO will log almost
  * everything, LOG_WARN will log warnings and errors and LOG_ERR will log only
  * errors.
@@ -80,29 +46,6 @@
  * LOG_DEBUG should be used by developers.
  */
 #define LOG_LEVEL LOG_DEBUG
-/** The workspace that should be focused upon startup. */
-#define DEFAULT_WORKSPACE 1
-#define WS_DEF_LAYOUT HSTACK
-/** The minimum width of a floating window that is spawned, if it doesn't
- * respond to geometry requests in a satisfactory manner. */
-#define FLOAT_SPAWN_WIDTH 500
-/** The minimum height of a floating window that is spawned, if it doesn't
- * respond to geometry requests in a satisfactory manner. */
-#define FLOAT_SPAWN_HEIGHT 500
-/** The path at which the howm binary (or script that started howm) is stored
- * at. This is used for restarts. */
-#define HOWM_PATH "/usr/bin/howm"
-/** The amount of client lists that can be stored in the register before
- * needing to be pasted back. */
-#define DELETE_REGISTER_SIZE 5
-/** The height of the floating scratchpad window. */
-#define SCRATCHPAD_HEIGHT 500
-/** The width of the floating scratchpad window. */
-#define SCRATCHPAD_WIDTH 500
-/** The path that howm's unix socket is at. */
-#define SOCK_PATH "/tmp/howm"
-/** The size of the socket buffer. */
-#define IPC_BUF_SIZE 1024
 
 static const char * const term_cmd[] = {"urxvt", NULL};
 static const char * const dmenu_cmd[] = {"dmenu_run", "-i", "-b",
@@ -224,16 +167,4 @@ static const Motion motions[] = {
 	{OTHER_MOD, XK_w, WORKSPACE},
 	{OTHER_MOD | ShiftMask, XK_w, WORKSPACE}
 };
-
-_Static_assert(WORKSPACES >= 1, "WORKSPACES must be at least 1.");
-_Static_assert(WS_DEF_LAYOUT >= ZOOM && WS_DEF_LAYOUT < END_LAYOUT, "WS_DEF_LAYOUT must be a valid layout.");
-_Static_assert(DEFAULT_WORKSPACE > 0 && DEFAULT_WORKSPACE <= WORKSPACES, "DEFAULT_WORKSPACE must be between 1 and WORKSPACES.");
-_Static_assert(GAP >= 0, "GAP can't be negative.");
-_Static_assert(BORDER_PX >= 0, "BORDER_PX can't be negative.");
-_Static_assert(OP_GAP_SIZE >= 0, "OP_GAP_SIZE can't be negative.");
-_Static_assert(BAR_HEIGHT >= 0, "BAR_HEIGHT can't be negative.");
-_Static_assert(FLOAT_SPAWN_HEIGHT >= 0, "FLOAT_SPAWN_HEIGHT can't be negative.");
-_Static_assert(FLOAT_SPAWN_WIDTH >= 0, "FLOAT_SPAWN_WIDTH can't be negative.");
-_Static_assert(SCRATCHPAD_WIDTH >= 0, "SCRATCHPAD_WIDTH can't be negative.");
-_Static_assert(SCRATCHPAD_HEIGHT >= 0, "SCRATCHPAD_HEIGHT can't be negative.");
 #endif

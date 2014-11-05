@@ -118,6 +118,7 @@ static int ipc_process_function(char **args)
 			}
 		}
 	err = found == true ? err : IPC_ERR_NO_FUNC;
+	return err;
 }
 
 /**
@@ -231,7 +232,13 @@ static char **ipc_process_args(char *msg, int len, int *err)
 
 static int ipc_process_config(char **args)
 {
+	int err = IPC_ERR_NONE;
 	if (!(args + 1))
 		return IPC_ERR_TOO_FEW_ARGS;
-	return IPC_ERR_NONE;
+	if (strcmp("border_px", *args) == 0) {
+		conf.border_px = ipc_arg_to_int(*(args + 1), &err);
+	} else if(strcmp("gap", *args) == 0) {
+		conf.gap = ipc_arg_to_int(*(args + 1), &err);
+	}
+	return err;
 }
