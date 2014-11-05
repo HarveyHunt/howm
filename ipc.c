@@ -148,27 +148,13 @@ static int ipc_process_function(char **args)
  */
 static int ipc_arg_to_int(char *arg, int *err, int upper, int lower)
 {
-	int sign = 1;
 	int ret = 0;
 
-	if (arg[0] == '-') {
-		sign = -1;
-		arg++;
-	}
-
-	if (strlen(arg) == 1 && '0' < *arg && *arg <= '9') {
-		if ('0' <= *arg && *arg <= '9')
-			ret = sign * (*arg - '0');
-		else
-			*err = IPC_ERR_ARG_NOT_INT;
-	} else if (strlen(arg) == 2 && '0' < arg[0] && arg[0] <= '9'
-			&& '0' <= arg[1] && arg[1] <= '9') {
-		if ('0' < arg[0] && arg[0] <= '9' && '0' <= arg[1] && arg[1] <= '9')
-			ret = sign * (10 * (arg[0] - '0') + (arg[1] - '0'));
-		else
-			*err = IPC_ERR_ARG_NOT_INT;
+	if (!arg) {
+		*err = IPC_ERR_ARG_NOT_INT;
+		return ret;
 	} else {
-		*err = IPC_ERR_ARG_TOO_LARGE;
+		ret = atoi(arg);
 	}
 
 	if (ret > upper)
@@ -285,6 +271,7 @@ static int ipc_process_config(char **args)
 	} else if (strcmp("center_floating", *args) == 0) {
 		SET_BOOL(conf.center_floating, *(args + 1));
 	}
+	update_focused_client(wss[cw].current);
 	return err;
 }
 
