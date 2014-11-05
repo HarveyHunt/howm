@@ -15,7 +15,7 @@
  */
 
 void kill_ws(const int ws);
-int correct_ws(int ws);
+int correct_ws(unsigned int ws);
 
 #endif
 

@@ -38,7 +38,7 @@ static void move_down(Client *c);
 Client *find_client_by_win(xcb_window_t win)
 {
 	bool found;
-	int w = 1;
+	unsigned int w = 1;
 	Client *c = NULL;
 
 	for (found = false; w <= conf.workspaces && !found; w++)
@@ -191,7 +191,7 @@ Client *get_first_non_tff(void)
 void remove_client(Client *c, bool refocus)
 {
 	Client **temp = NULL;
-	int w = 1;
+	unsigned int w = 1;
 
 	for (; w <= conf.workspaces; w++)
 		for (temp = &wss[w].head; *temp; temp = &(*temp)->next)

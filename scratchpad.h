@@ -29,7 +29,7 @@
  *
  */
 struct stack {
-	int size; /**< The amount of items in the stack. */
+	unsigned int size; /**< The amount of items in the stack. */
 	Client **contents; /**< The contents is an array of linked lists. Storage
 			is malloced later as we don't know the size yet.*/
 };
