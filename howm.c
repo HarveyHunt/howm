@@ -46,6 +46,7 @@ struct config conf = {
 	.focus_mouse_click = true,
 	.follow_move = true,
 	.border_px = 2,
+	.gap = 4,
 	.border_focus = "#70898F",
 	.border_unfocus = "#555555",
 	.border_prev_focus = "#74718E",
@@ -83,7 +84,7 @@ int numlockmask = 0;
 int retval = 0;
 int last_ws = 0;
 int prev_layout = 0;
-int cw = DEFAULT_WORKSPACE;
+int cw = 0;
 uint32_t border_focus = 0;
 uint32_t border_unfocus = 0;
 uint32_t border_prev_focus = 0;
@@ -96,7 +97,8 @@ int cur_state = OPERATOR_STATE;
 /**
  * @brief Occurs when howm first starts.
  *
- * A connection to the X11 server is attempted and keys are then grabbed.
+ * Workspaces are initialised, screen size is determined and keys and atoms
+ * are then grabbed.
  *
  * Atoms are gathered.
  */
@@ -106,10 +108,12 @@ static void setup(void)
 
 	wss = calloc((conf.workspaces + 1), sizeof(Workspace));
 
-	for (i = 1; i < WORKSPACES; i++) {
-		wss[i].layout = WS_DEF_LAYOUT;
+	cw = conf.default_workspace;
+	for (i = 1; i < conf.workspaces; i++) {
+		wss[i].layout = conf.ws_def_layout;
 		wss[i].bar_height = conf.bar_height;
 		wss[i].master_ratio = conf.master_ratio;
+		wss[i].gap = conf.gap;
 	}
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (!screen)
@@ -124,10 +128,10 @@ static void setup(void)
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
 	setup_ewmh();
 
-	border_focus = get_colour(BORDER_FOCUS);
-	border_unfocus = get_colour(BORDER_UNFOCUS);
-	border_prev_focus = get_colour(BORDER_PREV_FOCUS);
-	border_urgent = get_colour(BORDER_URGENT);
+	border_focus = get_colour(conf.border_focus);
+	border_unfocus = get_colour(conf.border_unfocus);
+	border_prev_focus = get_colour(conf.border_prev_focus);
+	border_urgent = get_colour(conf.border_urgent);
 	stack_init(&del_reg);
 
 	howm_info();
@@ -144,7 +148,7 @@ int main(int argc, char *argv[])
 	int sock_fd, dpy_fd, cmd_fd, ret;
 	ssize_t n;
 	xcb_generic_event_t *ev;
-	char *data = calloc(IPC_BUF_SIZE, sizeof(char));
+	char *data = calloc(conf.ipc_buf_size, sizeof(char));
 
 	if (!data) {
 		log_err("Can't allocate memory for socket buffer.");
@@ -175,7 +179,7 @@ int main(int argc, char *argv[])
 					log_err("Failed to accept connection");
 					continue;
 				}
-				n = read(cmd_fd, data, IPC_BUF_SIZE - 1);
+				n = read(cmd_fd, data, conf.ipc_buf_size - 1);
 				if (n > 0) {
 					data[n] = '\0';
 					ret = ipc_process(data, n);
@@ -208,7 +212,7 @@ int main(int argc, char *argv[])
 	if (!running && !restart) {
 		return retval;
 	} else if (!running && restart) {
-		char *const argv[] = {HOWM_PATH, NULL};
+		char *const argv[] = {conf.howm_path, NULL};
 
 		execv(argv[0], argv);
 		return EXIT_SUCCESS;
@@ -226,7 +230,7 @@ void howm_info(void)
 {
 	unsigned int w = 0;
 #if DEBUG_ENABLE
-	for (w = 1; w <= WORKSPACES; w++) {
+	for (w = 1; w <= conf.workspaces; w++) {
 		fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
 		       wss[w].layout, w, cur_state, wss[w].client_cnt);
 	}

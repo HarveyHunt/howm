@@ -109,7 +109,7 @@ void op_focus_down(const unsigned int type, int cnt)
 
 /**
  * @brief An operator to grow the gaps of either workspaces or clients by
- * OP_GAP_SIZE.
+ * conf.op_gap_size.
  *
  * When the type is workspace, the gap size for that workspace is also changed.
  * This means that new windows will be spawned in with the modified gap size.
@@ -120,7 +120,7 @@ void op_focus_down(const unsigned int type, int cnt)
  */
 void op_grow_gaps(const unsigned int type, int cnt)
 {
-	change_gaps(type, cnt, OP_GAP_SIZE);
+	change_gaps(type, cnt, conf.op_gap_size);
 }
 
 /**
@@ -129,7 +129,7 @@ void op_grow_gaps(const unsigned int type, int cnt)
  * @param type Whether to perform the operation on a client or workspace.
  * @param cnt The amount of times to perform the operation.
  * @param size The amount of pixels to change the gap size by. This is
- * configured through OP_GAP_SIZE.
+ * configured through conf.op_gap_size.
  */
 static void change_gaps(const unsigned int type, int cnt, int size)
 {
@@ -176,13 +176,13 @@ void op_cut(const unsigned int type, int cnt)
 	if (!head)
 		return;
 
-	if (del_reg.size >= DELETE_REGISTER_SIZE) {
+	if (del_reg.size >= conf.delete_register_size) {
 		log_warn("No more stack space.");
 		return;
 	}
 
 	if ((type == CLIENT && cnt >= wss[cw].client_cnt) || type == WORKSPACE) {
-		if (cnt + del_reg.size > DELETE_REGISTER_SIZE)
+		if (cnt + del_reg.size > conf.delete_register_size)
 			return;
 
 		while (cnt > 0) {
@@ -234,7 +234,7 @@ void op_cut(const unsigned int type, int cnt)
 
 /**
  * @brief An operator to shrink the gaps of either workspaces or clients by
- * OP_GAP_SIZE.
+ * conf.op_gap_size.
  *
  * When the type is workspace, the gap size for that workspace is also changed.
  * This means that new windows will be spawned in with the modified gap size.
@@ -245,6 +245,6 @@ void op_cut(const unsigned int type, int cnt)
  */
 void op_shrink_gaps(const unsigned int type, int cnt)
 {
-	change_gaps(type, cnt, -OP_GAP_SIZE);
+	change_gaps(type, cnt, -conf.op_gap_size);
 }
 

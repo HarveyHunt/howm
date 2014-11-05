@@ -49,7 +49,7 @@ static void grid(void)
 	Client *c = NULL;
 	int cols, rows, i = -1, col_cnt = 0, row_cnt = 0;
 	uint16_t col_w;
-	uint16_t client_y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
+	uint16_t client_y = conf.bar_bottom ? 0 : wss[cw].bar_height;
 	uint16_t col_h = screen_height - wss[cw].bar_height;
 
 	if (n <= 1) {
@@ -97,11 +97,11 @@ static void zoom(void)
 	 * layouts to work, draw a border to be consistent with other layouts.
 	 * */
 	if (wss[cw].layout != ZOOM && !wss[cw].head->is_fullscreen)
-		set_border_width(wss[cw].head->win, BORDER_PX);
+		set_border_width(wss[cw].head->win, conf.border_px);
 
 	for (c = wss[cw].head; c; c = c->next)
 		if (!FFT(c))
-			change_client_geom(c, 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+			change_client_geom(c, 0, conf.bar_bottom ? 0 : wss[cw].bar_height,
 					screen_width, screen_height - wss[cw].bar_height);
 	draw_clients();
 }
@@ -118,7 +118,7 @@ static void stack(void)
 	uint16_t w = screen_width;
 	int n = get_non_tff_count();
 	uint16_t client_x = 0, client_span = 0;
-	uint16_t client_y = BAR_BOTTOM ? 0 : wss[cw].bar_height;
+	uint16_t client_y = conf.bar_bottom ? 0 : wss[cw].bar_height;
 	uint16_t ms = (vert ? w : h) * wss[cw].master_ratio;
 	/* The size of the direction the clients will be stacked in. e.g.
 	 *
@@ -155,7 +155,7 @@ static void stack(void)
 		change_client_geom(c, 0, client_y,
 			    ms, span);
 	} else {
-		change_client_geom(c, 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+		change_client_geom(c, 0, conf.bar_bottom ? 0 : wss[cw].bar_height,
 			span, ms);
 	}
 

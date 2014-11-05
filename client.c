@@ -41,7 +41,7 @@ Client *find_client_by_win(xcb_window_t win)
 	int w = 1;
 	Client *c = NULL;
 
-	for (found = false; w <= WORKSPACES && !found; w++)
+	for (found = false; w <= conf.workspaces && !found; w++)
 		for (c = wss[w].head; c && !(found = (win == c->win)); c = c->next)
 			;
 	return c;
@@ -129,7 +129,7 @@ void update_focused_client(Client *c)
 	windows[(wss[cw].current->is_floating || wss[cw].current->is_transient) ? 0 : float_trans] = wss[cw].current->win;
 	c = wss[cw].head;
 	for (fullscreen += !FFT(wss[cw].current) ? 1 : 0; c; c = c->next) {
-		set_border_width(c->win, c->is_fullscreen ? 0 : BORDER_PX);
+		set_border_width(c->win, c->is_fullscreen ? 0 : conf.border_px);
 		xcb_change_window_attributes(dpy, c->win, XCB_CW_BORDER_PIXEL,
 					     (c == wss[cw].current ? &border_focus :
 					      c == wss[cw].prev_foc ? &border_prev_focus
@@ -193,7 +193,7 @@ void remove_client(Client *c, bool refocus)
 	Client **temp = NULL;
 	int w = 1;
 
-	for (; w <= WORKSPACES; w++)
+	for (; w <= conf.workspaces; w++)
 		for (temp = &wss[w].head; *temp; temp = &(*temp)->next)
 			if (*temp == c)
 				goto found;
@@ -441,7 +441,7 @@ void client_to_ws(Client *c, const int ws, bool follow)
  */
 void current_to_ws(const Arg *arg)
 {
-	client_to_ws(wss[cw].current, arg->i, FOLLOW_MOVE);
+	client_to_ws(wss[cw].current, arg->i, conf.follow_move);
 }
 
 /**
@@ -457,12 +457,12 @@ void draw_clients(void)
 
 	log_debug("Drawing clients");
 	for (c = wss[cw].head; c; c = c->next)
-		if (wss[cw].layout == ZOOM && ZOOM_GAP && !c->is_floating) {
+		if (wss[cw].layout == ZOOM && conf.zoom_gap && !c->is_floating) {
 			set_border_width(c->win, 0);
 			move_resize(c->win, c->x + c->gap, c->y + c->gap,
 					c->w - (2 * c->gap), c->h - (2 * c->gap));
 		} else if (c->is_floating) {
-			set_border_width(c->win, BORDER_PX);
+			set_border_width(c->win, conf.border_px);
 			move_resize(c->win, c->x, c->y,
 					c->w, c->h);
 		} else if (c->is_fullscreen || wss[cw].layout == ZOOM) {
@@ -470,8 +470,8 @@ void draw_clients(void)
 			move_resize(c->win, c->x, c->y, c->w, c->h);
 		} else {
 			move_resize(c->win, c->x + c->gap, c->y + c->gap,
-					c->w - (2 * (c->gap + BORDER_PX)),
-					c->h - (2 * (c->gap + BORDER_PX)));
+					c->w - (2 * (c->gap + conf.border_px)),
+					c->h - (2 * (c->gap + conf.border_px)));
 		}
 }
 
@@ -509,7 +509,7 @@ void change_client_gaps(Client *c, int size)
 	else
 		c->gap += size;
 
-	uint32_t space = c->gap + BORDER_PX;
+	uint32_t space = c->gap + conf.border_px;
 
 	xcb_ewmh_set_frame_extents(ewmh, c->win, space, space, space, space);
 	draw_clients();
@@ -528,7 +528,7 @@ Client *create_client(xcb_window_t w)
 	Client *c = (Client *)calloc(1, sizeof(Client));
 	Client *t = prev_client(wss[cw].head, cw); /* Get the last element. */
 	uint32_t vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
-				 (FOCUS_MOUSE ? XCB_EVENT_MASK_ENTER_WINDOW : 0)};
+				 (conf.focus_mouse ? XCB_EVENT_MASK_ENTER_WINDOW : 0)};
 
 	if (!c) {
 		log_err("Can't allocate memory for client.");
@@ -543,7 +543,7 @@ Client *create_client(xcb_window_t w)
 	c->win = w;
 	c->gap = wss[cw].gap;
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_EVENT_MASK, vals);
-	uint32_t space = c->gap + BORDER_PX;
+	uint32_t space = c->gap + conf.border_px;
 
 	xcb_ewmh_set_frame_extents(ewmh, c->win, space, space, space, space);
 	log_info("Created client <%p>", c);
@@ -575,7 +575,7 @@ void set_fullscreen(Client *c, bool fscr)
 		change_client_geom(c, 0, 0, screen_width, screen_height);
 		draw_clients();
 	} else {
-		set_border_width(c->win, !wss[cw].head->next ? 0 : BORDER_PX);
+		set_border_width(c->win, !wss[cw].head->next ? 0 : conf.border_px);
 		arrange_windows();
 		draw_clients();
 	}

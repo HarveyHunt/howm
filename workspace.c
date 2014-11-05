@@ -30,7 +30,7 @@ void kill_ws(const int ws)
 /**
  * @brief Correctly wrap a workspace number.
  *
- * This prevents workspace numbers from being greater than WORKSPACES or less
+ * This prevents workspace numbers from being greater than conf.workspaces or less
  * than 1.
  *
  * @param ws The value that needs to be corrected.
@@ -39,10 +39,10 @@ void kill_ws(const int ws)
  */
 int correct_ws(int ws)
 {
-	if (ws > WORKSPACES)
-		return ws - WORKSPACES;
+	if (ws > conf.workspaces)
+		return ws - conf.workspaces;
 	if (ws < 1)
-		return ws + WORKSPACES;
+		return ws + conf.workspaces;
 
 	return ws;
 }

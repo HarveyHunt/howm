@@ -30,7 +30,7 @@ static Client *scratchpad;
  */
 void stack_init(struct stack *s)
 {
-	s->contents = (Client **)malloc(sizeof(Client) * DELETE_REGISTER_SIZE);
+	s->contents = (Client **)malloc(sizeof(Client) * conf.delete_register_size);
 	if (!s->contents)
 		log_err("Failed to allocate memory for stack.");
 }
@@ -56,7 +56,7 @@ void stack_push(struct stack *s, Client *c)
 {
 	if (!c || !s) {
 		return;
-	} else if (s->size >= DELETE_REGISTER_SIZE) {
+	} else if (s->size >= conf.delete_register_size) {
 		log_warn("Can't push <%p> onto stack <%p>- it is full", c, s);
 		return;
 	}
@@ -143,8 +143,8 @@ void get_from_scratchpad(const Arg *arg)
 	wss[cw].client_cnt++;
 
 	wss[cw].current->is_floating = true;
-	wss[cw].current->w = SCRATCHPAD_WIDTH;
-	wss[cw].current->h = SCRATCHPAD_HEIGHT;
+	wss[cw].current->w = conf.scratchpad_width;
+	wss[cw].current->h = conf.scratchpad_height;
 	wss[cw].current->x = (screen_width / 2) - (wss[cw].current->w / 2);
 	wss[cw].current->y = (screen_height - wss[cw].bar_height - wss[cw].current->h) / 2;
 

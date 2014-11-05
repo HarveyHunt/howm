@@ -37,8 +37,8 @@ int ipc_init(void)
 
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_UNIX;
-	snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", SOCK_PATH);
-	unlink(SOCK_PATH);
+	snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", conf.sock_path);
+	unlink(conf.sock_path);
 	sock_fd = socket(AF_UNIX, SOCK_STREAM, 0);
 
 	if (sock_fd == -1) {
@@ -110,7 +110,7 @@ static int ipc_process_function(char **args)
 			} else if (commands[i].argc == 2 && *(args + 1) && *(args + 2) && **(args + 2) == 'w') {
 				commands[i].operator(WORKSPACE, ipc_arg_to_int(*(args + 1), &err));
 				break;
-			} else if (commands[i].argc == 2 && *(args + 1) && *(args +2) && **(args + 2) == 'c') {
+			} else if (commands[i].argc == 2 && *(args + 1) && *(args + 2) && **(args + 2) == 'c') {
 				commands[i].operator(CLIENT, ipc_arg_to_int(*(args + 1), &err));
 				break;
 			} else {

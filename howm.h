@@ -34,6 +34,7 @@ struct config {
 	uint16_t bar_height;
 	bool bar_bottom;
 	uint16_t op_gap_size;
+	uint16_t gap;
 	bool center_floating;
 	bool zoom_gap;
 	float master_ratio;

@@ -51,7 +51,7 @@ void toggle_float(const Arg *arg)
 		return;
 	log_info("Toggling floating state of client <%p>", wss[cw].current);
 	wss[cw].current->is_floating = !wss[cw].current->is_floating;
-	if (wss[cw].current->is_floating && CENTER_FLOATING) {
+	if (wss[cw].current->is_floating && conf.center_floating) {
 		wss[cw].current->x = (screen_width / 2) - (wss[cw].current->w / 2);
 		wss[cw].current->y = (screen_height - wss[cw].bar_height - wss[cw].current->h) / 2;
 		log_info("Centering client <%p>", wss[cw].current);
@@ -149,15 +149,15 @@ void teleport_client(const Arg *arg)
 	switch (arg->i) {
 	case TOP_LEFT:
 		wss[cw].current->x = g;
-		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g;
+		wss[cw].current->y = (conf.bar_bottom ? 0 : bh) + g;
 		break;
 	case TOP_CENTER:
 		wss[cw].current->x = (screen_width - w) / 2;
-		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g;
+		wss[cw].current->y = (conf.bar_bottom ? 0 : bh) + g;
 		break;
 	case TOP_RIGHT:
-		wss[cw].current->x = screen_width - w - g - (2 * BORDER_PX);
-		wss[cw].current->y = (BAR_BOTTOM ? 0 : bh) + g;
+		wss[cw].current->x = screen_width - w - g - (2 * conf.border_px);
+		wss[cw].current->y = (conf.bar_bottom ? 0 : bh) + g;
 		break;
 	case CENTER:
 		wss[cw].current->x = (screen_width - w) / 2;
@@ -165,15 +165,15 @@ void teleport_client(const Arg *arg)
 		break;
 	case BOTTOM_LEFT:
 		wss[cw].current->x = g;
-		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g - (2 * BORDER_PX);
+		wss[cw].current->y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
 		break;
 	case BOTTOM_CENTER:
 		wss[cw].current->x = (screen_width / 2) - (w / 2);
-		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g - (2 * BORDER_PX);
+		wss[cw].current->y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
 		break;
 	case BOTTOM_RIGHT:
-		wss[cw].current->x = screen_width - w - g - (2 * BORDER_PX);
-		wss[cw].current->y = (BAR_BOTTOM ? screen_height - bh : screen_height) - h - g - (2 * BORDER_PX);
+		wss[cw].current->x = screen_width - w - g - (2 * conf.border_px);
+		wss[cw].current->y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
 		break;
 	};
 	draw_clients();
@@ -210,16 +210,16 @@ void resize_master(const Arg *arg)
 void toggle_bar(const Arg *arg)
 {
 	UNUSED(arg);
-	if (wss[cw].bar_height == 0 && BAR_HEIGHT > 0) {
-		wss[cw].bar_height = BAR_HEIGHT;
+	if (wss[cw].bar_height == 0 && conf.bar_height > 0) {
+		wss[cw].bar_height = conf.bar_height;
 		log_info("Toggled bar to shown");
-	} else if (wss[cw].bar_height == BAR_HEIGHT) {
+	} else if (wss[cw].bar_height == conf.bar_height) {
 		wss[cw].bar_height = 0;
 		log_info("Toggled bar to hidden");
 	} else {
 		return;
 	}
-	xcb_ewmh_geometry_t workarea[] = { { 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+	xcb_ewmh_geometry_t workarea[] = { { 0, conf.bar_bottom ? 0 : wss[cw].bar_height,
 				screen_width, screen_height - wss[cw].bar_height } };
 	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 	arrange_windows();
@@ -446,7 +446,7 @@ void focus_urgent(const Arg *arg)
 	Client *c;
 	int w;
 
-	for (w = 1; w <= WORKSPACES; w++)
+	for (w = 1; w <= conf.workspaces; w++)
 		for (c = wss[w].head; c && !c->is_urgent; c = c->next)
 			;
 	if (c) {
@@ -520,7 +520,7 @@ void change_ws(const Arg *arg)
 {
 	Client *c = wss[arg->i].head;
 
-	if (arg->i > WORKSPACES || arg->i <= 0 || arg->i == cw)
+	if (arg->i > conf.workspaces || arg->i <= 0 || arg->i == cw)
 		return;
 	last_ws = cw;
 	log_info("Changing from workspace <%d> to <%d>.", last_ws, arg->i);
@@ -532,7 +532,7 @@ void change_ws(const Arg *arg)
 	update_focused_client(wss[cw].current);
 
 	xcb_ewmh_set_current_desktop(ewmh, 0, cw - 1);
-	xcb_ewmh_geometry_t workarea[] = { { 0, BAR_BOTTOM ? 0 : wss[cw].bar_height,
+	xcb_ewmh_geometry_t workarea[] = { { 0, conf.bar_bottom ? 0 : wss[cw].bar_height,
 				screen_width, screen_height - wss[cw].bar_height } };
 	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 

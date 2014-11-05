@@ -46,10 +46,10 @@ static void button_press_event(xcb_generic_event_t *ev)
 	xcb_button_press_event_t *be = (xcb_button_press_event_t *)ev;
 
 	log_info("Button %d pressed at (%d, %d)", be->detail, be->event_x, be->event_y);
-	if (FOCUS_MOUSE_CLICK && be->detail == XCB_BUTTON_INDEX_1)
+	if (conf.focus_mouse_click && be->detail == XCB_BUTTON_INDEX_1)
 		focus_window(be->event);
 
-	if (FOCUS_MOUSE_CLICK) {
+	if (conf.focus_mouse_click) {
 		xcb_allow_events(dpy, XCB_ALLOW_REPLAY_POINTER, be->time);
 		xcb_flush(dpy);
 	}
@@ -180,10 +180,10 @@ static void map_event(xcb_generic_event_t *ev)
 	if (geom) {
 		log_info("Mapped client's initial geom is %ux%u+%d+%d", geom->width, geom->height, geom->x, geom->y);
 		if (c->is_floating) {
-			c->w = geom->width > 1 ? geom->width : FLOAT_SPAWN_WIDTH;
-			c->h = geom->height > 1 ? geom->height : FLOAT_SPAWN_HEIGHT;
-			c->x = CENTER_FLOATING ? (screen_width / 2) - (c->w / 2) : geom->x;
-			c->y = CENTER_FLOATING ? (screen_height - wss[cw].bar_height - c->h) / 2 : geom->y;
+			c->w = geom->width > 1 ? geom->width : conf.float_spawn_width;
+			c->h = geom->height > 1 ? geom->height : conf.float_spawn_height;
+			c->x = conf.center_floating ? (screen_width / 2) - (c->w / 2) : geom->x;
+			c->y = conf.center_floating ? (screen_height - wss[cw].bar_height - c->h) / 2 : geom->y;
 		}
 		free(geom);
 	}
@@ -226,7 +226,7 @@ static void enter_event(xcb_generic_event_t *ev)
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *)ev;
 
 	log_debug("Enter event for window <0x%x>", ee->event);
-	if (FOCUS_MOUSE && wss[cw].layout != ZOOM)
+	if (conf.focus_mouse && wss[cw].layout != ZOOM)
 		focus_window(ee->event);
 }
 
@@ -247,11 +247,11 @@ static void configure_event(xcb_generic_event_t *ev)
 	if (XCB_CONFIG_WINDOW_X & ce->value_mask)
 		vals[i++] = ce->x;
 	if (XCB_CONFIG_WINDOW_Y & ce->value_mask)
-		vals[i++] = ce->y + (BAR_BOTTOM ? 0 : wss[cw].bar_height);
+		vals[i++] = ce->y + (conf.bar_bottom ? 0 : wss[cw].bar_height);
 	if (XCB_CONFIG_WINDOW_WIDTH & ce->value_mask)
-		vals[i++] = (ce->width < screen_width - BORDER_PX) ? ce->width : screen_width - BORDER_PX;
+		vals[i++] = (ce->width < screen_width - conf.border_px) ? ce->width : screen_width - conf.border_px;
 	if (XCB_CONFIG_WINDOW_HEIGHT & ce->value_mask)
-		vals[i++] = (ce->height < screen_height - BORDER_PX) ? ce->height : screen_height - BORDER_PX;
+		vals[i++] = (ce->height < screen_height - conf.border_px) ? ce->height : screen_height - conf.border_px;
 	if (XCB_CONFIG_WINDOW_BORDER_WIDTH & ce->value_mask)
 		vals[i++] = ce->border_width;
 	if (XCB_CONFIG_WINDOW_SIBLING & ce->value_mask)
@@ -305,7 +305,7 @@ static void client_message_event(xcb_generic_event_t *ev)
 		log_info("_NET_ACTIVE_WINDOW: Focusing client <%p>", c);
 		update_focused_client(find_client_by_win(cm->window));
 	} else if (c && cm->type == ewmh->_NET_CURRENT_DESKTOP
-			&& cm->data.data32[0] < WORKSPACES) {
+			&& cm->data.data32[0] < conf.workspaces) {
 		log_info("_NET_CURRENT_DESKTOP: Changing to workspace <%d>", cm->data.data32[0]);
 		change_ws(&(Arg){ .i = cm->data.data32[0] });
 	} else {
