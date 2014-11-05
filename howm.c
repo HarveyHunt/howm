@@ -47,17 +47,13 @@ struct config conf = {
 	.focus_mouse_click = true,
 	.follow_move = true,
 	.border_px = 2,
-	.gap = 4,
 	.border_focus = "#70898F",
 	.border_unfocus = "#555555",
 	.border_prev_focus = "#74718E",
 	.border_urgent = "#FF0000",
-	.bar_height = 20,
-	.bar_bottom = true,
 	.op_gap_size = 4,
 	.center_floating = true,
 	.zoom_gap = true,
-	.master_ratio = 0.6,
 	.log_level = LOG_DEBUG,
 	.float_spawn_width = 500,
 	.float_spawn_height = 500,
@@ -72,7 +68,7 @@ bool restart = true;
 xcb_connection_t *dpy = NULL;
 xcb_screen_t *screen = NULL;
 xcb_ewmh_connection_t *ewmh = NULL;
-Workspace wss[WORKSPACES];
+Workspace wss[WORKSPACES + 1];
 const char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 
@@ -126,6 +122,8 @@ static void setup(void)
 	border_prev_focus = get_colour(conf.border_prev_focus);
 	border_urgent = get_colour(conf.border_urgent);
 	stack_init(&del_reg);
+
+	howm_info();
 }
 
 /**

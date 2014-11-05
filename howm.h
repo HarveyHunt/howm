@@ -36,13 +36,9 @@ struct config {
 	char *border_unfocus;
 	char *border_prev_focus;
 	char *border_urgent;
-	uint16_t bar_height;
-	bool bar_bottom;
 	uint16_t op_gap_size;
-	uint16_t gap;
 	bool center_floating;
 	bool zoom_gap;
-	float master_ratio;
 	unsigned int log_level;
 	uint16_t float_spawn_width;
 	uint16_t float_spawn_height;

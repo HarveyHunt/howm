@@ -12,8 +12,8 @@
 #include "howm.h"
 #include "config.h"
 
-#define SET_INT(opt, arg, upper, lower) \
-	i = ipc_arg_to_int(arg, &err, upper, lower); \
+#define SET_INT(opt, arg, lower, upper) \
+	i = ipc_arg_to_int(arg, &err, lower, upper); \
 		if (err == IPC_ERR_NONE) \
 			opt = i;
 
@@ -21,7 +21,6 @@
 	b = ipc_arg_to_bool(arg, &err); \
 		if (err == IPC_ERR_NONE) \
 			opt = b;
-
 
 enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
 
@@ -37,7 +36,7 @@ enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
  */
 
 static char **ipc_process_args(char *msg, int len, int *err);
-static int ipc_arg_to_int(char *arg, int *err, int upper, int lower);
+static int ipc_arg_to_int(char *arg, int *err, int lower, int upper);
 static int ipc_process_function(char **args);
 static int ipc_process_config(char **args);
 static bool ipc_arg_to_bool(char *arg, int *err);
@@ -146,12 +145,12 @@ static int ipc_process_function(char **args)
  *
  * @return The decimal representation of arg.
  */
-static int ipc_arg_to_int(char *arg, int *err, int upper, int lower)
+static int ipc_arg_to_int(char *arg, int *err, int lower, int upper)
 {
 	int ret = 0;
 
 	if (!arg) {
-		*err = IPC_ERR_ARG_NOT_INT;
+		*err = IPC_ERR_TOO_FEW_ARGS;
 		return ret;
 	} else {
 		ret = atoi(arg);
@@ -243,29 +242,23 @@ static int ipc_process_config(char **args)
 	if (!(args + 1))
 		return IPC_ERR_TOO_FEW_ARGS;
 	if (strcmp("border_px", *args) == 0) {
-		SET_INT(conf.border_px, *(args + 1), 32, 0);
-	} else if(strcmp("gap", *args) == 0) {
-		SET_INT(conf.gap, *(args + 1), 32, 0);
-	} else if (strcmp("bar_height", *args) == 0) {
-		SET_INT(conf.bar_height, *(args + 1), 64, 0);
+		SET_INT(conf.border_px, *(args + 1), 0, 32);
 	} else if (strcmp("float_spawn_height", *args) == 0) {
-		SET_INT(conf.float_spawn_height, *(args + 1), screen_height, 1);
+		SET_INT(conf.float_spawn_height, *(args + 1), 1, screen_height);
 	} else if (strcmp("float_spawn_width", *args) == 0) {
-		SET_INT(conf.float_spawn_width, *(args + 1), screen_width, 1);
+		SET_INT(conf.float_spawn_width, *(args + 1), 1, screen_width);
 	} else if (strcmp("scratchpad_height", *args) == 0) {
-		SET_INT(conf.scratchpad_height, *(args + 1), screen_height, 1);
+		SET_INT(conf.scratchpad_height, *(args + 1), 1, screen_height);
 	} else if (strcmp("scratchpad_width", *args) == 0) {
-		SET_INT(conf.scratchpad_width, *(args + 1), screen_width, 1);
+		SET_INT(conf.scratchpad_width, *(args + 1), 1, screen_width);
 	} else if (strcmp("op_gap_size", *args) == 0) {
-		SET_INT(conf.op_gap_size, *(args + 1), 32, 0);
+		SET_INT(conf.op_gap_size, *(args + 1), 0, 32);
 	} else if (strcmp("focus_mouse", *args) == 0) {
 		SET_BOOL(conf.focus_mouse, *(args + 1));
 	} else if (strcmp("focus_mouse_click", *args) == 0) {
 		SET_BOOL(conf.focus_mouse_click, *(args + 1));
 	} else if (strcmp("follow_move", *args) == 0) {
 		SET_BOOL(conf.follow_move, *(args + 1));
-	} else if (strcmp("bar_bottom", *args) == 0) {
-		SET_BOOL(conf.bar_bottom, *(args + 1));
 	} else if (strcmp("zoom_gap", *args) == 0) {
 		SET_BOOL(conf.zoom_gap, *(args + 1));
 	} else if (strcmp("center_floating", *args) == 0) {
