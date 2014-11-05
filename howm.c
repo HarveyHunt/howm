@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 
@@ -39,6 +40,7 @@
 static uint32_t get_colour(char *colour);
 static void setup(void);
 static void cleanup(void);
+static void exec_config(char *conf_path);
 
 struct config conf = {
 	.workspaces = 5,
@@ -148,12 +150,26 @@ int main(int argc, char *argv[])
 	int sock_fd, dpy_fd, cmd_fd, ret;
 	ssize_t n;
 	xcb_generic_event_t *ev;
+	char ch;
+	char conf_path[128];
 	char *data = calloc(conf.ipc_buf_size, sizeof(char));
 
 	if (!data) {
 		log_err("Can't allocate memory for socket buffer.");
 		exit(EXIT_FAILURE);
 	}
+
+	conf_path[0] = '\0';
+
+	while ((ch = getopt(argc, argv, "c:")) != -1) {
+		switch (ch) {
+		case 'c':
+			snprintf(conf_path, sizeof(conf_path), "%s", optarg);
+			break;
+		}
+	}
+
+	/* TODO: Add default config paths. */
 
 	dpy = xcb_connect(NULL, NULL);
 	if (xcb_connection_has_error(dpy)) {
@@ -164,6 +180,10 @@ int main(int argc, char *argv[])
 	setup();
 	check_other_wm();
 	dpy_fd = xcb_get_file_descriptor(dpy);
+	if (conf_path[0] != '\0')
+		exec_config(conf_path);
+	else
+		log_err("No config path was supplied");
 	while (running) {
 		if (!xcb_flush(dpy))
 			log_err("Failed to flush X connection");
@@ -303,4 +323,13 @@ static uint32_t get_colour(char *colour)
 	pixel = rep->pixel;
 	free(rep);
 	return pixel;
+}
+
+static void exec_config(char *conf_path)
+{
+	if (fork())
+		return;
+	setsid();
+	execl(conf_path, conf_path, NULL);
+	log_err("Couldn't execute the configuration file %s", conf_path);
 }
