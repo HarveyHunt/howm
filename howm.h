@@ -11,6 +11,11 @@
 #include "client.h"
 #include "config.h"
 
+#define WORKSPACES 5
+#define IPC_BUF_SIZE 1024
+#define HOWM_PATH "/usr/bin/howm"
+#define SOCK_PATH "/tmp/howm"
+
 /**
  * @file howm.h
  *
@@ -22,7 +27,6 @@
  */
 
 struct config {
-	unsigned int workspaces;
 	bool focus_mouse;
 	bool focus_mouse_click;
 	bool follow_move;
@@ -39,16 +43,12 @@ struct config {
 	bool zoom_gap;
 	float master_ratio;
 	unsigned int log_level;
-	unsigned int default_workspace;
 	unsigned int ws_def_layout;
 	uint16_t float_spawn_width;
 	uint16_t float_spawn_height;
-	char *howm_path;
 	unsigned int delete_register_size;
 	uint16_t scratchpad_height;
 	uint16_t scratchpad_width;
-	char *sock_path;
-	unsigned int ipc_buf_size;
 };
 
 enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
@@ -73,7 +73,7 @@ extern xcb_ewmh_connection_t *ewmh;
 extern bool running;
 extern bool restart;
 
-extern Workspace *wss;
+extern Workspace wss[];
 
 extern struct config conf;
 

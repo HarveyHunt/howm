@@ -446,7 +446,7 @@ void focus_urgent(const Arg *arg)
 	Client *c;
 	unsigned int w;
 
-	for (w = 1; w <= conf.workspaces; w++)
+	for (w = 1; w <= WORKSPACES; w++)
 		for (c = wss[w].head; c && !c->is_urgent; c = c->next)
 			;
 	if (c) {
@@ -520,7 +520,7 @@ void change_ws(const Arg *arg)
 {
 	Client *c = wss[arg->i].head;
 
-	if ((unsigned int)arg->i > conf.workspaces || arg->i <= 0 || arg->i == cw)
+	if ((unsigned int)arg->i > WORKSPACES || arg->i <= 0 || arg->i == cw)
 		return;
 	last_ws = cw;
 	log_info("Changing from workspace <%d> to <%d>.", last_ws, arg->i);

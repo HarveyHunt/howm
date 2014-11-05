@@ -44,8 +44,8 @@ int ipc_init(void)
 
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_UNIX;
-	snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", conf.sock_path);
-	unlink(conf.sock_path);
+	snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", SOCK_PATH);
+	unlink(SOCK_PATH);
 	sock_fd = socket(AF_UNIX, SOCK_STREAM, 0);
 
 	if (sock_fd == -1) {
@@ -254,8 +254,6 @@ static int ipc_process_config(char **args)
 		SET_INT(conf.border_px, *(args + 1), 32, 0);
 	} else if(strcmp("gap", *args) == 0) {
 		SET_INT(conf.gap, *(args + 1), 32, 0);
-	} else if(strcmp("workspaces", *args) == 0) {
-		SET_INT(conf.gap, *(args + 1), 9, 0);
 	} else if (strcmp("bar_height", *args) == 0) {
 		SET_INT(conf.bar_height, *(args + 1), 64, 0);
 	} else if (strcmp("op_gap_size", *args) == 0) {

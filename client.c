@@ -41,7 +41,7 @@ Client *find_client_by_win(xcb_window_t win)
 	unsigned int w = 1;
 	Client *c = NULL;
 
-	for (found = false; w <= conf.workspaces && !found; w++)
+	for (found = false; w <= WORKSPACES && !found; w++)
 		for (c = wss[w].head; c && !(found = (win == c->win)); c = c->next)
 			;
 	return c;
@@ -193,7 +193,7 @@ void remove_client(Client *c, bool refocus)
 	Client **temp = NULL;
 	unsigned int w = 1;
 
-	for (; w <= conf.workspaces; w++)
+	for (; w <= WORKSPACES; w++)
 		for (temp = &wss[w].head; *temp; temp = &(*temp)->next)
 			if (*temp == c)
 				goto found;

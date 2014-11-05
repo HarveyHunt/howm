@@ -331,8 +331,8 @@ void setup_ewmh(void)
 	xcb_ewmh_set_supporting_wm_check(ewmh, 0, screen->root);
 	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewport), viewport);
 	xcb_ewmh_set_wm_name(ewmh, 0, strlen("howm"), "howm");
-	xcb_ewmh_set_current_desktop(ewmh, 0, conf.default_workspace);
-	xcb_ewmh_set_number_of_desktops(ewmh, 0, conf.workspaces);
+	xcb_ewmh_set_current_desktop(ewmh, 0, cw);
+	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
 	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
 }

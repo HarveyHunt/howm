@@ -43,7 +43,6 @@ static void cleanup(void);
 static void exec_config(char *conf_path);
 
 struct config conf = {
-	.workspaces = 5,
 	.focus_mouse = false,
 	.focus_mouse_click = true,
 	.follow_move = true,
@@ -60,16 +59,12 @@ struct config conf = {
 	.zoom_gap = true,
 	.master_ratio = 0.6,
 	.log_level = LOG_DEBUG,
-	.default_workspace = 1,
 	.ws_def_layout = HSTACK,
 	.float_spawn_width = 500,
 	.float_spawn_height = 500,
-	.howm_path = "/usr/bin/howm",
 	.delete_register_size = 5,
 	.scratchpad_height = 500,
 	.scratchpad_width = 500,
-	.sock_path = "/tmp/howm",
-	.ipc_buf_size = 1024
 };
 
 
@@ -78,7 +73,7 @@ bool restart = true;
 xcb_connection_t *dpy = NULL;
 xcb_screen_t *screen = NULL;
 xcb_ewmh_connection_t *ewmh = NULL;
-Workspace *wss;
+Workspace wss[WORKSPACES];
 const char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 
@@ -86,7 +81,7 @@ int numlockmask = 0;
 int retval = 0;
 int last_ws = 0;
 int prev_layout = 0;
-int cw = 0;
+int cw = 1;
 uint32_t border_focus = 0;
 uint32_t border_unfocus = 0;
 uint32_t border_prev_focus = 0;
@@ -106,12 +101,10 @@ int cur_state = OPERATOR_STATE;
  */
 static void setup(void)
 {
+
 	unsigned int i;
 
-	wss = calloc((conf.workspaces + 1), sizeof(Workspace));
-
-	cw = conf.default_workspace;
-	for (i = 1; i < conf.workspaces; i++) {
+	for (i = 1; i < WORKSPACES; i++) {
 		wss[i].layout = conf.ws_def_layout;
 		wss[i].bar_height = conf.bar_height;
 		wss[i].master_ratio = conf.master_ratio;
@@ -135,8 +128,6 @@ static void setup(void)
 	border_prev_focus = get_colour(conf.border_prev_focus);
 	border_urgent = get_colour(conf.border_urgent);
 	stack_init(&del_reg);
-
-	howm_info();
 }
 
 /**
@@ -152,7 +143,7 @@ int main(int argc, char *argv[])
 	xcb_generic_event_t *ev;
 	char ch;
 	char conf_path[128];
-	char *data = calloc(conf.ipc_buf_size, sizeof(char));
+	char *data = calloc(IPC_BUF_SIZE, sizeof(char));
 
 	if (!data) {
 		log_err("Can't allocate memory for socket buffer.");
@@ -184,6 +175,7 @@ int main(int argc, char *argv[])
 		exec_config(conf_path);
 	else
 		log_err("No config path was supplied");
+
 	while (running) {
 		if (!xcb_flush(dpy))
 			log_err("Failed to flush X connection");
@@ -199,7 +191,7 @@ int main(int argc, char *argv[])
 					log_err("Failed to accept connection");
 					continue;
 				}
-				n = read(cmd_fd, data, conf.ipc_buf_size - 1);
+				n = read(cmd_fd, data, IPC_BUF_SIZE - 1);
 				if (n > 0) {
 					data[n] = '\0';
 					ret = ipc_process(data, n);
@@ -232,7 +224,7 @@ int main(int argc, char *argv[])
 	if (!running && !restart) {
 		return retval;
 	} else if (!running && restart) {
-		char *const argv[] = {conf.howm_path, NULL};
+		char *const argv[] = {HOWM_PATH, NULL};
 
 		execv(argv[0], argv);
 		return EXIT_SUCCESS;
@@ -250,7 +242,7 @@ void howm_info(void)
 {
 	unsigned int w = 0;
 #if DEBUG_ENABLE
-	for (w = 1; w <= conf.workspaces; w++) {
+	for (w = 1; w <= WORKSPACES; w++) {
 		fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
 		       wss[w].layout, w, cur_state, wss[w].client_cnt);
 	}
@@ -291,7 +283,6 @@ static void cleanup(void)
 	if (ewmh)
 		free(ewmh);
 	stack_free(&del_reg);
-	free(wss);
 }
 
 /**
