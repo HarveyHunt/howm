@@ -11,9 +11,9 @@
  * @brief howm
  */
 
-enum ipc_errs { IPC_ERR_NONE, IPC_ERR_SYNTAX, IPC_ERR_ALLOC, IPC_ERR_NO_CMD, IPC_ERR_TOO_MANY_ARGS,
+enum ipc_errs { IPC_ERR_NONE, IPC_ERR_SYNTAX, IPC_ERR_ALLOC, IPC_ERR_NO_FUNC, IPC_ERR_TOO_MANY_ARGS,
 	IPC_ERR_TOO_FEW_ARGS, IPC_ERR_ARG_NOT_INT, IPC_ERR_ARG_TOO_LARGE, IPC_ERR_UNKNOWN_TYPE };
-enum arg_types { TYPE_IGNORE, TYPE_INT, TYPE_CMD };
+enum arg_types { TYPE_IGNORE, TYPE_INT, TYPE_STR };
 
 int ipc_init(void);
 int ipc_process(char *msg, int len);
@@ -51,7 +51,7 @@ static Command commands[] = {
 	{"make_master", make_master, NULL, 0, TYPE_INT},
 	{"change_ws", change_ws, NULL, 1, TYPE_INT},
 	{"current_to_ws", current_to_ws, NULL, 1, TYPE_INT},
-	{"spawn", spawn, NULL, 1, TYPE_CMD},
+	{"spawn", spawn, NULL, 1, TYPE_STR},
 
 	{"op_kill", NULL, op_kill, 2, TYPE_IGNORE},
 	{"op_move_up", NULL, op_move_up, 2, TYPE_IGNORE},

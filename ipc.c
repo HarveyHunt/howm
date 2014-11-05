@@ -9,6 +9,7 @@
 #include "op.h"
 #include "ipc.h"
 #include "helper.h"
+#include "howm.h"
 #include "config.h"
 
 enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
@@ -60,26 +61,23 @@ int ipc_init(void)
 
 int ipc_process(char *msg, int len)
 {
-	unsigned int i;
-	bool found = false;
 	int err = IPC_ERR_NONE;
 	char **args = ipc_process_args(msg, len, &err);
 
-	if (*args[0] == MSG_FUNCTION)
+	if (**args == MSG_FUNCTION)
 		err = ipc_process_function(args + 1);
-	else if (*args[0] == MSG_CONFIG)
+	else if (**args == MSG_CONFIG)
 		err = ipc_process_config(args + 1);
 	else
 		err = IPC_ERR_UNKNOWN_TYPE;
 
 	free(args);
-
 	return err;
 }
 
 
 /**
- * @brief Receive a char array from a UNIX socket  and subsequently call a
+ * @brief Receive a char array from a UNIX socket and subsequently call a
  * function, passing the args from within msg.
  *
  * @param msg A char array from the UNIX socket. In the form:
@@ -98,28 +96,28 @@ static int ipc_process_function(char **args)
 	int err = IPC_ERR_NONE;
 
 	for (i = 0; i < LENGTH(commands); i++)
-		if (strcmp(args[0], commands[i].name) == 0) {
+		if (strcmp(*args, commands[i].name) == 0) {
 			found = true;
 			if (commands[i].argc == 0) {
 				commands[i].func(&(Arg){ NULL });
 				break;
-			} else if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_INT) {
-				commands[i].func(&(Arg){ .i = ipc_arg_to_int(args[1], &err) });
+			} else if (commands[i].argc == 1 && *(args + 1) && commands[i].arg_type == TYPE_INT) {
+				commands[i].func(&(Arg){ .i = ipc_arg_to_int(*(args + 1), &err) });
 				break;
-			} else if (commands[i].argc == 1 && args[1] && commands[i].arg_type == TYPE_CMD) {
+			} else if (commands[i].argc == 1 && *(args + 1) && commands[i].arg_type == TYPE_STR) {
 				commands[i].func(&(Arg){ .cmd = args + 1 });
 				break;
-			} else if (commands[i].argc == 2 && args[1] && args[2] && *args[2] == 'w') {
-				commands[i].operator(WORKSPACE, ipc_arg_to_int(args[1], &err));
+			} else if (commands[i].argc == 2 && *(args + 1) && *(args + 2) && **(args + 2) == 'w') {
+				commands[i].operator(WORKSPACE, ipc_arg_to_int(*(args + 1), &err));
 				break;
-			} else if (commands[i].argc == 2 && args[1] && args[2] && *args[2] == 'c') {
-				commands[i].operator(CLIENT, ipc_arg_to_int(args[1], &err));
+			} else if (commands[i].argc == 2 && *(args + 1) && *(args +2) && **(args + 2) == 'c') {
+				commands[i].operator(CLIENT, ipc_arg_to_int(*(args + 1), &err));
 				break;
 			} else {
 				err = IPC_ERR_SYNTAX;
 			}
 		}
-	err = found == true ? err : IPC_ERR_NO_CMD;
+	err = found == true ? err : IPC_ERR_NO_FUNC;
 }
 
 /**
@@ -189,7 +187,7 @@ static char **ipc_process_args(char *msg, int len, int *err)
 
 	for (; i < len; i++) {
 		if (msg[i] == 0) {
-			args[argc++] = msg + arg_start;
+			*(args + argc++) = msg + arg_start;
 			arg_start = i + 1;
 
 			if (argc == lim) {
@@ -220,7 +218,7 @@ static char **ipc_process_args(char *msg, int len, int *err)
 	 * spawn() and that expects a NULL terminated array.
 	 *
 	 * Use argc here as args are zero indexed. */
-	args[argc] = NULL;
+	*(args + argc) = NULL;
 
 	if (argc < 1) {
 		*err = IPC_ERR_TOO_FEW_ARGS;
@@ -233,5 +231,7 @@ static char **ipc_process_args(char *msg, int len, int *err)
 
 static int ipc_process_config(char **args)
 {
-	return 0;
+	if (!(args + 1))
+		return IPC_ERR_TOO_FEW_ARGS;
+	return IPC_ERR_NONE;
 }
