@@ -55,7 +55,7 @@ struct config conf = {
 	.op_gap_size = 4,
 	.center_floating = true,
 	.zoom_gap = true,
-	.master_ratio = 0.7,
+	.master_ratio = 0.6,
 	.log_level = LOG_DEBUG,
 	.default_workspace = 1,
 	.ws_def_layout = HSTACK,
@@ -106,8 +106,11 @@ static void setup(void)
 
 	wss = calloc((conf.workspaces + 1), sizeof(Workspace));
 
-	for (i = 1; i < WORKSPACES; i++)
+	for (i = 1; i < WORKSPACES; i++) {
 		wss[i].layout = WS_DEF_LAYOUT;
+		wss[i].bar_height = conf.bar_height;
+		wss[i].master_ratio = conf.master_ratio;
+	}
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (!screen)
 		log_err("Can't acquire the default screen.");
