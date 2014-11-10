@@ -51,6 +51,8 @@ struct config conf = {
 	.border_unfocus = "#555555",
 	.border_prev_focus = "#74718E",
 	.border_urgent = "#FF0000",
+	.bar_bottom = true,
+	.bar_height = 20,
 	.op_gap_size = 4,
 	.center_floating = true,
 	.zoom_gap = true,
@@ -101,8 +103,8 @@ static void setup(void)
 	for (i = 1; i < WORKSPACES; i++) {
 		wss[i].layout = WS_DEF_LAYOUT;
 		wss[i].bar_height = conf.bar_height;
-		wss[i].master_ratio = conf.master_ratio;
-		wss[i].gap = conf.gap;
+		wss[i].master_ratio = MASTER_RATIO;
+		wss[i].gap = GAP;
 	}
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (!screen)

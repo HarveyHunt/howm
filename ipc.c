@@ -253,6 +253,8 @@ static int ipc_process_config(char **args)
 		SET_INT(conf.scratchpad_width, *(args + 1), 1, screen_width);
 	} else if (strcmp("op_gap_size", *args) == 0) {
 		SET_INT(conf.op_gap_size, *(args + 1), 0, 32);
+	} else if (strcmp("bar_height", *args) == 0) {
+		SET_INT(conf.bar_height, *(args + 1), 0, screen_height);
 	} else if (strcmp("focus_mouse", *args) == 0) {
 		SET_BOOL(conf.focus_mouse, *(args + 1));
 	} else if (strcmp("focus_mouse_click", *args) == 0) {
@@ -263,6 +265,8 @@ static int ipc_process_config(char **args)
 		SET_BOOL(conf.zoom_gap, *(args + 1));
 	} else if (strcmp("center_floating", *args) == 0) {
 		SET_BOOL(conf.center_floating, *(args + 1));
+	} else if (strcmp("bar_bottom", *args) == 0) {
+		SET_BOOL(conf.bar_bottom, *(args + 1));
 	}
 	update_focused_client(wss[cw].current);
 	return err;

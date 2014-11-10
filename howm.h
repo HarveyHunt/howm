@@ -16,6 +16,8 @@
 #define HOWM_PATH "/usr/bin/howm"
 #define SOCK_PATH "/tmp/howm"
 #define WS_DEF_LAYOUT HSTACK
+#define MASTER_RATIO 0.6
+#define GAP 0
 
 /**
  * @file howm.h
@@ -36,6 +38,8 @@ struct config {
 	char *border_unfocus;
 	char *border_prev_focus;
 	char *border_urgent;
+	bool bar_bottom;
+	uint16_t bar_height;
 	uint16_t op_gap_size;
 	bool center_floating;
 	bool zoom_gap;
