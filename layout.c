@@ -59,7 +59,7 @@ static void grid(void)
 
 	log_info("Arranging %d clients in grid layout", n);
 
-	for (cols = 0; cols <= n / 2; cols++)
+	for (cols = 1; cols <= n / 2; cols++)
 		if (cols * cols >= n)
 			break;
 	rows = n / cols;

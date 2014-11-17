@@ -200,6 +200,7 @@ static char **ipc_process_args(char *msg, int len, int *err)
 
 				if (!new) {
 					*err = IPC_ERR_ALLOC;
+					free(args);
 					return NULL;
 				}
 				args = new;

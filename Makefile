@@ -124,6 +124,10 @@ check:
 	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE -f *.c
 	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE -f *.h
 	
+.PHONY: analyse
+analyse:
+	@echo "Running scan-build to look for bugs."
+	@scan-build -v -o analyse make debug
 
 # Removes all build files
 .PHONY: clean
@@ -133,6 +137,7 @@ clean:
 	@echo "Deleting directories"
 	@$(RM) -r build
 	@$(RM) -r bin
+	@$(RM) -r analyse
 
 # Main rule, checks the executable and symlinks to the output
 all: $(BIN_PATH)/$(BIN_NAME)
