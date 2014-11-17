@@ -17,6 +17,10 @@
 #define SOCK_PATH "/tmp/howm"
 #define WS_DEF_LAYOUT HSTACK
 #define MASTER_RATIO 0.6
+#define DEF_BORDER_FOCUS "#70898F"
+#define DEF_BORDER_UNFOCUS "#55555"
+#define DEF_BORDER_PREV_FOCUS "#74718E"
+#define DEF_BORDER_URGENT "#FF0000"
 #define GAP 0
 
 /**
@@ -34,10 +38,10 @@ struct config {
 	bool focus_mouse_click;
 	bool follow_move;
 	uint16_t border_px;
-	char *border_focus;
-	char *border_unfocus;
-	char *border_prev_focus;
-	char *border_urgent;
+	uint32_t border_focus;
+	uint32_t border_unfocus;
+	uint32_t border_prev_focus;
+	uint32_t border_urgent;
 	bool bar_bottom;
 	uint16_t bar_height;
 	uint16_t op_gap_size;
@@ -59,10 +63,6 @@ extern int last_ws;
 extern int prev_layout;
 extern int cw;
 extern xcb_connection_t *dpy;
-extern uint32_t border_focus;
-extern uint32_t border_unfocus;
-extern uint32_t border_prev_focus;
-extern uint32_t border_urgent;
 extern unsigned int cur_mode;
 extern uint16_t screen_height;
 extern uint16_t screen_width;
@@ -81,5 +81,6 @@ extern const char *WM_ATOM_NAMES[];
 extern xcb_atom_t wm_atoms[];
 
 void howm_info(void);
+uint32_t get_colour(char *colour);
 
 #endif

@@ -22,6 +22,13 @@
 		if (err == IPC_ERR_NONE) \
 			opt = b;
 
+#define SET_COLOUR(opt, arg) \
+	if (strlen(arg) > 7) \
+		return IPC_ERR_ARG_TOO_LARGE; \
+	else if (strlen(arg) < 7) \
+		return IPC_ERR_ARG_TOO_SMALL; \
+	opt = get_colour(arg);
+
 enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
 
 /**
@@ -268,6 +275,14 @@ static int ipc_process_config(char **args)
 		SET_BOOL(conf.center_floating, *(args + 1));
 	} else if (strcmp("bar_bottom", *args) == 0) {
 		SET_BOOL(conf.bar_bottom, *(args + 1));
+	} else if (strcmp("border_focus", *args) == 0) {
+		SET_COLOUR(conf.border_focus, *(args + 1));
+	} else if (strcmp("border_unfocus", *args) == 0) {
+		SET_COLOUR(conf.border_unfocus, *(args + 1));
+	} else if (strcmp("border_prev_focus", *args) == 0) {
+		SET_COLOUR(conf.border_prev_focus, *(args + 1));
+	} else if (strcmp("border_urgent", *args) == 0) {
+		SET_COLOUR(conf.border_urgent, *(args + 1));
 	}
 	update_focused_client(wss[cw].current);
 	return err;

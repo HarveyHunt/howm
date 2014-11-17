@@ -131,9 +131,9 @@ void update_focused_client(Client *c)
 	for (fullscreen += !FFT(wss[cw].current) ? 1 : 0; c; c = c->next) {
 		set_border_width(c->win, c->is_fullscreen ? 0 : conf.border_px);
 		xcb_change_window_attributes(dpy, c->win, XCB_CW_BORDER_PIXEL,
-					     (c == wss[cw].current ? &border_focus :
-					      c == wss[cw].prev_foc ? &border_prev_focus
-					      : &border_unfocus));
+					     (c == wss[cw].current ? &conf.border_focus :
+					      c == wss[cw].prev_foc ? &conf.border_prev_focus
+					      : &conf.border_unfocus));
 		if (c != wss[cw].current)
 			windows[c->is_fullscreen ? --fullscreen : FFT(c) ?
 				--float_trans : --all] = c->win;
@@ -588,8 +588,8 @@ void set_urgent(Client *c, bool urg)
 
 	c->is_urgent = urg;
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_BORDER_PIXEL,
-			urg ? &border_urgent : c == wss[cw].current
-			? &border_focus : &border_unfocus);
+			urg ? &conf.border_urgent : c == wss[cw].current
+			? &conf.border_focus : &conf.border_unfocus);
 }
 
 /**

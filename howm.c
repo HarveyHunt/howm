@@ -37,7 +37,6 @@
  *└────────────┘
 */
 
-static uint32_t get_colour(char *colour);
 static void setup(void);
 static void cleanup(void);
 static void exec_config(char *conf_path);
@@ -47,10 +46,10 @@ struct config conf = {
 	.focus_mouse_click = true,
 	.follow_move = true,
 	.border_px = 2,
-	.border_focus = "#70898F",
-	.border_unfocus = "#555555",
-	.border_prev_focus = "#74718E",
-	.border_urgent = "#FF0000",
+	.border_focus = 0,
+	.border_unfocus = 0,
+	.border_prev_focus = 0,
+	.border_urgent = 0,
 	.bar_bottom = true,
 	.bar_height = 20,
 	.op_gap_size = 4,
@@ -119,10 +118,10 @@ static void setup(void)
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
 	setup_ewmh();
 
-	border_focus = get_colour(conf.border_focus);
-	border_unfocus = get_colour(conf.border_unfocus);
-	border_prev_focus = get_colour(conf.border_prev_focus);
-	border_urgent = get_colour(conf.border_urgent);
+	conf.border_focus = get_colour(DEF_BORDER_FOCUS);
+	conf.border_unfocus = get_colour(DEF_BORDER_UNFOCUS);
+	conf.border_prev_focus = get_colour(DEF_BORDER_PREV_FOCUS);
+	conf.border_urgent = get_colour(DEF_BORDER_URGENT);
 	stack_init(&del_reg);
 
 	howm_info();
@@ -291,7 +290,7 @@ static void cleanup(void)
  *
  * @return An X11 colourmap pixel.
  */
-static uint32_t get_colour(char *colour)
+uint32_t get_colour(char *colour)
 {
 	uint32_t pixel;
 	uint16_t r, g, b;
