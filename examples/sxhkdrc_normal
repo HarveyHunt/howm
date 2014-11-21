@@ -1,0 +1,50 @@
+super + Return
+    cottage -f spawn urxvt
+
+super + d
+    dmenu_run -i -b -nb "#70898F" -nf "black" -sf "#74718E"
+
+super + {z, g, h, v}
+    cottage -f change_layout {0, 1, 2, 3}
+
+super + {n, l}
+    cottage -f {next_layout, last_layout}
+
+super + shift + n
+    cottage -f previous_layout
+
+super + f
+    cottage -f change_mode focus
+
+super + shift + f
+    cottage -f change_mode floating
+
+super + shift + space
+    cottage -f toggle_float
+
+super + Delete
+    cottage -f quit_howm 0
+
+super + BackSpace
+    cottage -f restart_howm
+
+super + m
+    cottage -f resize_master 5
+
+super + shift + m
+    cottage -f resize_master -5
+
+super + b
+    cottage -f toggle_bar
+
+super + period
+    cottage -f replay
+
+super + p
+    cottage -f paste
+
+super + q
+    cottage -f send_to_scratchpad
+
+super + shift + q
+    cottage -f get_from_scratchpad

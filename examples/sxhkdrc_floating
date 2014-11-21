@@ -1,0 +1,17 @@
+super + shift + {k, j}
+    cottage -f resize_float_height {-10, 10}
+
+super + shift + {h, l}
+    cottage -f resize_float_width {-10, 10}
+
+super + {k, j}
+    cottage -f move_float_y {-10, 10}
+
+super + {h, l}
+    cottage -f move_float_x {-10, 10}
+
+super + {y, u, i, space, b, n, m}
+    cottage -f teleport_client {0, 1, 2, 3, 4, 5, 6}
+
+super + {Escape, f}
+    cottage -f change_mode {0, 1}

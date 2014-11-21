@@ -1,0 +1,29 @@
+super + space
+    cottage -f toggle_fullscreen
+
+super + Tab
+    cottage -f focus_urgent
+
+super + {k, j}
+    cottage -f {focus_prev_client, focus_next_client}
+
+super + shift + {k, j}
+    cottage -f {move_current_up, move_current_down}
+
+super + Escape
+    cottage -f change_mode 0
+
+super + {u, l, h}
+    cottage -f {focus_last_ws, focus_next_ws, focus_prev_ws}
+
+super + m
+    cottage -f make_master
+
+super + {1, 2, 3, 4, 5}
+    cottage -f change_ws {1, 2, 3, 4, 5}
+
+super + shift + {1, 2, 3, 4, 5}
+    cottage -f current_to_ws {1, 2, 3, 4, 5}
+
+super + shift + f
+    cottage -f change_mode 2
