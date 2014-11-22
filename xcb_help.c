@@ -1,7 +1,6 @@
 #include <string.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
-#include <xcb/xcb_keysyms.h>
 #include "xcb_help.h"
 #include "workspace.h"
 #include "client.h"
@@ -21,9 +20,6 @@
  * could be conditionally included if we decide to use wayland as well.
  */
 
-static xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym);
-static void grab_keycode(xcb_keycode_t *keycode, const int mod);
-
 /**
  * @brief Try to detect if another WM exists.
  *
@@ -36,7 +32,6 @@ void check_other_wm(void)
 	uint32_t values[1] = { XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
 			       XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
 			       XCB_EVENT_MASK_BUTTON_PRESS |
-			       XCB_EVENT_MASK_KEY_PRESS |
 			       XCB_EVENT_MASK_PROPERTY_CHANGE
 			     };
 
@@ -48,44 +43,6 @@ void check_other_wm(void)
 		exit(EXIT_FAILURE);
 	}
 	free(e);
-}
-
-/**
- * @brief Convert a keycode to a keysym.
- *
- * @param code An XCB keycode.
- *
- * @return The keysym corresponding to the given keycode.
- */
-xcb_keysym_t keycode_to_keysym(xcb_keycode_t code)
-{
-	xcb_keysym_t sym;
-	xcb_key_symbols_t *syms = xcb_key_symbols_alloc(dpy);
-
-	if (!syms)
-		return 0;
-	sym = xcb_key_symbols_get_keysym(syms, code, 0);
-	xcb_key_symbols_free(syms);
-	return sym;
-}
-
-/**
- * @brief Convert a keysym to a keycode.
- *
- * @param sym An XCB keysym.
- *
- * @return The keycode corresponding to the given keysym.
- */
-static xcb_keycode_t *keysym_to_keycode(xcb_keysym_t sym)
-{
-	xcb_keycode_t *code;
-	xcb_key_symbols_t *syms = xcb_key_symbols_alloc(dpy);
-
-	if (!syms)
-		return NULL;
-	code = xcb_key_symbols_get_keycode(syms, sym);
-	xcb_key_symbols_free(syms);
-	return code;
 }
 
 /**
@@ -106,44 +63,6 @@ void move_resize(xcb_window_t win,
 }
 
 /**
- * @brief Let the X11 server know which keys howm is interested in so that howm
- * can be alerted when any of them are pressed.
- *
- * All keys are ungrabbed and then each key in keys, operators and motions are
- * grabbed.
- */
-void grab_keys(void)
-{
-	/* TODO: optimise this so that it doesn't call xcb_grab_key for all
-	 * keys, as some are repeated due to modes. Perhaps XCB does this
-	 * already? */
-	xcb_keycode_t *keycode;
-	unsigned int i;
-
-	log_debug("Grabbing keys");
-	xcb_ungrab_key(dpy, XCB_GRAB_ANY, screen->root, XCB_MOD_MASK_ANY);
-	for (i = 0; i < LENGTH(keys); i++) {
-		keycode = keysym_to_keycode(keys[i].sym);
-		grab_keycode(keycode, keys[i].mod);
-	}
-
-	for (i = 0; i < LENGTH(operators); i++) {
-		keycode = keysym_to_keycode(operators[i].sym);
-		grab_keycode(keycode, operators[i].mod);
-	}
-
-	for (i = 0; i < LENGTH(motions); i++) {
-		keycode = keysym_to_keycode(motions[i].sym);
-		grab_keycode(keycode, motions[i].mod);
-	}
-
-	for (i = 0; i < 8; i++) {
-		keycode = keysym_to_keycode(XK_1 + i);
-		grab_keycode(keycode, COUNT_MOD);
-	}
-}
-
-/**
  * @brief Make a client listen for button press events.
  *
  * @param c The client that needs to listen for button presses.
@@ -155,27 +74,6 @@ void grab_buttons(Client *c)
 			XCB_GRAB_MODE_SYNC, XCB_GRAB_MODE_ASYNC,
 			XCB_WINDOW_NONE, XCB_CURSOR_NONE,
 			XCB_BUTTON_INDEX_ANY, XCB_BUTTON_MASK_ANY);
-}
-
-/**
- * @brief Grab a keycode, therefore telling the X11 server howm wants to
- * receive events when the key is pressed.
- *
- * @param keycode The keycode to be grabbed.
- * @param mod The modifier that should be pressed down in order for an event
- * for the keypress to be sent to howm.
- */
-static void grab_keycode(xcb_keycode_t *keycode, const int mod)
-{
-	unsigned int j, k;
-	uint16_t mods[] = { 0, XCB_MOD_MASK_LOCK };
-
-	for (j = 0; keycode[j] != XCB_NO_SYMBOL; j++)
-		for (k = 0; k < LENGTH(mods); k++)
-			xcb_grab_key(dpy, 1, screen->root, mod |
-				     mods[k], keycode[j], XCB_GRAB_MODE_ASYNC,
-				     XCB_GRAB_MODE_ASYNC);
-	free(keycode);
 }
 
 /**

@@ -114,7 +114,6 @@ static void setup(void)
 	log_info("Screen's height is: %d", screen_height);
 	log_info("Screen's width is: %d", screen_width);
 
-	grab_keys();
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
 	setup_ewmh();
 
@@ -265,7 +264,6 @@ static void cleanup(void)
 	uint16_t i;
 
 	log_warn("Cleaning up");
-	xcb_ungrab_key(dpy, XCB_GRAB_ANY, screen->root, XCB_MOD_MASK_ANY);
 
 	q = xcb_query_tree_reply(dpy, xcb_query_tree(dpy, screen->root), 0);
 	if (q) {
