@@ -60,7 +60,7 @@ enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
 extern int numlockmask;
 extern int retval;
 extern int last_ws;
-extern int prev_layout;
+extern int previous_layout;
 extern int cw;
 extern xcb_connection_t *dpy;
 extern unsigned int cur_mode;

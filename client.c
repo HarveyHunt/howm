@@ -270,13 +270,9 @@ void move_up(Client *c)
 
 /**
  * @brief brief Move focus onto the client next in the client list.
- *
- * @param arg The argument passed from the config file. Note: The argument goes
- * unused.
  */
-void focus_next_client(const Arg *arg)
+void focus_next_client(void)
 {
-	UNUSED(arg);
 	if (!wss[cw].current || !wss[cw].head->next)
 		return;
 	log_info("Focusing next client");
@@ -285,13 +281,9 @@ void focus_next_client(const Arg *arg)
 
 /**
  * @brief brief Move focus onto the client previous in the client list.
- *
- * @param arg The argument passed from the config file. Note: The argument goes
- * unused.
  */
-void focus_prev_client(const Arg *arg)
+void focus_prev_client(void)
 {
-	UNUSED(arg);
 	if (!wss[cw].current || !wss[cw].head->next)
 		return;
 	log_info("Focusing previous client");
@@ -368,23 +360,17 @@ void move_client(int cnt, bool up)
 
 /**
  * @brief Moves the current client down.
- *
- * @param arg Unused.
  */
-void move_current_down(const Arg *arg)
+void move_current_down(void)
 {
-	UNUSED(arg);
 	move_down(wss[cw].current);
 }
 
 /**
  * @brief Moves the current client up.
- *
- * @param arg Unused.
  */
-void move_current_up(const Arg *arg)
+void move_current_up(void)
 {
-	UNUSED(arg);
 	move_up(wss[cw].current);
 }
 
@@ -428,7 +414,7 @@ void client_to_ws(Client *c, const int ws, bool follow)
 	log_info("Moved client <%p> from <%d> to <%d>", c, cw, ws);
 	if (follow) {
 		wss[ws].current = c;
-		change_ws(&(Arg){ .i = ws });
+		change_ws(ws);
 	} else {
 		update_focused_client(prev);
 	}
@@ -439,9 +425,9 @@ void client_to_ws(Client *c, const int ws, bool follow)
  *
  * @param arg arg->i is the target workspace.
  */
-void current_to_ws(const Arg *arg)
+void current_to_ws(const int ws)
 {
-	client_to_ws(wss[cw].current, arg->i, conf.follow_move);
+	client_to_ws(wss[cw].current, ws, conf.follow_move);
 }
 
 /**

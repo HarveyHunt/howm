@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "command.h"
+#include "scratchpad.h"
 #include "op.h"
 #include "ipc.h"
 #include "helper.h"
@@ -30,7 +31,6 @@
 	opt = get_colour(arg);
 
 enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
-static int cur_cnt = 1;
 
 /**
  * @file ipc.c
@@ -110,32 +110,102 @@ int ipc_process(char *msg, int len)
  */
 static int ipc_process_function(char **args)
 {
-	unsigned int i;
-	bool found = false;
 	int err = IPC_ERR_NONE;
 
-	for (i = 0; i < LENGTH(commands); i++)
-		if (strcmp(*args, commands[i].name) == 0) {
-			found = true;
-			if (commands[i].argc == 0) {
-				commands[i].func(&(Arg){ NULL });
-				break;
-			} else if (commands[i].argc == 1 && *(args + 1) && commands[i].arg_type == TYPE_INT) {
-				Arg a = { .i = ipc_arg_to_int(*(args + 1), &err, -100, 100) };
-				commands[i].func(&a);
-				break;
-			} else if (commands[i].argc == 1 && *(args + 1) && commands[i].arg_type == TYPE_STR) {
-				Arg a = { .cmd = args + 1 };
-				commands[i].func(&a);
-				break;
-			} else if (commands[i].arg_type == TYPE_IGNORE) {
-				operator_func = commands[i].operator;
-				cur_state = COUNT_STATE;
-			} else {
-				err = IPC_ERR_SYNTAX;
-			}
-		}
-	err = found == true ? err : IPC_ERR_NO_FUNC;
+	if (strncmp(*args, "teleport_client", strlen("teleport_client")) == 0) {
+		teleport_client(ipc_arg_to_int(*(args + 1), &err, TOP_LEFT, BOTTOM_RIGHT));
+	} else if (strncmp(*args, "move_current_down", strlen("move_current_down")) == 0) {
+		move_current_down();
+	} else if (strncmp(*args, "move_current_up", strlen("move_current_up")) == 0) {
+		move_current_up();
+	} else if (strncmp(*args, "focus_next_client", strlen("focus_next_client")) == 0) {
+		focus_next_client();
+	} else if (strncmp(*args, "focus_prev_client", strlen("focus_prev_client")) == 0) {
+		focus_prev_client();
+	} else if (strncmp(*args, "current_to_ws", strlen("current_to_ws")) == 0) {
+		current_to_ws(ipc_arg_to_int(*(args + 1), &err, 1, WORKSPACES));
+	} else if (strncmp(*args, "toggle_float", strlen("toggle_float")) == 0) {
+		toggle_float();
+	} else if (strncmp(*args, "resize_float_width", strlen("resize_float_width")) == 0) {
+		resize_float_width(ipc_arg_to_int(*(args + 1), &err, -100, 100));
+	} else if (strncmp(*args, "resize_float_height", strlen("resize_float_height")) == 0) {
+		resize_float_height(ipc_arg_to_int(*(args + 1), &err, -100, 100));
+	} else if (strncmp(*args, "move_float_x", strlen("move_float_x")) == 0) {
+		move_float_x(ipc_arg_to_int(*(args + 1), &err, -100, 100));
+	} else if (strncmp(*args, "move_float_y", strlen("move_float_y")) == 0) {
+		move_float_y(ipc_arg_to_int(*(args + 1), &err, -100, 100));
+	} else if (strncmp(*args, "toggle_fullscreen", strlen("toggle_fullscreen")) == 0) {
+		toggle_fullscreen();
+	} else if (strncmp(*args, "focus_urgent", strlen("focus_urgent")) == 0) {
+		focus_urgent();
+	} else if (strncmp(*args, "send_to_scratchpad", strlen("send_to_scratchpad")) == 0) {
+		send_to_scratchpad();
+	} else if (strncmp(*args, "get_from_scratchpad", strlen("get_from_scratchpad")) == 0) {
+		get_from_scratchpad();
+	} else if (strncmp(*args, "make_master", strlen("make_master")) == 0) {
+		make_master();
+	} else if (strncmp(*args, "toggle_bar", strlen("toggle_bar")) == 0) {
+		toggle_bar();
+	} else if (strncmp(*args, "resize_master", strlen("resize_master")) == 0) {
+		resize_master(ipc_arg_to_int(*(args + 1), &err, -100, 100));
+	} else if (strncmp(*args, "focus_next_ws", strlen("focus_next_ws")) == 0) {
+		focus_next_ws();
+	} else if (strncmp(*args, "focus_prev_ws", strlen("focus_prev_ws")) == 0) {
+		focus_prev_ws();
+	} else if (strncmp(*args, "focus_last_ws", strlen("focus_last_ws")) == 0) {
+		focus_last_ws();
+	} else if (strncmp(*args, "change_ws", strlen("change_ws")) == 0) {
+		change_ws(ipc_arg_to_int(*(args + 1), &err, 1, WORKSPACES));
+	} else if (strncmp(*args, "change_mode", strlen("change_mode")) == 0) {
+		change_mode(ipc_arg_to_int(*(args + 1), &err, NORMAL, END_MODES - 1));
+	} else if (strncmp(*args, "quit_howm", strlen("quit_howm")) == 0) {
+		quit_howm(ipc_arg_to_int(*(args + 1), &err, EXIT_SUCCESS, EXIT_FAILURE));
+	} else if (strncmp(*args, "restart_howm", strlen("restart_howm")) == 0) {
+		restart_howm();
+	} else if (strncmp(*args, "paste", strlen("paste")) == 0) {
+		paste();
+	} else if (strncmp(*args, "change_layout", strlen("change_layout")) == 0) {
+		change_layout(ipc_arg_to_int(*(args + 1), &err, ZOOM, END_LAYOUT - 1));
+	} else if (strncmp(*args, "next_layout", strlen("next_layout")) == 0) {
+		next_layout();
+	} else if (strncmp(*args, "prev_layout", strlen("prev_layout")) == 0) {
+		prev_layout();
+	} else if (strncmp(*args, "last_layout", strlen("last_layout")) == 0) {
+		last_layout();
+	} else if (strncmp(*args, "spawn", strlen("spawn")) == 0) {
+		spawn(args + 1);
+	} else if (strncmp(*args, "count", strlen("count")) == 0) {
+		count(ipc_arg_to_int(*(args + 1), &err, 1, 9));
+	} else if (strncmp(*args, "motion", strlen("motion")) == 0) {
+		motion(*(args + 1));
+	} else if (strncmp(*args, "op_kill", strlen("op_kill")) == 0) {
+		operator_func = op_kill;
+		cur_state = COUNT_STATE;
+	} else if (strncmp(*args, "op_move_up", strlen("op_move_up")) == 0) {
+		operator_func = op_move_up;
+		cur_state = COUNT_STATE;
+	} else if (strncmp(*args, "op_move_down", strlen("op_move_down")) == 0) {
+		operator_func = op_move_down;
+		cur_state = COUNT_STATE;
+	} else if (strncmp(*args, "op_focus_down", strlen("op_focus_down")) == 0) {
+		operator_func = op_focus_down;
+		cur_state = COUNT_STATE;
+	} else if (strncmp(*args, "op_focus_up", strlen("op_focus_up")) == 0) {
+		operator_func = op_focus_up;
+		cur_state = COUNT_STATE;
+	} else if (strncmp(*args, "op_shrink_gaps", strlen("op_shrink_gaps")) == 0) {
+		operator_func = op_shrink_gaps;
+		cur_state = COUNT_STATE;
+	} else if (strncmp(*args, "op_grow_gaps", strlen("op_grow_gaps")) == 0) {
+		operator_func = op_grow_gaps;
+		cur_state = COUNT_STATE;
+	} else if (strncmp(*args, "op_cut", strlen("op_cut")) == 0) {
+		operator_func = op_cut;
+		cur_state = COUNT_STATE;
+	} else {
+		return IPC_ERR_NO_FUNC;
+	}
+
 	return err;
 }
 

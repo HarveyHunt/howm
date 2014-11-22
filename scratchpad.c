@@ -87,9 +87,8 @@ Client *stack_pop(struct stack *s)
  *
  * @param arg Unused.
  */
-void send_to_scratchpad(const Arg *arg)
+void send_to_scratchpad(void)
 {
-	UNUSED(arg);
 	Client *c = wss[cw].current;
 
 	if (scratchpad || !c)
@@ -116,17 +115,15 @@ void send_to_scratchpad(const Arg *arg)
 }
 
 /**
- * @brief Get a client from the scratchpad, attach it as the last item in the
- * client list and set it to float.
- *
- * @param arg Unused.
- */
-void get_from_scratchpad(const Arg *arg)
+* @brief Get a client from the scratchpad, attach it as the last item in the
+* client list and set it to float.
+*
+* @param arg Unused.
+*/
+void get_from_scratchpad(void)
 {
-	UNUSED(arg);
 	if (!scratchpad)
 		return;
-
 	/* TODO: This should be in a reusable function. */
 	if (!wss[cw].head)
 		wss[cw].head = scratchpad;
@@ -134,7 +131,6 @@ void get_from_scratchpad(const Arg *arg)
 		wss[cw].head->next = scratchpad;
 	else
 		prev_client(wss[cw].head, cw)->next = scratchpad;
-
 
 	wss[cw].prev_foc = wss[cw].current;
 	wss[cw].current = scratchpad;
@@ -151,4 +147,3 @@ void get_from_scratchpad(const Arg *arg)
 	xcb_map_window(dpy, wss[cw].current->win);
 	update_focused_client(wss[cw].current);
 }
-

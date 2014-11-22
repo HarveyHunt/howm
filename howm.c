@@ -76,7 +76,7 @@ xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 int numlockmask = 0;
 int retval = 0;
 int last_ws = 0;
-int prev_layout = 0;
+int previous_layout = 0;
 int cw = 1;
 uint32_t border_focus = 0;
 uint32_t border_unfocus = 0;

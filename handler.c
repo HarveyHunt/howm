@@ -243,7 +243,7 @@ static void client_message_event(xcb_generic_event_t *ev)
 	} else if (c && cm->type == ewmh->_NET_CURRENT_DESKTOP
 			&& cm->data.data32[0] < WORKSPACES) {
 		log_info("_NET_CURRENT_DESKTOP: Changing to workspace <%d>", cm->data.data32[0]);
-		change_ws(&(Arg){ .i = cm->data.data32[0] });
+		change_ws(cm->data.data32[0]);
 	} else {
 		log_debug("Unhandled client message: %d", cm->type);
 	}

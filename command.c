@@ -33,23 +33,20 @@ static int cur_cnt = 1;
  *
  * @param arg arg->i defines which mode to be selected.
  */
-void change_mode(const Arg *arg)
+void change_mode(const int mode)
 {
-	if (arg->i >= (int)END_MODES || arg->i == (int)cur_mode)
+	if (mode >= (int)END_MODES || mode == (int)cur_mode)
 		return;
-	cur_mode = arg->i;
+	cur_mode = mode;
 	log_info("Changing to mode %d", cur_mode);
 	howm_info();
 }
 
 /**
  * @brief Toggle a client between being in a floating or non-floating state.
- *
- * @param arg Unused.
  */
-void toggle_float(const Arg *arg)
+void toggle_float(void)
 {
-	UNUSED(arg);
 	if (!wss[cw].current)
 		return;
 	log_info("Toggling floating state of client <%p>", wss[cw].current);
@@ -70,12 +67,12 @@ void toggle_float(const Arg *arg)
  *
  * @param arg The amount of pixels that the window's size should be changed by.
  */
-void resize_float_width(const Arg *arg)
+void resize_float_width(const int dw)
 {
-	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->w + arg->i <= 0)
+	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->w + dw <= 0)
 		return;
-	log_info("Resizing width of client <%p> from %d by %d", wss[cw].current, wss[cw].current->w, arg->i);
-	wss[cw].current->w += arg->i;
+	log_info("Resizing width of client <%p> from %d by %d", wss[cw].current, wss[cw].current->w, dw);
+	wss[cw].current->w += dw;
 	draw_clients();
 }
 
@@ -87,12 +84,12 @@ void resize_float_width(const Arg *arg)
  *
  * @param arg The amount of pixels that the window's size should be changed by.
  */
-void resize_float_height(const Arg *arg)
+void resize_float_height(const int dh)
 {
-	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->h + arg->i <= 0)
+	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->h + dh <= 0)
 		return;
-	log_info("Resizing height of client <%p> from %d to %d", wss[cw].current, wss[cw].current->h, arg->i);
-	wss[cw].current->h += arg->i;
+	log_info("Resizing height of client <%p> from %d to %d", wss[cw].current, wss[cw].current->h, dh);
+	wss[cw].current->h += dh;
 	draw_clients();
 }
 
@@ -104,14 +101,13 @@ void resize_float_height(const Arg *arg)
  *
  * @param arg The amount of pixels that the window should be moved.
  */
-void move_float_y(const Arg *arg)
+void move_float_y(const int dy)
 {
 	if (!wss[cw].current || !wss[cw].current->is_floating)
 		return;
-	log_info("Changing y of client <%p> from %d to %d", wss[cw].current, wss[cw].current->y, arg->i);
-	wss[cw].current->y += arg->i;
+	log_info("Changing y of client <%p> from %d to %d", wss[cw].current, wss[cw].current->y, dy);
+	wss[cw].current->y += dy;
 	draw_clients();
-
 }
 
 /**
@@ -122,14 +118,13 @@ void move_float_y(const Arg *arg)
  *
  * @param arg The amount of pixels that the window should be moved.
  */
-void move_float_x(const Arg *arg)
+void move_float_x(const int dx)
 {
 	if (!wss[cw].current || !wss[cw].current->is_floating)
 		return;
-	log_info("Changing x of client <%p> from %d to %d", wss[cw].current, wss[cw].current->x, arg->i);
-	wss[cw].current->x += arg->i;
+	log_info("Changing x of client <%p> from %d to %d", wss[cw].current, wss[cw].current->x, dx);
+	wss[cw].current->x += dx;
 	draw_clients();
-
 }
 
 /**
@@ -137,7 +132,7 @@ void move_float_x(const Arg *arg)
  *
  * @param arg Which location to teleport the window to.
  */
-void teleport_client(const Arg *arg)
+void teleport_client(const int direction)
 {
 	if (!wss[cw].current || !wss[cw].current->is_floating
 			|| wss[cw].current->is_transient)
@@ -149,7 +144,7 @@ void teleport_client(const Arg *arg)
 	uint16_t h = wss[cw].current->h;
 	uint16_t bh = wss[cw].bar_height;
 
-	switch (arg->i) {
+	switch (direction) {
 	case TOP_LEFT:
 		wss[cw].current->x = g;
 		wss[cw].current->y = (conf.bar_bottom ? 0 : bh) + g;
@@ -189,13 +184,13 @@ void teleport_client(const Arg *arg)
  * percentage. e.g. arg->i = 5 will increase the master window's size by 5% of
  * it maximum.
  */
-void resize_master(const Arg *arg)
+void resize_master(const int ds)
 {
 	/* Resize master only when resizing is visible (i.e. in Stack layouts). */
 	if (wss[cw].layout != HSTACK && wss[cw].layout != VSTACK)
 		return;
 
-	float change = ((float)arg->i) / 100;
+	float change = ((float)ds) / 100;
 
 	if (wss[cw].master_ratio + change >= 1
 			|| wss[cw].master_ratio + change <= 0.1)
@@ -210,9 +205,8 @@ void resize_master(const Arg *arg)
  *
  * @param arg Unused.
  */
-void toggle_bar(const Arg *arg)
+void toggle_bar(void)
 {
-	UNUSED(arg);
 	if (wss[cw].bar_height == 0 && conf.bar_height > 0) {
 		wss[cw].bar_height = conf.bar_height;
 		log_info("Toggled bar to shown");
@@ -233,9 +227,8 @@ void toggle_bar(const Arg *arg)
  *
  * @param arg Unused
  */
-void make_master(const Arg *arg)
+void make_master(void)
 {
-	UNUSED(arg);
 	if (!wss[cw].current || !wss[cw].head->next
 			|| wss[cw].head == wss[cw].current
 			|| !(wss[cw].layout == HSTACK
@@ -252,9 +245,8 @@ void make_master(const Arg *arg)
  *
  * @param arg Unused
  */
-void paste(const Arg *arg)
+void paste(void)
 {
-	UNUSED(arg);
 	Client *head = stack_pop(&del_reg);
 	Client *t, *c = head;
 
@@ -305,65 +297,54 @@ void paste(const Arg *arg)
  * @param arg A numerical value (arg->i) representing the layout that should be
  * used.
  */
-void change_layout(const Arg *arg)
+void change_layout(const int layout)
 {
-	if (arg->i == wss[cw].layout || arg->i >= END_LAYOUT || arg->i < 0)
+	if (layout == wss[cw].layout || layout >= END_LAYOUT || layout < ZOOM)
 		return;
-	prev_layout = wss[cw].layout;
-	wss[cw].layout = arg->i;
+	wss[cw].layout = layout;
 	update_focused_client(wss[cw].current);
-	log_info("Changed layout from %d to %d", prev_layout,  wss[cw].layout);
+	log_info("Changed layout from %d to %d", previous_layout,  wss[cw].layout);
+	previous_layout = wss[cw].layout;
 }
 
 /**
  * @brief Change to the previous layout.
- *
- * @param arg Unused.
  */
-void previous_layout(const Arg *arg)
+void prev_layout(void)
 {
-	UNUSED(arg);
-	const Arg a = { .i = wss[cw].layout < 1 ? END_LAYOUT - 1 : wss[cw].layout - 1 };
+	int i = wss[cw].layout < 1 ? END_LAYOUT - 1 : wss[cw].layout - 1;
 
-	log_info("Changing to previous layout (%d)", a.i);
-	change_layout(&a);
+	log_info("Changing to previous layout (%d)", i);
+	change_layout(i);
 }
 
 /**
  * @brief Change to the next layout.
- *
- * @param arg Unused.
  */
-void next_layout(const Arg *arg)
+void next_layout(void)
 {
-	UNUSED(arg);
-	const Arg a = { .i = (wss[cw].layout + 1) % END_LAYOUT };
+	int i = (wss[cw].layout + 1) % END_LAYOUT;
 
-	log_info("Changing to layout (%d)", a.i);
-	change_layout(&a);
+	log_info("Changing to layout (%d)", i);
+	change_layout(i);
 }
 
 /**
  * @brief Change to the last used layout.
  *
- * @param arg Unused.
  */
-void last_layout(const Arg *arg)
+void last_layout(void)
 {
-	UNUSED(arg);
-
-	log_info("Changing to last layout (%d)", prev_layout);
-	change_layout(&(Arg){ .i = prev_layout });
+	log_info("Changing to last layout (%d)", previous_layout);
+	change_layout(previous_layout);
 }
 
 /**
  * @brief Restart howm.
  *
- * @param arg Unused.
  */
-void restart_howm(const Arg *arg)
+void restart_howm(void)
 {
-	UNUSED(arg);
 	log_warn("Restarting.");
 	running = false;
 	restart = true;
@@ -374,33 +355,27 @@ void restart_howm(const Arg *arg)
  *
  * @param arg The return value that howm will send.
  */
-void quit_howm(const Arg *arg)
+void quit_howm(const int exit_status)
 {
 	log_warn("Quitting");
-	retval = arg->i;
+	retval = exit_status;
 	running = false;
 }
 
 /**
  * @brief Toggle the fullscreen state of the current client.
- *
- * @param arg Unused.
  */
-void toggle_fullscreen(const Arg *arg)
+void toggle_fullscreen(void)
 {
-	UNUSED(arg);
 	if (wss[cw].current != NULL)
 		set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
 }
 
 /**
  * @brief Focus a client that has an urgent hint.
- *
- * @param arg Unused.
  */
-void focus_urgent(const Arg *arg)
+void focus_urgent(void)
 {
-	UNUSED(arg);
 	Client *c;
 	unsigned int w;
 
@@ -409,7 +384,7 @@ void focus_urgent(const Arg *arg)
 			;
 	if (c) {
 		log_info("Focusing urgent client <%p> on workspace <%d>", c, w);
-		change_ws(&(Arg){.i = w});
+		change_ws(w);
 		update_focused_client(c);
 	}
 }
@@ -417,56 +392,44 @@ void focus_urgent(const Arg *arg)
 /**
  * @brief Spawns a command.
  */
-void spawn(const Arg *arg)
+void spawn(char *cmd[])
 {
 	if (fork())
 		return;
 	if (dpy)
 		close(screen->root);
 	setsid();
-	log_info("Spawning command: %s", (char *)arg->cmd[0]);
-	execvp((char *)arg->cmd[0], (char **)arg->cmd);
-	log_err("execvp of command: %s failed.", (char *)arg->cmd[0]);
+	log_info("Spawning command: %s", (char *)cmd[0]);
+	execvp((char *)cmd[0], (char **)cmd);
+	log_err("execvp of command: %s failed.", (char *)cmd[0]);
 	exit(EXIT_FAILURE);
 }
 
 /**
  * @brief Focus the previous workspace.
- *
- * @param arg Unused.
  */
-void focus_prev_ws(const Arg *arg)
+void focus_prev_ws(void)
 {
-	UNUSED(arg);
-
 	log_info("Focusing previous workspace");
-	change_ws(&(Arg){ .i = correct_ws(cw - 1) });
+	change_ws(correct_ws(cw - 1));
 }
 
 /**
  * @brief Focus the last focused workspace.
- *
- * @param arg Unused.
  */
-void focus_last_ws(const Arg *arg)
+void focus_last_ws(void)
 {
-	UNUSED(arg);
-
 	log_info("Focusing last workspace");
-	change_ws(&(Arg){ .i = last_ws });
+	change_ws(last_ws);
 }
 
 /**
  * @brief Focus the next workspace.
- *
- * @param arg Unused.
  */
-void focus_next_ws(const Arg *arg)
+void focus_next_ws(void)
 {
-	UNUSED(arg);
-
 	log_info("Focusing previous workspace");
-	change_ws(&(Arg){ .i = correct_ws(cw + 1) });
+	change_ws(correct_ws(cw + 1));
 }
 
 /**
@@ -474,19 +437,19 @@ void focus_next_ws(const Arg *arg)
  *
  * @param arg arg->i indicates which workspace howm should change to.
  */
-void change_ws(const Arg *arg)
+void change_ws(const int ws)
 {
-	Client *c = wss[arg->i].head;
+	Client *c = wss[ws].head;
 
-	if ((unsigned int)arg->i > WORKSPACES || arg->i <= 0 || arg->i == cw)
+	if ((unsigned int)ws > WORKSPACES || ws <= 0 || ws == cw)
 		return;
 	last_ws = cw;
-	log_info("Changing from workspace <%d> to <%d>.", last_ws, arg->i);
+	log_info("Changing from workspace <%d> to <%d>.", last_ws, ws);
 	for (; c; c = c->next)
 		xcb_map_window(dpy, c->win);
 	for (c = wss[last_ws].head; c; c = c->next)
 		xcb_unmap_window(dpy, c->win);
-	cw = arg->i;
+	cw = ws;
 	update_focused_client(wss[cw].current);
 
 	xcb_ewmh_set_current_desktop(ewmh, 0, cw - 1);
@@ -497,21 +460,21 @@ void change_ws(const Arg *arg)
 	howm_info();
 }
 
-void count(const Arg *arg)
+void count(const int cnt)
 {
 	if (cur_state != COUNT_STATE)
 		return;
-	cur_cnt = arg->i;
+	cur_cnt = cnt;
 	cur_state = MOTION_STATE;
 }
 
-void motion(const Arg *arg)
+void motion(char *target)
 {
 	int type;
 
-	if (strncmp(*arg->cmd, "w", 1) == 0)
+	if (strncmp(target, "w", 1) == 0)
 		type = WORKSPACE;
-	else if (strncmp(*arg->cmd, "c", 1) == 0)
+	else if (strncmp(target, "c", 1) == 0)
 		type = CLIENT;
 	else
 		return;

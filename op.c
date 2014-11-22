@@ -79,9 +79,9 @@ void op_focus_up(const unsigned int type, int cnt)
 {
 	while (cnt > 0) {
 		if (type == CLIENT)
-			focus_next_client(NULL);
+			focus_next_client();
 		else if (type == WORKSPACE)
-			focus_next_ws(NULL);
+			focus_next_ws();
 		else
 			return;
 		cnt--;
@@ -98,9 +98,9 @@ void op_focus_down(const unsigned int type, int cnt)
 {
 	while (cnt > 0) {
 		if (type == CLIENT)
-			focus_prev_client(NULL);
+			focus_prev_client();
 		else if (type == WORKSPACE)
-			focus_prev_ws(NULL);
+			focus_prev_ws();
 		else
 			return;
 		cnt--;
