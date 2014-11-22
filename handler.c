@@ -28,7 +28,6 @@
 static void enter_event(xcb_generic_event_t *ev);
 static void destroy_event(xcb_generic_event_t *ev);
 static void button_press_event(xcb_generic_event_t *ev);
-static void key_press_event(xcb_generic_event_t *ev);
 static void map_event(xcb_generic_event_t *ev);
 static void configure_event(xcb_generic_event_t *ev);
 static void unmap_event(xcb_generic_event_t *ev);
@@ -53,69 +52,6 @@ static void button_press_event(xcb_generic_event_t *ev)
 		xcb_allow_events(dpy, XCB_ALLOW_REPLAY_POINTER, be->time);
 		xcb_flush(dpy);
 	}
-}
-
-/**
- * @brief Process a key press.
- *
- * This function implements an FSA that determines which command to run, as
- * well as with what targets and how many times.
- *
- * An keyboard input of the form qc (Assuming the correct mod keys have been
- * pressed) will lead to one client being killed- howm assumes no count means
- * perform the operation once. This is the behaviour that vim uses.
- *
- * Only counts as high as 9 are acceptable- I feel that any higher would just
- * be pointless.
- *
- * @param ev A keypress event.
- */
-static void key_press_event(xcb_generic_event_t *ev)
-{
-	unsigned int i = 0;
-	static int cur_cnt = 1;
-	xcb_keysym_t keysym;
-	xcb_key_press_event_t *ke = (xcb_key_press_event_t *)ev;
-
-	log_info("Keypress with code: %d mod: %d", ke->detail, ke->state);
-	keysym = keycode_to_keysym(ke->detail);
-	switch (cur_state) {
-	case OPERATOR_STATE:
-		for (i = 0; i < LENGTH(operators); i++) {
-			if (keysym == operators[i].sym && EQUALMODS(operators[i].mod, ke->state)
-			    && operators[i].mode == cur_mode) {
-				operator_func = operators[i].func;
-				cur_state = COUNT_STATE;
-				break;
-			}
-		}
-		break;
-	case COUNT_STATE:
-		if (EQUALMODS(COUNT_MOD, ke->state) && XK_1 <= keysym
-				&& keysym <= XK_9) {
-			/* Get a value between 1 and 9 inclusive.  */
-			cur_cnt = keysym - XK_0;
-			cur_state = MOTION_STATE;
-			break;
-		}
-	case MOTION_STATE:
-		for (i = 0; i < LENGTH(motions); i++) {
-			if (keysym == motions[i].sym && EQUALMODS(motions[i].mod, ke->state)) {
-				operator_func(motions[i].type, cur_cnt);
-				save_last_ocm(operator_func, motions[i].type, cur_cnt);
-				cur_state = OPERATOR_STATE;
-				/* Reset so that qc is equivalent to q1c. */
-				cur_cnt = 1;
-			}
-		}
-	}
-	for (i = 0; i < LENGTH(keys); i++)
-		if (keysym == keys[i].sym && EQUALMODS(keys[i].mod, ke->state)
-		    && keys[i].func && keys[i].mode == cur_mode) {
-			keys[i].func(&keys[i].arg);
-			if (keys[i].func != replay)
-				save_last_cmd(keys[i].func, &keys[i].arg);
-		}
 }
 
 /**
@@ -321,9 +257,6 @@ static void unhandled_event(xcb_generic_event_t *ev)
 void handle_event(xcb_generic_event_t *ev)
 {
 	switch (ev->response_type & ~0x80) {
-	case XCB_KEY_PRESS:
-		key_press_event(ev);
-		break;
 	case XCB_BUTTON_PRESS:
 		button_press_event(ev);
 		break;

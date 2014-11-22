@@ -53,6 +53,8 @@ static Command commands[] = {
 	{"make_master", make_master, NULL, 0, TYPE_INT},
 	{"change_ws", change_ws, NULL, 1, TYPE_INT},
 	{"current_to_ws", current_to_ws, NULL, 1, TYPE_INT},
+	{"count", count, NULL, 1, TYPE_INT},
+	{"motion", motion, NULL, 1, TYPE_STR},
 	{"spawn", spawn, NULL, 1, TYPE_STR},
 
 	{"op_kill", NULL, op_kill, 2, TYPE_IGNORE},

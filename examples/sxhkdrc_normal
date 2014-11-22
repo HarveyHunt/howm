@@ -48,3 +48,13 @@ super + q
 
 super + shift + q
     cottage -f get_from_scratchpad
+
+# Time for operators
+alt + {q, j, k, d}
+    cottage -f {op_kill, op_move_down, op_move_up, op_cut}
+
+alt + g
+    cottage -f op_shrink_gaps
+
+alt + shift + g
+    cottage -f op_grow_gaps

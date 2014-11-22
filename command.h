@@ -68,5 +68,7 @@ void next_layout(const Arg *arg);
 void previous_layout(const Arg *arg);
 void last_layout(const Arg *arg);
 void spawn(const Arg *arg);
+void count(const Arg *arg);
+void motion(const Arg *arg);
 
 #endif

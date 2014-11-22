@@ -27,3 +27,7 @@ super + shift + {1, 2, 3, 4, 5}
 
 super + shift + f
     cottage -f change_mode 2
+
+# Time for operators
+super + {j, k}
+    cottage -f {op_focus_down, op_focus_up}

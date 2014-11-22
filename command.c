@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include <xcb/xcb_ewmh.h>
@@ -21,6 +22,8 @@
  * @brief Commands are bound to keybindings or are executed as a result of a
  * message from IPC.
  */
+
+static int cur_cnt = 1;
 
 /**
  * @brief Change the mode of howm.
@@ -539,3 +542,30 @@ void change_ws(const Arg *arg)
 	howm_info();
 }
 
+void count(const Arg *arg)
+{
+	if (cur_state != COUNT_STATE)
+		return;
+	cur_cnt = arg->i;
+	cur_state = MOTION_STATE;
+}
+
+void motion(const Arg *arg)
+{
+	int type;
+	if (cur_state != MOTION_STATE)
+		return;
+
+	if (strncmp(*arg->cmd, "w", 1) == 0)
+		type = WORKSPACE;
+	else if (strncmp(*arg->cmd, "c", 1) == 0)
+		type = CLIENT;
+	else
+		return;
+
+	operator_func(type, cur_cnt);
+	save_last_ocm(operator_func, type, cur_cnt);
+	cur_state = OPERATOR_STATE;
+	/* Reset so that qc is equivalent to q1c. */
+	cur_cnt = 1;
+}

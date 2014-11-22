@@ -30,6 +30,7 @@
 	opt = get_colour(arg);
 
 enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
+static int cur_cnt = 1;
 
 /**
  * @file ipc.c
@@ -125,12 +126,9 @@ static int ipc_process_function(char **args)
 			} else if (commands[i].argc == 1 && *(args + 1) && commands[i].arg_type == TYPE_STR) {
 				commands[i].func(&(Arg){ .cmd = args + 1 });
 				break;
-			} else if (commands[i].argc == 2 && *(args + 1) && *(args + 2) && **(args + 2) == 'w') {
-				commands[i].operator(WORKSPACE, ipc_arg_to_int(*(args + 1), &err, -100, 100));
-				break;
-			} else if (commands[i].argc == 2 && *(args + 1) && *(args + 2) && **(args + 2) == 'c') {
-				commands[i].operator(CLIENT, ipc_arg_to_int(*(args + 1), &err, -100, 100));
-				break;
+			} else if (commands[i].arg_type == TYPE_IGNORE) {
+				operator_func = commands[i].operator;
+				cur_state = COUNT_STATE;
 			} else {
 				err = IPC_ERR_SYNTAX;
 			}
