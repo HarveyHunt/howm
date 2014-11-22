@@ -47,7 +47,7 @@ void change_layout(const int layout);
 void next_layout(void);
 void prev_layout(void);
 void last_layout(void);
-void spawn(char * cmd[]);
+void spawn(char *cmd[]);
 void count(const int cnt);
 void motion(char *target);
 void send_to_scratchpad(void);

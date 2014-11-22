@@ -31,7 +31,7 @@ static int cur_cnt = 1;
  * Modes should be thought of in the same way as they are in vi. Different
  * modes mean keypresses cause different actions.
  *
- * @param arg arg->i defines which mode to be selected.
+ * @param mode The mode to be selected.
  */
 void change_mode(const int mode)
 {
@@ -65,7 +65,7 @@ void toggle_float(void)
  * Negative values will shift the right edge of the window to the left. The
  * inverse is true for positive values.
  *
- * @param arg The amount of pixels that the window's size should be changed by.
+ * @param dw The amount of pixels that the window's size should be changed by.
  */
 void resize_float_width(const int dw)
 {
@@ -82,7 +82,7 @@ void resize_float_width(const int dw)
  * Negative values will shift the bottom edge of the window to the top. The
  * inverse is true for positive values.
  *
- * @param arg The amount of pixels that the window's size should be changed by.
+ * @param dh The amount of pixels that the window's size should be changed by.
  */
 void resize_float_height(const int dh)
 {
@@ -99,7 +99,7 @@ void resize_float_height(const int dh)
  * Negative values will move the window up. The inverse is true for positive
  * values.
  *
- * @param arg The amount of pixels that the window should be moved.
+ * @param dy The amount of pixels that the window should be moved.
  */
 void move_float_y(const int dy)
 {
@@ -116,7 +116,7 @@ void move_float_y(const int dy)
  * Negative values will move the window to the left. The inverse is true
  * for positive values.
  *
- * @param arg The amount of pixels that the window should be moved.
+ * @param dx The amount of pixels that the window should be moved.
  */
 void move_float_x(const int dx)
 {
@@ -130,7 +130,7 @@ void move_float_x(const int dx)
 /**
  * @brief Teleport a floating client's window to a location on the screen.
  *
- * @param arg Which location to teleport the window to.
+ * @param direction Which location to teleport the window to.
  */
 void teleport_client(const int direction)
 {
@@ -180,8 +180,8 @@ void teleport_client(const int direction)
 /**
  * @brief Resize the master window of a stack for the current workspace.
  *
- * @param arg The amount to resize the master window by. Treated as a
- * percentage. e.g. arg->i = 5 will increase the master window's size by 5% of
+ * @param ds The amount to resize the master window by. Treated as a
+ * percentage. e.g. ds = 5 will increase the master window's size by 5% of
  * it maximum.
  */
 void resize_master(const int ds)
@@ -202,8 +202,6 @@ void resize_master(const int ds)
 
 /**
  * @brief Toggle the space reserved for a status bar.
- *
- * @param arg Unused.
  */
 void toggle_bar(void)
 {
@@ -224,8 +222,6 @@ void toggle_bar(void)
 
 /**
  * @brief Moves the current window to the master window, when in stack mode.
- *
- * @param arg Unused
  */
 void make_master(void)
 {
@@ -242,8 +238,6 @@ void make_master(void)
 /**
  * @brief Remove a list of clients from howm's delete register stack and paste
  * them after the currently focused window.
- *
- * @param arg Unused
  */
 void paste(void)
 {
@@ -294,8 +288,7 @@ void paste(void)
 /**
  * @brief Change the layout of the current workspace.
  *
- * @param arg A numerical value (arg->i) representing the layout that should be
- * used.
+ * @param layout Represents the layout that should be used.
  */
 void change_layout(const int layout)
 {
@@ -353,7 +346,7 @@ void restart_howm(void)
 /**
  * @brief Quit howm and set the return value.
  *
- * @param arg The return value that howm will send.
+ * @param exit_status The return value that howm will send.
  */
 void quit_howm(const int exit_status)
 {
@@ -435,7 +428,7 @@ void focus_next_ws(void)
 /**
  * @brief Change to a different workspace and map the correct windows.
  *
- * @param arg arg->i indicates which workspace howm should change to.
+ * @param ws Indicates which workspace howm should change to.
  */
 void change_ws(const int ws)
 {
@@ -460,6 +453,11 @@ void change_ws(const int ws)
 	howm_info();
 }
 
+/**
+ * @brief Set the current count for the current operator.
+ *
+ * @param cnt The amount of motions the operator should affect.
+ */
 void count(const int cnt)
 {
 	if (cur_state != COUNT_STATE)
@@ -468,6 +466,14 @@ void count(const int cnt)
 	cur_state = MOTION_STATE;
 }
 
+/**
+ * @brief Tell howm which motion is to be performed.
+ *
+ * This allows keybinding using an external program to still use operators.
+ *
+ * @param target A single char representing the motion that the operator should
+ * be applied to.
+ */
 void motion(char *target)
 {
 	int type;
@@ -484,3 +490,14 @@ void motion(char *target)
 	/* Reset so that qc is equivalent to q1c. */
 	cur_cnt = 1;
 }
+
+/**
+ * @brief Moves the current client to the workspace passed in.
+ *
+ * @param ws The target workspace.
+ */
+void current_to_ws(const int ws)
+{
+	client_to_ws(wss[cw].current, ws, conf.follow_move);
+}
+

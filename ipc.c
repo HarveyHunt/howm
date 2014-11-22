@@ -14,21 +14,27 @@
 #include "config.h"
 
 #define SET_INT(opt, arg, lower, upper) \
-	i = ipc_arg_to_int(arg, &err, lower, upper); \
-		if (err == IPC_ERR_NONE) \
-			opt = i;
+	do { \
+		i = ipc_arg_to_int(arg, &err, lower, upper); \
+			if (err == IPC_ERR_NONE) \
+				opt = i; \
+	} while (0)
 
 #define SET_BOOL(opt, arg) \
-	b = ipc_arg_to_bool(arg, &err); \
-		if (err == IPC_ERR_NONE) \
-			opt = b;
+	do { \
+		b = ipc_arg_to_bool(arg, &err); \
+			if (err == IPC_ERR_NONE) \
+				opt = b; \
+	} while (0)
 
 #define SET_COLOUR(opt, arg) \
-	if (strlen(arg) > 7) \
-		return IPC_ERR_ARG_TOO_LARGE; \
-	else if (strlen(arg) < 7) \
-		return IPC_ERR_ARG_TOO_SMALL; \
-	opt = get_colour(arg);
+	do { \
+		if (strlen(arg) > 7) \
+			return IPC_ERR_ARG_TOO_LARGE; \
+		else if (strlen(arg) < 7) \
+			return IPC_ERR_ARG_TOO_SMALL; \
+		opt = get_colour(arg); \
+	} while (0)
 
 enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
 
@@ -99,11 +105,7 @@ int ipc_process(char *msg, int len)
  * @brief Receive a char array from a UNIX socket and subsequently call a
  * function, passing the args from within msg.
  *
- * @param msg A char array from the UNIX socket. In the form:
- *
- * COMMAND\0ARG1\0ARG2\0 ....
- *
- * @param len The length of the msg.
+ * @param args The args (as strings).
  *
  * @return The error code, as set by this function itself or those that it
  * calls.
@@ -219,6 +221,8 @@ static int ipc_process_function(char **args)
  *
  * @param arg The string to be converted.
  * @param err Where errors are reported.
+ * @param lower The lower bound for the returned value. Note: This is inclusive
+ * @param upper The upper bound for the returned value. Note: This is inclusive
  *
  * @return The decimal representation of arg.
  */
@@ -319,41 +323,41 @@ static int ipc_process_config(char **args)
 
 	if (!(args + 1))
 		return IPC_ERR_TOO_FEW_ARGS;
-	if (strcmp("border_px", *args) == 0) {
+
+	if (strcmp("border_px", *args) == 0)
 		SET_INT(conf.border_px, *(args + 1), 0, 32);
-	} else if (strcmp("float_spawn_height", *args) == 0) {
+	else if (strcmp("float_spawn_height", *args) == 0)
 		SET_INT(conf.float_spawn_height, *(args + 1), 1, screen_height);
-	} else if (strcmp("float_spawn_width", *args) == 0) {
+	else if (strcmp("float_spawn_width", *args) == 0)
 		SET_INT(conf.float_spawn_width, *(args + 1), 1, screen_width);
-	} else if (strcmp("scratchpad_height", *args) == 0) {
+	else if (strcmp("scratchpad_height", *args) == 0)
 		SET_INT(conf.scratchpad_height, *(args + 1), 1, screen_height);
-	} else if (strcmp("scratchpad_width", *args) == 0) {
+	else if (strcmp("scratchpad_width", *args) == 0)
 		SET_INT(conf.scratchpad_width, *(args + 1), 1, screen_width);
-	} else if (strcmp("op_gap_size", *args) == 0) {
+	else if (strcmp("op_gap_size", *args) == 0)
 		SET_INT(conf.op_gap_size, *(args + 1), 0, 32);
-	} else if (strcmp("bar_height", *args) == 0) {
+	else if (strcmp("bar_height", *args) == 0)
 		SET_INT(conf.bar_height, *(args + 1), 0, screen_height);
-	} else if (strcmp("focus_mouse", *args) == 0) {
+	else if (strcmp("focus_mouse", *args) == 0)
 		SET_BOOL(conf.focus_mouse, *(args + 1));
-	} else if (strcmp("focus_mouse_click", *args) == 0) {
+	else if (strcmp("focus_mouse_click", *args) == 0)
 		SET_BOOL(conf.focus_mouse_click, *(args + 1));
-	} else if (strcmp("follow_move", *args) == 0) {
+	else if (strcmp("follow_move", *args) == 0)
 		SET_BOOL(conf.follow_move, *(args + 1));
-	} else if (strcmp("zoom_gap", *args) == 0) {
+	else if (strcmp("zoom_gap", *args) == 0)
 		SET_BOOL(conf.zoom_gap, *(args + 1));
-	} else if (strcmp("center_floating", *args) == 0) {
+	else if (strcmp("center_floating", *args) == 0)
 		SET_BOOL(conf.center_floating, *(args + 1));
-	} else if (strcmp("bar_bottom", *args) == 0) {
+	else if (strcmp("bar_bottom", *args) == 0)
 		SET_BOOL(conf.bar_bottom, *(args + 1));
-	} else if (strcmp("border_focus", *args) == 0) {
+	else if (strcmp("border_focus", *args) == 0)
 		SET_COLOUR(conf.border_focus, *(args + 1));
-	} else if (strcmp("border_unfocus", *args) == 0) {
+	else if (strcmp("border_unfocus", *args) == 0)
 		SET_COLOUR(conf.border_unfocus, *(args + 1));
-	} else if (strcmp("border_prev_focus", *args) == 0) {
+	else if (strcmp("border_prev_focus", *args) == 0)
 		SET_COLOUR(conf.border_prev_focus, *(args + 1));
-	} else if (strcmp("border_urgent", *args) == 0) {
+	else if (strcmp("border_urgent", *args) == 0)
 		SET_COLOUR(conf.border_urgent, *(args + 1));
-	}
 	update_focused_client(wss[cw].current);
 	return err;
 }

@@ -421,16 +421,6 @@ void client_to_ws(Client *c, const int ws, bool follow)
 }
 
 /**
- * @brief Moves the current client to the workspace passed in through arg.
- *
- * @param arg arg->i is the target workspace.
- */
-void current_to_ws(const int ws)
-{
-	client_to_ws(wss[cw].current, ws, conf.follow_move);
-}
-
-/**
  * @brief Arrange the client's windows on the screen.
  *
  * This function takes some strain off of the layout handlers by passing the

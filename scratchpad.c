@@ -85,7 +85,7 @@ Client *stack_pop(struct stack *s)
 /**
  * @brief Send a client to the scratchpad and unmap it.
  *
- * @param arg Unused.
+ * TODO: Move this into command.c
  */
 void send_to_scratchpad(void)
 {
@@ -118,7 +118,7 @@ void send_to_scratchpad(void)
 * @brief Get a client from the scratchpad, attach it as the last item in the
 * client list and set it to float.
 *
-* @param arg Unused.
+* TODO: Move this into command.c
 */
 void get_from_scratchpad(void)
 {
