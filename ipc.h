@@ -33,7 +33,6 @@ static Command commands[] = {
 	{"restart_howm", restart_howm, NULL, 1, TYPE_INT},
 	{"resize_master", resize_master, NULL, 1, TYPE_INT},
 	{"toggle_bar", toggle_bar, NULL, 0, TYPE_INT},
-	{"replay", replay, NULL, 0, TYPE_INT},
 	{"paste", paste, NULL, 0, TYPE_INT},
 	{"send_to_scratchpad", send_to_scratchpad, NULL, 0, TYPE_INT},
 	{"get_from_scratchpad", get_from_scratchpad, NULL, 0, TYPE_INT},

@@ -247,51 +247,6 @@ void make_master(const Arg *arg)
 }
 
 /**
- * @brief Save last operator, count and motion. These saved values are then
- * used in replay.
- *
- * @param op The last operator.
- * @param type The last type (defined by a motion).
- * @param cnt The last count.
- */
-void save_last_ocm(void (*op)(const unsigned int, int), const unsigned int type, int cnt)
-{
-	rep_state.last_op = op;
-	rep_state.last_type = type;
-	rep_state.last_cnt = cnt;
-	rep_state.last_cmd = NULL;
-}
-
-/**
- * @brief Save the last command and argument that was passed to it. These saved
- * values are then used in replay.
- *
- * @param cmd The last command.
- * @param arg The argument passed to the last command.
- */
-void save_last_cmd(void (*cmd)(const Arg *arg), const Arg *arg)
-{
-	rep_state.last_cmd = cmd;
-	rep_state.last_arg = arg;
-	rep_state.last_op = NULL;
-}
-
-/**
- * @brief Replay the last command or operator, complete with the last arguments
- * passed to them.
- *
- * @param arg Unused
- */
-void replay(const Arg *arg)
-{
-	UNUSED(arg);
-	if (rep_state.last_cmd)
-		rep_state.last_cmd(rep_state.last_arg);
-	else
-		rep_state.last_op(rep_state.last_type, rep_state.last_cnt);
-}
-
-/**
  * @brief Remove a list of clients from howm's delete register stack and paste
  * them after the currently focused window.
  *
@@ -562,7 +517,6 @@ void motion(const Arg *arg)
 		return;
 
 	operator_func(type, cur_cnt);
-	save_last_ocm(operator_func, type, cur_cnt);
 	cur_state = OPERATOR_STATE;
 	/* Reset so that qc is equivalent to q1c. */
 	cur_cnt = 1;
