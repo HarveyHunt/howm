@@ -14,10 +14,16 @@ super + shift + n
     cottage -f previous_layout
 
 super + f
-    cottage -f change_mode focus
+    cottage -f change_mode 1; \
+    rm ~/.config/sxhkd/sxhkdrc; \
+    ln -s ~/.config/sxhkd/sxhkdrc_focus ~/.config/sxhkd/sxhkdrc; \
+    pkill -USR1 -x sxhkd
 
 super + shift + f
-    cottage -f change_mode floating
+    cottage -f change_mode 2; \
+    rm ~/.config/sxhkd/sxhkdrc; \
+    ln -s ~/.config/sxhkd/sxhkdrc_floating ~/.config/sxhkd/sxhkdrc; \
+    pkill -USR1 -x sxhkd
 
 super + shift + space
     cottage -f toggle_float
@@ -58,3 +64,11 @@ alt + g
 
 alt + shift + g
     cottage -f op_grow_gaps
+
+# Counts
+alt + {1-9}
+    cottage -f count {1-9}
+
+# Motions
+alt + {w, c}
+    cottage -f motion {w, c}

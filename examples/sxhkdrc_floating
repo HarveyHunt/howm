@@ -13,5 +13,22 @@ super + {h, l}
 super + {y, u, i, space, b, n, m}
     cottage -f teleport_client {0, 1, 2, 3, 4, 5, 6}
 
-super + {Escape, f}
-    cottage -f change_mode {0, 1}
+super + Escape
+    cottage -f change_mode 0; \
+    rm ~/.config/sxhkd/sxhkdrc; \
+    ln -s ~/.config/sxhkd/sxhkdrc_normal ~/.config/sxhkd/sxhkdrc; \
+    pkill -USR1 -x sxhkd
+
+super + f
+    cottage -f change_mode 1; \
+    rm ~/.config/sxhkd/sxhkdrc; \
+    ln -s ~/.config/sxhkd/sxhkdrc_focus ~/.config/sxhkd/sxhkdrc; \
+    pkill -USR1 -x sxhkd
+
+# Counts
+alt + {1-9}
+    cottage -f count {1-9}
+
+# Motions
+alt + {w, c}
+    cottage -f motion {w, c}
