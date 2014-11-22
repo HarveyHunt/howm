@@ -553,8 +553,6 @@ void count(const Arg *arg)
 void motion(const Arg *arg)
 {
 	int type;
-	if (cur_state != MOTION_STATE)
-		return;
 
 	if (strncmp(*arg->cmd, "w", 1) == 0)
 		type = WORKSPACE;
