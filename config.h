@@ -3,8 +3,6 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
-#include <X11/keysym.h>
-#include <X11/X.h>
 #include "op.h"
 #include "command.h"
 #include "layout.h"

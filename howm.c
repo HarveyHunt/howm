@@ -90,7 +90,7 @@ int cur_state = OPERATOR_STATE;
 /**
  * @brief Occurs when howm first starts.
  *
- * Workspaces are initialised, screen size is determined and keys and atoms
+ * Workspaces are initialised, screen size is determined and atoms
  * are then grabbed.
  *
  * Atoms are gathered.
@@ -254,7 +254,7 @@ void howm_info(void)
 /**
  * @brief Cleanup howm's resources.
  *
- * Delete all of the windows that have been created, remove button and key
+ * Delete all of the windows that have been created, remove button
  * grabs and remove pointer focus.
  */
 static void cleanup(void)

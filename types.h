@@ -106,48 +106,4 @@ typedef struct {
 	const Arg arg; /**< The argument passed to the above function. */
 } Button;
 
-/**
- * @brief Represents a key.
- *
- * Holds information relative to a key, such as keysym and the mode during
- * which the keypress can be seen as valid.
- */
-typedef struct {
-	int mod; /**< The mask of the modifiers pressed. */
-	unsigned int mode; /**< The mode within which this keypress is valid. */
-	xcb_keysym_t sym;  /**< The keysym of the pressed key. */
-	void (*func)(const Arg *); /**< The function to be called when this key is pressed. */
-	const Arg arg; /**< The argument passed to the above function. */
-} Key;
-
-/**
- * @brief Represents an operator.
- *
- * Operators perform an action upon one or more targets (identified by
- * motions).
- */
-typedef struct {
-	int mod; /**< The mask of the modifiers pressed. */
-	xcb_keysym_t sym; /**< The keysym of the pressed key. */
-	unsigned int mode; /**< The mode within which this keypress is valid. */
-	void (*func)(const unsigned int type, const int cnt); /**< The function to be
-								 * called when the key is pressed. */
-} Operator;
-
-/**
- * @brief Represents a motion.
- *
- * A motion can be used to target an operation at something specific- such as a
- * client or workspace.
- *
- * For example:
- *
- * q4c (Kill, 4, Clients).
- */
-typedef struct {
-	int mod; /**< The mask of the modifiers pressed. */
-	xcb_keysym_t sym; /**< The keysym of the pressed key. */
-	unsigned int type; /**< Represents whether the motion is for clients, WS etc. */
-} Motion;
-
 #endif
