@@ -121,10 +121,12 @@ static int ipc_process_function(char **args)
 				commands[i].func(&(Arg){ NULL });
 				break;
 			} else if (commands[i].argc == 1 && *(args + 1) && commands[i].arg_type == TYPE_INT) {
-				commands[i].func(&(Arg){ .i = ipc_arg_to_int(*(args + 1), &err, -100, 100) });
+				Arg a = { .i = ipc_arg_to_int(*(args + 1), &err, -100, 100) };
+				commands[i].func(&a);
 				break;
 			} else if (commands[i].argc == 1 && *(args + 1) && commands[i].arg_type == TYPE_STR) {
-				commands[i].func(&(Arg){ .cmd = args + 1 });
+				Arg a = { .cmd = args + 1 };
+				commands[i].func(&a);
 				break;
 			} else if (commands[i].arg_type == TYPE_IGNORE) {
 				operator_func = commands[i].operator;
