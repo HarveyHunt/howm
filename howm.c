@@ -65,7 +65,7 @@ struct config conf = {
 
 
 bool running = true;
-bool restart = true;
+bool restart = false;
 xcb_connection_t *dpy = NULL;
 xcb_screen_t *screen = NULL;
 xcb_ewmh_connection_t *ewmh = NULL;
