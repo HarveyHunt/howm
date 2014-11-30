@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cottage -c border_px 4 
