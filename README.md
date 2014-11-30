@@ -67,6 +67,7 @@ A keypress is bound to a call to cottage in the following form:
 cottage -f func_name <args>
 ```
 
+All of the available functions can be found [here](http://harveyhunt.github.io/howm/command_8h.html).
 Take a look at the [example sxhkdrcs](examples).
 
 ##Scratchpad
