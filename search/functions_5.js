@@ -1,6 +1,11 @@
 var searchData=
 [
-  ['elevate_5fwindow',['elevate_window',['../howm_8c.html#aaad900b918475f6802fcf31938c1b168',1,'howm.c']]],
-  ['enter_5fevent',['enter_event',['../howm_8c.html#aaa38a4492a56c1b41edc7135ec23d614',1,'howm.c']]],
-  ['ewmh_5fprocess_5fwm_5fstate',['ewmh_process_wm_state',['../howm_8c.html#afba768ba281ee8e50a5feec0e85a0d34',1,'howm.c']]]
+  ['find_5fclient_5fby_5fwin',['find_client_by_win',['../client_8c.html#a86750a51b2c6f47c8f6332990a5aa80e',1,'find_client_by_win(xcb_window_t win):&#160;client.c'],['../client_8h.html#a8358e75afbc293ff875a780205e5f15b',1,'find_client_by_win(xcb_window_t w):&#160;client.c']]],
+  ['focus_5flast_5fws',['focus_last_ws',['../command_8c.html#ac6b9cf6a31e50aec3ab1a4c6d46d9154',1,'focus_last_ws(void):&#160;command.c'],['../command_8h.html#ac6b9cf6a31e50aec3ab1a4c6d46d9154',1,'focus_last_ws(void):&#160;command.c']]],
+  ['focus_5fnext_5fclient',['focus_next_client',['../client_8c.html#ae5d6127e2c85253e8d3860539cd7e08d',1,'focus_next_client(void):&#160;client.c'],['../command_8h.html#ae5d6127e2c85253e8d3860539cd7e08d',1,'focus_next_client(void):&#160;client.c']]],
+  ['focus_5fnext_5fws',['focus_next_ws',['../command_8c.html#a9675a3d8ac0d1d43fd5b867f72df38a1',1,'focus_next_ws(void):&#160;command.c'],['../command_8h.html#a9675a3d8ac0d1d43fd5b867f72df38a1',1,'focus_next_ws(void):&#160;command.c']]],
+  ['focus_5fprev_5fclient',['focus_prev_client',['../client_8c.html#a8cc79e2b8f7d2633073e044b8de2dadc',1,'focus_prev_client(void):&#160;client.c'],['../command_8h.html#a8cc79e2b8f7d2633073e044b8de2dadc',1,'focus_prev_client(void):&#160;client.c']]],
+  ['focus_5fprev_5fws',['focus_prev_ws',['../command_8c.html#ac83c7877e8f67cecae5cdc99f0c5ccfb',1,'focus_prev_ws(void):&#160;command.c'],['../command_8h.html#ac83c7877e8f67cecae5cdc99f0c5ccfb',1,'focus_prev_ws(void):&#160;command.c']]],
+  ['focus_5furgent',['focus_urgent',['../command_8c.html#ae8ff1f4cfd99f8cbebad8b42395143da',1,'focus_urgent(void):&#160;command.c'],['../command_8h.html#ae8ff1f4cfd99f8cbebad8b42395143da',1,'focus_urgent(void):&#160;command.c']]],
+  ['focus_5fwindow',['focus_window',['../xcb__help_8c.html#aa6e0efcc31fc894c7a877005cb143c36',1,'focus_window(xcb_window_t win):&#160;xcb_help.c'],['../xcb__help_8h.html#aa6e0efcc31fc894c7a877005cb143c36',1,'focus_window(xcb_window_t win):&#160;xcb_help.c']]]
 ];

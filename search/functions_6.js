@@ -1,11 +1,10 @@
 var searchData=
 [
-  ['find_5fclient_5fby_5fwin',['find_client_by_win',['../howm_8c.html#a58daaa6f47a67b3ab6bdb7103c1f1f57',1,'howm.c']]],
-  ['focus_5flast_5fws',['focus_last_ws',['../howm_8c.html#a9b4d1f6bd742c7c0e1487707c526c1fc',1,'howm.c']]],
-  ['focus_5fnext_5fclient',['focus_next_client',['../howm_8c.html#a54957d5d6465f3710df3ecb29156b763',1,'howm.c']]],
-  ['focus_5fnext_5fws',['focus_next_ws',['../howm_8c.html#aee293a216f82a9d06f7fdf57c5965e89',1,'howm.c']]],
-  ['focus_5fprev_5fclient',['focus_prev_client',['../howm_8c.html#a8170fa9f228fa0ad87c02704cd9977e7',1,'howm.c']]],
-  ['focus_5fprev_5fws',['focus_prev_ws',['../howm_8c.html#a20843a8ffb337e389940282900d57408',1,'howm.c']]],
-  ['focus_5furgent',['focus_urgent',['../howm_8c.html#a50230a4ca5c8baf43aea337ecf332d06',1,'howm.c']]],
-  ['focus_5fwindow',['focus_window',['../howm_8c.html#aa6e0efcc31fc894c7a877005cb143c36',1,'howm.c']]]
+  ['get_5fatoms',['get_atoms',['../xcb__help_8c.html#a763f5654a3955f6b478861d7b69d9499',1,'get_atoms(const char **names, xcb_atom_t *atoms):&#160;xcb_help.c'],['../xcb__help_8h.html#a763f5654a3955f6b478861d7b69d9499',1,'get_atoms(const char **names, xcb_atom_t *atoms):&#160;xcb_help.c']]],
+  ['get_5fcolour',['get_colour',['../howm_8c.html#a85e0bbafd9d22e881df3a09d09a94c55',1,'get_colour(char *colour):&#160;howm.c'],['../howm_8h.html#a85e0bbafd9d22e881df3a09d09a94c55',1,'get_colour(char *colour):&#160;howm.c']]],
+  ['get_5ffirst_5fnon_5ftff',['get_first_non_tff',['../client_8c.html#a74a80bad8ccd2cb3803c8be4850fcb83',1,'get_first_non_tff(void):&#160;client.c'],['../client_8h.html#a74a80bad8ccd2cb3803c8be4850fcb83',1,'get_first_non_tff(void):&#160;client.c']]],
+  ['get_5ffrom_5fscratchpad',['get_from_scratchpad',['../command_8h.html#a4e953456fd6705ad01c6b6b91d5bfec8',1,'get_from_scratchpad(void):&#160;scratchpad.c'],['../scratchpad_8c.html#a4e953456fd6705ad01c6b6b91d5bfec8',1,'get_from_scratchpad(void):&#160;scratchpad.c']]],
+  ['get_5fnon_5ftff_5fcount',['get_non_tff_count',['../client_8c.html#af42ff327d6049e08d5cf652ec21950c2',1,'get_non_tff_count(void):&#160;client.c'],['../client_8h.html#af42ff327d6049e08d5cf652ec21950c2',1,'get_non_tff_count(void):&#160;client.c']]],
+  ['grab_5fbuttons',['grab_buttons',['../xcb__help_8c.html#aa088f6bc2a852443636d417e70036648',1,'grab_buttons(Client *c):&#160;xcb_help.c'],['../xcb__help_8h.html#aa088f6bc2a852443636d417e70036648',1,'grab_buttons(Client *c):&#160;xcb_help.c']]],
+  ['grid',['grid',['../layout_8c.html#a4a9a7c0ec778f10c525cfab46b7ae5a9',1,'layout.c']]]
 ];

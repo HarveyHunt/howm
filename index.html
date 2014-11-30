@@ -117,137 +117,40 @@ $(document).ready(function(){initNavTree('index.html','');});
 <h1>Contents </h1>
 <ul>
 <li><a class="el" href="md_CONTRIBUTING.html">Contributing</a></li>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#commandline-arguments">Commandline Arguments</a></li>
 <li><a href="#configuration">Configuration</a></li>
-<li><a href="#rules">Rules</a></li>
+<li><a href="#keybinds">Keybinds</a></li>
+<li><a href="#scratchpad">Scratchpad</a></li>
 <li><a href="#motions">Motions</a></li>
 <li><a href="#counts">Counts</a></li>
 <li><a href="#operators">Operators</a></li>
 <li><a href="#modes">Modes</a></li>
 <li><a href="#parsing-output">Parsing Output</a></li>
 </ul>
+<h2>Requirements</h2>
+<ul>
+<li><a href="https://www.github.com/HarveyHunt/cottage">Cottage</a> is required for configuration and interacting with howm.</li>
+<li><a href="https://www.github.com/baskerville/sxhkd">sxhkd</a> is required for binding cottage commands to keypress.</li>
+</ul>
+<h2>Commandline Arguments</h2>
+<ul>
+<li>**-c**: The path that points to an executable howmrc file. ``` howm -c ~/.config/howm/howmrc ```</li>
+</ul>
 <h2>Configuration</h2>
-<p>Configuration is done through the included <a class="el" href="config_8h.html">config.h</a> file. Keys, operators, colours, motions and more are defined in this file. It has a layout that will be recognisable to anyone that has used similarly small WMs.</p>
-<p>Each option is described in detail below:</p>
-<ul>
-<li><b>MODKEY</b>: An alias for a modifier, making it easier to change your modifier in your config. Possible values can be found <a href="http://www.x.org/releases/X11R7.6/doc/libX11/specs/XKB/xkblib.html#changing_modifiers">here</a>.</li>
-</ul>
-<p>``` #define MODKEY Mod4Mask ```</p>
-<ul>
-<li><b>COUNT_MOD</b>: An alias for a modifier that is to be used when indicating a <a href="#counts">count</a>. Possible values can be found <a href="http://www.x.org/releases/X11R7.6/doc/libX11/specs/XKB/xkblib.html#changing_modifiers">here</a>.</li>
-</ul>
-<p>``` #define COUNT_MOD Mod1Mask ```</p>
-<ul>
-<li><b>OTHER_MOD</b>: An alias for a modifier that is to be used to indicate motions and operators. Possible values can be found <a href="http://www.x.org/releases/X11R7.6/doc/libX11/specs/XKB/xkblib.html#changing_modifiers">here</a>.</li>
-</ul>
-<p>``` #define OTHER_MOD Mod1Mask ```</p>
-<ul>
-<li><b>WORKSPACES</b>: The number of workspaces that you wish to have. The following is a brief description from <a href="http://linux.about.com/library/gnome/blgnome2n4.htm">here</a>:</li>
-</ul>
-<p>&gt;Workspaces allow you to manage which windows are on your screen. You can imagine as being virtual screens, which you can switch between at any time. Every workspace contains the same desktop, the same panels, and the same menus. However, you can run different applications, and open different windows in each workspace. The applications in each workspace will remain there when you switch to other .</p>
-<p>``` #define WORKSPACES 3 ```</p>
-<ul>
-<li><b>FOCUS_MOUSE</b>: When true, moving the mouse cursor into a different window will focus that window.</li>
-</ul>
-<p>``` #define FOCUS_MOUSE true ```</p>
-<ul>
-<li><b>FOCUS_MOUSE_CLICK</b>: When true, clicking with the mouse cursor on a different window will focus it. If FOCUS_MOUSE is true, this is unnecessary.</li>
-</ul>
-<p>``` #define FOCUS_MOUSE_CLICK false ```</p>
-<ul>
-<li><b>FOLLOW_MOVE</b>: When true, focus will change to a a different workspace when a client is sent there.</li>
-</ul>
-<p>``` #define FOLLOW_MOVE false ```</p>
-<ul>
-<li><b>GAP</b>: The size (in pixels) of the "useless gap" to place between windows.</li>
-</ul>
-<p>``` #define GAP 4 ```</p>
-<ul>
-<li><b>OP_GAP_SIZE</b>: The size (in pixel) that the operators op_shrink_gap and op_grow_gap change the gap size by.</li>
-</ul>
-<p>``` #define OP_GAP_SIZE 2 ```</p>
-<ul>
-<li><b>DEBUG_ENABLE</b>: When true, debugging information is sent to STDOUT.</li>
-</ul>
-<p>``` #define DEBUG_ENABLE true ```</p>
-<ul>
-<li><b>BORDER_PX</b>: The size of the border drawn around each window.</li>
-</ul>
-<p>``` #define BORDER_PX 4 ```</p>
-<ul>
-<li><b>BORDER_FOCUS</b>: The colour (in the form #RRGGBB) that the border around the currently focused window is.</li>
-</ul>
-<p>``` #define BORDER_FOCUS #FF00FF ```</p>
-<ul>
-<li><b>BORDER_UNFOCUS</b>: The colour (in the form #RRGGBB) that the border around unfocused windows is.</li>
-</ul>
-<p>``` #define BORDER_UNFOCUS #00FF00 ```</p>
-<ul>
-<li><b>BORDER_PREV_FOCUS</b>: The colour (in the form #RRGGBB) that the border around last focused windows is.</li>
-</ul>
-<p>``` #define BORDER_PREV_FOCUS #0000FF ```</p>
-<ul>
-<li><b>BORDER_URGENT</b>: The colour (in the form #RRGGBB) that the border around urgent windows should be.</li>
-</ul>
-<p>``` #define BORDER_URGENT #0000FF ```</p>
-<ul>
-<li><b>BAR_HEIGHT</b>: The height of a status bar that can be displayed at the bottom or top of the screen.</li>
-</ul>
-<p>``` #define BAR_HEIGHT 20 ```</p>
-<ul>
-<li><b>BAR_BOTTOM</b>: When true, the space for a bar will be reserved at the bottom of the screen. When false, the space will be reserved at the top of the screen.</li>
-</ul>
-<p>``` #define BAR_BOTTOM true ```</p>
-<ul>
-<li><b>CENTER_FLOATING</b>: Whether a window that has just been changed to floating should be centered or not.</li>
-</ul>
-<p>``` #define CENTER_FLOATING true ```</p>
-<ul>
-<li><b>ZOOM_GAP</b>: Whether a gap should be drawn around a window when howm is in zoom layout.</li>
-</ul>
-<p>``` #define ZOOM_GAP true ```</p>
-<ul>
-<li><b>LOG_LEVEL</b>: How much detail should be logged. A LOG_LEVEL of INFO will log everything, LOG_WARN will log warnings and errors and LOG_ERR will log only errors. LOG_NONE means nothing will be logged. Logging level severity is as follows:<ul>
-<li>LOG_INFO</li>
-<li>LOG_WARN</li>
-<li>LOG_ERR</li>
-<li>LOG_NONE</li>
-</ul>
-</li>
-</ul>
-<p>``` #define LOG_LEVEL LOG_ERR ```</p>
-<ul>
-<li><b>MASTER_RATIO</b>: The ratio of the master window's size in stack modes compared to the size of the stack area. Can be from 0 to 1.</li>
-</ul>
-<p>``` #define MASTER_RATIO 0.7 ```</p>
-<ul>
-<li><b>DEFAULT_WORKSPACE</b>: The workspace that should be selected upon startup.</li>
-</ul>
-<p>``` #define DEFAULT_WORKSPACE 1 ```</p>
-<ul>
-<li><b>FLOAT_SPAWN_WIDTH</b>: This represents the width of a floating window when it is spawned, if no geometry information is known about it.</li>
-</ul>
-<p>``` #define FLOAT_SPAWN_WIDTH 400 ```</p>
-<ul>
-<li><b>FLOAT_SPAWN_HEIGHT</b>: This represents the height of a floating window when it is spawned, if no geometry information is known about it.</li>
-</ul>
-<p>``` #define FLOAT_SPAWN_HEIGHT 400 ```</p>
-<ul>
-<li><b>HOWM_PATH</b>: A string containing the path to howm's binary, so that it can restart itself.</li>
-</ul>
-<p>``` #define HOWM_PATH "/usr/bin/howm" ```</p>
-<ul>
-<li><b>DELETE_REGISTER_SIZE</b>: The amount of times that a cut operation can be performed before a paste is required. This is the size of the stack that clients are placed onto after being cut.</li>
-</ul>
-<p>``` #define DELETE_REGISTER_SIZE 5 ```</p>
-<h2>Rules</h2>
-<p>Rules can be used to tell howm to open certain applications on different workspaces and with certain properties set.</p>
-<p>A rule is made up of the following sections:</p><ul>
-<li><b>Name</b>: This is string that can be used to identify a window. It treats name as a substring, so "dw" would still work for the client "dwb".</li>
-<li><b><a class="el" href="structWorkspace.html" title="Represents a workspace, which stores clients. ">Workspace</a></b>: When set to 0, the client will be opened on the current workspace. Otherwise, the client will be opened on the specified workspace.</li>
-<li><b>Follow</b>: Should howm focus on the new client when it is spawned?</li>
-<li><b>Floating</b>: Should the client be floating when it is spawned?</li>
-<li><b>Fullscreen</b>: Should the client be fullscreen when it is spawned?</li>
-</ul>
+<p>Configuration is done through the use of cottage. Any element [in this structure]() can be changed using cottage. The syntax is as follows:</p>
+<p>``` cottage -c config_var value ```</p>
+<p>For example:</p>
+<p>``` cottage -c bar_height 20 ```</p>
+<p>To override howm's default values at startup, cottage commands can be placed in a shell script and then executed by howm. Take a look at the <a href="examples/howmrc">example howmrc</a> for ideas.</p>
+<h2>Keybinds</h2>
+<p>Keybinds are now placed in multiple <a href="https://github.com/baskerville/sxhkd">sxhkd</a> files.</p>
+<p>A keypress is bound to a call to cottage in the following form:</p>
+<p>``` cottage -f func_name &lt;args&gt; ```</p>
+<p>Take a look at the [example sxhkdrcs](examples).</p>
+<h2>Scratchpad</h2>
+<p>The scratchpad is a location to store a single client out of view. When requesting a client back from the scratchpad, it will float in the center of the screen. This is useful for keeping a terminal handy or hiding your music player- only displaying it when it is really needed.</p>
+<p>The size of the scratchpad's client is defined by SCRATCHPAD_WIDTH and SCRATCHPAD_HEIGHT.</p>
 <h2>Motions</h2>
 <p>For a good primer on motions, vim's <a href="http://vimdoc.sourceforge.net/htmldoc/motion.html">documentation</a> explains them well.</p>
 <p><b>Please note: The modifier key that is OTHER_MOD needs to be held down whilst entering a motion.</b></p>
@@ -357,7 +260,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Sep 27 2014 22:25:23 for howm by
+    <li class="footer">Generated on Sun Nov 30 2014 22:17:51 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

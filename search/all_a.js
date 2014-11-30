@@ -1,10 +1,5 @@
 var searchData=
 [
-  ['key',['Key',['../structKey.html',1,'']]],
-  ['key_5fpress_5fevent',['key_press_event',['../howm_8c.html#af018244ddc47fc5fe84e1078ded37f0b',1,'howm.c']]],
-  ['keycode_5fto_5fkeysym',['keycode_to_keysym',['../howm_8c.html#ab43240884263a82b10d1c4ae7642d3a2',1,'howm.c']]],
-  ['keys',['keys',['../config_8h.html#ab56654f4cbd5ccdf809022aaef745f60',1,'config.h']]],
-  ['keysym_5fto_5fkeycode',['keysym_to_keycode',['../howm_8c.html#a4febe1089f4d65637ed12566263165a0',1,'howm.c']]],
-  ['kill_5fclient',['kill_client',['../howm_8c.html#a6fecd4e3cbfa1c8ab768ef0dbf689974',1,'howm.c']]],
-  ['kill_5fws',['kill_ws',['../howm_8c.html#a5848d90f0f94a3515e31c545ae6d1760',1,'howm.c']]]
+  ['kill_5fclient',['kill_client',['../client_8c.html#a6fecd4e3cbfa1c8ab768ef0dbf689974',1,'kill_client(const int ws, bool arrange):&#160;client.c'],['../client_8h.html#a6fecd4e3cbfa1c8ab768ef0dbf689974',1,'kill_client(const int ws, bool arrange):&#160;client.c']]],
+  ['kill_5fws',['kill_ws',['../workspace_8c.html#a5848d90f0f94a3515e31c545ae6d1760',1,'kill_ws(const int ws):&#160;workspace.c'],['../workspace_8h.html#a5848d90f0f94a3515e31c545ae6d1760',1,'kill_ws(const int ws):&#160;workspace.c']]]
 ];

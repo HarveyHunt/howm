@@ -1,0 +1,48 @@
+.TH "Button" 3 "Thu Oct 30 2014" "howm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Button \- 
+.PP
+Represents a button\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <types\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBmod\fP"
+.br
+.ti -1c
+.RI "short int \fBbutton\fP"
+.br
+.ti -1c
+.RI "void(* \fBfunc\fP )(const \fBArg\fP *)"
+.br
+.ti -1c
+.RI "const \fBArg\fP \fBarg\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents a button\&. 
+
+Allows the mapping of a button to a function, as is done with the \fBKey\fP struct for keys\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "const \fBArg\fP Button::arg"
+The argument passed to the above function\&. 
+.SS "short int Button::button"
+The button that was pressed\&. 
+.SS "void(* Button::func)(const \fBArg\fP *)"
+The function to be called when the button is pressed\&. 
+.SS "int Button::mod"
+The mask of the modifiers pressed\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for howm from the source code\&.

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['teleport_5flocations',['teleport_locations',['../howm_8c.html#a354037b2059caa6f5e172e8393193595',1,'howm.c']]]
+  ['net_5fatom_5fenum',['net_atom_enum',['../xcb__help_8h.html#abb9728c05efa28b2276c14ebd16a27ef',1,'xcb_help.h']]]
 ];

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['arg',['Arg',['../unionArg.html',1,'']]]
+  ['client',['Client',['../structClient.html',1,'']]],
+  ['config',['config',['../structconfig.html',1,'']]]
 ];

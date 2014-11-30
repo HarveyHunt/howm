@@ -113,11 +113,13 @@ $(document).ready(function(){initNavTree('structstack.html','');});
 
 <p>Represents a stack. This stack is going to hold linked lists of clients. An example of the stack is below:  
  <a href="structstack.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="scratchpad_8h_source.html">scratchpad.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a926a597bae913d1bf4772be35c14b71e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstack.html#a926a597bae913d1bf4772be35c14b71e">size</a></td></tr>
-<tr class="separator:a926a597bae913d1bf4772be35c14b71e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acba32886504fb2d759031717a3334e77"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstack.html#acba32886504fb2d759031717a3334e77">size</a></td></tr>
+<tr class="separator:acba32886504fb2d759031717a3334e77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2c4ce0b9c289d21b7eaa860efc363bf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structClient.html">Client</a> **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstack.html#aa2c4ce0b9c289d21b7eaa860efc363bf">contents</a></td></tr>
 <tr class="separator:aa2c4ce0b9c289d21b7eaa860efc363bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -138,24 +140,25 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>The amount of items in the stack. </p>
+<p>The contents is an array of linked lists. Storage is malloced later as we don't know the size yet. </p>
 
 </div>
 </div>
-<a class="anchor" id="a926a597bae913d1bf4772be35c14b71e"></a>
+<a class="anchor" id="acba32886504fb2d759031717a3334e77"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int stack::size</td>
+          <td class="memname">unsigned int stack::size</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>The amount of items in the stack. </p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li><a class="el" href="howm_8c.html">howm.c</a></li>
+<li><a class="el" href="scratchpad_8h_source.html">scratchpad.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -163,7 +166,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="structstack.html">stack</a></li>
-    <li class="footer">Generated on Sat Sep 27 2014 22:25:23 for howm by
+    <li class="footer">Generated on Sun Nov 30 2014 22:17:51 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['keys',['keys',['../config_8h.html#ab56654f4cbd5ccdf809022aaef745f60',1,'config.h']]]
+  ['master_5fratio',['master_ratio',['../structWorkspace.html#aa9a4cb16c33eb7f75d89794768981f72',1,'Workspace']]]
 ];

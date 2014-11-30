@@ -1,0 +1,97 @@
+.TH "ipc.h" 3 "Sun Nov 30 2014" "howm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ipc.h \- 
+.PP
+howm  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBipc_errs\fP { \fBIPC_ERR_NONE\fP, \fBIPC_ERR_SYNTAX\fP, \fBIPC_ERR_ALLOC\fP, \fBIPC_ERR_NO_FUNC\fP, \fBIPC_ERR_TOO_MANY_ARGS\fP, \fBIPC_ERR_TOO_FEW_ARGS\fP, \fBIPC_ERR_ARG_NOT_INT\fP, \fBIPC_ERR_ARG_NOT_BOOL\fP, \fBIPC_ERR_ARG_TOO_LARGE\fP, \fBIPC_ERR_ARG_TOO_SMALL\fP, \fBIPC_ERR_UNKNOWN_TYPE\fP }"
+.br
+.ti -1c
+.RI "enum \fBarg_types\fP { \fBTYPE_IGNORE\fP, \fBTYPE_INT\fP, \fBTYPE_STR\fP }"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBipc_init\fP (void)"
+.br
+.ti -1c
+.RI "int \fBipc_process\fP (char *msg, int len)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+howm 
+
+
+.PP
+\fBAuthor:\fP
+.RS 4
+Harvey Hunt
+.RE
+.PP
+\fBDate:\fP
+.RS 4
+2014 
+.RE
+.PP
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBarg_types\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fITYPE_IGNORE \fP\fP
+.TP
+\fB\fITYPE_INT \fP\fP
+.TP
+\fB\fITYPE_STR \fP\fP
+.SS "enum \fBipc_errs\fP"
+
+.PP
+\fBEnumerator\fP
+.in +1c
+.TP
+\fB\fIIPC_ERR_NONE \fP\fP
+.TP
+\fB\fIIPC_ERR_SYNTAX \fP\fP
+.TP
+\fB\fIIPC_ERR_ALLOC \fP\fP
+.TP
+\fB\fIIPC_ERR_NO_FUNC \fP\fP
+.TP
+\fB\fIIPC_ERR_TOO_MANY_ARGS \fP\fP
+.TP
+\fB\fIIPC_ERR_TOO_FEW_ARGS \fP\fP
+.TP
+\fB\fIIPC_ERR_ARG_NOT_INT \fP\fP
+.TP
+\fB\fIIPC_ERR_ARG_NOT_BOOL \fP\fP
+.TP
+\fB\fIIPC_ERR_ARG_TOO_LARGE \fP\fP
+.TP
+\fB\fIIPC_ERR_ARG_TOO_SMALL \fP\fP
+.TP
+\fB\fIIPC_ERR_UNKNOWN_TYPE \fP\fP
+.SH "Function Documentation"
+.PP 
+.SS "int ipc_init (void)"
+
+.SS "int ipc_process (char *msg, intlen)"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for howm from the source code\&.

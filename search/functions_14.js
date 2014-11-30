@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zoom',['zoom',['../howm_8c.html#a36b7c65ccd608b603caa4e34ded4be76',1,'howm.c']]]
+  ['zoom',['zoom',['../layout_8c.html#a0bc198bb91ef71c75ba149c9b45fbd24',1,'layout.c']]]
 ];

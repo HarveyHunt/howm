@@ -1,0 +1,68 @@
+.TH "Workspace" 3 "Sun Nov 30 2014" "howm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Workspace \- 
+.PP
+Represents a workspace, which stores clients\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <types\&.h>\fP
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBlayout\fP"
+.br
+.ti -1c
+.RI "int \fBclient_cnt\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBgap\fP"
+.br
+.ti -1c
+.RI "float \fBmaster_ratio\fP"
+.br
+.ti -1c
+.RI "uint16_t \fBbar_height\fP"
+.br
+.ti -1c
+.RI "\fBClient\fP * \fBhead\fP"
+.br
+.ti -1c
+.RI "\fBClient\fP * \fBprev_foc\fP"
+.br
+.ti -1c
+.RI "\fBClient\fP * \fBcurrent\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Represents a workspace, which stores clients\&. 
+
+Clients are stored as a linked list\&. Changing to a different workspace will cause different clients to be rendered on the screen\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "uint16_t Workspace::bar_height"
+The height of the space left for a bar\&. Stored here so it can be toggled per ws\&. 
+.SS "int Workspace::client_cnt"
+The amount of clients on this workspace\&. 
+.SS "\fBClient\fP* Workspace::current"
+The client that is currently in focus\&. 
+.SS "uint16_t Workspace::gap"
+The size of the useless gap between windows for this workspace\&. 
+.SS "\fBClient\fP* Workspace::head"
+The start of the linked list\&. 
+.SS "int Workspace::layout"
+The current layout of the WS, as defined in the layout enum\&. 
+.SS "float Workspace::master_ratio"
+The ratio of the size of the master window compared to the screen's size\&. 
+.SS "\fBClient\fP* Workspace::prev_foc"
+The last focused client\&. This is seperate to the linked list structure\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for howm from the source code\&.

@@ -1,0 +1,142 @@
+.TH "helper.h" 3 "Sun Nov 30 2014" "howm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+helper.h \- 
+.PP
+howm  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <err\&.h>\fP
+.br
+\fC#include <errno\&.h>\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include 'config\&.h'\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBMOVE_RESIZE_MASK\fP"
+.br
+.ti -1c
+.RI "#define \fBCLEANMASK\fP(mask)   (mask & ~(\fBnumlockmask\fP | XCB_MOD_MASK_LOCK))"
+.br
+.ti -1c
+.RI "#define \fBEQUALMODS\fP(mask, omask)   (\fBCLEANMASK\fP(mask) == \fBCLEANMASK\fP(omask))"
+.br
+.ti -1c
+.RI "#define \fBLENGTH\fP(x)   (unsigned int)(sizeof(x) / sizeof(*x))"
+.br
+.ti -1c
+.RI "#define \fBFFT\fP(c)   (c->is_transient || c->is_floating || c->is_fullscreen)"
+.br
+.ti -1c
+.RI "#define \fBUNUSED\fP(x)   (void)(x)"
+.br
+.ti -1c
+.RI "#define \fBMAX_FD\fP(x, y)   ((x) > (y) ? (x + 1) : (y + 1))"
+.br
+.ti -1c
+.RI "#define \fBDEBUG\fP(x)   puts(x)"
+.br
+.ti -1c
+.RI "#define \fBDEBUGP\fP(M,\&.\&.\&.)   fprintf(stderr, '[DBG] %s:%d: ' M '\\n', __FILE__, __LINE__, ##__VA_ARGS__)"
+.br
+.ti -1c
+.RI "#define \fBLOG_DEBUG\fP   1"
+.br
+.ti -1c
+.RI "#define \fBLOG_INFO\fP   2"
+.br
+.ti -1c
+.RI "#define \fBLOG_WARN\fP   3"
+.br
+.ti -1c
+.RI "#define \fBLOG_ERR\fP   4"
+.br
+.ti -1c
+.RI "#define \fBLOG_NONE\fP   5"
+.br
+.ti -1c
+.RI "#define \fBlog_debug\fP(M,\&.\&.\&.)   fprintf(stderr, '[DEBUG] (%s:%d) ' M '\\n', __FILE__, __LINE__, ##__VA_ARGS__)"
+.br
+.ti -1c
+.RI "#define \fBlog_info\fP(M,\&.\&.\&.)   fprintf(stderr, '[INFO] (%s:%d) ' M '\\n', __FILE__, __LINE__, ##__VA_ARGS__)"
+.br
+.ti -1c
+.RI "#define \fBlog_warn\fP(M,\&.\&.\&.)   fprintf(stderr, '[WARN] (%s:%d) ' M '\\n', __FILE__, __LINE__, ##__VA_ARGS__)"
+.br
+.ti -1c
+.RI "#define \fBlog_err\fP(M,\&.\&.\&.)   fprintf(stderr, '[ERROR] (%s:%d) ' M '\\n', __FILE__, __LINE__, ##__VA_ARGS__)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+howm 
+
+
+.PP
+\fBAuthor:\fP
+.RS 4
+Harvey Hunt
+.RE
+.PP
+\fBDate:\fP
+.RS 4
+2014 
+.RE
+.PP
+
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define CLEANMASK(mask)   (mask & ~(\fBnumlockmask\fP | XCB_MOD_MASK_LOCK))"
+Ensures that the number lock doesn't intefere with checking the equality of two modifier masks\&. 
+.SS "#define DEBUG(x)   puts(x)"
+Output debugging information using puts\&. 
+.SS "#define DEBUGP(M, \&.\&.\&.)   fprintf(stderr, '[DBG] %s:%d: ' M '\\n', __FILE__, __LINE__, ##__VA_ARGS__)"
+Output debugging information using printf to allow for formatting\&. 
+.SS "#define EQUALMODS(mask, omask)   (\fBCLEANMASK\fP(mask) == \fBCLEANMASK\fP(omask))"
+Wraps up the comparison of modifier masks into a neat package\&. 
+.SS "#define FFT(c)   (c->is_transient || c->is_floating || c->is_fullscreen)"
+Checks to see if a client is floating, fullscreen or transient\&. 
+.SS "#define LENGTH(x)   (unsigned int)(sizeof(x) / sizeof(*x))"
+Calculates the length of an array\&. 
+.SS "#define LOG_DEBUG   1"
+
+.SS "#define log_debug(M, \&.\&.\&.)   fprintf(stderr, '[DEBUG] (%s:%d) ' M '\\n', __FILE__, __LINE__, ##__VA_ARGS__)"
+
+.SS "#define LOG_ERR   4"
+
+.SS "#define log_err(M, \&.\&.\&.)   fprintf(stderr, '[ERROR] (%s:%d) ' M '\\n', __FILE__, __LINE__, ##__VA_ARGS__)"
+
+.SS "#define LOG_INFO   2"
+
+.SS "#define log_info(M, \&.\&.\&.)   fprintf(stderr, '[INFO] (%s:%d) ' M '\\n', __FILE__, __LINE__, ##__VA_ARGS__)"
+
+.SS "#define LOG_NONE   5"
+
+.SS "#define LOG_WARN   3"
+
+.SS "#define log_warn(M, \&.\&.\&.)   fprintf(stderr, '[WARN] (%s:%d) ' M '\\n', __FILE__, __LINE__, ##__VA_ARGS__)"
+
+.SS "#define MAX_FD(x, y)   ((x) > (y) ? (x + 1) : (y + 1))"
+Determine which file descriptor is the largest and add one to it\&. 
+.SS "#define MOVE_RESIZE_MASK"
+\fBValue:\fP
+.PP
+.nf
+(XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y | \
+                          XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT)
+.fi
+Calculates a mask that can be applied to a window in order to reconfigure a window\&. 
+.SS "#define UNUSED(x)   (void)(x)"
+Supresses the unused variable compiler warnings\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for howm from the source code\&.

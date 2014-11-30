@@ -1,0 +1,273 @@
+.TH "howm.c" 3 "Sun Nov 30 2014" "howm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+howm.c \- 
+.PP
+The glue that holds howm together\&. This file houses the main event loop as well as setup and cleanup\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <sys/select\&.h>\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include <stdbool\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <sys/un\&.h>\fP
+.br
+\fC#include <unistd\&.h>\fP
+.br
+\fC#include <getopt\&.h>\fP
+.br
+\fC#include <xcb/xcb\&.h>\fP
+.br
+\fC#include <xcb/xcb_ewmh\&.h>\fP
+.br
+\fC#include 'config\&.h'\fP
+.br
+\fC#include 'howm\&.h'\fP
+.br
+\fC#include 'workspace\&.h'\fP
+.br
+\fC#include 'helper\&.h'\fP
+.br
+\fC#include 'xcb_help\&.h'\fP
+.br
+\fC#include 'scratchpad\&.h'\fP
+.br
+\fC#include 'ipc\&.h'\fP
+.br
+\fC#include 'handler\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBsetup\fP (void)"
+.br
+.RI "\fIOccurs when howm first starts\&. \fP"
+.ti -1c
+.RI "static void \fBcleanup\fP (void)"
+.br
+.RI "\fICleanup howm's resources\&. \fP"
+.ti -1c
+.RI "static void \fBexec_config\fP (char *conf_path)"
+.br
+.ti -1c
+.RI "int \fBmain\fP (int argc, char *argv[])"
+.br
+.RI "\fIThe code that glues howm together\&.\&.\&. \fP"
+.ti -1c
+.RI "void \fBhowm_info\fP (void)"
+.br
+.RI "\fIPrint debug information about the current state of howm\&. \fP"
+.ti -1c
+.RI "uint32_t \fBget_colour\fP (char *colour)"
+.br
+.RI "\fIConverts a hexcode colour into an X11 colourmap pixel\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "struct \fBconfig\fP \fBconf\fP"
+.br
+.ti -1c
+.RI "bool \fBrunning\fP = true"
+.br
+.ti -1c
+.RI "bool \fBrestart\fP = false"
+.br
+.ti -1c
+.RI "xcb_connection_t * \fBdpy\fP = NULL"
+.br
+.ti -1c
+.RI "xcb_screen_t * \fBscreen\fP = NULL"
+.br
+.ti -1c
+.RI "xcb_ewmh_connection_t * \fBewmh\fP = NULL"
+.br
+.ti -1c
+.RI "\fBWorkspace\fP \fBwss\fP [\fBWORKSPACES\fP+1]"
+.br
+.ti -1c
+.RI "const char * \fBWM_ATOM_NAMES\fP [] = { 'WM_DELETE_WINDOW', '\fBWM_PROTOCOLS\fP' }"
+.br
+.ti -1c
+.RI "xcb_atom_t \fBwm_atoms\fP [\fBLENGTH\fP(\fBWM_ATOM_NAMES\fP)]"
+.br
+.ti -1c
+.RI "int \fBnumlockmask\fP = 0"
+.br
+.ti -1c
+.RI "int \fBretval\fP = 0"
+.br
+.ti -1c
+.RI "int \fBlast_ws\fP = 0"
+.br
+.ti -1c
+.RI "int \fBprevious_layout\fP = 0"
+.br
+.ti -1c
+.RI "int \fBcw\fP = 1"
+.br
+.ti -1c
+.RI "uint32_t \fBborder_focus\fP = 0"
+.br
+.ti -1c
+.RI "uint32_t \fBborder_unfocus\fP = 0"
+.br
+.ti -1c
+.RI "uint32_t \fBborder_prev_focus\fP = 0"
+.br
+.ti -1c
+.RI "uint32_t \fBborder_urgent\fP = 0"
+.br
+.ti -1c
+.RI "unsigned int \fBcur_mode\fP = 0"
+.br
+.ti -1c
+.RI "uint16_t \fBscreen_height\fP = 0"
+.br
+.ti -1c
+.RI "uint16_t \fBscreen_width\fP = 0"
+.br
+.ti -1c
+.RI "int \fBcur_state\fP = \fBOPERATOR_STATE\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The glue that holds howm together\&. This file houses the main event loop as well as setup and cleanup\&. 
+
+
+.PP
+\fBAuthor:\fP
+.RS 4
+Harvey Hunt
+.RE
+.PP
+\fBDate:\fP
+.RS 4
+2014 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "static void cleanup (void)\fC [static]\fP"
+
+.PP
+Cleanup howm's resources\&. Delete all of the windows that have been created, remove button grabs and remove pointer focus\&. 
+.SS "static void exec_config (char *conf_path)\fC [static]\fP"
+
+.SS "uint32_t get_colour (char *colour)"
+
+.PP
+Converts a hexcode colour into an X11 colourmap pixel\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIcolour\fP A string of the format '#RRGGBB', that will be interpreted as a colour code\&.
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+An X11 colourmap pixel\&. 
+.RE
+.PP
+
+.SS "void howm_info (void)"
+
+.PP
+Print debug information about the current state of howm\&. This can be parsed by programs such as scripts that will pipe their input into a status bar\&. 
+.SS "int main (intargc, char *argv[])"
+
+.PP
+The code that glues howm together\&.\&.\&. 
+.SS "static void setup (void)\fC [static]\fP"
+
+.PP
+Occurs when howm first starts\&. Workspaces are initialised, screen size is determined and atoms are then grabbed\&.
+.PP
+Atoms are gathered\&. 
+.SH "Variable Documentation"
+.PP 
+.SS "uint32_t border_focus = 0"
+
+.SS "uint32_t border_prev_focus = 0"
+
+.SS "uint32_t border_unfocus = 0"
+
+.SS "uint32_t border_urgent = 0"
+
+.SS "struct \fBconfig\fP conf"
+\fBInitial value:\fP
+.PP
+.nf
+= {
+        \&.focus_mouse = false,
+        \&.focus_mouse_click = true,
+        \&.follow_move = true,
+        \&.border_px = 2,
+        \&.border_focus = 0,
+        \&.border_unfocus = 0,
+        \&.border_prev_focus = 0,
+        \&.border_urgent = 0,
+        \&.bar_bottom = true,
+        \&.bar_height = 20,
+        \&.op_gap_size = 4,
+        \&.center_floating = true,
+        \&.zoom_gap = true,
+        \&.log_level = LOG_DEBUG,
+        \&.float_spawn_width = 500,
+        \&.float_spawn_height = 500,
+        \&.delete_register_size = 5,
+        \&.scratchpad_height = 500,
+        \&.scratchpad_width = 500,
+}
+.fi
+.SS "unsigned int cur_mode = 0"
+
+.SS "int cur_state = \fBOPERATOR_STATE\fP"
+
+.SS "int cw = 1"
+
+.SS "xcb_connection_t* dpy = NULL"
+
+.SS "xcb_ewmh_connection_t* ewmh = NULL"
+
+.SS "int last_ws = 0"
+
+.SS "int numlockmask = 0"
+
+.SS "int previous_layout = 0"
+
+.SS "bool restart = false"
+
+.SS "int retval = 0"
+
+.SS "bool running = true"
+
+.SS "xcb_screen_t* screen = NULL"
+
+.SS "uint16_t screen_height = 0"
+
+.SS "uint16_t screen_width = 0"
+
+.SS "const char* WM_ATOM_NAMES[] = { 'WM_DELETE_WINDOW', '\fBWM_PROTOCOLS\fP' }"
+
+.SS "xcb_atom_t wm_atoms[\fBLENGTH\fP(\fBWM_ATOM_NAMES\fP)]"
+
+.SS "\fBWorkspace\fP wss[\fBWORKSPACES\fP+1]"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for howm from the source code\&.

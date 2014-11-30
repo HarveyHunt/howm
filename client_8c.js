@@ -1,0 +1,26 @@
+var client_8c =
+[
+    [ "apply_rules", "client_8c.html#a488b8e3e1020fee785b8e39dfd16568e", null ],
+    [ "change_client_gaps", "client_8c.html#a017bba0a352702762ba71d9121eb33e2", null ],
+    [ "change_client_geom", "client_8c.html#a44b06689c3cc2bd89ed08e964b630aff", null ],
+    [ "client_to_ws", "client_8c.html#ab36a1d705b302ca1c1c3a21f3b0e2b70", null ],
+    [ "create_client", "client_8c.html#a3868f8ba00f2b1dd4fe69f60a5af717f", null ],
+    [ "draw_clients", "client_8c.html#a776b0942e0f25214cf930b3bf1cd6238", null ],
+    [ "find_client_by_win", "client_8c.html#a86750a51b2c6f47c8f6332990a5aa80e", null ],
+    [ "focus_next_client", "client_8c.html#ae5d6127e2c85253e8d3860539cd7e08d", null ],
+    [ "focus_prev_client", "client_8c.html#a8cc79e2b8f7d2633073e044b8de2dadc", null ],
+    [ "get_first_non_tff", "client_8c.html#a74a80bad8ccd2cb3803c8be4850fcb83", null ],
+    [ "get_non_tff_count", "client_8c.html#af42ff327d6049e08d5cf652ec21950c2", null ],
+    [ "kill_client", "client_8c.html#a6fecd4e3cbfa1c8ab768ef0dbf689974", null ],
+    [ "move_client", "client_8c.html#a343ff4a1c95b06b703435df386ed6662", null ],
+    [ "move_current_down", "client_8c.html#aa7e10ef82910b83f84e574b41b80ce19", null ],
+    [ "move_current_up", "client_8c.html#abe8b4d715782d49bb4944726c7d54597", null ],
+    [ "move_down", "client_8c.html#a6ef8181742f7f7d932ead21bc2e9cb33", null ],
+    [ "move_up", "client_8c.html#a6af201b0cc002e5968644b322a3a982d", null ],
+    [ "next_client", "client_8c.html#a73bb68de7a255b2de906143b4af1ede7", null ],
+    [ "prev_client", "client_8c.html#a39f643c3e63da6714752cc1898b9e4d4", null ],
+    [ "remove_client", "client_8c.html#af5d3158f68e81fa390f8696ef1ceaac5", null ],
+    [ "set_fullscreen", "client_8c.html#a8a1f32bfecda4c074383f830fd7091a7", null ],
+    [ "set_urgent", "client_8c.html#ae30d89f6638437b65cd4b6f22d5c37c4", null ],
+    [ "update_focused_client", "client_8c.html#a1e7d3fa7926ad79ac3155378c6082ba0", null ]
+];

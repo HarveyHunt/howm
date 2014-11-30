@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['i',['i',['../unionArg.html#a9fc90466ebe59415acda831056fdb9ca',1,'Arg']]],
-  ['is_5ffloating',['is_floating',['../structRule.html#afe2f2e5c1873a65b049b57df7c88f857',1,'Rule::is_floating()'],['../structClient.html#ae94f2af79c9f8e5d78fdf4d773e5c86a',1,'Client::is_floating()']]],
-  ['is_5ffullscreen',['is_fullscreen',['../structRule.html#af7b1511a40613ee66b9c92c82f966832',1,'Rule::is_fullscreen()'],['../structClient.html#a8404996cd607f0bd5a7b916af378d275',1,'Client::is_fullscreen()']]],
-  ['is_5ftransient',['is_transient',['../structClient.html#a23bbc3f4ed5cd87bc791e72dfc51e73c',1,'Client']]],
-  ['is_5furgent',['is_urgent',['../structClient.html#ae8c4c491ba67c22e6e6eba8fe40e6270',1,'Client']]]
+  ['last_5fws',['last_ws',['../howm_8c.html#ad9cdce4d561e999e5d5194cb98ac9f7d',1,'last_ws():&#160;howm.c'],['../howm_8h.html#ad9cdce4d561e999e5d5194cb98ac9f7d',1,'last_ws():&#160;howm.c']]],
+  ['layout',['layout',['../structWorkspace.html#aad2c7403d6b52c34a1f46354adb7e99e',1,'Workspace']]],
+  ['layout_5fhandler',['layout_handler',['../layout_8c.html#a933c2ae97b5e7ad6d639e5f325c69b11',1,'layout.c']]],
+  ['log_5flevel',['log_level',['../structconfig.html#a6d9db946bcdb4014c5515f5cbafa6103',1,'config']]]
 ];

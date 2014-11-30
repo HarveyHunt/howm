@@ -1,0 +1,104 @@
+.TH "layout.c" 3 "Sun Nov 30 2014" "howm" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+layout.c \- 
+.PP
+All of howm's layouts (as well as layout handler) are implemented here\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'layout\&.h'\fP
+.br
+\fC#include 'workspace\&.h'\fP
+.br
+\fC#include 'config\&.h'\fP
+.br
+\fC#include 'helper\&.h'\fP
+.br
+\fC#include 'howm\&.h'\fP
+.br
+\fC#include 'client\&.h'\fP
+.br
+\fC#include 'xcb_help\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBstack\fP (void)"
+.br
+.RI "\fIArrange the windows in a stack, whether that be horizontal or vertical is decided by the current_layout\&. \fP"
+.ti -1c
+.RI "static void \fBgrid\fP (void)"
+.br
+.RI "\fIArrange the windows into a grid layout\&. \fP"
+.ti -1c
+.RI "static void \fBzoom\fP (void)"
+.br
+.RI "\fIHave one window at a time taking up the entire screen\&. \fP"
+.ti -1c
+.RI "void \fBarrange_windows\fP (void)"
+.br
+.RI "\fICall the appropriate layout handler for each layout\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "void(* \fBlayout_handler\fP [])(void)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+All of howm's layouts (as well as layout handler) are implemented here\&. 
+
+
+.PP
+\fBAuthor:\fP
+.RS 4
+Harvey Hunt
+.RE
+.PP
+\fBDate:\fP
+.RS 4
+2014 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "void arrange_windows (void)"
+
+.PP
+Call the appropriate layout handler for each layout\&. 
+.SS "static void grid (void)\fC [static]\fP"
+
+.PP
+Arrange the windows into a grid layout\&. 
+.SS "static void \fBstack\fP (void)\fC [static]\fP"
+
+.PP
+Arrange the windows in a stack, whether that be horizontal or vertical is decided by the current_layout\&. 
+.SS "static void zoom (void)\fC [static]\fP"
+
+.PP
+Have one window at a time taking up the entire screen\&. Sets the geometry of each window in order for the windows to be rendered to take up the entire screen\&. 
+.SH "Variable Documentation"
+.PP 
+.SS "void(* layout_handler[])(void)"
+\fBInitial value:\fP
+.PP
+.nf
+= {
+        [GRID] = grid,
+        [ZOOM] = zoom,
+        [HSTACK] = stack,
+        [VSTACK] = stack
+}
+.fi
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for howm from the source code\&.
