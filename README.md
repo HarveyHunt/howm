@@ -43,7 +43,7 @@ howm -c ~/.config/howm/howmrc
 
 ##Configuration
 
-Configuration is done through the use of cottage. Any element [in this structure]() can be changed using cottage. The syntax is as follows:
+Configuration is done through the use of cottage. Any element [in this structure](http://harveyhunt.github.io/howm/structconfig.html) can be changed using cottage. The syntax is as follows:
 
 ```
 cottage -c config_var value
