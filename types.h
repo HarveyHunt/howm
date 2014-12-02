@@ -16,18 +16,6 @@
  */
 
 /**
- * @brief Represents a rule that is applied to a client upon it starting.
- */
-typedef struct {
-	const char *class; /**<	The class or name of the client. */
-	int ws; /**<  The workspace that the client should be spawned
-				on (0 means current workspace). */
-	bool follow; /**< If the client is spawned on another ws, shall we follow? */
-	bool is_floating; /**< Spawn the client in a floating state? */
-	bool is_fullscreen; /**< Spawn the client in a fullscreen state? */
-} Rule;
-
-/**
  * @brief Represents a client that is being handled by howm.
  *
  * All the attributes that are needed by howm for a client are stored here.

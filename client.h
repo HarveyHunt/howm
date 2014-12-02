@@ -33,7 +33,6 @@ void draw_clients(void);
 void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h);
 void set_fullscreen(Client *c, bool fscr);
 void set_urgent(Client *c, bool urg);
-void apply_rules(Client *c);
 void move_client(int cnt, bool up);
 void move_current_down(void);
 void move_current_up(void);
