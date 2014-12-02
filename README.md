@@ -67,7 +67,7 @@ A keypress is bound to a call to cottage in the following form:
 cottage -f func_name <args>
 ```
 
-All of the available functions can be found [here](http://harveyhunt.github.io/howm/command_8h.html).
+All of the available functions can be found [here](http://harveyhunt.github.io/howm/group__commands.html).
 Take a look at the [example sxhkdrcs](examples).
 
 ##Scratchpad
@@ -103,6 +103,8 @@ Will kill 2 workspaces (assuming the correct modifier keys are pressed and defau
 ##Operators
 
 Operators perform an action upon one or more targets (identified by motions).
+
+Implementation details for all operators can be found [here](http://harveyhunt.github.io/howm/group__operators.html).
 
 Below are descriptions of each operator, the motions that they can perform an action upon and the mode that they work in (Note, all examples assume that the correct modifier keys have been pressed and use the default keymappings.):
 
