@@ -269,6 +269,8 @@ void move_up(Client *c)
 
 /**
  * @brief brief Move focus onto the client next in the client list.
+ *
+ * @ingroup commands
  */
 void focus_next_client(void)
 {
@@ -280,6 +282,8 @@ void focus_next_client(void)
 
 /**
  * @brief brief Move focus onto the client previous in the client list.
+ *
+ * @ingroup commands
  */
 void focus_prev_client(void)
 {
@@ -359,6 +363,8 @@ void move_client(int cnt, bool up)
 
 /**
  * @brief Moves the current client down.
+ *
+ * @ingroup commands
  */
 void move_current_down(void)
 {
@@ -367,6 +373,8 @@ void move_current_down(void)
 
 /**
  * @brief Moves the current client up.
+ *
+ * @ingroup commands
  */
 void move_current_up(void)
 {
@@ -571,6 +579,8 @@ void set_urgent(Client *c, bool urg)
  * @brief Teleport a floating client's window to a location on the screen.
  *
  * @param direction Which location to teleport the window to.
+ *
+ * @ingroup commands
  */
 void teleport_client(const int direction)
 {
@@ -621,6 +631,8 @@ void teleport_client(const int direction)
  * @brief Moves the current client to the workspace passed in.
  *
  * @param ws The target workspace.
+ *
+ * @ingroup commands
  */
 void current_to_ws(const int ws)
 {
@@ -629,6 +641,8 @@ void current_to_ws(const int ws)
 
 /**
  * @brief Toggle a client between being in a floating or non-floating state.
+ *
+ * @ingroup commands
  */
 void toggle_float(void)
 {
@@ -651,6 +665,8 @@ void toggle_float(void)
  * inverse is true for positive values.
  *
  * @param dw The amount of pixels that the window's size should be changed by.
+ *
+ * @ingroup commands
  */
 void resize_float_width(const int dw)
 {
@@ -668,6 +684,8 @@ void resize_float_width(const int dw)
  * inverse is true for positive values.
  *
  * @param dh The amount of pixels that the window's size should be changed by.
+ *
+ * @ingroup commands
  */
 void resize_float_height(const int dh)
 {
@@ -685,6 +703,8 @@ void resize_float_height(const int dh)
  * values.
  *
  * @param dy The amount of pixels that the window should be moved.
+ *
+ * @ingroup commands
  */
 void move_float_y(const int dy)
 {
@@ -702,6 +722,8 @@ void move_float_y(const int dy)
  * for positive values.
  *
  * @param dx The amount of pixels that the window should be moved.
+ *
+ * @ingroup commands
  */
 void move_float_x(const int dx)
 {
@@ -714,6 +736,8 @@ void move_float_x(const int dx)
 
 /**
  * @brief Moves the current window to the master window, when in stack mode.
+ *
+ * @ingroup commands
  */
 void make_master(void)
 {
@@ -729,6 +753,8 @@ void make_master(void)
 
 /**
  * @brief Toggle the fullscreen state of the current client.
+ *
+ * @ingroup commands
  */
 void toggle_fullscreen(void)
 {
@@ -738,6 +764,8 @@ void toggle_fullscreen(void)
 
 /**
  * @brief Focus a client that has an urgent hint.
+ *
+ * @ingroup commands
  */
 void focus_urgent(void)
 {
@@ -760,6 +788,8 @@ void focus_urgent(void)
  * @param ds The amount to resize the master window by. Treated as a
  * percentage. e.g. ds = 5 will increase the master window's size by 5% of
  * it maximum.
+ *
+ * @ingroup commands
  */
 void resize_master(const int ds)
 {
@@ -780,6 +810,8 @@ void resize_master(const int ds)
 /**
  * @brief Remove a list of clients from howm's delete register stack and paste
  * them after the currently focused window.
+ *
+ * @ingroup commands
  */
 void paste(void)
 {
@@ -829,6 +861,8 @@ void paste(void)
 
 /**
  * @brief Toggle the space reserved for a status bar.
+ *
+ * @ingroup commands
  */
 void toggle_bar(void)
 {

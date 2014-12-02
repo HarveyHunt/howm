@@ -49,6 +49,8 @@ int correct_ws(unsigned int ws)
 
 /**
  * @brief Focus the previous workspace.
+ *
+ * @ingroup commands
  */
 void focus_prev_ws(void)
 {
@@ -58,6 +60,8 @@ void focus_prev_ws(void)
 
 /**
  * @brief Focus the last focused workspace.
+ *
+ * @ingroup commands
  */
 void focus_last_ws(void)
 {
@@ -67,6 +71,8 @@ void focus_last_ws(void)
 
 /**
  * @brief Focus the next workspace.
+ *
+ * @ingroup commands
  */
 void focus_next_ws(void)
 {
@@ -78,6 +84,8 @@ void focus_next_ws(void)
  * @brief Change to a different workspace and map the correct windows.
  *
  * @param ws Indicates which workspace howm should change to.
+ *
+ * @ingroup commands
  */
 void change_ws(const int ws)
 {

@@ -81,14 +81,10 @@ Client *stack_pop(struct stack *s)
 	return s->contents[(s->size)--];
 }
 
-/** @addtogroup commands
- * @{
- */
-
 /**
  * @brief Send a client to the scratchpad and unmap it.
  *
- * TODO: Move this into command.c
+ * @ingroup commands
  */
 void send_to_scratchpad(void)
 {
@@ -118,11 +114,11 @@ void send_to_scratchpad(void)
 }
 
 /**
-* @brief Get a client from the scratchpad, attach it as the last item in the
-* client list and set it to float.
-*
-* TODO: Move this into command.c
-*/
+ * @brief Get a client from the scratchpad, attach it as the last item in the
+ * client list and set it to float.
+ *
+ * @ingroup commands
+ */
 void get_from_scratchpad(void)
 {
 	if (!scratchpad)
@@ -150,5 +146,3 @@ void get_from_scratchpad(void)
 	xcb_map_window(dpy, wss[cw].current->win);
 	update_focused_client(wss[cw].current);
 }
-
-/** @} */

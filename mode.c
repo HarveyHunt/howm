@@ -9,6 +9,8 @@
  * modes mean keypresses cause different actions.
  *
  * @param mode The mode to be selected.
+ *
+ * @ingroup commands
  */
 void change_mode(const int mode)
 {

@@ -16,6 +16,7 @@
  */
 
 /** @defgroup commands Commands */
+/** @defgroup operators Operators */
 
 /** Calculates a mask that can be applied to a window in order to reconfigure a
  * window. */

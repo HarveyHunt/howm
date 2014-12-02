@@ -193,6 +193,8 @@ void change_layout(const int layout)
 
 /**
  * @brief Change to the previous layout.
+ *
+ * @ingroup commands
  */
 void prev_layout(void)
 {
@@ -204,6 +206,8 @@ void prev_layout(void)
 
 /**
  * @brief Change to the next layout.
+ *
+ * @ingroup commands
  */
 void next_layout(void)
 {
@@ -216,6 +220,7 @@ void next_layout(void)
 /**
  * @brief Change to the last used layout.
  *
+ * @ingroup commands
  */
 void last_layout(void)
 {

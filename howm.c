@@ -310,6 +310,11 @@ uint32_t get_colour(char *colour)
 	return pixel;
 }
 
+/**
+ * @brief Execute the script located at conf_path in order to configure howm.
+ *
+ * @param conf_path The file path to the config file.
+ */
 static void exec_config(char *conf_path)
 {
 	if (fork())
@@ -322,6 +327,7 @@ static void exec_config(char *conf_path)
 /**
  * @brief Restart howm.
  *
+ * @ingroup commands
  */
 void restart_howm(void)
 {
@@ -334,6 +340,8 @@ void restart_howm(void)
  * @brief Quit howm and set the return value.
  *
  * @param exit_status The return value that howm will send.
+ *
+ * @ingroup commands
  */
 void quit_howm(const int exit_status)
 {
@@ -344,6 +352,8 @@ void quit_howm(const int exit_status)
 
 /**
  * @brief Spawns a command.
+ *
+ * @ingroup commands
  */
 void spawn(char *cmd[])
 {

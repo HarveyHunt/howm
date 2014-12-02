@@ -26,6 +26,8 @@ static void change_gaps(const unsigned int type, int cnt, int size);
  *
  * @param type Whether to kill workspaces or clients.
  * @param cnt How many workspaces or clients to kill.
+ *
+ * @ingroup operators
  */
 void op_kill(const unsigned int type, int cnt)
 {
@@ -50,6 +52,8 @@ void op_kill(const unsigned int type, int cnt)
  * @param type We don't support moving workspaces, so this should only be
  * client.
  * @param cnt How many clients to move.
+ *
+ * @ingroup operators
  */
 void op_move_down(const unsigned int type, int cnt)
 {
@@ -64,6 +68,8 @@ void op_move_down(const unsigned int type, int cnt)
  * @param type We don't support moving workspaces, so this should only be
  * client.
  * @param cnt How many clients to move.
+ *
+ * @ingroup operators
  */
 void op_move_up(const unsigned int type, int cnt)
 {
@@ -77,6 +83,8 @@ void op_move_up(const unsigned int type, int cnt)
  *
  * @param type Whether to focus on clients or workspaces.
  * @param cnt The number of times to move focus.
+ *
+ * @ingroup operators
  */
 void op_focus_up(const unsigned int type, int cnt)
 {
@@ -96,6 +104,8 @@ void op_focus_up(const unsigned int type, int cnt)
  *
  * @param type Whether to focus on clients or workspaces.
  * @param cnt The number of times to move focus.
+ *
+ * @ingroup operators
  */
 void op_focus_down(const unsigned int type, int cnt)
 {
@@ -120,6 +130,8 @@ void op_focus_down(const unsigned int type, int cnt)
  * @param type Whether the operation should be performed on a client or
  * workspace.
  * @param cnt The amount of clients or workspaces to perform the operation on.
+ *
+ * @ingroup operators
  */
 void op_grow_gaps(const unsigned int type, int cnt)
 {
@@ -133,6 +145,8 @@ void op_grow_gaps(const unsigned int type, int cnt)
  * @param cnt The amount of times to perform the operation.
  * @param size The amount of pixels to change the gap size by. This is
  * configured through conf.op_gap_size.
+ *
+ * @ingroup operators
  */
 static void change_gaps(const unsigned int type, int cnt, int size)
 {
@@ -168,6 +182,8 @@ static void change_gaps(const unsigned int type, int cnt, int size)
  *
  * @param type Whether to cut an entire workspace or client.
  * @param cnt The amount of clients or workspaces to cut.
+ *
+ * @ingroup operators
  */
 void op_cut(const unsigned int type, int cnt)
 {
@@ -245,6 +261,8 @@ void op_cut(const unsigned int type, int cnt)
  * @param type Whether the operation should be performed on a client or
  * workspace.
  * @param cnt The amount of clients or workspaces to perform the operation on.
+ *
+ * @ingroup operators
  */
 void op_shrink_gaps(const unsigned int type, int cnt)
 {
@@ -255,6 +273,8 @@ void op_shrink_gaps(const unsigned int type, int cnt)
  * @brief Set the current count for the current operator.
  *
  * @param cnt The amount of motions the operator should affect.
+ *
+ * @ingroup commands
  */
 void count(const int cnt)
 {
@@ -271,6 +291,8 @@ void count(const int cnt)
  *
  * @param target A single char representing the motion that the operator should
  * be applied to.
+ *
+ * @ingroup commands
  */
 void motion(char *target)
 {
