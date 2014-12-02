@@ -2,7 +2,7 @@
 #define WORKSPACE_H
 
 #include <stddef.h>
-#include <client.h>
+#include "client.h"
 
 /**
  * @file workspace.h
