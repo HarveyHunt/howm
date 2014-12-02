@@ -124,9 +124,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ga587ca0d73e53059c3229dba85da4118f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__operators.html#ga587ca0d73e53059c3229dba85da4118f">op_grow_gaps</a> (const unsigned int type, int cnt)</td></tr>
 <tr class="memdesc:ga587ca0d73e53059c3229dba85da4118f"><td class="mdescLeft">&#160;</td><td class="mdescRight">An operator to grow the gaps of either workspaces or clients by conf.op_gap_size.  <a href="#ga587ca0d73e53059c3229dba85da4118f">More...</a><br /></td></tr>
 <tr class="separator:ga587ca0d73e53059c3229dba85da4118f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga54af5b6f9f8d4980aad841e4c3d758f7"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__operators.html#ga54af5b6f9f8d4980aad841e4c3d758f7">change_gaps</a> (const unsigned int type, int cnt, int size)</td></tr>
-<tr class="memdesc:ga54af5b6f9f8d4980aad841e4c3d758f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does the heavy lifting of changing the gaps of clients.  <a href="#ga54af5b6f9f8d4980aad841e4c3d758f7">More...</a><br /></td></tr>
-<tr class="separator:ga54af5b6f9f8d4980aad841e4c3d758f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaef11505d60c08dd980efd6f5354585f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__operators.html#gaef11505d60c08dd980efd6f5354585f6">op_cut</a> (const unsigned int type, int cnt)</td></tr>
 <tr class="memdesc:gaef11505d60c08dd980efd6f5354585f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cut one or more clients and add them onto howm's delete register stack (if there is space).  <a href="#gaef11505d60c08dd980efd6f5354585f6">More...</a><br /></td></tr>
 <tr class="separator:gaef11505d60c08dd980efd6f5354585f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,56 +133,6 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="ga54af5b6f9f8d4980aad841e4c3d758f7"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void change_gaps </td>
-          <td>(</td>
-          <td class="paramtype">const unsigned int&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>cnt</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>size</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Does the heavy lifting of changing the gaps of clients. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">type</td><td>Whether to perform the operation on a client or workspace. </td></tr>
-    <tr><td class="paramname">cnt</td><td>The amount of times to perform the operation. </td></tr>
-    <tr><td class="paramname">size</td><td>The amount of pixels to change the gap size by. This is configured through conf.op_gap_size. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a class="anchor" id="gaef11505d60c08dd980efd6f5354585f6"></a>
 <div class="memitem">
 <div class="memproto">
@@ -474,7 +421,7 @@ Functions</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Dec 2 2014 04:41:25 for howm by
+    <li class="footer">Generated on Tue Dec 2 2014 04:46:03 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

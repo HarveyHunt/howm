@@ -1,6 +1,6 @@
 var op_8c =
 [
-    [ "change_gaps", "group__operators.html#ga54af5b6f9f8d4980aad841e4c3d758f7", null ],
+    [ "change_gaps", "op_8c.html#a54af5b6f9f8d4980aad841e4c3d758f7", null ],
     [ "count", "group__commands.html#gacdca804caba81f8caf2ec7c639dc339f", null ],
     [ "motion", "group__commands.html#gae1d5bb92d170e644ee914fb6f2d3ad78", null ],
     [ "op_cut", "group__operators.html#gaef11505d60c08dd980efd6f5354585f6", null ],
