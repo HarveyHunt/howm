@@ -46,6 +46,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -92,7 +93,7 @@ $(document).ready(function(){initNavTree('helper_8h.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Modules</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -114,7 +115,6 @@ $(document).ready(function(){initNavTree('helper_8h.html','');});
 <div class="textblock"><code>#include &lt;err.h&gt;</code><br />
 <code>#include &lt;errno.h&gt;</code><br />
 <code>#include &lt;stdio.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="config_8h_source.html">config.h</a>&quot;</code><br />
 </div>
 <p><a href="helper_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -134,6 +134,10 @@ Macros</h2></td></tr>
 <tr class="separator:a86d500a34c624c2cae56bc25a31b12f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b9e41b9be70c60d5721242c3daa880f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="helper_8h.html#a2b9e41b9be70c60d5721242c3daa880f">MAX_FD</a>(x, y)&#160;&#160;&#160;((x) &gt; (y) ? (x + 1) : (y + 1))</td></tr>
 <tr class="separator:a2b9e41b9be70c60d5721242c3daa880f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b87e0d3bf5853bcbb0b66a7c48fdc05"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="helper_8h.html#a0b87e0d3bf5853bcbb0b66a7c48fdc05">LOG_LEVEL</a>&#160;&#160;&#160;<a class="el" href="helper_8h.html#a6ff63e8955665c4a58b1598f2b07c51a">LOG_DEBUG</a></td></tr>
+<tr class="separator:a0b87e0d3bf5853bcbb0b66a7c48fdc05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92f1452fef4b184124fa2334beb53a60"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="helper_8h.html#a92f1452fef4b184124fa2334beb53a60">DEBUG_ENABLE</a>&#160;&#160;&#160;false</td></tr>
+<tr class="separator:a92f1452fef4b184124fa2334beb53a60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3dfa58b1c5c2943dd49d8aa1981d377d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="helper_8h.html#a3dfa58b1c5c2943dd49d8aa1981d377d">DEBUG</a>(x)&#160;&#160;&#160;puts(x)</td></tr>
 <tr class="separator:a3dfa58b1c5c2943dd49d8aa1981d377d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4fa1248b75846c1d3039c028672d69a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="helper_8h.html#ad4fa1248b75846c1d3039c028672d69a">DEBUGP</a>(M,...)&#160;&#160;&#160;fprintf(stderr, &quot;[DBG] %s:%d: &quot; M &quot;\n&quot;, __FILE__, __LINE__, ##__VA_ARGS__)</td></tr>
@@ -193,6 +197,19 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Output debugging information using puts. </p>
+
+</div>
+</div>
+<a class="anchor" id="a92f1452fef4b184124fa2334beb53a60"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define DEBUG_ENABLE&#160;&#160;&#160;false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Enable debugging output </p>
 
 </div>
 </div>
@@ -398,6 +415,21 @@ Macros</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a0b87e0d3bf5853bcbb0b66a7c48fdc05"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define LOG_LEVEL&#160;&#160;&#160;<a class="el" href="helper_8h.html#a6ff63e8955665c4a58b1598f2b07c51a">LOG_DEBUG</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>How much detail should be logged. A LOG_LEVEL of INFO will log almost everything, LOG_WARN will log warnings and errors and LOG_ERR will log only errors.</p>
+<p>LOG_NONE means nothing will be logged.</p>
+<p>LOG_DEBUG should be used by developers. </p>
+
+</div>
+</div>
 <a class="anchor" id="a1632479322efa3952798f98177b54471"></a>
 <div class="memitem">
 <div class="memproto">
@@ -513,7 +545,7 @@ Macros</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="helper_8h.html">helper.h</a></li>
-    <li class="footer">Generated on Sun Nov 30 2014 22:26:03 for howm by
+    <li class="footer">Generated on Tue Dec 2 2014 04:41:25 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

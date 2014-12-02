@@ -46,6 +46,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -92,7 +93,7 @@ $(document).ready(function(){initNavTree('layout_8c.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Modules</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -114,7 +115,6 @@ $(document).ready(function(){initNavTree('layout_8c.html','');});
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="layout_8h_source.html">layout.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="workspace_8h_source.html">workspace.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="config_8h_source.html">config.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="helper_8h_source.html">helper.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="howm_8h_source.html">howm.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="client_8h_source.html">client.h</a>&quot;</code><br />
@@ -134,6 +134,18 @@ Functions</h2></td></tr>
 <tr class="memitem:a9cbba6a5611436c6663a31ed06301efb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="layout_8c.html#a9cbba6a5611436c6663a31ed06301efb">arrange_windows</a> (void)</td></tr>
 <tr class="memdesc:a9cbba6a5611436c6663a31ed06301efb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call the appropriate layout handler for each layout.  <a href="#a9cbba6a5611436c6663a31ed06301efb">More...</a><br /></td></tr>
 <tr class="separator:a9cbba6a5611436c6663a31ed06301efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1af525622082b9da02c5b096b5b36c80"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="layout_8c.html#a1af525622082b9da02c5b096b5b36c80">change_layout</a> (const int layout)</td></tr>
+<tr class="memdesc:a1af525622082b9da02c5b096b5b36c80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the layout of the current workspace.  <a href="#a1af525622082b9da02c5b096b5b36c80">More...</a><br /></td></tr>
+<tr class="separator:a1af525622082b9da02c5b096b5b36c80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga89293b01c97a4e9a3b0e96683c996105"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#ga89293b01c97a4e9a3b0e96683c996105">prev_layout</a> (void)</td></tr>
+<tr class="memdesc:ga89293b01c97a4e9a3b0e96683c996105"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change to the previous layout.  <a href="group__commands.html#ga89293b01c97a4e9a3b0e96683c996105">More...</a><br /></td></tr>
+<tr class="separator:ga89293b01c97a4e9a3b0e96683c996105"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac198455f8896bfc2d1952a43cc13376e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gac198455f8896bfc2d1952a43cc13376e">next_layout</a> (void)</td></tr>
+<tr class="memdesc:gac198455f8896bfc2d1952a43cc13376e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change to the next layout.  <a href="group__commands.html#gac198455f8896bfc2d1952a43cc13376e">More...</a><br /></td></tr>
+<tr class="separator:gac198455f8896bfc2d1952a43cc13376e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga133acd9140f8ad49e88be3c75c4de7b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#ga133acd9140f8ad49e88be3c75c4de7b2">last_layout</a> (void)</td></tr>
+<tr class="memdesc:ga133acd9140f8ad49e88be3c75c4de7b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change to the last used layout.  <a href="group__commands.html#ga133acd9140f8ad49e88be3c75c4de7b2">More...</a><br /></td></tr>
+<tr class="separator:ga133acd9140f8ad49e88be3c75c4de7b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -160,6 +172,30 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Call the appropriate layout handler for each layout. </p>
+
+</div>
+</div>
+<a class="anchor" id="a1af525622082b9da02c5b096b5b36c80"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void change_layout </td>
+          <td>(</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>layout</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Change the layout of the current workspace. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">layout</td><td>Represents the layout that should be used. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -260,11 +296,11 @@ Variables</h2></td></tr>
 <div class="line">}</div>
 <div class="ttc" id="layout_8h_html_a83aced0fc8f07bf0028fdc9881bef8d6a604adefe799fe794cab6b76ed1108201"><div class="ttname"><a href="layout_8h.html#a83aced0fc8f07bf0028fdc9881bef8d6a604adefe799fe794cab6b76ed1108201">ZOOM</a></div><div class="ttdef"><b>Definition:</b> layout.h:14</div></div>
 <div class="ttc" id="layout_8h_html_a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3"><div class="ttname"><a href="layout_8h.html#a83aced0fc8f07bf0028fdc9881bef8d6a780bc5128a196fa7905fe6be80a428a3">HSTACK</a></div><div class="ttdef"><b>Definition:</b> layout.h:14</div></div>
-<div class="ttc" id="layout_8c_html_a0bc198bb91ef71c75ba149c9b45fbd24"><div class="ttname"><a href="layout_8c.html#a0bc198bb91ef71c75ba149c9b45fbd24">zoom</a></div><div class="ttdeci">static void zoom(void)</div><div class="ttdoc">Have one window at a time taking up the entire screen. </div><div class="ttdef"><b>Definition:</b> layout.c:91</div></div>
+<div class="ttc" id="layout_8c_html_a0bc198bb91ef71c75ba149c9b45fbd24"><div class="ttname"><a href="layout_8c.html#a0bc198bb91ef71c75ba149c9b45fbd24">zoom</a></div><div class="ttdeci">static void zoom(void)</div><div class="ttdoc">Have one window at a time taking up the entire screen. </div><div class="ttdef"><b>Definition:</b> layout.c:90</div></div>
 <div class="ttc" id="layout_8h_html_a83aced0fc8f07bf0028fdc9881bef8d6a3c25942291ac61d0c3611824f29cf928"><div class="ttname"><a href="layout_8h.html#a83aced0fc8f07bf0028fdc9881bef8d6a3c25942291ac61d0c3611824f29cf928">VSTACK</a></div><div class="ttdef"><b>Definition:</b> layout.h:14</div></div>
 <div class="ttc" id="layout_8h_html_a83aced0fc8f07bf0028fdc9881bef8d6afbf4fa9eb81ba842a80a29b45064e348"><div class="ttname"><a href="layout_8h.html#a83aced0fc8f07bf0028fdc9881bef8d6afbf4fa9eb81ba842a80a29b45064e348">GRID</a></div><div class="ttdef"><b>Definition:</b> layout.h:14</div></div>
-<div class="ttc" id="layout_8c_html_ac3d199e9b5650d6845baafc860a49399"><div class="ttname"><a href="layout_8c.html#ac3d199e9b5650d6845baafc860a49399">stack</a></div><div class="ttdeci">static void stack(void)</div><div class="ttdoc">Arrange the windows in a stack, whether that be horizontal or vertical is decided by the current_layo...</div><div class="ttdef"><b>Definition:</b> layout.c:113</div></div>
-<div class="ttc" id="layout_8c_html_a4a9a7c0ec778f10c525cfab46b7ae5a9"><div class="ttname"><a href="layout_8c.html#a4a9a7c0ec778f10c525cfab46b7ae5a9">grid</a></div><div class="ttdeci">static void grid(void)</div><div class="ttdoc">Arrange the windows into a grid layout. </div><div class="ttdef"><b>Definition:</b> layout.c:46</div></div>
+<div class="ttc" id="layout_8c_html_ac3d199e9b5650d6845baafc860a49399"><div class="ttname"><a href="layout_8c.html#ac3d199e9b5650d6845baafc860a49399">stack</a></div><div class="ttdeci">static void stack(void)</div><div class="ttdoc">Arrange the windows in a stack, whether that be horizontal or vertical is decided by the current_layo...</div><div class="ttdef"><b>Definition:</b> layout.c:112</div></div>
+<div class="ttc" id="layout_8c_html_a4a9a7c0ec778f10c525cfab46b7ae5a9"><div class="ttname"><a href="layout_8c.html#a4a9a7c0ec778f10c525cfab46b7ae5a9">grid</a></div><div class="ttdeci">static void grid(void)</div><div class="ttdoc">Arrange the windows into a grid layout. </div><div class="ttdef"><b>Definition:</b> layout.c:45</div></div>
 <div class="ttc" id="structstack_html"><div class="ttname"><a href="structstack.html">stack</a></div><div class="ttdoc">Represents a stack. This stack is going to hold linked lists of clients. An example of the stack is b...</div><div class="ttdef"><b>Definition:</b> scratchpad.h:31</div></div>
 </div><!-- fragment -->
 </div>
@@ -275,7 +311,7 @@ Variables</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="layout_8c.html">layout.c</a></li>
-    <li class="footer">Generated on Sun Nov 30 2014 22:26:03 for howm by
+    <li class="footer">Generated on Tue Dec 2 2014 04:41:25 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

@@ -46,6 +46,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -92,7 +93,7 @@ $(document).ready(function(){initNavTree('helper_8h_source.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Modules</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -112,79 +113,81 @@ $(document).ready(function(){initNavTree('helper_8h_source.html','');});
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;err.h&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;errno.h&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="config_8h.html">config.h</a>&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="helper_8h.html#ac183e4677102c4eddc2dbc93087f1ba3">   21</a></span>&#160;<span class="preprocessor">#define MOVE_RESIZE_MASK (XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y | \</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">                          XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT)</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="helper_8h.html#a02e75104c38a5869d0082a74c51e2d85">   25</a></span>&#160;<span class="preprocessor">#define CLEANMASK(mask) (mask &amp; ~(numlockmask | XCB_MOD_MASK_LOCK))</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="helper_8h.html#a918c8a9a844a1ede0c0f7837260ed4e9">   27</a></span>&#160;<span class="preprocessor">#define EQUALMODS(mask, omask) (CLEANMASK(mask) == CLEANMASK(omask))</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="helper_8h.html#ac183e4677102c4eddc2dbc93087f1ba3">   23</a></span>&#160;<span class="preprocessor">#define MOVE_RESIZE_MASK (XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y | \</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">                          XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT)</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="helper_8h.html#a02e75104c38a5869d0082a74c51e2d85">   27</a></span>&#160;<span class="preprocessor">#define CLEANMASK(mask) (mask &amp; ~(numlockmask | XCB_MOD_MASK_LOCK))</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="helper_8h.html#a33c8dff98e7a3a432e8f8d26714c31fe">   29</a></span>&#160;<span class="preprocessor">#define LENGTH(x) (unsigned int)(sizeof(x) / sizeof(*x))</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="helper_8h.html#a918c8a9a844a1ede0c0f7837260ed4e9">   29</a></span>&#160;<span class="preprocessor">#define EQUALMODS(mask, omask) (CLEANMASK(mask) == CLEANMASK(omask))</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="helper_8h.html#a21498a6edb8bcb29fb257e202c8c4e18">   31</a></span>&#160;<span class="preprocessor">#define FFT(c) (c-&gt;is_transient || c-&gt;is_floating || c-&gt;is_fullscreen)</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="helper_8h.html#a33c8dff98e7a3a432e8f8d26714c31fe">   31</a></span>&#160;<span class="preprocessor">#define LENGTH(x) (unsigned int)(sizeof(x) / sizeof(*x))</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="helper_8h.html#a86d500a34c624c2cae56bc25a31b12f3">   33</a></span>&#160;<span class="preprocessor">#define UNUSED(x) (void)(x)</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="helper_8h.html#a21498a6edb8bcb29fb257e202c8c4e18">   33</a></span>&#160;<span class="preprocessor">#define FFT(c) (c-&gt;is_transient || c-&gt;is_floating || c-&gt;is_fullscreen)</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="helper_8h.html#a2b9e41b9be70c60d5721242c3daa880f">   35</a></span>&#160;<span class="preprocessor">#define MAX_FD(x, y) ((x) &gt; (y) ? (x + 1) : (y + 1))</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="helper_8h.html#a86d500a34c624c2cae56bc25a31b12f3">   35</a></span>&#160;<span class="preprocessor">#define UNUSED(x) (void)(x)</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment">/* Add comments so that splint ignores this as it doesn&#39;t support variadic</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment"> * macros.</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">/*@ignore@*/</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#ifdef DEBUG_ENABLE</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="helper_8h.html#a3dfa58b1c5c2943dd49d8aa1981d377d">   43</a></span>&#160;<span class="preprocessor">#       define DEBUG(x) puts(x)</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="helper_8h.html#ad4fa1248b75846c1d3039c028672d69a">   45</a></span>&#160;<span class="preprocessor">#       define DEBUGP(M, ...) fprintf(stderr, &quot;[DBG] %s:%d: &quot; M &quot;\n&quot;, __FILE__, __LINE__, ##__VA_ARGS__)</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#       define DEBUG(x) do {} while (0)</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#       define DEBUGP(x, ...) do {} while (0)</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="helper_8h.html#a6ff63e8955665c4a58b1598f2b07c51a">   51</a></span>&#160;<span class="preprocessor">#define LOG_DEBUG 1</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="helper_8h.html#aeb4f36db01bd128c7afeac5889dac311">   52</a></span>&#160;<span class="preprocessor">#define LOG_INFO 2</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="helper_8h.html#aea3f57d6dcc5b4ac957e2679e87dde27">   53</a></span>&#160;<span class="preprocessor">#define LOG_WARN 3</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="helper_8h.html#a96fad55b3f5adf08c39e4c877cf185e3">   54</a></span>&#160;<span class="preprocessor">#define LOG_ERR 4</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="helper_8h.html#a1632479322efa3952798f98177b54471">   55</a></span>&#160;<span class="preprocessor">#define LOG_NONE 5</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#if LOG_LEVEL == LOG_DEBUG</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="helper_8h.html#a9114dc1394e4babddeea948a051bd3d5">   58</a></span>&#160;<span class="preprocessor">#define log_debug(M, ...) fprintf(stderr, &quot;[DEBUG] (%s:%d) &quot; M &quot;\n&quot;, __FILE__, __LINE__, ##__VA_ARGS__)</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#define log_debug(x, ...) do {} while (0)</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#if LOG_LEVEL &lt;= LOG_INFO</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="helper_8h.html#ab906bb1655b428369efbca0b73b5f09a">   65</a></span>&#160;<span class="preprocessor">#define log_info(M, ...) fprintf(stderr, &quot;[INFO] (%s:%d) &quot; M &quot;\n&quot;, __FILE__, __LINE__, ##__VA_ARGS__)</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#define log_info(x, ...) do {} while (0)</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#if LOG_LEVEL &lt;= LOG_WARN</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="helper_8h.html#a0b9b49791ddc1aac7caa31cfb10f173f">   71</a></span>&#160;<span class="preprocessor">#define log_warn(M, ...) fprintf(stderr, &quot;[WARN] (%s:%d) &quot; M &quot;\n&quot;, __FILE__, __LINE__, ##__VA_ARGS__)</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#define log_warn(x, ...) do {} while (0)</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#if LOG_LEVEL &lt;= LOG_ERR</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="helper_8h.html#aab82a35ff3e94d1028501db189a4b021">   77</a></span>&#160;<span class="preprocessor">#define log_err(M, ...) fprintf(stderr, &quot;[ERROR] (%s:%d) &quot; M &quot;\n&quot;, __FILE__, __LINE__, ##__VA_ARGS__)</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#define log_err(x, ...) do {} while (0)</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment">/*@end@*/</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="config_8h_html"><div class="ttname"><a href="config_8h.html">config.h</a></div><div class="ttdoc">howm </div></div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="helper_8h.html#a2b9e41b9be70c60d5721242c3daa880f">   37</a></span>&#160;<span class="preprocessor">#define MAX_FD(x, y) ((x) &gt; (y) ? (x + 1) : (y + 1))</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="helper_8h.html#a0b87e0d3bf5853bcbb0b66a7c48fdc05">   47</a></span>&#160;<span class="preprocessor">#define LOG_LEVEL LOG_DEBUG</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="helper_8h.html#a92f1452fef4b184124fa2334beb53a60">   50</a></span>&#160;<span class="preprocessor">#define DEBUG_ENABLE false</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment">/* Add comments so that splint ignores this as it doesn&#39;t support variadic</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment"> * macros.</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment">/*@ignore@*/</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#ifdef DEBUG_ENABLE</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="helper_8h.html#a3dfa58b1c5c2943dd49d8aa1981d377d">   58</a></span>&#160;<span class="preprocessor">#       define DEBUG(x) puts(x)</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="helper_8h.html#ad4fa1248b75846c1d3039c028672d69a">   60</a></span>&#160;<span class="preprocessor">#       define DEBUGP(M, ...) fprintf(stderr, &quot;[DBG] %s:%d: &quot; M &quot;\n&quot;, __FILE__, __LINE__, ##__VA_ARGS__)</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#       define DEBUG(x) do {} while (0)</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#       define DEBUGP(x, ...) do {} while (0)</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="helper_8h.html#a6ff63e8955665c4a58b1598f2b07c51a">   66</a></span>&#160;<span class="preprocessor">#define LOG_DEBUG 1</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="helper_8h.html#aeb4f36db01bd128c7afeac5889dac311">   67</a></span>&#160;<span class="preprocessor">#define LOG_INFO 2</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="helper_8h.html#aea3f57d6dcc5b4ac957e2679e87dde27">   68</a></span>&#160;<span class="preprocessor">#define LOG_WARN 3</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="helper_8h.html#a96fad55b3f5adf08c39e4c877cf185e3">   69</a></span>&#160;<span class="preprocessor">#define LOG_ERR 4</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="helper_8h.html#a1632479322efa3952798f98177b54471">   70</a></span>&#160;<span class="preprocessor">#define LOG_NONE 5</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#if LOG_LEVEL == LOG_DEBUG</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="helper_8h.html#a9114dc1394e4babddeea948a051bd3d5">   73</a></span>&#160;<span class="preprocessor">#define log_debug(M, ...) fprintf(stderr, &quot;[DEBUG] (%s:%d) &quot; M &quot;\n&quot;, __FILE__, __LINE__, ##__VA_ARGS__)</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor">#define log_debug(x, ...) do {} while (0)</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#if LOG_LEVEL &lt;= LOG_INFO</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="helper_8h.html#ab906bb1655b428369efbca0b73b5f09a">   80</a></span>&#160;<span class="preprocessor">#define log_info(M, ...) fprintf(stderr, &quot;[INFO] (%s:%d) &quot; M &quot;\n&quot;, __FILE__, __LINE__, ##__VA_ARGS__)</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#define log_info(x, ...) do {} while (0)</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">#if LOG_LEVEL &lt;= LOG_WARN</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="helper_8h.html#a0b9b49791ddc1aac7caa31cfb10f173f">   86</a></span>&#160;<span class="preprocessor">#define log_warn(M, ...) fprintf(stderr, &quot;[WARN] (%s:%d) &quot; M &quot;\n&quot;, __FILE__, __LINE__, ##__VA_ARGS__)</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">#define log_warn(x, ...) do {} while (0)</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#if LOG_LEVEL &lt;= LOG_ERR</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="helper_8h.html#aab82a35ff3e94d1028501db189a4b021">   92</a></span>&#160;<span class="preprocessor">#define log_err(M, ...) fprintf(stderr, &quot;[ERROR] (%s:%d) &quot; M &quot;\n&quot;, __FILE__, __LINE__, ##__VA_ARGS__)</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">#define log_err(x, ...) do {} while (0)</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment">/*@end@*/</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="helper_8h.html">helper.h</a></li>
-    <li class="footer">Generated on Sun Nov 30 2014 22:26:03 for howm by
+    <li class="footer">Generated on Tue Dec 2 2014 04:41:25 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

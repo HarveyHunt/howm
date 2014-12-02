@@ -2,6 +2,7 @@ var helper_8h =
 [
     [ "CLEANMASK", "helper_8h.html#a02e75104c38a5869d0082a74c51e2d85", null ],
     [ "DEBUG", "helper_8h.html#a3dfa58b1c5c2943dd49d8aa1981d377d", null ],
+    [ "DEBUG_ENABLE", "helper_8h.html#a92f1452fef4b184124fa2334beb53a60", null ],
     [ "DEBUGP", "helper_8h.html#ad4fa1248b75846c1d3039c028672d69a", null ],
     [ "EQUALMODS", "helper_8h.html#a918c8a9a844a1ede0c0f7837260ed4e9", null ],
     [ "FFT", "helper_8h.html#a21498a6edb8bcb29fb257e202c8c4e18", null ],
@@ -12,6 +13,7 @@ var helper_8h =
     [ "log_err", "helper_8h.html#aab82a35ff3e94d1028501db189a4b021", null ],
     [ "LOG_INFO", "helper_8h.html#aeb4f36db01bd128c7afeac5889dac311", null ],
     [ "log_info", "helper_8h.html#ab906bb1655b428369efbca0b73b5f09a", null ],
+    [ "LOG_LEVEL", "helper_8h.html#a0b87e0d3bf5853bcbb0b66a7c48fdc05", null ],
     [ "LOG_NONE", "helper_8h.html#a1632479322efa3952798f98177b54471", null ],
     [ "LOG_WARN", "helper_8h.html#aea3f57d6dcc5b4ac957e2679e87dde27", null ],
     [ "log_warn", "helper_8h.html#a0b9b49791ddc1aac7caa31cfb10f173f", null ],

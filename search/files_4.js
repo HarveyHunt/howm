@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['op_2ec',['op.c',['../op_8c.html',1,'']]],
-  ['op_2eh',['op.h',['../op_8h.html',1,'']]]
+  ['mode_2ec',['mode.c',['../mode_8c.html',1,'']]],
+  ['mode_2eh',['mode.h',['../mode_8h.html',1,'']]]
 ];

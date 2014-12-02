@@ -2,9 +2,6 @@ var files =
 [
     [ "client.c", "client_8c.html", "client_8c" ],
     [ "client.h", "client_8h.html", "client_8h" ],
-    [ "command.c", "command_8c.html", "command_8c" ],
-    [ "command.h", "command_8h.html", "command_8h" ],
-    [ "config.h", "config_8h.html", "config_8h" ],
     [ "handler.c", "handler_8c.html", "handler_8c" ],
     [ "handler.h", "handler_8h.html", "handler_8h" ],
     [ "helper.h", "helper_8h.html", "helper_8h" ],
@@ -14,6 +11,8 @@ var files =
     [ "ipc.h", "ipc_8h.html", "ipc_8h" ],
     [ "layout.c", "layout_8c.html", "layout_8c" ],
     [ "layout.h", "layout_8h.html", "layout_8h" ],
+    [ "mode.c", "mode_8c.html", "mode_8c" ],
+    [ "mode.h", "mode_8h.html", "mode_8h" ],
     [ "op.c", "op_8c.html", "op_8c" ],
     [ "op.h", "op_8h.html", "op_8h" ],
     [ "scratchpad.c", "scratchpad_8c.html", "scratchpad_8c" ],

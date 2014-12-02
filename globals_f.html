@@ -46,6 +46,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -131,7 +132,7 @@ $(document).ready(function(){initNavTree('globals_f.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Modules</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -152,34 +153,34 @@ $(document).ready(function(){initNavTree('globals_f.html','');});
 , <a class="el" href="client_8h.html#a8358e75afbc293ff875a780205e5f15b">client.h</a>
 </li>
 <li>FLOATING
-: <a class="el" href="command_8h.html#a811fe196a5d9d37857c2f8adeeaac3c6aacd87a682af0d31c6e5ccf7c54565510">command.h</a>
+: <a class="el" href="mode_8h.html#a811fe196a5d9d37857c2f8adeeaac3c6aacd87a682af0d31c6e5ccf7c54565510">mode.h</a>
 </li>
 <li>FOCUS
-: <a class="el" href="command_8h.html#a811fe196a5d9d37857c2f8adeeaac3c6ab92406776d6051345e2bfaff03419b36">command.h</a>
+: <a class="el" href="mode_8h.html#a811fe196a5d9d37857c2f8adeeaac3c6ab92406776d6051345e2bfaff03419b36">mode.h</a>
 </li>
 <li>focus_last_ws()
-: <a class="el" href="command_8c.html#ac6b9cf6a31e50aec3ab1a4c6d46d9154">command.c</a>
-, <a class="el" href="command_8h.html#ac6b9cf6a31e50aec3ab1a4c6d46d9154">command.h</a>
+: <a class="el" href="group__commands.html#gac6b9cf6a31e50aec3ab1a4c6d46d9154">workspace.c</a>
+, <a class="el" href="group__commands.html#gac6b9cf6a31e50aec3ab1a4c6d46d9154">workspace.h</a>
 </li>
 <li>focus_next_client()
-: <a class="el" href="client_8c.html#ae5d6127e2c85253e8d3860539cd7e08d">client.c</a>
-, <a class="el" href="command_8h.html#ae5d6127e2c85253e8d3860539cd7e08d">command.h</a>
+: <a class="el" href="group__commands.html#gae5d6127e2c85253e8d3860539cd7e08d">client.c</a>
+, <a class="el" href="group__commands.html#gae5d6127e2c85253e8d3860539cd7e08d">client.h</a>
 </li>
 <li>focus_next_ws()
-: <a class="el" href="command_8c.html#a9675a3d8ac0d1d43fd5b867f72df38a1">command.c</a>
-, <a class="el" href="command_8h.html#a9675a3d8ac0d1d43fd5b867f72df38a1">command.h</a>
+: <a class="el" href="group__commands.html#ga9675a3d8ac0d1d43fd5b867f72df38a1">workspace.c</a>
+, <a class="el" href="group__commands.html#ga9675a3d8ac0d1d43fd5b867f72df38a1">workspace.h</a>
 </li>
 <li>focus_prev_client()
-: <a class="el" href="client_8c.html#a8cc79e2b8f7d2633073e044b8de2dadc">client.c</a>
-, <a class="el" href="command_8h.html#a8cc79e2b8f7d2633073e044b8de2dadc">command.h</a>
+: <a class="el" href="group__commands.html#ga8cc79e2b8f7d2633073e044b8de2dadc">client.c</a>
+, <a class="el" href="group__commands.html#ga8cc79e2b8f7d2633073e044b8de2dadc">client.h</a>
 </li>
 <li>focus_prev_ws()
-: <a class="el" href="command_8c.html#ac83c7877e8f67cecae5cdc99f0c5ccfb">command.c</a>
-, <a class="el" href="command_8h.html#ac83c7877e8f67cecae5cdc99f0c5ccfb">command.h</a>
+: <a class="el" href="group__commands.html#gac83c7877e8f67cecae5cdc99f0c5ccfb">workspace.c</a>
+, <a class="el" href="group__commands.html#gac83c7877e8f67cecae5cdc99f0c5ccfb">workspace.h</a>
 </li>
 <li>focus_urgent()
-: <a class="el" href="command_8h.html#ae8ff1f4cfd99f8cbebad8b42395143da">command.h</a>
-, <a class="el" href="command_8c.html#ae8ff1f4cfd99f8cbebad8b42395143da">command.c</a>
+: <a class="el" href="group__commands.html#gae8ff1f4cfd99f8cbebad8b42395143da">client.h</a>
+, <a class="el" href="group__commands.html#gae8ff1f4cfd99f8cbebad8b42395143da">client.c</a>
 </li>
 <li>focus_window()
 : <a class="el" href="xcb__help_8h.html#aa6e0efcc31fc894c7a877005cb143c36">xcb_help.h</a>
@@ -191,7 +192,7 @@ $(document).ready(function(){initNavTree('globals_f.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Nov 30 2014 22:26:03 for howm by
+    <li class="footer">Generated on Tue Dec 2 2014 04:41:25 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

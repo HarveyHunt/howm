@@ -46,6 +46,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -86,7 +87,7 @@ $(document).ready(function(){initNavTree('index.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Modules</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -138,7 +139,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <li>**-c**: The path that points to an executable howmrc file. ``` howm -c ~/.config/howm/howmrc ```</li>
 </ul>
 <h2>Configuration</h2>
-<p>Configuration is done through the use of cottage. Any element [in this structure]() can be changed using cottage. The syntax is as follows:</p>
+<p>Configuration is done through the use of cottage. Any element <a href="http://harveyhunt.github.io/howm/structconfig.html">in this structure</a> can be changed using cottage. The syntax is as follows:</p>
 <p>``` cottage -c config_var value ```</p>
 <p>For example:</p>
 <p>``` cottage -c bar_height 20 ```</p>
@@ -147,7 +148,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <p>Keybinds are now placed in multiple <a href="https://github.com/baskerville/sxhkd">sxhkd</a> files.</p>
 <p>A keypress is bound to a call to cottage in the following form:</p>
 <p>``` cottage -f func_name &lt;args&gt; ```</p>
-<p>Take a look at the [example sxhkdrcs](examples).</p>
+<p>All of the available functions can be found <a href="http://harveyhunt.github.io/howm/command_8h.html">here</a>. Take a look at the [example sxhkdrcs](examples).</p>
 <h2>Scratchpad</h2>
 <p>The scratchpad is a location to store a single client out of view. When requesting a client back from the scratchpad, it will float in the center of the screen. This is useful for keeping a terminal handy or hiding your music player- only displaying it when it is really needed.</p>
 <p>The size of the scratchpad's client is defined by SCRATCHPAD_WIDTH and SCRATCHPAD_HEIGHT.</p>
@@ -260,7 +261,7 @@ $(document).ready(function(){initNavTree('index.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Nov 30 2014 22:26:03 for howm by
+    <li class="footer">Generated on Tue Dec 2 2014 04:41:25 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

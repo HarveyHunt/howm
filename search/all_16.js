@@ -11,7 +11,6 @@ var searchData=
   ['workspace_2ec',['workspace.c',['../workspace_8c.html',1,'']]],
   ['workspace_2eh',['workspace.h',['../workspace_8h.html',1,'']]],
   ['workspaces',['WORKSPACES',['../howm_8h.html#a9915a00a52379231ab1f623e4eef07da',1,'howm.h']]],
-  ['ws',['ws',['../structRule.html#a0ae152a215fd44dfb234181f1414cea8',1,'Rule']]],
   ['ws_5fdef_5flayout',['WS_DEF_LAYOUT',['../howm_8h.html#ace8aafd5a2cf0feb727effce371a8ea6',1,'howm.h']]],
   ['wss',['wss',['../howm_8c.html#a4ac1c9268a5b3f3241b6bee2edf62f05',1,'wss():&#160;howm.c'],['../howm_8h.html#ab787e0404ed38c2ea9e657da457fe12a',1,'wss():&#160;howm.c']]]
 ];

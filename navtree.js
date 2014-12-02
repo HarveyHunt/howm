@@ -2,6 +2,7 @@ var NAVTREE =
 [
   [ "howm", "index.html", [
     [ "Contributing", "md_CONTRIBUTING.html", null ],
+    [ "Modules", "modules.html", "modules" ],
     [ "Classes", null, [
       [ "Class List", "annotated.html", "annotated" ],
       [ "Class Index", "classes.html", null ],
@@ -28,7 +29,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"howm_8h.html#ab787e0404ed38c2ea9e657da457fe12a"
+"howm_8c.html#a635bebcf1bdfa7de6f25c21a01451d64"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

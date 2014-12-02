@@ -46,6 +46,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -131,7 +132,7 @@ $(document).ready(function(){initNavTree('globals_l.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Modules</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -145,8 +146,8 @@ $(document).ready(function(){initNavTree('globals_l.html','');});
 
 <h3><a class="anchor" id="index_l"></a>- l -</h3><ul>
 <li>last_layout()
-: <a class="el" href="command_8c.html#a133acd9140f8ad49e88be3c75c4de7b2">command.c</a>
-, <a class="el" href="command_8h.html#a133acd9140f8ad49e88be3c75c4de7b2">command.h</a>
+: <a class="el" href="group__commands.html#ga133acd9140f8ad49e88be3c75c4de7b2">layout.c</a>
+, <a class="el" href="group__commands.html#ga133acd9140f8ad49e88be3c75c4de7b2">layout.h</a>
 </li>
 <li>last_ws
 : <a class="el" href="howm_8h.html#ad9cdce4d561e999e5d5194cb98ac9f7d">howm.h</a>
@@ -173,14 +174,14 @@ $(document).ready(function(){initNavTree('globals_l.html','');});
 <li>log_err
 : <a class="el" href="helper_8h.html#aab82a35ff3e94d1028501db189a4b021">helper.h</a>
 </li>
-<li>log_info
-: <a class="el" href="helper_8h.html#ab906bb1655b428369efbca0b73b5f09a">helper.h</a>
-</li>
 <li>LOG_INFO
 : <a class="el" href="helper_8h.html#aeb4f36db01bd128c7afeac5889dac311">helper.h</a>
 </li>
+<li>log_info
+: <a class="el" href="helper_8h.html#ab906bb1655b428369efbca0b73b5f09a">helper.h</a>
+</li>
 <li>LOG_LEVEL
-: <a class="el" href="config_8h.html#a0b87e0d3bf5853bcbb0b66a7c48fdc05">config.h</a>
+: <a class="el" href="helper_8h.html#a0b87e0d3bf5853bcbb0b66a7c48fdc05">helper.h</a>
 </li>
 <li>LOG_NONE
 : <a class="el" href="helper_8h.html#a1632479322efa3952798f98177b54471">helper.h</a>
@@ -197,7 +198,7 @@ $(document).ready(function(){initNavTree('globals_l.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Nov 30 2014 22:26:03 for howm by
+    <li class="footer">Generated on Tue Dec 2 2014 04:41:25 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

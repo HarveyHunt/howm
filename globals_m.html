@@ -46,6 +46,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -131,7 +132,7 @@ $(document).ready(function(){initNavTree('globals_m.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Modules</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -148,8 +149,8 @@ $(document).ready(function(){initNavTree('globals_m.html','');});
 : <a class="el" href="howm_8c.html#a0ddf1224851353fc92bfbff6f499fa97">howm.c</a>
 </li>
 <li>make_master()
-: <a class="el" href="command_8c.html#aa8ae3a448814dc9f8ebd4bbf76775744">command.c</a>
-, <a class="el" href="command_8h.html#aa8ae3a448814dc9f8ebd4bbf76775744">command.h</a>
+: <a class="el" href="group__commands.html#gaa8ae3a448814dc9f8ebd4bbf76775744">client.c</a>
+, <a class="el" href="group__commands.html#gaa8ae3a448814dc9f8ebd4bbf76775744">client.h</a>
 </li>
 <li>map_event()
 : <a class="el" href="handler_8c.html#aa28cd43bdd358e501b9d5dc6f82bcb4c">handler.c</a>
@@ -161,11 +162,11 @@ $(document).ready(function(){initNavTree('globals_m.html','');});
 : <a class="el" href="helper_8h.html#a2b9e41b9be70c60d5721242c3daa880f">helper.h</a>
 </li>
 <li>modes
-: <a class="el" href="command_8h.html#a811fe196a5d9d37857c2f8adeeaac3c6">command.h</a>
+: <a class="el" href="mode_8h.html#a811fe196a5d9d37857c2f8adeeaac3c6">mode.h</a>
 </li>
 <li>motion()
-: <a class="el" href="command_8c.html#ae1d5bb92d170e644ee914fb6f2d3ad78">command.c</a>
-, <a class="el" href="command_8h.html#ae1d5bb92d170e644ee914fb6f2d3ad78">command.h</a>
+: <a class="el" href="group__commands.html#gae1d5bb92d170e644ee914fb6f2d3ad78">op.c</a>
+, <a class="el" href="group__commands.html#gae1d5bb92d170e644ee914fb6f2d3ad78">op.h</a>
 </li>
 <li>MOTION_STATE
 : <a class="el" href="howm_8h.html#aa19be6305a5a4485e1e70de70ed7d677aa2b24250e93a31be352eb1bce2a40c90">howm.h</a>
@@ -178,23 +179,23 @@ $(document).ready(function(){initNavTree('globals_m.html','');});
 , <a class="el" href="client_8h.html#a343ff4a1c95b06b703435df386ed6662">client.h</a>
 </li>
 <li>move_current_down()
-: <a class="el" href="client_8c.html#aa7e10ef82910b83f84e574b41b80ce19">client.c</a>
-, <a class="el" href="command_8h.html#aa7e10ef82910b83f84e574b41b80ce19">command.h</a>
+: <a class="el" href="group__commands.html#gaa7e10ef82910b83f84e574b41b80ce19">client.c</a>
+, <a class="el" href="group__commands.html#gaa7e10ef82910b83f84e574b41b80ce19">client.h</a>
 </li>
 <li>move_current_up()
-: <a class="el" href="client_8c.html#abe8b4d715782d49bb4944726c7d54597">client.c</a>
-, <a class="el" href="command_8h.html#abe8b4d715782d49bb4944726c7d54597">command.h</a>
+: <a class="el" href="group__commands.html#gabe8b4d715782d49bb4944726c7d54597">client.c</a>
+, <a class="el" href="group__commands.html#gabe8b4d715782d49bb4944726c7d54597">client.h</a>
 </li>
 <li>move_down()
 : <a class="el" href="client_8c.html#a6ef8181742f7f7d932ead21bc2e9cb33">client.c</a>
 </li>
 <li>move_float_x()
-: <a class="el" href="command_8h.html#ad8b092ea21878160bd66520a33d7d95a">command.h</a>
-, <a class="el" href="command_8c.html#ad8b092ea21878160bd66520a33d7d95a">command.c</a>
+: <a class="el" href="group__commands.html#gad8b092ea21878160bd66520a33d7d95a">client.h</a>
+, <a class="el" href="group__commands.html#gad8b092ea21878160bd66520a33d7d95a">client.c</a>
 </li>
 <li>move_float_y()
-: <a class="el" href="command_8c.html#a948bc6b4e5958beb75dab73dd3e99574">command.c</a>
-, <a class="el" href="command_8h.html#a948bc6b4e5958beb75dab73dd3e99574">command.h</a>
+: <a class="el" href="group__commands.html#ga948bc6b4e5958beb75dab73dd3e99574">client.c</a>
+, <a class="el" href="group__commands.html#ga948bc6b4e5958beb75dab73dd3e99574">client.h</a>
 </li>
 <li>move_resize()
 : <a class="el" href="xcb__help_8c.html#a6844eed146ace6bed65a324f55f3f46f">xcb_help.c</a>
@@ -222,7 +223,7 @@ $(document).ready(function(){initNavTree('globals_m.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Nov 30 2014 22:26:03 for howm by
+    <li class="footer">Generated on Tue Dec 2 2014 04:41:25 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

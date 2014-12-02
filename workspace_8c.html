@@ -46,6 +46,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -92,7 +93,7 @@ $(document).ready(function(){initNavTree('workspace_8c.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Modules</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -124,6 +125,18 @@ Functions</h2></td></tr>
 <tr class="memitem:a6361508920a24407f2566519e98589e3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="workspace_8c.html#a6361508920a24407f2566519e98589e3">correct_ws</a> (unsigned int ws)</td></tr>
 <tr class="memdesc:a6361508920a24407f2566519e98589e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Correctly wrap a workspace number.  <a href="#a6361508920a24407f2566519e98589e3">More...</a><br /></td></tr>
 <tr class="separator:a6361508920a24407f2566519e98589e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac83c7877e8f67cecae5cdc99f0c5ccfb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gac83c7877e8f67cecae5cdc99f0c5ccfb">focus_prev_ws</a> (void)</td></tr>
+<tr class="memdesc:gac83c7877e8f67cecae5cdc99f0c5ccfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Focus the previous workspace.  <a href="group__commands.html#gac83c7877e8f67cecae5cdc99f0c5ccfb">More...</a><br /></td></tr>
+<tr class="separator:gac83c7877e8f67cecae5cdc99f0c5ccfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac6b9cf6a31e50aec3ab1a4c6d46d9154"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gac6b9cf6a31e50aec3ab1a4c6d46d9154">focus_last_ws</a> (void)</td></tr>
+<tr class="memdesc:gac6b9cf6a31e50aec3ab1a4c6d46d9154"><td class="mdescLeft">&#160;</td><td class="mdescRight">Focus the last focused workspace.  <a href="group__commands.html#gac6b9cf6a31e50aec3ab1a4c6d46d9154">More...</a><br /></td></tr>
+<tr class="separator:gac6b9cf6a31e50aec3ab1a4c6d46d9154"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9675a3d8ac0d1d43fd5b867f72df38a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#ga9675a3d8ac0d1d43fd5b867f72df38a1">focus_next_ws</a> (void)</td></tr>
+<tr class="memdesc:ga9675a3d8ac0d1d43fd5b867f72df38a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Focus the next workspace.  <a href="group__commands.html#ga9675a3d8ac0d1d43fd5b867f72df38a1">More...</a><br /></td></tr>
+<tr class="separator:ga9675a3d8ac0d1d43fd5b867f72df38a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaee599f8b226dcf421133706619959120"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gaee599f8b226dcf421133706619959120">change_ws</a> (const int ws)</td></tr>
+<tr class="memdesc:gaee599f8b226dcf421133706619959120"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change to a different workspace and map the correct windows.  <a href="group__commands.html#gaee599f8b226dcf421133706619959120">More...</a><br /></td></tr>
+<tr class="separator:gaee599f8b226dcf421133706619959120"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Helper functions for dealing with an entire workspace or being able to correctly calculate a workspace index. </p>
@@ -186,7 +199,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="workspace_8c.html">workspace.c</a></li>
-    <li class="footer">Generated on Sun Nov 30 2014 22:26:03 for howm by
+    <li class="footer">Generated on Tue Dec 2 2014 04:41:25 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>

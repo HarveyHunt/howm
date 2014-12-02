@@ -46,6 +46,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
+      <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -92,7 +93,7 @@ $(document).ready(function(){initNavTree('client_8h.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Enumerator</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Modules</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(10)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -103,6 +104,7 @@ $(document).ready(function(){initNavTree('client_8h.html','');});
 
 <div class="header">
   <div class="summary">
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">client.h File Reference</div>  </div>
@@ -117,6 +119,21 @@ $(document).ready(function(){initNavTree('client_8h.html','');});
 </div>
 <p><a href="client_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a354037b2059caa6f5e172e8393193595"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="client_8h.html#a354037b2059caa6f5e172e8393193595">teleport_locations</a> { <br />
+&#160;&#160;<a class="el" href="client_8h.html#a354037b2059caa6f5e172e8393193595a6b4ed010af97f067c8ba669e400f3f93">TOP_LEFT</a>, 
+<a class="el" href="client_8h.html#a354037b2059caa6f5e172e8393193595a0fddd3f131f3ba223c7de0cc8d423e03">TOP_CENTER</a>, 
+<a class="el" href="client_8h.html#a354037b2059caa6f5e172e8393193595aab97669fecf009df518a0d2016b86364">TOP_RIGHT</a>, 
+<a class="el" href="client_8h.html#a354037b2059caa6f5e172e8393193595a2159ffbd3a68037511ab5ab4dd35ace7">CENTER</a>, 
+<br />
+&#160;&#160;<a class="el" href="client_8h.html#a354037b2059caa6f5e172e8393193595a6f6b2705d50f7af47405ee7becaabbdb">BOTTOM_LEFT</a>, 
+<a class="el" href="client_8h.html#a354037b2059caa6f5e172e8393193595a8678a8f8412ec9fdf329ecf92128efb1">BOTTOM_CENTER</a>, 
+<a class="el" href="client_8h.html#a354037b2059caa6f5e172e8393193595a5bc569072880e473b667c10005c7aefd">BOTTOM_RIGHT</a>
+<br />
+ }</td></tr>
+<tr class="separator:a354037b2059caa6f5e172e8393193595"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:af42ff327d6049e08d5cf652ec21950c2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="client_8h.html#af42ff327d6049e08d5cf652ec21950c2">get_non_tff_count</a> (void)</td></tr>
@@ -166,42 +183,95 @@ Functions</h2></td></tr>
 <tr class="separator:a8a1f32bfecda4c074383f830fd7091a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae30d89f6638437b65cd4b6f22d5c37c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="client_8h.html#ae30d89f6638437b65cd4b6f22d5c37c4">set_urgent</a> (<a class="el" href="structClient.html">Client</a> *c, bool urg)</td></tr>
 <tr class="separator:ae30d89f6638437b65cd4b6f22d5c37c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a488b8e3e1020fee785b8e39dfd16568e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="client_8h.html#a488b8e3e1020fee785b8e39dfd16568e">apply_rules</a> (<a class="el" href="structClient.html">Client</a> *c)</td></tr>
-<tr class="memdesc:a488b8e3e1020fee785b8e39dfd16568e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the properties of a client that has just been created, according to the rules defined in the config file.  <a href="#a488b8e3e1020fee785b8e39dfd16568e">More...</a><br /></td></tr>
-<tr class="separator:a488b8e3e1020fee785b8e39dfd16568e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a343ff4a1c95b06b703435df386ed6662"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="client_8h.html#a343ff4a1c95b06b703435df386ed6662">move_client</a> (int cnt, bool up)</td></tr>
 <tr class="memdesc:a343ff4a1c95b06b703435df386ed6662"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves a client either upwards or down.  <a href="#a343ff4a1c95b06b703435df386ed6662">More...</a><br /></td></tr>
 <tr class="separator:a343ff4a1c95b06b703435df386ed6662"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa7e10ef82910b83f84e574b41b80ce19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gaa7e10ef82910b83f84e574b41b80ce19">move_current_down</a> (void)</td></tr>
+<tr class="memdesc:gaa7e10ef82910b83f84e574b41b80ce19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves the current client down.  <a href="group__commands.html#gaa7e10ef82910b83f84e574b41b80ce19">More...</a><br /></td></tr>
+<tr class="separator:gaa7e10ef82910b83f84e574b41b80ce19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabe8b4d715782d49bb4944726c7d54597"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gabe8b4d715782d49bb4944726c7d54597">move_current_up</a> (void)</td></tr>
+<tr class="memdesc:gabe8b4d715782d49bb4944726c7d54597"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves the current client up.  <a href="group__commands.html#gabe8b4d715782d49bb4944726c7d54597">More...</a><br /></td></tr>
+<tr class="separator:gabe8b4d715782d49bb4944726c7d54597"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3d2ae6379c727bd9e2664f8167baab3e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#ga3d2ae6379c727bd9e2664f8167baab3e">teleport_client</a> (const int direction)</td></tr>
+<tr class="memdesc:ga3d2ae6379c727bd9e2664f8167baab3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Teleport a floating client's window to a location on the screen.  <a href="group__commands.html#ga3d2ae6379c727bd9e2664f8167baab3e">More...</a><br /></td></tr>
+<tr class="separator:ga3d2ae6379c727bd9e2664f8167baab3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae5d6127e2c85253e8d3860539cd7e08d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gae5d6127e2c85253e8d3860539cd7e08d">focus_next_client</a> (void)</td></tr>
+<tr class="memdesc:gae5d6127e2c85253e8d3860539cd7e08d"><td class="mdescLeft">&#160;</td><td class="mdescRight">brief Move focus onto the client next in the client list.  <a href="group__commands.html#gae5d6127e2c85253e8d3860539cd7e08d">More...</a><br /></td></tr>
+<tr class="separator:gae5d6127e2c85253e8d3860539cd7e08d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8cc79e2b8f7d2633073e044b8de2dadc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#ga8cc79e2b8f7d2633073e044b8de2dadc">focus_prev_client</a> (void)</td></tr>
+<tr class="memdesc:ga8cc79e2b8f7d2633073e044b8de2dadc"><td class="mdescLeft">&#160;</td><td class="mdescRight">brief Move focus onto the client previous in the client list.  <a href="group__commands.html#ga8cc79e2b8f7d2633073e044b8de2dadc">More...</a><br /></td></tr>
+<tr class="separator:ga8cc79e2b8f7d2633073e044b8de2dadc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga07494bd2d3cc57b2277aa8f16c727d77"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#ga07494bd2d3cc57b2277aa8f16c727d77">current_to_ws</a> (const int ws)</td></tr>
+<tr class="memdesc:ga07494bd2d3cc57b2277aa8f16c727d77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves the current client to the workspace passed in.  <a href="group__commands.html#ga07494bd2d3cc57b2277aa8f16c727d77">More...</a><br /></td></tr>
+<tr class="separator:ga07494bd2d3cc57b2277aa8f16c727d77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac6bf2540a05dc967d987827eb6b36ab7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gac6bf2540a05dc967d987827eb6b36ab7">toggle_float</a> (void)</td></tr>
+<tr class="memdesc:gac6bf2540a05dc967d987827eb6b36ab7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggle a client between being in a floating or non-floating state.  <a href="group__commands.html#gac6bf2540a05dc967d987827eb6b36ab7">More...</a><br /></td></tr>
+<tr class="separator:gac6bf2540a05dc967d987827eb6b36ab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad76af9e320b284633e4c51ad71759038"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gad76af9e320b284633e4c51ad71759038">resize_float_width</a> (const int dw)</td></tr>
+<tr class="memdesc:gad76af9e320b284633e4c51ad71759038"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the width of a floating client.  <a href="group__commands.html#gad76af9e320b284633e4c51ad71759038">More...</a><br /></td></tr>
+<tr class="separator:gad76af9e320b284633e4c51ad71759038"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf6dd4f21201b88d84ccfc931165dcaf6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gaf6dd4f21201b88d84ccfc931165dcaf6">resize_float_height</a> (const int dh)</td></tr>
+<tr class="memdesc:gaf6dd4f21201b88d84ccfc931165dcaf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the height of a floating client.  <a href="group__commands.html#gaf6dd4f21201b88d84ccfc931165dcaf6">More...</a><br /></td></tr>
+<tr class="separator:gaf6dd4f21201b88d84ccfc931165dcaf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga948bc6b4e5958beb75dab73dd3e99574"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#ga948bc6b4e5958beb75dab73dd3e99574">move_float_y</a> (const int dy)</td></tr>
+<tr class="memdesc:ga948bc6b4e5958beb75dab73dd3e99574"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change a floating window's y coordinate.  <a href="group__commands.html#ga948bc6b4e5958beb75dab73dd3e99574">More...</a><br /></td></tr>
+<tr class="separator:ga948bc6b4e5958beb75dab73dd3e99574"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad8b092ea21878160bd66520a33d7d95a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gad8b092ea21878160bd66520a33d7d95a">move_float_x</a> (const int dx)</td></tr>
+<tr class="memdesc:gad8b092ea21878160bd66520a33d7d95a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change a floating window's x coordinate.  <a href="group__commands.html#gad8b092ea21878160bd66520a33d7d95a">More...</a><br /></td></tr>
+<tr class="separator:gad8b092ea21878160bd66520a33d7d95a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafbe142eaded83723a2405760ea4f62c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gafbe142eaded83723a2405760ea4f62c9">toggle_fullscreen</a> (void)</td></tr>
+<tr class="memdesc:gafbe142eaded83723a2405760ea4f62c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggle the fullscreen state of the current client.  <a href="group__commands.html#gafbe142eaded83723a2405760ea4f62c9">More...</a><br /></td></tr>
+<tr class="separator:gafbe142eaded83723a2405760ea4f62c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa8ae3a448814dc9f8ebd4bbf76775744"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gaa8ae3a448814dc9f8ebd4bbf76775744">make_master</a> (void)</td></tr>
+<tr class="memdesc:gaa8ae3a448814dc9f8ebd4bbf76775744"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves the current window to the master window, when in stack mode.  <a href="group__commands.html#gaa8ae3a448814dc9f8ebd4bbf76775744">More...</a><br /></td></tr>
+<tr class="separator:gaa8ae3a448814dc9f8ebd4bbf76775744"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae8ff1f4cfd99f8cbebad8b42395143da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gae8ff1f4cfd99f8cbebad8b42395143da">focus_urgent</a> (void)</td></tr>
+<tr class="memdesc:gae8ff1f4cfd99f8cbebad8b42395143da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Focus a client that has an urgent hint.  <a href="group__commands.html#gae8ff1f4cfd99f8cbebad8b42395143da">More...</a><br /></td></tr>
+<tr class="separator:gae8ff1f4cfd99f8cbebad8b42395143da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf1bf791f7eb01c1e9941051e0fd0325e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#gaf1bf791f7eb01c1e9941051e0fd0325e">resize_master</a> (const int ds)</td></tr>
+<tr class="memdesc:gaf1bf791f7eb01c1e9941051e0fd0325e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resize the master window of a stack for the current workspace.  <a href="group__commands.html#gaf1bf791f7eb01c1e9941051e0fd0325e">More...</a><br /></td></tr>
+<tr class="separator:gaf1bf791f7eb01c1e9941051e0fd0325e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7d58643b1bcfb3eb74a40b8ceafd8bb0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#ga7d58643b1bcfb3eb74a40b8ceafd8bb0">paste</a> (void)</td></tr>
+<tr class="memdesc:ga7d58643b1bcfb3eb74a40b8ceafd8bb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a list of clients from howm's delete register stack and paste them after the currently focused window.  <a href="group__commands.html#ga7d58643b1bcfb3eb74a40b8ceafd8bb0">More...</a><br /></td></tr>
+<tr class="separator:ga7d58643b1bcfb3eb74a40b8ceafd8bb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4bf6f80924cdb1cbff8d4c8b1bff66c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__commands.html#ga4bf6f80924cdb1cbff8d4c8b1bff66c8">toggle_bar</a> (void)</td></tr>
+<tr class="memdesc:ga4bf6f80924cdb1cbff8d4c8b1bff66c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Toggle the space reserved for a status bar.  <a href="group__commands.html#ga4bf6f80924cdb1cbff8d4c8b1bff66c8">More...</a><br /></td></tr>
+<tr class="separator:ga4bf6f80924cdb1cbff8d4c8b1bff66c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>howm </p>
 <dl class="section author"><dt>Author</dt><dd>Harvey Hunt</dd></dl>
 <dl class="section date"><dt>Date</dt><dd>2014 </dd></dl>
-</div><h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="a488b8e3e1020fee785b8e39dfd16568e"></a>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<a class="anchor" id="a354037b2059caa6f5e172e8393193595"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void apply_rules </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structClient.html">Client</a> *&#160;</td>
-          <td class="paramname"><em>c</em></td><td>)</td>
-          <td></td>
+          <td class="memname">enum <a class="el" href="client_8h.html#a354037b2059caa6f5e172e8393193595">teleport_locations</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-<p>Set the properties of a client that has just been created, according to the rules defined in the config file. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">c</td><td>The client that has been created. </td></tr>
-  </table>
-  </dd>
-</dl>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="a354037b2059caa6f5e172e8393193595a6b4ed010af97f067c8ba669e400f3f93"></a>TOP_LEFT&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a354037b2059caa6f5e172e8393193595a0fddd3f131f3ba223c7de0cc8d423e03"></a>TOP_CENTER&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a354037b2059caa6f5e172e8393193595aab97669fecf009df518a0d2016b86364"></a>TOP_RIGHT&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a354037b2059caa6f5e172e8393193595a2159ffbd3a68037511ab5ab4dd35ace7"></a>CENTER&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a354037b2059caa6f5e172e8393193595a6f6b2705d50f7af47405ee7becaabbdb"></a>BOTTOM_LEFT&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a354037b2059caa6f5e172e8393193595a8678a8f8412ec9fdf329ecf92128efb1"></a>BOTTOM_CENTER&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="a354037b2059caa6f5e172e8393193595a5bc569072880e473b667c10005c7aefd"></a>BOTTOM_RIGHT&#160;</td><td class="fielddoc">
+</td></tr>
+</table>
 
 </div>
 </div>
+<h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="a017bba0a352702762ba71d9121eb33e2"></a>
 <div class="memitem">
 <div class="memproto">
@@ -726,7 +796,7 @@ Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="client_8h.html">client.h</a></li>
-    <li class="footer">Generated on Sun Nov 30 2014 22:26:03 for howm by
+    <li class="footer">Generated on Tue Dec 2 2014 04:41:25 for howm by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.8 </li>
   </ul>
