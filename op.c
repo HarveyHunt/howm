@@ -145,8 +145,6 @@ void op_grow_gaps(const unsigned int type, int cnt)
  * @param cnt The amount of times to perform the operation.
  * @param size The amount of pixels to change the gap size by. This is
  * configured through conf.op_gap_size.
- *
- * @ingroup operators
  */
 static void change_gaps(const unsigned int type, int cnt, int size)
 {
