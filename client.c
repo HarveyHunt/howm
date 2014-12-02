@@ -7,11 +7,10 @@
 #include "client.h"
 #include "workspace.h"
 #include "layout.h"
-#include "command.h"
-#include "config.h"
 #include "helper.h"
 #include "howm.h"
 #include "xcb_help.h"
+#include "scratchpad.h"
 
 /**
  * @file client.c
@@ -569,29 +568,282 @@ void set_urgent(Client *c, bool urg)
 }
 
 /**
- * @brief Set the properties of a client that has just been created,
- * according to the rules defined in the config file.
+ * @brief Teleport a floating client's window to a location on the screen.
  *
- * @param c The client that has been created.
+ * @param direction Which location to teleport the window to.
  */
-void apply_rules(Client *c)
+void teleport_client(const int direction)
 {
-	xcb_icccm_get_wm_class_reply_t wc;
-	unsigned int i;
+	if (!wss[cw].current || !wss[cw].current->is_floating
+			|| wss[cw].current->is_transient)
+		return;
 
-	if (xcb_icccm_get_wm_class_reply(dpy, xcb_icccm_get_wm_class(dpy,
-					c->win), &wc, NULL)) {
-		for (i = 0; i < LENGTH(rules); i++) {
-			if (strstr(wc.instance_name, rules[i].class)
-					|| strstr(wc.class_name, rules[i].class)) {
-				c->is_floating = rules[i].is_floating;
-				c->is_fullscreen = rules[i].is_fullscreen;
-				client_to_ws(c, rules[i].ws == 0 ? cw
-						: rules[i].ws, rules[i].follow);
+	/* A bit naughty, but it looks nicer- doesn't it?*/
+	uint16_t g = wss[cw].current->gap;
+	uint16_t w = wss[cw].current->w;
+	uint16_t h = wss[cw].current->h;
+	uint16_t bh = wss[cw].bar_height;
+
+	switch (direction) {
+	case TOP_LEFT:
+		wss[cw].current->x = g;
+		wss[cw].current->y = (conf.bar_bottom ? 0 : bh) + g;
+		break;
+	case TOP_CENTER:
+		wss[cw].current->x = (screen_width - w) / 2;
+		wss[cw].current->y = (conf.bar_bottom ? 0 : bh) + g;
+		break;
+	case TOP_RIGHT:
+		wss[cw].current->x = screen_width - w - g - (2 * conf.border_px);
+		wss[cw].current->y = (conf.bar_bottom ? 0 : bh) + g;
+		break;
+	case CENTER:
+		wss[cw].current->x = (screen_width - w) / 2;
+		wss[cw].current->y = (screen_height - bh - h) / 2;
+		break;
+	case BOTTOM_LEFT:
+		wss[cw].current->x = g;
+		wss[cw].current->y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
+		break;
+	case BOTTOM_CENTER:
+		wss[cw].current->x = (screen_width / 2) - (w / 2);
+		wss[cw].current->y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
+		break;
+	case BOTTOM_RIGHT:
+		wss[cw].current->x = screen_width - w - g - (2 * conf.border_px);
+		wss[cw].current->y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
+		break;
+	};
+	draw_clients();
+}
+
+/**
+ * @brief Moves the current client to the workspace passed in.
+ *
+ * @param ws The target workspace.
+ */
+void current_to_ws(const int ws)
+{
+	client_to_ws(wss[cw].current, ws, conf.follow_move);
+}
+
+/**
+ * @brief Toggle a client between being in a floating or non-floating state.
+ */
+void toggle_float(void)
+{
+	if (!wss[cw].current)
+		return;
+	log_info("Toggling floating state of client <%p>", wss[cw].current);
+	wss[cw].current->is_floating = !wss[cw].current->is_floating;
+	if (wss[cw].current->is_floating && conf.center_floating) {
+		wss[cw].current->x = (screen_width / 2) - (wss[cw].current->w / 2);
+		wss[cw].current->y = (screen_height - wss[cw].bar_height - wss[cw].current->h) / 2;
+		log_info("Centering client <%p>", wss[cw].current);
+	}
+	arrange_windows();
+}
+
+/**
+ * @brief Change the width of a floating client.
+ *
+ * Negative values will shift the right edge of the window to the left. The
+ * inverse is true for positive values.
+ *
+ * @param dw The amount of pixels that the window's size should be changed by.
+ */
+void resize_float_width(const int dw)
+{
+	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->w + dw <= 0)
+		return;
+	log_info("Resizing width of client <%p> from %d by %d", wss[cw].current, wss[cw].current->w, dw);
+	wss[cw].current->w += dw;
+	draw_clients();
+}
+
+/**
+ * @brief Change the height of a floating client.
+ *
+ * Negative values will shift the bottom edge of the window to the top. The
+ * inverse is true for positive values.
+ *
+ * @param dh The amount of pixels that the window's size should be changed by.
+ */
+void resize_float_height(const int dh)
+{
+	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->h + dh <= 0)
+		return;
+	log_info("Resizing height of client <%p> from %d to %d", wss[cw].current, wss[cw].current->h, dh);
+	wss[cw].current->h += dh;
+	draw_clients();
+}
+
+/**
+ * @brief Change a floating window's y coordinate.
+ *
+ * Negative values will move the window up. The inverse is true for positive
+ * values.
+ *
+ * @param dy The amount of pixels that the window should be moved.
+ */
+void move_float_y(const int dy)
+{
+	if (!wss[cw].current || !wss[cw].current->is_floating)
+		return;
+	log_info("Changing y of client <%p> from %d to %d", wss[cw].current, wss[cw].current->y, dy);
+	wss[cw].current->y += dy;
+	draw_clients();
+}
+
+/**
+ * @brief Change a floating window's x coordinate.
+ *
+ * Negative values will move the window to the left. The inverse is true
+ * for positive values.
+ *
+ * @param dx The amount of pixels that the window should be moved.
+ */
+void move_float_x(const int dx)
+{
+	if (!wss[cw].current || !wss[cw].current->is_floating)
+		return;
+	log_info("Changing x of client <%p> from %d to %d", wss[cw].current, wss[cw].current->x, dx);
+	wss[cw].current->x += dx;
+	draw_clients();
+}
+
+/**
+ * @brief Moves the current window to the master window, when in stack mode.
+ */
+void make_master(void)
+{
+	if (!wss[cw].current || !wss[cw].head->next
+			|| wss[cw].head == wss[cw].current
+			|| !(wss[cw].layout == HSTACK
+			|| wss[cw].layout == VSTACK))
+		return;
+	while (wss[cw].current != wss[cw].head)
+		move_up(wss[cw].current);
+	update_focused_client(wss[cw].head);
+}
+
+/**
+ * @brief Toggle the fullscreen state of the current client.
+ */
+void toggle_fullscreen(void)
+{
+	if (wss[cw].current != NULL)
+		set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
+}
+
+/**
+ * @brief Focus a client that has an urgent hint.
+ */
+void focus_urgent(void)
+{
+	Client *c;
+	unsigned int w;
+
+	for (w = 1; w <= WORKSPACES; w++)
+		for (c = wss[w].head; c && !c->is_urgent; c = c->next)
+			;
+	if (c) {
+		log_info("Focusing urgent client <%p> on workspace <%d>", c, w);
+		change_ws(w);
+		update_focused_client(c);
+	}
+}
+
+/**
+ * @brief Resize the master window of a stack for the current workspace.
+ *
+ * @param ds The amount to resize the master window by. Treated as a
+ * percentage. e.g. ds = 5 will increase the master window's size by 5% of
+ * it maximum.
+ */
+void resize_master(const int ds)
+{
+	/* Resize master only when resizing is visible (i.e. in Stack layouts). */
+	if (wss[cw].layout != HSTACK && wss[cw].layout != VSTACK)
+		return;
+
+	float change = ((float)ds) / 100;
+
+	if (wss[cw].master_ratio + change >= 1
+			|| wss[cw].master_ratio + change <= 0.1)
+		return;
+	log_info("Resizing master_ratio from <%.2f> to <%.2f>", wss[cw].master_ratio, wss[cw].master_ratio + change);
+	wss[cw].master_ratio += change;
+	arrange_windows();
+}
+
+/**
+ * @brief Remove a list of clients from howm's delete register stack and paste
+ * them after the currently focused window.
+ */
+void paste(void)
+{
+	Client *head = stack_pop(&del_reg);
+	Client *t, *c = head;
+
+	if (!head) {
+		log_warn("No clients on stack.");
+		return;
+	}
+
+	if (!wss[cw].current) {
+		wss[cw].head = head;
+		wss[cw].current = head;
+		while (c) {
+			xcb_map_window(dpy, c->win);
+			wss[cw].current = c;
+			c = c->next;
+			wss[cw].client_cnt++;
+		}
+	} else if (!wss[cw].current->next) {
+		wss[cw].current->next = head;
+		while (c) {
+			xcb_map_window(dpy, c->win);
+			wss[cw].current = c;
+			c = c->next;
+			wss[cw].client_cnt++;
+		}
+	} else {
+		t = wss[cw].current->next;
+		wss[cw].current->next = head;
+		while (c) {
+			xcb_map_window(dpy, c->win);
+			wss[cw].client_cnt++;
+			if (!c->next) {
+				c->next = t;
+				wss[cw].current = c;
 				break;
+			} else {
+				wss[cw].current = c;
+				c = c->next;
 			}
 		}
-		xcb_icccm_get_wm_class_reply_wipe(&wc);
 	}
+	update_focused_client(wss[cw].current);
+}
+
+/**
+ * @brief Toggle the space reserved for a status bar.
+ */
+void toggle_bar(void)
+{
+	if (wss[cw].bar_height == 0 && conf.bar_height > 0) {
+		wss[cw].bar_height = conf.bar_height;
+		log_info("Toggled bar to shown");
+	} else if (wss[cw].bar_height == conf.bar_height) {
+		wss[cw].bar_height = 0;
+		log_info("Toggled bar to hidden");
+	} else {
+		return;
+	}
+	xcb_ewmh_geometry_t workarea[] = { { 0, conf.bar_bottom ? 0 : wss[cw].bar_height,
+				screen_width, screen_height - wss[cw].bar_height } };
+	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
+	arrange_windows();
 }
 

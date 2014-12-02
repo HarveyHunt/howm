@@ -1,6 +1,5 @@
 #include "layout.h"
 #include "workspace.h"
-#include "config.h"
 #include "helper.h"
 #include "howm.h"
 #include "client.h"
@@ -176,3 +175,51 @@ static void stack(void)
 	}
 	draw_clients();
 }
+
+/**
+ * @brief Change the layout of the current workspace.
+ *
+ * @param layout Represents the layout that should be used.
+ */
+void change_layout(const int layout)
+{
+	if (layout == wss[cw].layout || layout >= END_LAYOUT || layout < ZOOM)
+		return;
+	wss[cw].layout = layout;
+	update_focused_client(wss[cw].current);
+	log_info("Changed layout from %d to %d", previous_layout,  wss[cw].layout);
+	previous_layout = wss[cw].layout;
+}
+
+/**
+ * @brief Change to the previous layout.
+ */
+void prev_layout(void)
+{
+	int i = wss[cw].layout < 1 ? END_LAYOUT - 1 : wss[cw].layout - 1;
+
+	log_info("Changing to previous layout (%d)", i);
+	change_layout(i);
+}
+
+/**
+ * @brief Change to the next layout.
+ */
+void next_layout(void)
+{
+	int i = (wss[cw].layout + 1) % END_LAYOUT;
+
+	log_info("Changing to layout (%d)", i);
+	change_layout(i);
+}
+
+/**
+ * @brief Change to the last used layout.
+ *
+ */
+void last_layout(void)
+{
+	log_info("Changing to last layout (%d)", previous_layout);
+	change_layout(previous_layout);
+}
+

@@ -9,7 +9,6 @@
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 
-#include "config.h"
 #include "howm.h"
 #include "workspace.h"
 #include "helper.h"
@@ -318,4 +317,43 @@ static void exec_config(char *conf_path)
 	setsid();
 	execl(conf_path, conf_path, NULL);
 	log_err("Couldn't execute the configuration file %s", conf_path);
+}
+
+/**
+ * @brief Restart howm.
+ *
+ */
+void restart_howm(void)
+{
+	log_warn("Restarting.");
+	running = false;
+	restart = true;
+}
+
+/**
+ * @brief Quit howm and set the return value.
+ *
+ * @param exit_status The return value that howm will send.
+ */
+void quit_howm(const int exit_status)
+{
+	log_warn("Quitting");
+	retval = exit_status;
+	running = false;
+}
+
+/**
+ * @brief Spawns a command.
+ */
+void spawn(char *cmd[])
+{
+	if (fork())
+		return;
+	if (dpy)
+		close(screen->root);
+	setsid();
+	log_info("Spawning command: %s", (char *)cmd[0]);
+	execvp((char *)cmd[0], (char **)cmd);
+	log_err("execvp of command: %s failed.", (char *)cmd[0]);
+	exit(EXIT_FAILURE);
 }

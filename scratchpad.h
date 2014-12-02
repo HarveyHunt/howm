@@ -40,5 +40,7 @@ void stack_push(struct stack *s, Client *c);
 Client *stack_pop(struct stack *s);
 void stack_init(struct stack *s);
 void stack_free(struct stack *s);
+void send_to_scratchpad(void);
+void get_from_scratchpad(void);
 
 #endif

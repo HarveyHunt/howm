@@ -4,7 +4,6 @@
 #include <err.h>
 #include <errno.h>
 #include <stdio.h>
-#include "config.h"
 
 /**
  * @file helper.h
@@ -15,6 +14,8 @@
  *
  * @brief howm
  */
+
+/** @defgroup commands Commands */
 
 /** Calculates a mask that can be applied to a window in order to reconfigure a
  * window. */
@@ -33,6 +34,19 @@
 #define UNUSED(x) (void)(x)
 /** Determine which file descriptor is the largest and add one to it. */
 #define MAX_FD(x, y) ((x) > (y) ? (x + 1) : (y + 1))
+
+/** How much detail should be logged. A LOG_LEVEL of INFO will log almost
+ * everything, LOG_WARN will log warnings and errors and LOG_ERR will log only
+ * errors.
+ *
+ * LOG_NONE means nothing will be logged.
+ *
+ * LOG_DEBUG should be used by developers.
+ */
+#define LOG_LEVEL LOG_DEBUG
+
+/** Enable debugging output */
+#define DEBUG_ENABLE false
 
 /* Add comments so that splint ignores this as it doesn't support variadic
  * macros.

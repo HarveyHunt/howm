@@ -1,3 +1,4 @@
+#include <string.h>
 #include "op.h"
 #include "howm.h"
 #include "workspace.h"
@@ -15,6 +16,8 @@
  *
  * @brief All of howm's operators are implemented here.
  */
+
+static int cur_cnt = 1;
 
 static void change_gaps(const unsigned int type, int cnt, int size);
 
@@ -248,3 +251,40 @@ void op_shrink_gaps(const unsigned int type, int cnt)
 	change_gaps(type, cnt, -conf.op_gap_size);
 }
 
+/**
+ * @brief Set the current count for the current operator.
+ *
+ * @param cnt The amount of motions the operator should affect.
+ */
+void count(const int cnt)
+{
+	if (cur_state != COUNT_STATE)
+		return;
+	cur_cnt = cnt;
+	cur_state = MOTION_STATE;
+}
+
+/**
+ * @brief Tell howm which motion is to be performed.
+ *
+ * This allows keybinding using an external program to still use operators.
+ *
+ * @param target A single char representing the motion that the operator should
+ * be applied to.
+ */
+void motion(char *target)
+{
+	int type;
+
+	if (strncmp(target, "w", 1) == 0)
+		type = WORKSPACE;
+	else if (strncmp(target, "c", 1) == 0)
+		type = CLIENT;
+	else
+		return;
+
+	operator_func(type, cur_cnt);
+	cur_state = OPERATOR_STATE;
+	/* Reset so that qc is equivalent to q1c. */
+	cur_cnt = 1;
+}

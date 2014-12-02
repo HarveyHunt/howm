@@ -7,9 +7,8 @@
 #include <stdbool.h>
 #include <xcb/xcb_ewmh.h>
 #include "op.h"
-#include "command.h"
 #include "client.h"
-#include "config.h"
+#include "layout.h"
 
 #define WORKSPACES 5
 #define IPC_BUF_SIZE 1024
@@ -82,5 +81,8 @@ extern xcb_atom_t wm_atoms[];
 
 void howm_info(void);
 uint32_t get_colour(char *colour);
+void quit_howm(const int exit_status);
+void restart_howm(void);
+void spawn(char *cmd[]);
 
 #endif

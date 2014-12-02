@@ -5,7 +5,6 @@
 #include "workspace.h"
 #include "client.h"
 #include "op.h"
-#include "config.h"
 #include "howm.h"
 #include "helper.h"
 

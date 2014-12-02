@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include "scratchpad.h"
 #include "client.h"
-#include "config.h"
 #include "helper.h"
 #include "workspace.h"
 #include "howm.h"
@@ -82,6 +81,10 @@ Client *stack_pop(struct stack *s)
 	return s->contents[(s->size)--];
 }
 
+/** @addtogroup commands
+ * @{
+ */
+
 /**
  * @brief Send a client to the scratchpad and unmap it.
  *
@@ -147,3 +150,5 @@ void get_from_scratchpad(void)
 	xcb_map_window(dpy, wss[cw].current->win);
 	update_focused_client(wss[cw].current);
 }
+
+/** @} */
