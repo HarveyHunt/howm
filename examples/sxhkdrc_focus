@@ -1,0 +1,47 @@
+super + space
+    cottage -f toggle_fullscreen
+
+super + Tab
+    cottage -f focus_urgent
+
+super + {k, j}
+    cottage -f {focus_prev_client, focus_next_client}
+
+super + shift + {k, j}
+    cottage -f {move_current_up, move_current_down}
+
+super + Escape
+    cottage -f change_mode 0; \
+    rm ~/.config/sxhkd/sxhkdrc; \
+    ln -s ~/.config/sxhkd/sxhkdrc_normal ~/.config/sxhkd/sxhkdrc; \
+    pkill -USR1 -x sxhkd
+
+super + {u, l, h}
+    cottage -f {focus_last_ws, focus_next_ws, focus_prev_ws}
+
+super + m
+    cottage -f make_master
+
+super + {1, 2, 3, 4, 5}
+    cottage -f change_ws {1, 2, 3, 4, 5}
+
+super + shift + {1, 2, 3, 4, 5}
+    cottage -f current_to_ws {1, 2, 3, 4, 5}
+
+super + shift + f
+    cottage -f change_mode 2; \
+    rm ~/.config/sxhkd/sxhkdrc; \
+    ln -s ~/.config/sxhkd/sxhkdrc_floating ~/.config/sxhkd/sxhkdrc; \
+    pkill -USR1 -x sxhkd
+
+# Time for operators
+super + {j, k}
+    cottage -f {op_focus_down, op_focus_up}
+
+# Counts
+alt + {1-9}
+    cottage -f count {1-9}
+
+# Motions
+alt + {w, c}
+    cottage -f motion {w, c}

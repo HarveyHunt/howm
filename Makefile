@@ -6,7 +6,7 @@ CC ?= gcc
 # Extension of source files used in the project
 SRC_EXT = c
 # Path to the source directory, relative to the makefile
-SRC_PATH = .
+SRC_PATH = src
 # General compiler flags
 COMPILE_FLAGS = -std=c99 -Wall -Wextra
 # Additional release-specific flags
@@ -16,7 +16,7 @@ DCOMPILE_FLAGS = -g3
 # Add additional include paths
 INCLUDES = -I $(SRC_PATH)/
 # General linker settings
-LINK_FLAGS = -lxcb -lxcb-keysyms -lxcb-icccm -lxcb-ewmh
+LINK_FLAGS = -lxcb -lxcb-icccm -lxcb-ewmh
 # Additional release-specific linker settings
 RLINK_FLAGS =
 # Additional debug-specific linker settings
@@ -121,9 +121,13 @@ install:
 .PHONY: check
 check:
 	@echo "Using checkpatch.pl to check style."
-	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE -f howm.c
-	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE -f config.h
+	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE,MACRO_WITH_FLOW_CONTROL -f src/*.c
+	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE,MACRO_WITH_FLOW_CONTROL -f src/*.h
 	
+.PHONY: analyse
+analyse:
+	@echo "Running scan-build to look for bugs."
+	@scan-build -v -o analyse make debug
 
 # Removes all build files
 .PHONY: clean
@@ -133,6 +137,7 @@ clean:
 	@echo "Deleting directories"
 	@$(RM) -r build
 	@$(RM) -r bin
+	@$(RM) -r analyse
 
 # Main rule, checks the executable and symlinks to the output
 all: $(BIN_PATH)/$(BIN_NAME)

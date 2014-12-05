@@ -1,0 +1,74 @@
+super + Return
+    cottage -f spawn urxvt
+
+super + d
+    dmenu_run -i -b -nb "#70898F" -nf "black" -sf "#74718E"
+
+super + {z, g, h, v}
+    cottage -f change_layout {0, 1, 2, 3}
+
+super + {n, l}
+    cottage -f {next_layout, last_layout}
+
+super + shift + n
+    cottage -f previous_layout
+
+super + f
+    cottage -f change_mode 1; \
+    rm ~/.config/sxhkd/sxhkdrc; \
+    ln -s ~/.config/sxhkd/sxhkdrc_focus ~/.config/sxhkd/sxhkdrc; \
+    pkill -USR1 -x sxhkd
+
+super + shift + f
+    cottage -f change_mode 2; \
+    rm ~/.config/sxhkd/sxhkdrc; \
+    ln -s ~/.config/sxhkd/sxhkdrc_floating ~/.config/sxhkd/sxhkdrc; \
+    pkill -USR1 -x sxhkd
+
+super + shift + space
+    cottage -f toggle_float
+
+super + Delete
+    cottage -f quit_howm 0
+
+super + BackSpace
+    cottage -f restart_howm
+
+super + m
+    cottage -f resize_master 5
+
+super + shift + m
+    cottage -f resize_master -5
+
+super + b
+    cottage -f toggle_bar
+
+super + period
+    cottage -f replay
+
+super + p
+    cottage -f paste
+
+super + q
+    cottage -f send_to_scratchpad
+
+super + shift + q
+    cottage -f get_from_scratchpad
+
+# Time for operators
+alt + {q, j, k, d}
+    cottage -f {op_kill, op_move_down, op_move_up, op_cut}
+
+alt + g
+    cottage -f op_shrink_gaps
+
+alt + shift + g
+    cottage -f op_grow_gaps
+
+# Counts
+alt + {1-9}
+    cottage -f count {1-9}
+
+# Motions
+alt + {w, c}
+    cottage -f motion {w, c}
