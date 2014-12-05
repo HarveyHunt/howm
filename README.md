@@ -5,14 +5,14 @@
 
 ###A lightweight, tiling X11 window manager that mimics vi by offering operators, motions and modes.
 
-Come and join us on Freenode in the channel #howm
-
 ![](http://i.imgur.com/4sW6RlT.gif)
 ![](http://i.imgur.com/tyiZcLx.gif)
 
 Howm is on the [AUR](https://aur.archlinux.org/), there are two packages for it:
 * [howm-git](https://aur.archlinux.org/packages/howm-git/) is the bleeding edge package.
 * [howm-x11](https://aur.archlinux.org/packages/howm-x11/) is the package based off of stable releases.
+
+Come and join us on Freenode in the channel #howm
 
 Contents
 =====
