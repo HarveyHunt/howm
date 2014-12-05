@@ -1,25 +1,4 @@
 var files =
 [
-    [ "client.c", "client_8c.html", "client_8c" ],
-    [ "client.h", "client_8h.html", "client_8h" ],
-    [ "handler.c", "handler_8c.html", "handler_8c" ],
-    [ "handler.h", "handler_8h.html", "handler_8h" ],
-    [ "helper.h", "helper_8h.html", "helper_8h" ],
-    [ "howm.c", "howm_8c.html", "howm_8c" ],
-    [ "howm.h", "howm_8h.html", "howm_8h" ],
-    [ "ipc.c", "ipc_8c.html", "ipc_8c" ],
-    [ "ipc.h", "ipc_8h.html", "ipc_8h" ],
-    [ "layout.c", "layout_8c.html", "layout_8c" ],
-    [ "layout.h", "layout_8h.html", "layout_8h" ],
-    [ "mode.c", "mode_8c.html", "mode_8c" ],
-    [ "mode.h", "mode_8h.html", "mode_8h" ],
-    [ "op.c", "op_8c.html", "op_8c" ],
-    [ "op.h", "op_8h.html", "op_8h" ],
-    [ "scratchpad.c", "scratchpad_8c.html", "scratchpad_8c" ],
-    [ "scratchpad.h", "scratchpad_8h.html", "scratchpad_8h" ],
-    [ "types.h", "types_8h.html", "types_8h" ],
-    [ "workspace.c", "workspace_8c.html", "workspace_8c" ],
-    [ "workspace.h", "workspace_8h.html", "workspace_8h" ],
-    [ "xcb_help.c", "xcb__help_8c.html", "xcb__help_8c" ],
-    [ "xcb_help.h", "xcb__help_8h.html", "xcb__help_8h" ]
+    [ "src", "dir_68267d1309a1af8e8297ef4c3efbcdba.html", "dir_68267d1309a1af8e8297ef4c3efbcdba" ]
 ];
