@@ -116,7 +116,6 @@ void update_focused_client(Client *c)
 	}
 
 	log_info("Focusing client <%p>", c);
-	log_info("current <%p>", wss[cw].current);
 	for (c = wss[cw].head; c; c = c->next, ++all) {
 		if (FFT(c)) {
 			fullscreen++;
@@ -138,9 +137,8 @@ void update_focused_client(Client *c)
 			windows[c->is_fullscreen ? --fullscreen : FFT(c) ?
 				--float_trans : --all] = c->win;
 	}
-	log_info("all %d", all);
 
-	for (float_trans = 0; float_trans <= all; ++float_trans)
+	for (float_trans = 1; float_trans <= all; ++float_trans)
 		elevate_window(windows[all - float_trans]);
 
 	xcb_ewmh_set_active_window(ewmh, 0, wss[cw].current->win);
