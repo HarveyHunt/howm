@@ -8,16 +8,13 @@
 ![](http://i.imgur.com/4sW6RlT.gif)
 ![](http://i.imgur.com/tyiZcLx.gif)
 
-Howm is on the [AUR](https://aur.archlinux.org/), there are two packages for it:
-* [howm-git](https://aur.archlinux.org/packages/howm-git/) is the bleeding edge package.
-* [howm-x11](https://aur.archlinux.org/packages/howm-x11/) is the package based off of stable releases.
-
 Come and join us on Freenode in the channel #howm
 
 Contents
 =====
 * [Contributing](CONTRIBUTING.md)
 * [Requirements](#requirements)
+* [Installation](#installation)
 * [Commandline Arguments](#commandline-arguments)
 * [Configuration](#configuration)
 * [Keybinds](#keybinds)
@@ -33,6 +30,23 @@ Contents
 * [Cottage](https://www.github.com/HarveyHunt/cottage) is required for configuration and interacting with howm.
 * [sxhkd](https://www.github.com/baskerville/sxhkd) is required for binding cottage commands to keypress.
 
+##Installation
+Howm is on the [AUR](https://aur.archlinux.org/), there are two packages for it:
+* [howm-git](https://aur.archlinux.org/packages/howm-git/) is the bleeding edge package.
+* [howm-x11](https://aur.archlinux.org/packages/howm-x11/) is the package based off of stable releases.
+
+If you can't use the AUR, then there may be package available for your distro.
+
+As a last resort install xcb's libraries and then, do the following:
+
+```
+git clone https://github.com/HarveyHunt/howm
+cd howm
+make
+sudo make install
+```
+
+Be sure to install [cottage](https://github.com/HarveyHunt/cottage) and [sxhkd](https://github.com/baskerville/sxhkd).
 
 ##Commandline Arguments
 
