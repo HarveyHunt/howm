@@ -46,6 +46,15 @@ make
 sudo make install
 ```
 
+After howm is installed, you'll want to copy over some configuration files.
+
+```
+cp examples/sxhkdrc_* ~/.config/sxhkd
+cp examples/howmrc ~/.config/howmrc
+```
+
+Then take a look at the example [xinitrc](examples/xinitrc) for ideas on how to start howm.
+
 Be sure to install [cottage](https://github.com/HarveyHunt/cottage) and [sxhkd](https://github.com/baskerville/sxhkd).
 
 ##Commandline Arguments
