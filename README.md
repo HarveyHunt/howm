@@ -35,7 +35,7 @@ Howm is on the [AUR](https://aur.archlinux.org/), there are two packages for it:
 * [howm-git](https://aur.archlinux.org/packages/howm-git/) is the bleeding edge package.
 * [howm-x11](https://aur.archlinux.org/packages/howm-x11/) is the package based off of stable releases.
 
-If you can't use the AUR, then there may be package available for your distro.
+If you can't use the AUR, then there may be a package available for your distro.
 
 As a last resort install xcb's libraries and then, do the following:
 
