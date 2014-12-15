@@ -32,7 +32,7 @@ Contents
 
 ##Installation
 Howm is on the [AUR](https://aur.archlinux.org/), there are two packages for it:
-* [howm-git](https://aur.archlinux.org/packages/howm-git/) is the bleeding edge package.
+* [howm-git](https://aur.archlinux.org/packages/howm-x11-git/) is the bleeding edge package.
 * [howm-x11](https://aur.archlinux.org/packages/howm-x11/) is the package based off of stable releases.
 
 If you can't use the AUR, then there may be a package available for your distro.
@@ -142,7 +142,7 @@ Can be used on:
 ```
 q4c
 ```
-The above command will kill 4 clients, closing the applications and removing removing them from the workspace.
+The above command will kill 4 clients, closing the applications and removing them from the workspace.
 
 ```
 qw
