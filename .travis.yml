@@ -4,6 +4,7 @@ compiler:
     - gcc
 before_install:
     - sudo apt-get update -qq
+install:
     - sudo apt-get install -y libxcb1-dev
     - sudo apt-get install -y libxcb-util0-dev
     - sudo apt-get install -y libxcb-icccm4-dev
