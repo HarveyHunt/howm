@@ -1,8 +1,9 @@
 #include <stdlib.h>
+#include <xcb/xproto.h>
+
 #include "scratchpad.h"
 #include "client.h"
 #include "helper.h"
-#include "workspace.h"
 #include "howm.h"
 
 /**

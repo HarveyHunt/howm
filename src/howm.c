@@ -1,21 +1,20 @@
+#include <errno.h>
+#include <getopt.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/select.h>
 #include <sys/socket.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/un.h>
 #include <unistd.h>
-#include <getopt.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 
-#include "howm.h"
-#include "workspace.h"
-#include "helper.h"
-#include "xcb_help.h"
-#include "scratchpad.h"
-#include "ipc.h"
 #include "handler.h"
+#include "helper.h"
+#include "howm.h"
+#include "ipc.h"
+#include "scratchpad.h"
+#include "xcb_help.h"
 
 /**
  * @file howm.c

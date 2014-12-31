@@ -1,12 +1,12 @@
+#include <stdlib.h>
 #include <string.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
-#include "xcb_help.h"
-#include "workspace.h"
+
 #include "client.h"
-#include "op.h"
-#include "howm.h"
 #include "helper.h"
+#include "howm.h"
+#include "xcb_help.h"
 
 /**
  * @file xcb_help.c

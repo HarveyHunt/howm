@@ -1,14 +1,14 @@
 #ifndef HOWM_H
 #define HOWM_H
 
-#include <err.h>
-#include <errno.h>
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
-#include "op.h"
-#include "client.h"
+#include <xcb/xproto.h>
+
 #include "layout.h"
+#include "types.h"
 
 #define WORKSPACES 5
 #define IPC_BUF_SIZE 1024

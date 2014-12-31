@@ -1,8 +1,6 @@
 #ifndef OP_H
 #define OP_H
 
-#include <xcb/xcb.h>
-
 /**
  * @file op.h
  *

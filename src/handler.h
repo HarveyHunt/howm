@@ -1,6 +1,8 @@
 #ifndef HANDLER_H
 #define HANDLER_H
 
+#include <xcb/xcb.h>
+
 /**
  * @file handler.h
  *

@@ -1,16 +1,16 @@
+#include <stdbool.h>
+#include <stdlib.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xcb_icccm.h>
-#include <stdbool.h>
-#include <string.h>
 
 #include "client.h"
-#include "workspace.h"
-#include "layout.h"
 #include "helper.h"
 #include "howm.h"
-#include "xcb_help.h"
+#include "layout.h"
 #include "scratchpad.h"
+#include "workspace.h"
+#include "xcb_help.h"
 
 /**
  * @file client.c

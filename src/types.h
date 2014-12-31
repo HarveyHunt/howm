@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <xcb/xcb.h>
+#include <xcb/xproto.h>
 
 /**
  * @file types.h

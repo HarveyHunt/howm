@@ -1,11 +1,13 @@
 #include <string.h>
-#include "op.h"
-#include "howm.h"
-#include "workspace.h"
+#include <xcb/xproto.h>
+
 #include "client.h"
 #include "helper.h"
+#include "howm.h"
+#include "op.h"
 #include "scratchpad.h"
 #include "types.h"
+#include "workspace.h"
 
 /**
  * @file op.c

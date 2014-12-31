@@ -1,7 +1,11 @@
 #include <xcb/xcb_ewmh.h>
-#include "workspace.h"
-#include "howm.h"
+#include <xcb/xproto.h>
+
+#include "client.h"
 #include "helper.h"
+#include "howm.h"
+#include "types.h"
+#include "workspace.h"
 
 /**
  * @file workspace.c

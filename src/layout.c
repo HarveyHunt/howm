@@ -1,8 +1,11 @@
-#include "layout.h"
-#include "workspace.h"
+#include <stddef.h>
+#include <stdint.h>
+
+#include "client.h"
 #include "helper.h"
 #include "howm.h"
-#include "client.h"
+#include "layout.h"
+#include "types.h"
 #include "xcb_help.h"
 
 /**

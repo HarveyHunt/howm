@@ -1,7 +1,7 @@
 #ifndef SCRATCHPAD_H
 #define SCRATCHPAD_H
 
-#include "client.h"
+#include "types.h"
 
 /**
  * @file scratchpad.h

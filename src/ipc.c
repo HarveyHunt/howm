@@ -5,15 +5,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include "scratchpad.h"
+
 #include "client.h"
-#include "workspace.h"
+#include "helper.h"
+#include "howm.h"
+#include "ipc.h"
 #include "layout.h"
 #include "mode.h"
 #include "op.h"
-#include "ipc.h"
-#include "helper.h"
-#include "howm.h"
+#include "scratchpad.h"
+#include "types.h"
+#include "workspace.h"
 
 #define SET_INT(opt, arg, lower, upper) \
 	do { \
