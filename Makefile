@@ -24,7 +24,7 @@ DLINK_FLAGS =
 # Destination directory, like a jail or mounted system
 DESTDIR = /
 # Install path (bin/ is appended automatically)
-INSTALL_PREFIX = usr/
+INSTALL_PREFIX = usr
 # Xsession entries path
 XSESSION_PREFIX = usr/share
 #### END PROJECT SETTINGS ####

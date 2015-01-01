@@ -251,6 +251,9 @@ static void client_message_event(xcb_generic_event_t *ev)
 
 static void unhandled_event(xcb_generic_event_t *ev)
 {
+	/* If we have a LOG_LEVEL higher than LOG_DEBUG, then we will
+	 * get compiler warnings about ev not being used. */
+	UNUSED(ev);
 	log_debug("Unhandled event: %d", ev->response_type & ~0x80);
 }
 
