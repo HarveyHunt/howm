@@ -57,6 +57,12 @@ cottage -c bar_height 20
 
 To override howm's default values at startup, cottage commands can be placed in a shell script and then executed by howm. Take a look at the [example howmrc](examples/howmrc) for ideas.
 
+Note: When configuring colours in ```howmrc```, enclose the colour in quotes, such as:
+
+```
+cottage -c border_focus "#343434"
+```
+
 ##Keybinds
 
 Keybinds are now placed in multiple [sxhkd](https://github.com/baskerville/sxhkd) files.
