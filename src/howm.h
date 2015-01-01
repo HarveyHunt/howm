@@ -46,7 +46,6 @@ struct config {
 	uint16_t op_gap_size;
 	bool center_floating;
 	bool zoom_gap;
-	unsigned int log_level;
 	uint16_t float_spawn_width;
 	uint16_t float_spawn_height;
 	unsigned int delete_register_size;

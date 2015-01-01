@@ -53,7 +53,6 @@ struct config conf = {
 	.op_gap_size = 4,
 	.center_floating = true,
 	.zoom_gap = true,
-	.log_level = LOG_DEBUG,
 	.float_spawn_width = 500,
 	.float_spawn_height = 500,
 	.delete_register_size = 5,
