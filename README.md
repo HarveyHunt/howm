@@ -285,5 +285,5 @@ while read -t 10 -r howmout || true; do
 done < "$ff" | dzen2 -h 20 -y -20 -ta r -bg "$bg" -fn "Inconsolata-dz:size=10" &
 
 # pass output to fifo
-/home/harvey/code/howm/howm > "$ff"
+/usr/bin/howm > "$ff"
 ```
