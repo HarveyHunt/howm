@@ -2,7 +2,7 @@ super + Return
     cottage -f spawn urxvt
 
 super + d
-    dmenu_run -i -b -nb "#70898F" -nf "black" -sf "#74718E"
+    dmenu_run -i -b -nb "#70898F" -nf "black" -sf "#74718E" -h 20
 
 super + {z, g, h, v}
     cottage -f change_layout {0, 1, 2, 3}
@@ -31,7 +31,7 @@ super + shift + space
 super + Delete
     cottage -f quit_howm 0
 
-super + BackSpace
+super + shift + Delete
     cottage -f restart_howm
 
 super + m
