@@ -12,11 +12,11 @@
  *
  * @ingroup commands
  */
-void change_mode(const int mode)
+void change_mode(const unsigned int mode)
 {
-	if (mode >= (int)END_MODES || mode == (int)cur_mode)
+	if (mode >= END_MODES || mode == cur_mode)
 		return;
 	cur_mode = mode;
-	log_info("Changing to mode %d", cur_mode);
+	log_info("Changing to mode %u", cur_mode);
 	howm_info();
 }

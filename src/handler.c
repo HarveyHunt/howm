@@ -1,17 +1,19 @@
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xcb_icccm.h>
-#include <X11/keysym.h>
+#include <xcb/xproto.h>
 
-#include "handler.h"
 #include "client.h"
-#include "op.h"
-#include "howm.h"
+#include "handler.h"
 #include "helper.h"
+#include "howm.h"
+#include "layout.h"
+#include "types.h"
 #include "workspace.h"
 #include "xcb_help.h"
-#include "layout.h"
 
 /**
  * @file handler.c
@@ -249,6 +251,9 @@ static void client_message_event(xcb_generic_event_t *ev)
 
 static void unhandled_event(xcb_generic_event_t *ev)
 {
+	/* If we have a LOG_LEVEL higher than LOG_DEBUG, then we will
+	 * get compiler warnings about ev not being used. */
+	UNUSED(ev);
 	log_debug("Unhandled event: %d", ev->response_type & ~0x80);
 }
 

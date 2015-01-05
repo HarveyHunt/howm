@@ -1,21 +1,20 @@
+#include <errno.h>
+#include <getopt.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <sys/select.h>
 #include <sys/socket.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/un.h>
 #include <unistd.h>
-#include <getopt.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 
-#include "howm.h"
-#include "workspace.h"
-#include "helper.h"
-#include "xcb_help.h"
-#include "scratchpad.h"
-#include "ipc.h"
 #include "handler.h"
+#include "helper.h"
+#include "howm.h"
+#include "ipc.h"
+#include "scratchpad.h"
+#include "xcb_help.h"
 
 /**
  * @file howm.c
@@ -54,7 +53,6 @@ struct config conf = {
 	.op_gap_size = 4,
 	.center_floating = true,
 	.zoom_gap = true,
-	.log_level = LOG_DEBUG,
 	.float_spawn_width = 500,
 	.float_spawn_height = 500,
 	.delete_register_size = 5,
@@ -105,8 +103,11 @@ static void setup(void)
 		wss[i].gap = GAP;
 	}
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
-	if (!screen)
+	if (!screen) {
 		log_err("Can't acquire the default screen.");
+		exit(EXIT_FAILURE);
+	}
+
 	screen_height = screen->height_in_pixels;
 	screen_width = screen->width_in_pixels;
 
@@ -130,8 +131,6 @@ static void setup(void)
  */
 int main(int argc, char *argv[])
 {
-	UNUSED(argc);
-	UNUSED(argv);
 	fd_set descs;
 	int sock_fd, dpy_fd, cmd_fd, ret;
 	ssize_t n;
@@ -219,9 +218,9 @@ int main(int argc, char *argv[])
 	if (!running && !restart) {
 		return retval;
 	} else if (!running && restart) {
-		char *const argv[] = {HOWM_PATH, NULL};
+		char *const args[] = {HOWM_PATH, NULL};
 
-		execv(argv[0], argv);
+		execv(args[0], args);
 		return EXIT_SUCCESS;
 	}
 	return EXIT_FAILURE;
@@ -238,13 +237,13 @@ void howm_info(void)
 	unsigned int w = 0;
 #if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
-		fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
+		fprintf(stdout, "%u:%d:%u:%d:%u\n", cur_mode,
 		       wss[w].layout, w, cur_state, wss[w].client_cnt);
 	}
 	fflush(stdout);
 #else
 	UNUSED(w);
-	fprintf(stdout, "%u:%d:%u:%u:%u\n", cur_mode,
+	fprintf(stdout, "%u:%d:%d:%d:%u\n", cur_mode,
 		wss[cw].layout, cw, cur_state, wss[cw].client_cnt);
 	fflush(stdout);
 #endif

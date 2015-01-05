@@ -1,11 +1,13 @@
 #include <string.h>
-#include "op.h"
-#include "howm.h"
-#include "workspace.h"
+#include <xcb/xproto.h>
+
 #include "client.h"
 #include "helper.h"
+#include "howm.h"
+#include "op.h"
 #include "scratchpad.h"
 #include "types.h"
+#include "workspace.h"
 
 /**
  * @file op.c
@@ -19,7 +21,7 @@
 
 static int cur_cnt = 1;
 
-static void change_gaps(const unsigned int type, int cnt, int size);
+static void change_gaps(const unsigned int type, unsigned int cnt, int size);
 
 /**
  * @brief An operator that kills an arbitrary amount of clients or workspaces.
@@ -29,7 +31,7 @@ static void change_gaps(const unsigned int type, int cnt, int size);
  *
  * @ingroup operators
  */
-void op_kill(const unsigned int type, int cnt)
+void op_kill(const unsigned int type, unsigned int cnt)
 {
 	if (type == WORKSPACE) {
 		log_info("Killing %d workspaces", cnt);
@@ -55,7 +57,7 @@ void op_kill(const unsigned int type, int cnt)
  *
  * @ingroup operators
  */
-void op_move_down(const unsigned int type, int cnt)
+void op_move_down(const unsigned int type, unsigned int cnt)
 {
 	if (type == WORKSPACE)
 		return;
@@ -71,7 +73,7 @@ void op_move_down(const unsigned int type, int cnt)
  *
  * @ingroup operators
  */
-void op_move_up(const unsigned int type, int cnt)
+void op_move_up(const unsigned int type, unsigned int cnt)
 {
 	if (type == WORKSPACE)
 		return;
@@ -86,7 +88,7 @@ void op_move_up(const unsigned int type, int cnt)
  *
  * @ingroup operators
  */
-void op_focus_up(const unsigned int type, int cnt)
+void op_focus_up(const unsigned int type, unsigned int cnt)
 {
 	while (cnt > 0) {
 		if (type == CLIENT)
@@ -107,7 +109,7 @@ void op_focus_up(const unsigned int type, int cnt)
  *
  * @ingroup operators
  */
-void op_focus_down(const unsigned int type, int cnt)
+void op_focus_down(const unsigned int type, unsigned int cnt)
 {
 	while (cnt > 0) {
 		if (type == CLIENT)
@@ -133,7 +135,7 @@ void op_focus_down(const unsigned int type, int cnt)
  *
  * @ingroup operators
  */
-void op_grow_gaps(const unsigned int type, int cnt)
+void op_grow_gaps(const unsigned int type, unsigned int cnt)
 {
 	change_gaps(type, cnt, conf.op_gap_size);
 }
@@ -146,7 +148,7 @@ void op_grow_gaps(const unsigned int type, int cnt)
  * @param size The amount of pixels to change the gap size by. This is
  * configured through conf.op_gap_size.
  */
-static void change_gaps(const unsigned int type, int cnt, int size)
+static void change_gaps(const unsigned int type, unsigned int cnt, int size)
 {
 	Client *c = NULL;
 
@@ -183,7 +185,7 @@ static void change_gaps(const unsigned int type, int cnt, int size)
  *
  * @ingroup operators
  */
-void op_cut(const unsigned int type, int cnt)
+void op_cut(const unsigned int type, unsigned int cnt)
 {
 	Client *tail = wss[cw].current;
 	Client *head = wss[cw].current;
@@ -262,7 +264,7 @@ void op_cut(const unsigned int type, int cnt)
  *
  * @ingroup operators
  */
-void op_shrink_gaps(const unsigned int type, int cnt)
+void op_shrink_gaps(const unsigned int type, unsigned int cnt)
 {
 	change_gaps(type, cnt, -conf.op_gap_size);
 }
@@ -274,7 +276,7 @@ void op_shrink_gaps(const unsigned int type, int cnt)
  *
  * @ingroup commands
  */
-void count(const int cnt)
+void count(const unsigned int cnt)
 {
 	if (cur_state != COUNT_STATE)
 		return;

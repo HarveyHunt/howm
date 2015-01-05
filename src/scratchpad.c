@@ -1,8 +1,9 @@
 #include <stdlib.h>
+#include <xcb/xproto.h>
+
 #include "scratchpad.h"
 #include "client.h"
 #include "helper.h"
-#include "workspace.h"
 #include "howm.h"
 
 /**
@@ -30,8 +31,10 @@ static Client *scratchpad;
 void stack_init(struct stack *s)
 {
 	s->contents = (Client **)malloc(sizeof(Client) * conf.delete_register_size);
-	if (!s->contents)
+	if (!s->contents) {
 		log_err("Failed to allocate memory for stack.");
+		exit(EXIT_FAILURE);
+	}
 }
 
 /**
@@ -42,6 +45,7 @@ void stack_init(struct stack *s)
 void stack_free(struct stack *s)
 {
 	free(s->contents);
+	s->contents = NULL;
 }
 
 /**

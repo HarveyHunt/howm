@@ -1,16 +1,16 @@
+#include <stdbool.h>
+#include <stdlib.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xcb_icccm.h>
-#include <stdbool.h>
-#include <string.h>
 
 #include "client.h"
-#include "workspace.h"
-#include "layout.h"
 #include "helper.h"
 #include "howm.h"
-#include "xcb_help.h"
+#include "layout.h"
 #include "scratchpad.h"
+#include "workspace.h"
+#include "xcb_help.h"
 
 /**
  * @file client.c
@@ -138,7 +138,7 @@ void update_focused_client(Client *c)
 				--float_trans : --all] = c->win;
 	}
 
-	for (float_trans = 0; float_trans <= all; ++float_trans)
+	for (float_trans = 1; float_trans <= all; ++float_trans)
 		elevate_window(windows[all - float_trans]);
 
 	xcb_ewmh_set_active_window(ewmh, 0, wss[cw].current->win);

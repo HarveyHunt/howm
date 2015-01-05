@@ -1,8 +1,11 @@
-#include "layout.h"
-#include "workspace.h"
+#include <stddef.h>
+#include <stdint.h>
+
+#include "client.h"
 #include "helper.h"
 #include "howm.h"
-#include "client.h"
+#include "layout.h"
+#include "types.h"
 #include "xcb_help.h"
 
 /**
@@ -20,7 +23,7 @@ static void stack(void);
 static void grid(void);
 static void zoom(void);
 
-void(*layout_handler[]) (void) = {
+static void(*layout_handler[]) (void) = {
 	[GRID] = grid,
 	[ZOOM] = zoom,
 	[HSTACK] = stack,
@@ -227,4 +230,3 @@ void last_layout(void)
 	log_info("Changing to last layout (%d)", previous_layout);
 	change_layout(previous_layout);
 }
-

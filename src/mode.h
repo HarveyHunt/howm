@@ -13,6 +13,6 @@
 
 enum modes { NORMAL, FOCUS, FLOATING, END_MODES };
 
-void change_mode(const int mode);
+void change_mode(const unsigned int mode);
 
 #endif

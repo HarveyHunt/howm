@@ -1,8 +1,6 @@
 #ifndef HELPER_H
 #define HELPER_H
 
-#include <err.h>
-#include <errno.h>
 #include <stdio.h>
 
 /**

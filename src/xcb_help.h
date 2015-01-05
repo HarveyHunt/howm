@@ -1,7 +1,10 @@
 #ifndef XCB_HELP_H
 #define XCB_HELP_H
 
-#include "client.h"
+#include <stdint.h>
+#include <xcb/xproto.h>
+
+#include "types.h"
 
 /**
  * @file xcb_help.h

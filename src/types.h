@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <xcb/xcb.h>
+#include <xcb/xproto.h>
 
 /**
  * @file types.h
@@ -46,7 +46,7 @@ typedef struct Client {
 typedef struct {
 	int layout; /**< The current layout of the WS, as defined in the
 				* layout enum. */
-	int client_cnt; /**< The amount of clients on this workspace. */
+	unsigned int client_cnt; /**< The amount of clients on this workspace. */
 	uint16_t gap; /**< The size of the useless gap between windows for this workspace. */
 	float master_ratio; /**< The ratio of the size of the master window
 				 compared to the screen's size. */
