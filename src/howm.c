@@ -96,7 +96,7 @@ static void setup(void)
 {
 	unsigned int i;
 
-	for (i = 1; i < WORKSPACES; i++) {
+	for (i = 1; i <= WORKSPACES; i++) {
 		wss[i].layout = WS_DEF_LAYOUT;
 		wss[i].bar_height = conf.bar_height;
 		wss[i].master_ratio = MASTER_RATIO;
