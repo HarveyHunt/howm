@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <xcb/xproto.h>
-#include <xcb/xcb.h>
 
 #include "scratchpad.h"
 #include "client.h"
