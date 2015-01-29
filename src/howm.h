@@ -22,6 +22,7 @@
 #define DEF_BORDER_PREV_FOCUS "#74718E"
 #define DEF_BORDER_URGENT "#FF0000"
 #define GAP 0
+#define VERSION "0.6-pre"
 
 /**
  * @file howm.h

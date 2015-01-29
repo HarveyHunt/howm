@@ -146,11 +146,17 @@ int main(int argc, char *argv[])
 
 	conf_path[0] = '\0';
 
-	while ((ch = getopt(argc, argv, "c:")) != -1) {
+	while ((ch = getopt(argc, argv, "vhc:")) != -1) {
 		switch (ch) {
 		case 'c':
 			snprintf(conf_path, sizeof(conf_path), "%s", optarg);
 			break;
+		case 'v':
+			printf("%s\n", VERSION);
+			exit(EXIT_SUCCESS);
+		case 'h':
+			printf("%s: %s", argv[0], "[-v|-h|-c CONFIG_PATH]\n");
+			exit(EXIT_SUCCESS);
 		}
 	}
 
