@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 	ssize_t n;
 	xcb_generic_event_t *ev;
 	char ch;
-	char conf_path[128];
+	char conf_path[128] = {0};
 	char *data = calloc(IPC_BUF_SIZE, sizeof(char));
 
 	if (!data) {
@@ -160,7 +160,11 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	/* TODO: Add default config paths. */
+	if (conf_path[0] == '\0') {
+		snprintf(conf_path, sizeof(conf_path), "%s/%s/%s/%s", getenv("HOME"),
+							".config", WM_NAME, CONF_NAME);
+		log_err("Using default config path: %s", conf_path);
+	}
 
 	dpy = xcb_connect(NULL, NULL);
 	if (xcb_connection_has_error(dpy)) {
@@ -171,10 +175,7 @@ int main(int argc, char *argv[])
 	sock_fd = ipc_init();
 	check_other_wm();
 	dpy_fd = xcb_get_file_descriptor(dpy);
-	if (conf_path[0] != '\0')
-		exec_config(conf_path);
-	else
-		log_err("No config path was supplied");
+	exec_config(conf_path);
 
 	while (running) {
 		if (!xcb_flush(dpy))

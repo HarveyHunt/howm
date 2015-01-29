@@ -12,6 +12,7 @@
 
 #define VERSION "0.6-pre"
 #define WM_NAME "howm"
+#define CONF_NAME "howmrc"
 #define HOWM_PATH "/usr/bin/howm"
 #define ENV_SOCK_VAR "HOWM_SOCK"
 #define DEF_SOCK_PATH "/tmp/howm"
