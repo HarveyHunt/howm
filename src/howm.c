@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
 			printf("%s\n", VERSION);
 			exit(EXIT_SUCCESS);
 		case 'h':
-			printf("%s: %s", argv[0], "[-v|-h|-c CONFIG_PATH]\n");
+			printf("%s: %s", WM_NAME, "[-v|-h|-c CONFIG_PATH]\n");
 			exit(EXIT_SUCCESS);
 		}
 	}

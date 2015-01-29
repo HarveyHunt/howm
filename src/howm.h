@@ -10,11 +10,14 @@
 #include "layout.h"
 #include "types.h"
 
-#define WORKSPACES 5
-#define IPC_BUF_SIZE 1024
+#define VERSION "0.6-pre"
+#define WM_NAME "howm"
 #define HOWM_PATH "/usr/bin/howm"
 #define ENV_SOCK_VAR "HOWM_SOCK"
 #define DEF_SOCK_PATH "/tmp/howm"
+#define IPC_BUF_SIZE 1024
+
+#define WORKSPACES 5
 #define WS_DEF_LAYOUT HSTACK
 #define MASTER_RATIO 0.6
 #define DEF_BORDER_FOCUS "#70898F"
@@ -22,7 +25,6 @@
 #define DEF_BORDER_PREV_FOCUS "#74718E"
 #define DEF_BORDER_URGENT "#FF0000"
 #define GAP 0
-#define VERSION "0.6-pre"
 
 /**
  * @file howm.h
