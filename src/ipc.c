@@ -62,12 +62,19 @@ static bool ipc_arg_to_bool(char *arg, int *err);
 int ipc_init(void)
 {
 	struct sockaddr_un addr;
+	char *sp = NULL;
+	char sock_path[256];
 	int sock_fd;
+
+	if ((sp = getenv(ENV_SOCK_VAR)) != NULL)
+		snprintf(sock_path, sizeof(sock_path), "%s", sp);
+	else
+		snprintf(sock_path, sizeof(sock_path), "%s", DEF_SOCK_PATH);
 
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_UNIX;
-	snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", SOCK_PATH);
-	unlink(SOCK_PATH);
+	snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", sock_path);
+	unlink(sock_path);
 	sock_fd = socket(AF_UNIX, SOCK_STREAM, 0);
 
 	if (sock_fd == -1) {
