@@ -17,6 +17,7 @@ Contents
 * [Installation](#installation)
 * [Commandline Arguments](#commandline-arguments)
 * [Configuration](#configuration)
+* [Changing Socket Path](#changing-socket-path)
 * [Keybinds](#keybinds)
 * [Scratchpad](#scratchpad)
 * [Motions](#motions)
@@ -79,6 +80,13 @@ cottage -c bar_height 20
 ```
 
 To override howm's default values at startup, cottage commands can be placed in a shell script and then executed by howm. Take a look at the [example howmrc](examples/howmrc) for ideas.
+
+##Changing Socket Path
+By default, howm will attempt to create a socket at ```/tmp/howm```, this can be overwritten by setting the environment variable ```HOWM_SOCK```. For example:
+
+```
+export HOW_SOCK=/tmp/howm_test
+```
 
 ##Keybinds
 
