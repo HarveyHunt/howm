@@ -66,7 +66,9 @@ int ipc_init(void)
 	char sock_path[256];
 	int sock_fd;
 
-	if ((sp = getenv(ENV_SOCK_VAR)) != NULL)
+	sp = getenv(ENV_SOCK_VAR);
+
+	if (sp != NULL)
 		snprintf(sock_path, sizeof(sock_path), "%s", sp);
 	else
 		snprintf(sock_path, sizeof(sock_path), "%s", DEF_SOCK_PATH);
