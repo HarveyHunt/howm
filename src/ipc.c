@@ -334,7 +334,7 @@ static int ipc_process_config(char **args)
 	int i = 0;
 	bool b = false;
 
-	if (!(args + 1))
+	if ((!*args) || (!*(args + 1)))
 		return IPC_ERR_TOO_FEW_ARGS;
 
 	if (strcmp("border_px", *args) == 0)
@@ -371,6 +371,8 @@ static int ipc_process_config(char **args)
 		SET_COLOUR(conf.border_prev_focus, *(args + 1));
 	else if (strcmp("border_urgent", *args) == 0)
 		SET_COLOUR(conf.border_urgent, *(args + 1));
+	else
+		err = IPC_ERR_NO_CONFIG;
 	update_focused_client(wss[cw].current);
 	return err;
 }
