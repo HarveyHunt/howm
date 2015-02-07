@@ -59,6 +59,14 @@ static int ipc_process_function(char **args);
 static int ipc_process_config(char **args);
 static bool ipc_arg_to_bool(char *arg, int *err);
 
+/**
+ * @brief Open a socket and return it.
+ *
+ * If a socket path is defined in the env variable defined as ENV_SOCK_VAR then
+ * use that - else use DEF_SOCK_PATH.
+ *
+ * @return A socket file descriptor.
+ */
 int ipc_init(void)
 {
 	struct sockaddr_un addr;
@@ -97,6 +105,15 @@ int ipc_init(void)
 	return sock_fd;
 }
 
+/**
+ * @brief Process a message depending on its type - a config message or a
+ * function call message.
+ *
+ * @param msg A buffer containing the message sent by cottage.
+ * @param len The length of the message.
+ *
+ * @return An error code resulting from processing msg.
+ */
 int ipc_process(char *msg, int len)
 {
 	int err = IPC_ERR_NONE;
@@ -328,13 +345,21 @@ static char **ipc_process_args(char *msg, int len, int *err)
 	return args;
 }
 
+/**
+ * @brief Process a config message. If the config option isn't recognised, set
+ * err to IPC_ERR_NO_CONFIG.
+ *
+ * @param args An array of strings representing the args.
+ *
+ * @return err containing the error (or lack of) that has occurred.
+ */
 static int ipc_process_config(char **args)
 {
 	int err = IPC_ERR_NONE;
 	int i = 0;
 	bool b = false;
 
-	if ((!*args) || (!*(args + 1)))
+	if (!args[0] || !args[1])
 		return IPC_ERR_TOO_FEW_ARGS;
 
 	if (strcmp("border_px", *args) == 0)
@@ -377,6 +402,16 @@ static int ipc_process_config(char **args)
 	return err;
 }
 
+/**
+ * @brief Convert an argument to a boolean.
+ *
+ * t and 1 are considered true, f and 0 are considered false.
+ *
+ * @param arg A string containing the argument.
+ * @param err Where an error code should be stored.
+ *
+ * @return A boolean, depending on whether the argument was true or false.
+ */
 static bool ipc_arg_to_bool(char *arg, int *err)
 {
 	if (strcmp("true", arg) == 0
