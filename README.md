@@ -95,7 +95,7 @@ cottage -c border_focus "#343434"
 By default, howm will attempt to create a socket at ```/tmp/howm```, this can be overwritten by setting the environment variable ```HOWM_SOCK```. For example:
 
 ```
-export HOW_SOCK=/tmp/howm_test
+export HOWM_SOCK=/tmp/howm_test
 ```
 
 ##Keybinds
