@@ -21,6 +21,7 @@ Contents
 * [Installation](#installation)
 * [Commandline Arguments](#commandline-arguments)
 * [Configuration](#configuration)
+* [Changing Socket Path](#changing-socket-path)
 * [Keybinds](#keybinds)
 * [Scratchpad](#scratchpad)
 * [Motions](#motions)
@@ -88,6 +89,13 @@ Note: When configuring colours in ```howmrc```, enclose the colour in quotes, su
 
 ```
 cottage -c border_focus "#343434"
+```
+
+##Changing Socket Path
+By default, howm will attempt to create a socket at ```/tmp/howm```, this can be overwritten by setting the environment variable ```HOWM_SOCK```. For example:
+
+```
+export HOW_SOCK=/tmp/howm_test
 ```
 
 ##Keybinds

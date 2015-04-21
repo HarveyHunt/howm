@@ -10,10 +10,15 @@
 #include "layout.h"
 #include "types.h"
 
-#define WORKSPACES 5
-#define IPC_BUF_SIZE 1024
+#define VERSION "0.5.1"
+#define WM_NAME "howm"
+#define CONF_NAME "howmrc"
 #define HOWM_PATH "/usr/bin/howm"
-#define SOCK_PATH "/tmp/howm"
+#define ENV_SOCK_VAR "HOWM_SOCK"
+#define DEF_SOCK_PATH "/tmp/howm"
+#define IPC_BUF_SIZE 1024
+
+#define WORKSPACES 5
 #define WS_DEF_LAYOUT HSTACK
 #define MASTER_RATIO 0.6
 #define DEF_BORDER_FOCUS "#70898F"

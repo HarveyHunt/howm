@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <xcb/xproto.h>
+#include <xcb/xcb.h>
 
 #include "types.h"
 
