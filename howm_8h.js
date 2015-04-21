@@ -1,15 +1,19 @@
 var howm_8h =
 [
     [ "config", "structconfig.html", "structconfig" ],
+    [ "CONF_NAME", "howm_8h.html#af789056e99a53687caf62861f646f67e", null ],
     [ "DEF_BORDER_FOCUS", "howm_8h.html#a2223f1079e8641cf3f8cb7739def0bd0", null ],
     [ "DEF_BORDER_PREV_FOCUS", "howm_8h.html#a0826be96c35302c767b433a2ee12bcee", null ],
     [ "DEF_BORDER_UNFOCUS", "howm_8h.html#aff5dbb16c1a94fd7ac31dcc57e9732c7", null ],
     [ "DEF_BORDER_URGENT", "howm_8h.html#ab9907c396ad0f96c827730639b53727b", null ],
+    [ "DEF_SOCK_PATH", "howm_8h.html#a12bb4ba924d3bb8ef013f610f8812a92", null ],
+    [ "ENV_SOCK_VAR", "howm_8h.html#a1e9b5dd3ae1d1208f44d5eb10f76e573", null ],
     [ "GAP", "howm_8h.html#a2a2129b3f6b7ce06869b7f16b81aff6f", null ],
     [ "HOWM_PATH", "howm_8h.html#a9dd5ac5acab5b89d170ce59ccc1e73bf", null ],
     [ "IPC_BUF_SIZE", "howm_8h.html#a3707ef00ae437e3aee053e6320c453c3", null ],
     [ "MASTER_RATIO", "howm_8h.html#ac6b6a7dcda6464ab1bb02cdc549f8043", null ],
-    [ "SOCK_PATH", "howm_8h.html#a42656f16d25e9d91bda923359e49a074", null ],
+    [ "VERSION", "howm_8h.html#a1c6d5de492ac61ad29aec7aa9a436bbf", null ],
+    [ "WM_NAME", "howm_8h.html#af473e2b8b0c151f2aba16200da439168", null ],
     [ "WORKSPACES", "howm_8h.html#a9915a00a52379231ab1f623e4eef07da", null ],
     [ "WS_DEF_LAYOUT", "howm_8h.html#ace8aafd5a2cf0feb727effce371a8ea6", null ],
     [ "states", "howm_8h.html#aa19be6305a5a4485e1e70de70ed7d677", [

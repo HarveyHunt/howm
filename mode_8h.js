@@ -6,5 +6,5 @@ var mode_8h =
       [ "FLOATING", "mode_8h.html#a811fe196a5d9d37857c2f8adeeaac3c6aacd87a682af0d31c6e5ccf7c54565510", null ],
       [ "END_MODES", "mode_8h.html#a811fe196a5d9d37857c2f8adeeaac3c6a622144ba7304ead2db525cbde4e3190c", null ]
     ] ],
-    [ "change_mode", "group__commands.html#ga5d82fe9b062b2a6b6353f1fa95804158", null ]
+    [ "change_mode", "group__commands.html#ga3f506b49bae7145f551bffc9ba234713", null ]
 ];

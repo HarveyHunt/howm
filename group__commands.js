@@ -1,8 +1,8 @@
 var group__commands =
 [
-    [ "change_mode", "group__commands.html#ga5d82fe9b062b2a6b6353f1fa95804158", null ],
+    [ "change_mode", "group__commands.html#ga3f506b49bae7145f551bffc9ba234713", null ],
     [ "change_ws", "group__commands.html#gaee599f8b226dcf421133706619959120", null ],
-    [ "count", "group__commands.html#gacdca804caba81f8caf2ec7c639dc339f", null ],
+    [ "count", "group__commands.html#ga38a301c013019e6c576a453a30c695df", null ],
     [ "current_to_ws", "group__commands.html#ga07494bd2d3cc57b2277aa8f16c727d77", null ],
     [ "focus_last_ws", "group__commands.html#gac6b9cf6a31e50aec3ab1a4c6d46d9154", null ],
     [ "focus_next_client", "group__commands.html#gae5d6127e2c85253e8d3860539cd7e08d", null ],

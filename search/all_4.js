@@ -7,6 +7,7 @@ var searchData=
   ['def_5fborder_5fprev_5ffocus',['DEF_BORDER_PREV_FOCUS',['../howm_8h.html#a0826be96c35302c767b433a2ee12bcee',1,'howm.h']]],
   ['def_5fborder_5funfocus',['DEF_BORDER_UNFOCUS',['../howm_8h.html#aff5dbb16c1a94fd7ac31dcc57e9732c7',1,'howm.h']]],
   ['def_5fborder_5furgent',['DEF_BORDER_URGENT',['../howm_8h.html#ab9907c396ad0f96c827730639b53727b',1,'howm.h']]],
+  ['def_5fsock_5fpath',['DEF_SOCK_PATH',['../howm_8h.html#a12bb4ba924d3bb8ef013f610f8812a92',1,'howm.h']]],
   ['del_5freg',['del_reg',['../scratchpad_8c.html#a37639c27cc1514fddabd4a972b317331',1,'del_reg():&#160;scratchpad.c'],['../scratchpad_8h.html#a37639c27cc1514fddabd4a972b317331',1,'del_reg():&#160;scratchpad.c']]],
   ['delete_5fregister_5fsize',['delete_register_size',['../structconfig.html#a08da720c0e1ea8827021d55e29e50a21',1,'config']]],
   ['delete_5fwin',['delete_win',['../xcb__help_8c.html#ad882e8e5d9f036cd48527a766bc49b46',1,'delete_win(xcb_window_t win):&#160;xcb_help.c'],['../xcb__help_8h.html#ad882e8e5d9f036cd48527a766bc49b46',1,'delete_win(xcb_window_t win):&#160;xcb_help.c']]],

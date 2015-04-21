@@ -4,15 +4,15 @@ var op_8h =
       [ "CLIENT", "op_8h.html#a0aa5bfdbf166c07f5c2a60dd1a8ff1dfa48e4cb37544c8e69715d45e5a83b2109", null ],
       [ "WORKSPACE", "op_8h.html#a0aa5bfdbf166c07f5c2a60dd1a8ff1dfa873ff4c3199f6649b435f6da5e0e265c", null ]
     ] ],
-    [ "count", "group__commands.html#gacdca804caba81f8caf2ec7c639dc339f", null ],
+    [ "count", "group__commands.html#ga38a301c013019e6c576a453a30c695df", null ],
     [ "motion", "group__commands.html#gae1d5bb92d170e644ee914fb6f2d3ad78", null ],
-    [ "op_cut", "group__operators.html#gaef11505d60c08dd980efd6f5354585f6", null ],
-    [ "op_focus_down", "group__operators.html#ga392722843c4ce60ba48435a4fde8a3d2", null ],
-    [ "op_focus_up", "group__operators.html#gaed77f754ba60f2dc0417fe2c47e1c2d7", null ],
-    [ "op_grow_gaps", "group__operators.html#ga587ca0d73e53059c3229dba85da4118f", null ],
-    [ "op_kill", "group__operators.html#gaa424f8fc9772b2c90c7c07b67856fa8b", null ],
-    [ "op_move_down", "group__operators.html#ga4e7484f0ad0af807e17de8d5a44cbffa", null ],
-    [ "op_move_up", "group__operators.html#ga509accc2a74d0de101458100edc5dadf", null ],
-    [ "op_shrink_gaps", "group__operators.html#gad2e487173fb88ec51e51750a00d5fc40", null ],
-    [ "operator_func", "op_8h.html#afc011a049a879668ddc2d1498888e97c", null ]
+    [ "op_cut", "group__operators.html#ga4f6e6bb68eb5221773509e8c3d9a09f2", null ],
+    [ "op_focus_down", "group__operators.html#ga8b05f382006c4d614fc3f306d41ebd64", null ],
+    [ "op_focus_up", "group__operators.html#gaec81d86b1e26639f1a324873aac95d31", null ],
+    [ "op_grow_gaps", "group__operators.html#gaf8ab0857475baaa6659f50fe970dad45", null ],
+    [ "op_kill", "group__operators.html#ga4b59aa60ffb29b70fc1e843556e50cf1", null ],
+    [ "op_move_down", "group__operators.html#ga255b87a4597872353137c60f7089c552", null ],
+    [ "op_move_up", "group__operators.html#gaef50a0d6ca4051a60b0eb6c622ac75b6", null ],
+    [ "op_shrink_gaps", "group__operators.html#gae3df2d19740cb29edc58e3fe93e7667e", null ],
+    [ "operator_func", "op_8h.html#a0e15f1afe2d9f2d2dfc12c5ef4e452ce", null ]
 ];

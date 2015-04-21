@@ -14,7 +14,6 @@ var structconfig =
     [ "focus_mouse", "structconfig.html#adc970f5d320b0fb003969322e0f6b405", null ],
     [ "focus_mouse_click", "structconfig.html#aaaa2ef0448cfa5320673b5315d61c58a", null ],
     [ "follow_move", "structconfig.html#a20f1d227f8a43709954c60bf95937a98", null ],
-    [ "log_level", "structconfig.html#a6d9db946bcdb4014c5515f5cbafa6103", null ],
     [ "op_gap_size", "structconfig.html#a215ce2c2b1d6dd61df9f775ddbb25faa", null ],
     [ "scratchpad_height", "structconfig.html#a9a21bee321ed04cc9fc8012cfd034c15", null ],
     [ "scratchpad_width", "structconfig.html#a25b21af8c5ca05456c80e4cda63a1d4a", null ],

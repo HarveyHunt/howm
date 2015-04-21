@@ -1,7 +1,7 @@
 var structWorkspace =
 [
     [ "bar_height", "structWorkspace.html#acbce378acb9fd16ad717437c0382a879", null ],
-    [ "client_cnt", "structWorkspace.html#acd08931cfea0d1e66fe9f11a5fa62c1b", null ],
+    [ "client_cnt", "structWorkspace.html#aa5aa2915f7317d07c88c2a74f664d49a", null ],
     [ "current", "structWorkspace.html#a342dfaf5a6dedc810d7f9f57db50b23e", null ],
     [ "gap", "structWorkspace.html#ac27a3b428bf8dc5083c27d25695f16d3", null ],
     [ "head", "structWorkspace.html#a7fbd58a8406bbc296bc19f755483eb10", null ],

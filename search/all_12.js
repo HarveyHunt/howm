@@ -18,7 +18,6 @@ var searchData=
   ['setup',['setup',['../howm_8c.html#a635bebcf1bdfa7de6f25c21a01451d64',1,'howm.c']]],
   ['setup_5fewmh',['setup_ewmh',['../xcb__help_8c.html#a6a852b61f657d58ddaf73ffcb640d497',1,'setup_ewmh(void):&#160;xcb_help.c'],['../xcb__help_8h.html#a6a852b61f657d58ddaf73ffcb640d497',1,'setup_ewmh(void):&#160;xcb_help.c']]],
   ['size',['size',['../structstack.html#acba32886504fb2d759031717a3334e77',1,'stack']]],
-  ['sock_5fpath',['SOCK_PATH',['../howm_8h.html#a42656f16d25e9d91bda923359e49a074',1,'howm.h']]],
   ['spawn',['spawn',['../group__commands.html#ga84f3c791332e2434198d49d5858faf7e',1,'spawn(char *cmd[]):&#160;howm.c'],['../group__commands.html#ga84f3c791332e2434198d49d5858faf7e',1,'spawn(char *cmd[]):&#160;howm.c']]],
   ['stack',['stack',['../structstack.html',1,'stack'],['../layout_8c.html#ac3d199e9b5650d6845baafc860a49399',1,'stack(void):&#160;layout.c']]],
   ['stack_5ffree',['stack_free',['../scratchpad_8c.html#a82861cb47d9c7f20450d47d9515321a4',1,'stack_free(struct stack *s):&#160;scratchpad.c'],['../scratchpad_8h.html#a82861cb47d9c7f20450d47d9515321a4',1,'stack_free(struct stack *s):&#160;scratchpad.c']]],

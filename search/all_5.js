@@ -5,6 +5,7 @@ var searchData=
   ['end_5fmodes',['END_MODES',['../mode_8h.html#a811fe196a5d9d37857c2f8adeeaac3c6a622144ba7304ead2db525cbde4e3190c',1,'mode.h']]],
   ['end_5fstate',['END_STATE',['../howm_8h.html#aa19be6305a5a4485e1e70de70ed7d677a3b8fcb01cbfafaacda7074a210e8b1de',1,'howm.h']]],
   ['enter_5fevent',['enter_event',['../handler_8c.html#a9e3dbb1f625f857dbac39bb6cd3835c7',1,'handler.c']]],
+  ['env_5fsock_5fvar',['ENV_SOCK_VAR',['../howm_8h.html#a1e9b5dd3ae1d1208f44d5eb10f76e573',1,'howm.h']]],
   ['equalmods',['EQUALMODS',['../helper_8h.html#a918c8a9a844a1ede0c0f7837260ed4e9',1,'helper.h']]],
   ['ewmh',['ewmh',['../howm_8c.html#a9ff7518503929d6e1fdb1d7f41e9a118',1,'ewmh():&#160;howm.c'],['../howm_8h.html#a9ff7518503929d6e1fdb1d7f41e9a118',1,'ewmh():&#160;howm.c']]],
   ['ewmh_5fprocess_5fwm_5fstate',['ewmh_process_wm_state',['../xcb__help_8c.html#a5a5c97d18d0d32f318ae5b5d9b79d61a',1,'ewmh_process_wm_state(Client *c, xcb_atom_t a, int action):&#160;xcb_help.c'],['../xcb__help_8h.html#a5a5c97d18d0d32f318ae5b5d9b79d61a',1,'ewmh_process_wm_state(Client *c, xcb_atom_t a, int action):&#160;xcb_help.c']]],
