@@ -10,7 +10,7 @@
 #include "layout.h"
 #include "types.h"
 
-#define VERSION "0.6-pre"
+#define VERSION "0.5.1"
 #define WM_NAME "howm"
 #define CONF_NAME "howmrc"
 #define HOWM_PATH "/usr/bin/howm"
