@@ -85,7 +85,7 @@ To override howm's default values at startup, cottage commands can be placed in 
 By default, howm will attempt to create a socket at ```/tmp/howm```, this can be overwritten by setting the environment variable ```HOWM_SOCK```. For example:
 
 ```
-export HOW_SOCK=/tmp/howm_test
+export HOWM_SOCK=/tmp/howm_test
 ```
 
 ##Keybinds
