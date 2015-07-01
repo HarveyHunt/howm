@@ -142,7 +142,7 @@ void focus_window(xcb_window_t win)
 		update_focused_client(c);
 	else
 		/* We don't want warnings for clicking the root window... */
-		if (!win == screen->root)
+		if (win != screen->root)
 			log_warn("No client owns the window <0x%x>", win);
 }
 
