@@ -212,7 +212,7 @@ static void unmap_event(xcb_generic_event_t *ev)
 		return;
 	log_info("Received unmap request for client <%p>", c);
 
-	if (!ue->event == screen->root) {
+	if (ue->event != screen->root) {
 		remove_client(c, true);
 		arrange_windows();
 	}
