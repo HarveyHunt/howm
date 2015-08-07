@@ -10,11 +10,7 @@ install:
     - sudo apt-get install -y libxcb-icccm4-dev
     - sudo apt-get install -y libxcb-ewmh1-dev
     - sudo apt-get install -y xcb-proto
-before_script:
-    - wget https://raw.githubusercontent.com/torvalds/linux/master/scripts/checkpatch.pl
-    - wget https://github.com/torvalds/linux/blob/master/scripts/spelling.txt
-    - chmod +x checkpatch.pl
-script: make debug && make check
+script: make debug
 notifications:
     irc:
         channels:

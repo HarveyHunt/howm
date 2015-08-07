@@ -1,4 +1,5 @@
 #include <string.h>
+#include <xcb/xcb.h>
 #include <xcb/xproto.h>
 
 #include "client.h"

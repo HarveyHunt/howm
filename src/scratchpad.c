@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <xcb/xcb.h>
 #include <xcb/xproto.h>
 
 #include "scratchpad.h"

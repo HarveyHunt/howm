@@ -1,6 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include <xcb/xcb.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <xcb/xproto.h>
