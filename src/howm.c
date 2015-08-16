@@ -198,7 +198,6 @@ int main(int argc, char *argv[])
 					ret = ipc_process(data, n);
 					if (write(cmd_fd, &ret, sizeof(int)) == -1)
 						log_err("Unable to send response. errno: %d", errno);
-					close(cmd_fd);
 				}
 			}
 			if (FD_ISSET(dpy_fd, &descs)) {
