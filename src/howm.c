@@ -15,6 +15,7 @@
 #include "ipc.h"
 #include "scratchpad.h"
 #include "xcb_help.h"
+#include "workspace.h"
 
 /**
  * @file howm.c
@@ -255,19 +256,13 @@ void howm_info(void)
  */
 static void cleanup(void)
 {
-	xcb_window_t *w;
-	xcb_query_tree_reply_t *q;
-	uint16_t i;
+	int i;
 
 	log_warn("Cleaning up");
 
-	q = xcb_query_tree_reply(dpy, xcb_query_tree(dpy, screen->root), 0);
-	if (q) {
-		w = xcb_query_tree_children(q);
-		for (i = 0; i != q->children_len; ++i)
-			delete_win(w[i]);
-	free(q);
-	}
+	for (i = 1; i < WORKSPACES; i++)
+		kill_ws(i);
+
 	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, screen->root,
 			XCB_CURRENT_TIME);
 	xcb_ewmh_connection_wipe(ewmh);

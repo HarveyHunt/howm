@@ -25,10 +25,14 @@
  */
 void kill_ws(const int ws)
 {
-	log_info("Killing off workspace <%d>", ws);
+	if (!wss[ws].client_cnt)
+		return;
+
 	while (wss[ws].head)
 		kill_client(ws, wss[ws].client_cnt == 1
 				&& cw == ws);
+
+	log_info("Killed off workspace <%d>", ws);
 }
 
 /**
