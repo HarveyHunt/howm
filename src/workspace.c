@@ -45,7 +45,7 @@ void kill_ws(const int ws)
  *
  * @return A corrected workspace number.
  */
-int correct_ws(unsigned int ws)
+inline int correct_ws(unsigned int ws)
 {
 	if (ws > WORKSPACES)
 		return ws - WORKSPACES;
