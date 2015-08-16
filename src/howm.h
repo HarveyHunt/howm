@@ -74,7 +74,6 @@ extern int cur_state;
 extern xcb_screen_t *screen;
 extern xcb_ewmh_connection_t *ewmh;
 extern bool running;
-extern bool restart;
 
 extern Workspace wss[];
 
@@ -86,7 +85,6 @@ extern xcb_atom_t wm_atoms[];
 void howm_info(void);
 uint32_t get_colour(char *colour);
 void quit_howm(const int exit_status);
-void restart_howm(void);
 void spawn(char *cmd[]);
 
 #endif

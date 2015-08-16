@@ -31,9 +31,6 @@ super + shift + space
 super + Delete
     cottage -f quit_howm 0
 
-super + shift + Delete
-    cottage -f restart_howm
-
 super + m
     cottage -f resize_master 5
 

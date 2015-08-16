@@ -62,7 +62,6 @@ struct config conf = {
 
 
 bool running = true;
-bool restart = false;
 xcb_connection_t *dpy = NULL;
 xcb_screen_t *screen = NULL;
 xcb_ewmh_connection_t *ewmh = NULL;
@@ -71,7 +70,7 @@ const char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 
 int numlockmask = 0;
-int retval = 0;
+int retval = EXIT_FAILURE;
 int last_ws = 0;
 int previous_layout = 0;
 int cw = 1;
@@ -221,15 +220,8 @@ int main(int argc, char *argv[])
 	close(sock_fd);
 	free(data);
 
-	if (!running && !restart) {
+	if (!running)
 		return retval;
-	} else if (!running && restart) {
-		char *const args[] = {HOWM_PATH, NULL};
-
-		execv(args[0], args);
-		return EXIT_SUCCESS;
-	}
-	return EXIT_FAILURE;
 }
 
 /**
@@ -327,18 +319,6 @@ static void exec_config(char *conf_path)
 	setsid();
 	execl(conf_path, conf_path, NULL);
 	log_err("Couldn't execute the configuration file %s", conf_path);
-}
-
-/**
- * @brief Restart howm.
- *
- * @ingroup commands
- */
-void restart_howm(void)
-{
-	log_warn("Restarting.");
-	running = false;
-	restart = true;
 }
 
 /**

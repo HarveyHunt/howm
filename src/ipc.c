@@ -192,8 +192,6 @@ static int ipc_process_function(char **args)
 		change_mode(ipc_arg_to_int(*(args + 1), &err, NORMAL, END_MODES - 1));
 	} else if (strncmp(*args, "quit_howm", strlen("quit_howm")) == 0) {
 		quit_howm(ipc_arg_to_int(*(args + 1), &err, EXIT_SUCCESS, EXIT_FAILURE));
-	} else if (strncmp(*args, "restart_howm", strlen("restart_howm")) == 0) {
-		restart_howm();
 	} else if (strncmp(*args, "paste", strlen("paste")) == 0) {
 		paste();
 	} else if (strncmp(*args, "change_layout", strlen("change_layout")) == 0) {
