@@ -94,6 +94,8 @@ static void map_event(xcb_generic_event_t *ev)
 
 			if (a == ewmh->_NET_WM_WINDOW_TYPE_DOCK
 				|| a == ewmh->_NET_WM_WINDOW_TYPE_TOOLBAR) {
+				xcb_map_window(dpy, c->win);
+				remove_client(c, false);
 				return;
 			} else if (a == ewmh->_NET_WM_WINDOW_TYPE_NOTIFICATION
 				|| a == ewmh->_NET_WM_WINDOW_TYPE_DROPDOWN_MENU
