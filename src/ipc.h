@@ -17,6 +17,7 @@ enum ipc_errs { IPC_ERR_NONE, IPC_ERR_SYNTAX, IPC_ERR_ALLOC, IPC_ERR_NO_FUNC,
 	IPC_ERR_UNKNOWN_TYPE, IPC_ERR_NO_CONFIG };
 enum arg_types { TYPE_IGNORE, TYPE_INT, TYPE_STR };
 
+void ipc_cleanup(void);
 int ipc_init(void);
 int ipc_process(char *msg, int len);
 

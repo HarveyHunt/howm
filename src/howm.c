@@ -171,6 +171,7 @@ int main(int argc, char *argv[])
 		log_err("Can't open X connection");
 		exit(EXIT_FAILURE);
 	}
+
 	setup();
 	sock_fd = ipc_init();
 	check_other_wm();
@@ -269,6 +270,7 @@ static void cleanup(void)
 	if (ewmh)
 		free(ewmh);
 	stack_free(&del_reg);
+	ipc_cleanup();
 }
 
 /**

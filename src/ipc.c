@@ -106,6 +106,19 @@ int ipc_init(void)
 }
 
 /**
+ * @brief Delete the UNIX socket file.
+ */
+void ipc_cleanup(void)
+{
+	char *sp = getenv(ENV_SOCK_VAR);
+
+	if (sp)
+		unlink(sp);
+	else
+		unlink(DEF_SOCK_PATH);
+}
+
+/**
  * @brief Process a message depending on its type - a config message or a
  * function call message.
  *
@@ -129,7 +142,6 @@ int ipc_process(char *msg, int len)
 	free(args);
 	return err;
 }
-
 
 /**
  * @brief Receive a char array from a UNIX socket and subsequently call a
