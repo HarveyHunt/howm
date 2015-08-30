@@ -444,10 +444,9 @@ void draw_clients(void)
 			set_border_width(c->win, 0);
 			move_resize(c->win, c->x + c->gap, c->y + c->gap,
 					c->w - (2 * c->gap), c->h - (2 * c->gap));
-		} else if (c->is_floating) {
+		} else if (c->is_floating && !c->is_fullscreen) {
 			set_border_width(c->win, conf.border_px);
-			move_resize(c->win, c->x, c->y,
-					c->w, c->h);
+			move_resize(c->win, c->x, c->y, c->w, c->h);
 		} else if (c->is_fullscreen || wss[cw].layout == ZOOM) {
 			set_border_width(c->win, 0);
 			move_resize(c->win, c->x, c->y, c->w, c->h);
