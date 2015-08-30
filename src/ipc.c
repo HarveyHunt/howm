@@ -132,9 +132,40 @@ int ipc_process(char *msg, int len)
 static int ipc_process_function(char **args)
 {
 	int err = IPC_ERR_NONE;
+	int i = 0;
+
+#define CALL_INT(func, arg, lower, upper) \
+	do { \
+		i = ipc_arg_to_int(arg, &err, lower, upper); \
+		if (err == IPC_ERR_NONE) \
+			func(i); \
+	} while (0)
 
 	if (strncmp(*args, "teleport_client", strlen("teleport_client")) == 0) {
-		teleport_client(ipc_arg_to_int(*(args + 1), &err, TOP_LEFT, BOTTOM_RIGHT));
+		CALL_INT(teleport_client, *(args + 1), TOP_LEFT, BOTTOM_RIGHT);
+	} else if (strncmp(*args, "quit_howm", strlen("quit_howm")) == 0) {
+		CALL_INT(quit_howm, *(args + 1), EXIT_SUCCESS, EXIT_FAILURE);
+	} else if (strncmp(*args, "current_to_ws", strlen("current_to_ws")) == 0) {
+		CALL_INT(current_to_ws, *(args + 1), 1, WORKSPACES);
+	} else if (strncmp(*args, "resize_float_width", strlen("resize_float_width")) == 0) {
+		CALL_INT(resize_float_width, *(args + 1), -100, 100);
+	} else if (strncmp(*args, "resize_float_height", strlen("resize_float_height")) == 0) {
+		CALL_INT(resize_float_height, *(args + 1), -100, 100);
+	} else if (strncmp(*args, "move_float_x", strlen("move_float_x")) == 0) {
+		CALL_INT(move_float_x, *(args + 1), -100, 100);
+	} else if (strncmp(*args, "move_float_y", strlen("move_float_y")) == 0) {
+		CALL_INT(move_float_y, *(args + 1), -100, 100);
+	} else if (strncmp(*args, "resize_master", strlen("resize_master")) == 0) {
+		CALL_INT(resize_master, *(args + 1), -100, 100);
+	} else if (strncmp(*args, "change_ws", strlen("change_ws")) == 0) {
+		CALL_INT(change_ws, *(args + 1), 1, WORKSPACES);
+	} else if (strncmp(*args, "change_mode", strlen("change_mode")) == 0) {
+		CALL_INT(change_mode, *(args + 1), NORMAL, END_MODES - 1);
+	} else if (strncmp(*args, "change_layout", strlen("change_layout")) == 0) {
+		CALL_INT(change_layout, *(args + 1), ZOOM, END_LAYOUT - 1);
+	} else if (strncmp(*args, "count", strlen("count")) == 0) {
+		CALL_INT(count, *(args + 1), 1, 9);
+#undef CALL_INT
 	} else if (strncmp(*args, "move_current_down", strlen("move_current_down")) == 0) {
 		move_current_down();
 	} else if (strncmp(*args, "move_current_up", strlen("move_current_up")) == 0) {
@@ -143,18 +174,8 @@ static int ipc_process_function(char **args)
 		focus_next_client();
 	} else if (strncmp(*args, "focus_prev_client", strlen("focus_prev_client")) == 0) {
 		focus_prev_client();
-	} else if (strncmp(*args, "current_to_ws", strlen("current_to_ws")) == 0) {
-		current_to_ws(ipc_arg_to_int(*(args + 1), &err, 1, WORKSPACES));
 	} else if (strncmp(*args, "toggle_float", strlen("toggle_float")) == 0) {
 		toggle_float();
-	} else if (strncmp(*args, "resize_float_width", strlen("resize_float_width")) == 0) {
-		resize_float_width(ipc_arg_to_int(*(args + 1), &err, -100, 100));
-	} else if (strncmp(*args, "resize_float_height", strlen("resize_float_height")) == 0) {
-		resize_float_height(ipc_arg_to_int(*(args + 1), &err, -100, 100));
-	} else if (strncmp(*args, "move_float_x", strlen("move_float_x")) == 0) {
-		move_float_x(ipc_arg_to_int(*(args + 1), &err, -100, 100));
-	} else if (strncmp(*args, "move_float_y", strlen("move_float_y")) == 0) {
-		move_float_y(ipc_arg_to_int(*(args + 1), &err, -100, 100));
 	} else if (strncmp(*args, "toggle_fullscreen", strlen("toggle_fullscreen")) == 0) {
 		toggle_fullscreen();
 	} else if (strncmp(*args, "focus_urgent", strlen("focus_urgent")) == 0) {
@@ -167,24 +188,14 @@ static int ipc_process_function(char **args)
 		make_master();
 	} else if (strncmp(*args, "toggle_bar", strlen("toggle_bar")) == 0) {
 		toggle_bar();
-	} else if (strncmp(*args, "resize_master", strlen("resize_master")) == 0) {
-		resize_master(ipc_arg_to_int(*(args + 1), &err, -100, 100));
 	} else if (strncmp(*args, "focus_next_ws", strlen("focus_next_ws")) == 0) {
 		focus_next_ws();
 	} else if (strncmp(*args, "focus_prev_ws", strlen("focus_prev_ws")) == 0) {
 		focus_prev_ws();
 	} else if (strncmp(*args, "focus_last_ws", strlen("focus_last_ws")) == 0) {
 		focus_last_ws();
-	} else if (strncmp(*args, "change_ws", strlen("change_ws")) == 0) {
-		change_ws(ipc_arg_to_int(*(args + 1), &err, 1, WORKSPACES));
-	} else if (strncmp(*args, "change_mode", strlen("change_mode")) == 0) {
-		change_mode(ipc_arg_to_int(*(args + 1), &err, NORMAL, END_MODES - 1));
-	} else if (strncmp(*args, "quit_howm", strlen("quit_howm")) == 0) {
-		quit_howm(ipc_arg_to_int(*(args + 1), &err, EXIT_SUCCESS, EXIT_FAILURE));
 	} else if (strncmp(*args, "paste", strlen("paste")) == 0) {
 		paste();
-	} else if (strncmp(*args, "change_layout", strlen("change_layout")) == 0) {
-		change_layout(ipc_arg_to_int(*(args + 1), &err, ZOOM, END_LAYOUT - 1));
 	} else if (strncmp(*args, "next_layout", strlen("next_layout")) == 0) {
 		next_layout();
 	} else if (strncmp(*args, "prev_layout", strlen("prev_layout")) == 0) {
@@ -193,8 +204,6 @@ static int ipc_process_function(char **args)
 		last_layout();
 	} else if (strncmp(*args, "spawn", strlen("spawn")) == 0) {
 		spawn(args + 1);
-	} else if (strncmp(*args, "count", strlen("count")) == 0) {
-		count(ipc_arg_to_int(*(args + 1), &err, 1, 9));
 	} else if (strncmp(*args, "motion", strlen("motion")) == 0) {
 		motion(*(args + 1));
 	} else if (strncmp(*args, "op_kill", strlen("op_kill")) == 0) {
