@@ -20,15 +20,15 @@
 #define SET_INT(opt, arg, lower, upper) \
 	do { \
 		i = ipc_arg_to_int(arg, &err, lower, upper); \
-			if (err == IPC_ERR_NONE) \
-				opt = i; \
+		if (err == IPC_ERR_NONE) \
+			opt = i; \
 	} while (0)
 
 #define SET_BOOL(opt, arg) \
 	do { \
 		b = ipc_arg_to_bool(arg, &err); \
-			if (err == IPC_ERR_NONE) \
-				opt = b; \
+		if (err == IPC_ERR_NONE) \
+			opt = b; \
 	} while (0)
 
 #define SET_COLOUR(opt, arg) \
