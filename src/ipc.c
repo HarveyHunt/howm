@@ -17,29 +17,6 @@
 #include "types.h"
 #include "workspace.h"
 
-#define SET_INT(opt, arg, lower, upper) \
-	do { \
-		i = ipc_arg_to_int(arg, &err, lower, upper); \
-		if (err == IPC_ERR_NONE) \
-			opt = i; \
-	} while (0)
-
-#define SET_BOOL(opt, arg) \
-	do { \
-		b = ipc_arg_to_bool(arg, &err); \
-		if (err == IPC_ERR_NONE) \
-			opt = b; \
-	} while (0)
-
-#define SET_COLOUR(opt, arg) \
-	do { \
-		if (strlen(arg) > 7) \
-			return IPC_ERR_ARG_TOO_LARGE; \
-		else if (strlen(arg) < 7) \
-			return IPC_ERR_ARG_TOO_SMALL; \
-		opt = get_colour(arg); \
-	} while (0)
-
 enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
 
 /**
@@ -372,6 +349,13 @@ static int ipc_process_config(char **args)
 	if (!args[0] || !args[1])
 		return IPC_ERR_TOO_FEW_ARGS;
 
+#define SET_INT(opt, arg, lower, upper) \
+	do { \
+		i = ipc_arg_to_int(arg, &err, lower, upper); \
+			if (err == IPC_ERR_NONE) \
+				opt = i; \
+	} while (0)
+
 	if (strcmp("border_px", *args) == 0)
 		SET_INT(conf.border_px, *(args + 1), 0, 32);
 	else if (strcmp("float_spawn_height", *args) == 0)
@@ -386,6 +370,14 @@ static int ipc_process_config(char **args)
 		SET_INT(conf.op_gap_size, *(args + 1), 0, 32);
 	else if (strcmp("bar_height", *args) == 0)
 		SET_INT(conf.bar_height, *(args + 1), 0, screen_height);
+#undef SET_INT
+#define SET_BOOL(opt, arg) \
+	do { \
+		b = ipc_arg_to_bool(arg, &err); \
+			if (err == IPC_ERR_NONE) \
+				opt = b; \
+	} while (0)
+
 	else if (strcmp("focus_mouse", *args) == 0)
 		SET_BOOL(conf.focus_mouse, *(args + 1));
 	else if (strcmp("focus_mouse_click", *args) == 0)
@@ -398,6 +390,16 @@ static int ipc_process_config(char **args)
 		SET_BOOL(conf.center_floating, *(args + 1));
 	else if (strcmp("bar_bottom", *args) == 0)
 		SET_BOOL(conf.bar_bottom, *(args + 1));
+#undef SET_BOOL
+#define SET_COLOUR(opt, arg) \
+	do { \
+		if (strlen(arg) > 7) \
+			return IPC_ERR_ARG_TOO_LARGE; \
+		else if (strlen(arg) < 7) \
+			return IPC_ERR_ARG_TOO_SMALL; \
+		opt = get_colour(arg); \
+	} while (0)
+
 	else if (strcmp("border_focus", *args) == 0)
 		SET_COLOUR(conf.border_focus, *(args + 1));
 	else if (strcmp("border_unfocus", *args) == 0)
@@ -410,6 +412,7 @@ static int ipc_process_config(char **args)
 		err = IPC_ERR_NO_CONFIG;
 	update_focused_client(wss[cw].current);
 	return err;
+#undef SET_COLOUR
 }
 
 /**
