@@ -13,7 +13,7 @@
  *
  * @author Harvey Hunt
  *
- * @date 2014
+ * @date 2015
  *
  * @brief The portion of howm that interacts with the X server. Perhaps this
  * could be conditionally included if we decide to use wayland as well.

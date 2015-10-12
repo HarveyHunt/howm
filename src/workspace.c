@@ -12,7 +12,7 @@
  *
  * @author Harvey Hunt
  *
- * @date 2014
+ * @date 2015
  *
  * @brief Helper functions for dealing with an entire workspace or being able
  * to correctly calculate a workspace index.

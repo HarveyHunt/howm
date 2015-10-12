@@ -22,7 +22,7 @@
  *
  * @author Harvey Hunt
  *
- * @date 2014
+ * @date 2015
  *
  * @brief The glue that holds howm together. This file houses the main event
  * loop as well as setup and cleanup.

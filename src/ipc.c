@@ -24,7 +24,7 @@ enum msg_type { MSG_FUNCTION = 1, MSG_CONFIG };
  *
  * @author Harvey Hunt
  *
- * @date 2014
+ * @date 2015
  *
  * @brief Everything required to parse, interpret and respond to messages that
  * are sent over IPC.

@@ -17,7 +17,7 @@
  *
  * @author Harvey Hunt
  *
- * @date 2014
+ * @date 2015
  *
  * @brief Operations that are to be performed on clients, such as moving them
  * around in the client list.
