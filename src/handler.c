@@ -119,10 +119,10 @@ static void map_event(xcb_generic_event_t *ev)
 	if (geom) {
 		log_info("Mapped client's initial geom is %ux%u+%d+%d", geom->width, geom->height, geom->x, geom->y);
 		if (c->is_floating) {
-			c->w = geom->width > 1 ? geom->width : conf.float_spawn_width;
-			c->h = geom->height > 1 ? geom->height : conf.float_spawn_height;
-			c->x = conf.center_floating ? (screen_width / 2) - (c->w / 2) : geom->x;
-			c->y = conf.center_floating ? (screen_height - wss[cw].bar_height - c->h) / 2 : geom->y;
+			c->rect.width = geom->width > 1 ? geom->width : conf.float_spawn_width;
+			c->rect.height = geom->height > 1 ? geom->height : conf.float_spawn_height;
+			c->rect.x = conf.center_floating ? (screen_width / 2) - (c->rect.width / 2) : geom->x;
+			c->rect.y = conf.center_floating ? (screen_height - wss[cw].bar_height - c->rect.height) / 2 : geom->y;
 		}
 		free(geom);
 	}

@@ -442,18 +442,18 @@ void draw_clients(void)
 	for (c = wss[cw].head; c; c = c->next)
 		if (wss[cw].layout == ZOOM && conf.zoom_gap && !c->is_floating) {
 			set_border_width(c->win, 0);
-			move_resize(c->win, c->x + c->gap, c->y + c->gap,
-					c->w - (2 * c->gap), c->h - (2 * c->gap));
+			move_resize(c->win, c->rect.x + c->gap, c->rect.y + c->gap,
+					c->rect.width - (2 * c->gap), c->rect.height - (2 * c->gap));
 		} else if (c->is_floating && !c->is_fullscreen) {
 			set_border_width(c->win, conf.border_px);
-			move_resize(c->win, c->x, c->y, c->w, c->h);
+			move_resize(c->win, c->rect.x, c->rect.y, c->rect.width, c->rect.height);
 		} else if (c->is_fullscreen || wss[cw].layout == ZOOM) {
 			set_border_width(c->win, 0);
-			move_resize(c->win, c->x, c->y, c->w, c->h);
+			move_resize(c->win, c->rect.x, c->rect.y, c->rect.width, c->rect.height);
 		} else {
-			move_resize(c->win, c->x + c->gap, c->y + c->gap,
-					c->w - (2 * (c->gap + conf.border_px)),
-					c->h - (2 * (c->gap + conf.border_px)));
+			move_resize(c->win, c->rect.x + c->gap, c->rect.y + c->gap,
+					c->rect.width - (2 * (c->gap + conf.border_px)),
+					c->rect.height - (2 * (c->gap + conf.border_px)));
 		}
 }
 
@@ -469,11 +469,8 @@ void draw_clients(void)
 void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
 	log_debug("Changing geometry of client <%p> from {%d, %d, %d, %d} to {%d, %d, %d, %d}",
-			c, c->x, c->y, c->w, c->h, x, y, w, h);
-	c->x = x;
-	c->y = y;
-	c->w = w;
-	c->h = h;
+			c, c->rect.x, c->rect.y, c->rect.width, c->rect.height, x, y, w, h);
+	c->rect = (xcb_rectangle_t) { x, y, w, h };
 }
 
 /**
@@ -589,38 +586,38 @@ void teleport_client(const int direction)
 
 	/* A bit naughty, but it looks nicer- doesn't it?*/
 	uint16_t g = wss[cw].current->gap;
-	uint16_t w = wss[cw].current->w;
-	uint16_t h = wss[cw].current->h;
+	uint16_t w = wss[cw].current->rect.width;
+	uint16_t h = wss[cw].current->rect.height;
 	uint16_t bh = wss[cw].bar_height;
 
 	switch (direction) {
 	case TOP_LEFT:
-		wss[cw].current->x = g;
-		wss[cw].current->y = (conf.bar_bottom ? 0 : bh) + g;
+		wss[cw].current->rect.x = g;
+		wss[cw].current->rect.y = (conf.bar_bottom ? 0 : bh) + g;
 		break;
 	case TOP_CENTER:
-		wss[cw].current->x = (screen_width - w) / 2;
-		wss[cw].current->y = (conf.bar_bottom ? 0 : bh) + g;
+		wss[cw].current->rect.x = (screen_width - w) / 2;
+		wss[cw].current->rect.y = (conf.bar_bottom ? 0 : bh) + g;
 		break;
 	case TOP_RIGHT:
-		wss[cw].current->x = screen_width - w - g - (2 * conf.border_px);
-		wss[cw].current->y = (conf.bar_bottom ? 0 : bh) + g;
+		wss[cw].current->rect.x = screen_width - w - g - (2 * conf.border_px);
+		wss[cw].current->rect.y = (conf.bar_bottom ? 0 : bh) + g;
 		break;
 	case CENTER:
-		wss[cw].current->x = (screen_width - w) / 2;
-		wss[cw].current->y = (screen_height - bh - h) / 2;
+		wss[cw].current->rect.x = (screen_width - w) / 2;
+		wss[cw].current->rect.y = (screen_height - bh - h) / 2;
 		break;
 	case BOTTOM_LEFT:
-		wss[cw].current->x = g;
-		wss[cw].current->y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
+		wss[cw].current->rect.x = g;
+		wss[cw].current->rect.y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
 		break;
 	case BOTTOM_CENTER:
-		wss[cw].current->x = (screen_width / 2) - (w / 2);
-		wss[cw].current->y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
+		wss[cw].current->rect.x = (screen_width / 2) - (w / 2);
+		wss[cw].current->rect.y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
 		break;
 	case BOTTOM_RIGHT:
-		wss[cw].current->x = screen_width - w - g - (2 * conf.border_px);
-		wss[cw].current->y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
+		wss[cw].current->rect.x = screen_width - w - g - (2 * conf.border_px);
+		wss[cw].current->rect.y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
 		break;
 	};
 	draw_clients();
@@ -650,8 +647,8 @@ void toggle_float(void)
 	log_info("Toggling floating state of client <%p>", wss[cw].current);
 	wss[cw].current->is_floating = !wss[cw].current->is_floating;
 	if (wss[cw].current->is_floating && conf.center_floating) {
-		wss[cw].current->x = (screen_width / 2) - (wss[cw].current->w / 2);
-		wss[cw].current->y = (screen_height - wss[cw].bar_height - wss[cw].current->h) / 2;
+		wss[cw].current->rect.x = (screen_width / 2) - (wss[cw].current->rect.width / 2);
+		wss[cw].current->rect.y = (screen_height - wss[cw].bar_height - wss[cw].current->rect.height) / 2;
 		log_info("Centering client <%p>", wss[cw].current);
 	}
 	arrange_windows();
@@ -669,10 +666,10 @@ void toggle_float(void)
  */
 void resize_float_width(const int dw)
 {
-	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->w + dw <= 0)
+	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->rect.width + dw <= 0)
 		return;
-	log_info("Resizing width of client <%p> from %d by %d", wss[cw].current, wss[cw].current->w, dw);
-	wss[cw].current->w += dw;
+	log_info("Resizing width of client <%p> from %d by %d", wss[cw].current, wss[cw].current->rect.width, dw);
+	wss[cw].current->rect.width += dw;
 	draw_clients();
 }
 
@@ -688,10 +685,10 @@ void resize_float_width(const int dw)
  */
 void resize_float_height(const int dh)
 {
-	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->h + dh <= 0)
+	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->rect.height + dh <= 0)
 		return;
-	log_info("Resizing height of client <%p> from %d to %d", wss[cw].current, wss[cw].current->h, dh);
-	wss[cw].current->h += dh;
+	log_info("Resizing height of client <%p> from %d to %d", wss[cw].current, wss[cw].current->rect.height, dh);
+	wss[cw].current->rect.height += dh;
 	draw_clients();
 }
 
@@ -709,8 +706,8 @@ void move_float_y(const int dy)
 {
 	if (!wss[cw].current || !wss[cw].current->is_floating)
 		return;
-	log_info("Changing y of client <%p> from %d to %d", wss[cw].current, wss[cw].current->y, dy);
-	wss[cw].current->y += dy;
+	log_info("Changing y of client <%p> from %d to %d", wss[cw].current, wss[cw].current->rect.y, dy);
+	wss[cw].current->rect.y += dy;
 	draw_clients();
 }
 
@@ -728,8 +725,8 @@ void move_float_x(const int dx)
 {
 	if (!wss[cw].current || !wss[cw].current->is_floating)
 		return;
-	log_info("Changing x of client <%p> from %d to %d", wss[cw].current, wss[cw].current->x, dx);
-	wss[cw].current->x += dx;
+	log_info("Changing x of client <%p> from %d to %d", wss[cw].current, wss[cw].current->rect.x, dx);
+	wss[cw].current->rect.x += dx;
 	draw_clients();
 }
 

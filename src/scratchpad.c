@@ -143,10 +143,10 @@ void get_from_scratchpad(void)
 	wss[cw].client_cnt++;
 
 	wss[cw].current->is_floating = true;
-	wss[cw].current->w = conf.scratchpad_width;
-	wss[cw].current->h = conf.scratchpad_height;
-	wss[cw].current->x = (screen_width / 2) - (wss[cw].current->w / 2);
-	wss[cw].current->y = (screen_height - wss[cw].bar_height - wss[cw].current->h) / 2;
+	wss[cw].current->rect.width = conf.scratchpad_width;
+	wss[cw].current->rect.height = conf.scratchpad_height;
+	wss[cw].current->rect.x = (screen_width / 2) - (wss[cw].current->rect.width / 2);
+	wss[cw].current->rect.y = (screen_height - wss[cw].bar_height - wss[cw].current->rect.height) / 2;
 
 	xcb_map_window(dpy, wss[cw].current->win);
 	update_focused_client(wss[cw].current);

@@ -29,10 +29,7 @@ typedef struct Client {
 					* Defined at: http://standards.freedesktop.org/wm-spec/wm-spec-latest.html*/
 	bool is_urgent; /**< This is set by a client that wants focus for some reason. */
 	xcb_window_t win; /**< The window that this client represents. */
-	uint16_t x; /**< The x coordinate of the client. */
-	uint16_t y; /**< The y coordinate of the client. */
-	uint16_t w; /**< The width of the client. */
-	uint16_t h; /**< The height of the client. */
+	xcb_rectangle_t rect; /**< The size and location of the client. */
 	uint16_t gap; /**< The size of the useless gap between this client and
 			the others. */
 } Client;
