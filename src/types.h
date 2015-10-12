@@ -61,4 +61,20 @@ struct workspace_t {
 	workspace_t *prev; /**< The prev workspace in the linked list. */
 };
 
+/**
+ * @brief Represents a monitor.
+ *
+ * Each monitor has its own workspaces. When the user is not using a
+ * multimonitor setup, we still create a single monitor.
+ */
+typedef struct monitor_t monitor_t;
+struct monitor_t {
+	workspace_t *ws; /**< The currently focused workspace. */
+	workspace_t *ws_head; /**< The first workspace. */
+	workspace_t *ws_tail; /**< The last workspace. */
+	monitor_t *next; /**< The next monitor. */
+	monitor_t *prev; /**< The previous monitor. */
+	xcb_rectangle_t rect; /**< The size and location of the monitor. */
+};
+
 #endif
