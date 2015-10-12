@@ -117,3 +117,23 @@ void change_ws(const int ws)
 
 	howm_info();
 }
+
+workspace_t *create_workspace(void)
+{
+	workspace_t *ws = malloc(sizeof(workspace_t));
+
+	if (!ws) {
+		log_err("Can't allocate memory for workspace");
+		exit(EXIT_FAILURE);
+	}
+
+	ws->next = ws->prev = NULL;
+	ws->head = ws->prev_foc = NULL;
+
+	ws->layout = WS_DEF_LAYOUT;
+	ws->bar_height = conf.bar_height;
+	ws->master_ratio = MASTER_RATIO;
+	ws->gap = GAP;
+
+	return ws;
+}

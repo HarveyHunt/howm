@@ -40,8 +40,11 @@ struct client_t {
  *
  * Clients are stored as a linked list. Changing to a different workspace will
  * cause different clients to be rendered on the screen.
+ *
+ * Workspaces are also stored as a linked list.
  */
-typedef struct {
+typedef struct workspace_t workspace_t;
+struct workspace_t {
 	int layout; /**< The current layout of the WS, as defined in the
 				* layout enum. */
 	unsigned int client_cnt; /**< The amount of clients on this workspace. */
@@ -54,6 +57,8 @@ typedef struct {
 	client_t *prev_foc; /**< The last focused client. This is seperate to
 				* the linked list structure. */
 	client_t *current; /**< The client that is currently in focus. */
-} workspace_t;
+	workspace_t *next; /**< The next workspace in the linked list. */
+	workspace_t *prev; /**< The prev workspace in the linked list. */
+};
 
 #endif
