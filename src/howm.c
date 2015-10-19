@@ -81,6 +81,11 @@ uint32_t border_urgent = 0;
 uint16_t screen_height = 0;
 uint16_t screen_width = 0;
 int cur_state = OPERATOR_STATE;
+unsigned int mon_cnt = 0;
+
+monitor_t *mon = NULL;
+monitor_t *mon_head = NULL;
+monitor_t *mon_tail = NULL;
 
 /**
  * @brief Occurs when howm first starts.

@@ -68,6 +68,11 @@ extern xcb_connection_t *dpy;
 extern uint16_t screen_height;
 extern uint16_t screen_width;
 extern int cur_state;
+extern unsigned int mon_cnt;
+
+extern monitor_t *mon;
+extern monitor_t *mon_head;
+extern monitor_t *mon_tail;
 
 extern xcb_screen_t *screen;
 extern xcb_ewmh_connection_t *ewmh;
