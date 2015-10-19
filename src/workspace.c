@@ -38,7 +38,7 @@ void kill_ws(const int ws)
 /**
  * @brief Correctly wrap a workspace number.
  *
- * This prevents workspace numbers from being greater than WORKSPACES or less
+ * This prevents workspace numbers from being greater than workspace_cnt or less
  * than 1.
  *
  * @param ws The value that needs to be corrected.
@@ -47,10 +47,10 @@ void kill_ws(const int ws)
  */
 inline int correct_ws(unsigned int ws)
 {
-	if (ws > WORKSPACES)
-		return ws - WORKSPACES;
+	if (ws > workspace_cnt)
+		return ws - workspace_cnt;
 	if (ws < 1)
-		return ws + WORKSPACES;
+		return ws + workspace_cnt;
 
 	return ws;
 }
@@ -99,7 +99,7 @@ void change_ws(const int ws)
 {
 	client_t *c = wss[ws].head;
 
-	if ((unsigned int)ws > WORKSPACES || ws <= 0 || ws == cw)
+	if ((unsigned int)ws > workspace_cnt || ws <= 0 || ws == cw)
 		return;
 	last_ws = cw;
 	log_info("Changing from workspace <%d> to <%d>.", last_ws, ws);

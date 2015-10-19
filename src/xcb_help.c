@@ -229,7 +229,7 @@ void setup_ewmh(void)
 	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewport), viewport);
 	xcb_ewmh_set_wm_name(ewmh, 0, strlen("howm"), "howm");
 	xcb_ewmh_set_current_desktop(ewmh, 0, cw);
-	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
+	xcb_ewmh_set_number_of_desktops(ewmh, 0, workspace_cnt);
 	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
 }

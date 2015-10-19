@@ -41,7 +41,7 @@ client_t *find_client_by_win(xcb_window_t win)
 	unsigned int w = 1;
 	client_t *c = NULL;
 
-	for (found = false; w <= WORKSPACES && !found; w++)
+	for (found = false; w <= workspace_cnt && !found; w++)
 		for (c = wss[w].head; c && !(found = (win == c->win)); c = c->next)
 			;
 	return c;
@@ -194,7 +194,7 @@ void remove_client(client_t *c, bool refocus)
 	client_t **temp = NULL;
 	unsigned int w = 1;
 
-	for (; w <= WORKSPACES; w++)
+	for (; w <= workspace_cnt; w++)
 		for (temp = &wss[w].head; *temp; temp = &(*temp)->next)
 			if (*temp == c)
 				goto found;
@@ -770,7 +770,7 @@ void focus_urgent(void)
 	client_t *c;
 	unsigned int w;
 
-	for (w = 1; w <= WORKSPACES; w++)
+	for (w = 1; w <= workspace_cnt; w++)
 		for (c = wss[w].head; c && !c->is_urgent; c = c->next)
 			;
 	if (c) {

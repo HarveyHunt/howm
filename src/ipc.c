@@ -145,7 +145,7 @@ static int ipc_process_function(char **args)
 	} else if (strncmp(args[0], "quit_howm", strlen("quit_howm")) == 0) {
 		CALL_INT(quit_howm, args[1], EXIT_SUCCESS, EXIT_FAILURE);
 	} else if (strncmp(args[0], "current_to_ws", strlen("current_to_ws")) == 0) {
-		CALL_INT(current_to_ws, args[1], 1, WORKSPACES);
+		CALL_INT(current_to_ws, args[1], 1, workspace_cnt);
 	} else if (strncmp(args[0], "resize_float_width", strlen("resize_float_width")) == 0) {
 		CALL_INT(resize_float_width, args[1], -100, 100);
 	} else if (strncmp(args[0], "resize_float_height", strlen("resize_float_height")) == 0) {
@@ -157,7 +157,7 @@ static int ipc_process_function(char **args)
 	} else if (strncmp(args[0], "resize_master", strlen("resize_master")) == 0) {
 		CALL_INT(resize_master, args[1], -100, 100);
 	} else if (strncmp(args[0], "change_ws", strlen("change_ws")) == 0) {
-		CALL_INT(change_ws, args[1], 1, WORKSPACES);
+		CALL_INT(change_ws, args[1], 1, workspace_cnt);
 	} else if (strncmp(args[0], "change_layout", strlen("change_layout")) == 0) {
 		CALL_INT(change_layout, args[1], ZOOM, END_LAYOUT - 1);
 	} else if (strncmp(args[0], "count", strlen("count")) == 0) {

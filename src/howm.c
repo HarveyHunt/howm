@@ -82,6 +82,7 @@ uint16_t screen_height = 0;
 uint16_t screen_width = 0;
 int cur_state = OPERATOR_STATE;
 unsigned int mon_cnt = 0;
+unsigned int workspace_cnt;
 
 monitor_t *mon = NULL;
 monitor_t *mon_head = NULL;
@@ -99,7 +100,7 @@ static void setup(void)
 {
 	unsigned int i;
 
-	for (i = 1; i <= WORKSPACES; i++) {
+	for (i = 1; i <= workspace_cnt; i++) {
 		wss[i].layout = WS_DEF_LAYOUT;
 		wss[i].bar_height = conf.bar_height;
 		wss[i].master_ratio = MASTER_RATIO;
@@ -239,9 +240,9 @@ void howm_info(void)
 {
 	unsigned int w = 0;
 #if DEBUG_ENABLE
-	for (w = 1; w <= WORKSPACES; w++) {
+	for (w = 1; w <= workspace_cnt; w++) {
 		fprintf(stdout, "%d:%u:%d:%u\n", wss[w].layout, w,
-					cur_state, wss[w].client_cnt);
+				cur_state, wss[w].client_cnt);
 	}
 	fflush(stdout);
 #else
@@ -260,11 +261,11 @@ void howm_info(void)
  */
 static void cleanup(void)
 {
-	int i;
+	unsigned int i;
 
 	log_warn("Cleaning up");
 
-	for (i = 1; i < WORKSPACES; i++)
+	for (i = 1; i < workspace_cnt; i++)
 		kill_ws(i);
 
 	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, screen->root,

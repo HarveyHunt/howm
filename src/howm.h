@@ -73,6 +73,7 @@ extern unsigned int mon_cnt;
 extern monitor_t *mon;
 extern monitor_t *mon_head;
 extern monitor_t *mon_tail;
+extern unsigned int workspace_cnt;
 
 extern xcb_screen_t *screen;
 extern xcb_ewmh_connection_t *ewmh;
