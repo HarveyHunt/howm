@@ -4,8 +4,10 @@
 #include "client.h"
 #include "helper.h"
 #include "howm.h"
+#include "monitor.h"
 #include "types.h"
 #include "workspace.h"
+#include "xcb_help.h"
 
 /**
  * @file workspace.c
@@ -53,6 +55,36 @@ inline int correct_ws(unsigned int ws)
 		return ws + workspace_cnt;
 
 	return ws;
+}
+
+/**
+ * @brief Return a workspace after offsetting
+ *
+ * Use this to safely traverse the workspace list - instead of
+ * doing:
+ *
+ *	ws->next->next
+ *
+ * do:
+ *
+ *	offset_ws(ws, 2)
+ *
+ * @param ws The workspace to be offset from.
+ * @param offset The offset to apply
+ *
+ * @return The workspace at ws+offset.
+ */
+inline workspace_t *offset_ws(workspace_t *ws, int offset)
+{
+	workspace_t *ows = ws;
+	bool pos = offset > 0 ? true : false;
+
+	offset = abs(offset);
+	for (; ows != NULL && offset > 0; ows = pos ? ws->next
+					: ws->prev, offset--)
+		;
+
+	return ows;
 }
 
 /**
@@ -118,22 +150,107 @@ void change_ws(const int ws)
 	howm_info();
 }
 
-workspace_t *create_workspace(void)
+/**
+ * @brief Find and return a workspace's index in the workspace list.
+ *
+ * @param ws The workspace to search for.
+ *
+ * @return The index of the workspace in the workspace list.
+ */
+uint32_t workspace_to_index(const workspace_t *ws)
 {
-	workspace_t *ws = malloc(sizeof(workspace_t));
+	monitor_t *m;
+	workspace_t *ows;
+	uint32_t i = 0;
+
+	for (m = mon_head; m != NULL; m = m->next)
+		for (ows = m->ws_head; ows != NULL; ows = ows->next, i++)
+			if (ws == ows)
+				return i;
+	return 0;
+}
+
+/**
+ * @brief Convert a workspace's index in a workspace list to an index.
+ *
+ * @param m The monitor to search for the workspace on.
+ * @param index The index to search for.
+ *
+ * @return The workspace stored at the index of the workspaces list.
+ */
+workspace_t *index_to_workspace(const monitor_t *m, uint32_t index)
+{
+	workspace_t *ws = m->ws_head;
+
+	for (; index > 0 && ws != NULL; ws = ws->next, index--)
+		;
+
+	return ws;
+}
+
+/**
+ * @brief Create a new workspace and update global state.
+ *
+ * @param m The monitor that the workspace should be added on.
+ */
+void add_ws(monitor_t *m)
+{
+	workspace_t *ws = calloc(1, sizeof(workspace_t));
 
 	if (!ws) {
 		log_err("Can't allocate memory for workspace");
 		exit(EXIT_FAILURE);
 	}
 
-	ws->next = ws->prev = NULL;
-	ws->head = ws->prev_foc = NULL;
-
 	ws->layout = WS_DEF_LAYOUT;
 	ws->bar_height = conf.bar_height;
 	ws->master_ratio = MASTER_RATIO;
 	ws->gap = GAP;
 
-	return ws;
+	if (!m->ws) {
+		m->ws = m->ws_tail = m->ws_head = ws;
+	} else {
+		m->ws_tail->next = ws;
+		ws->prev = m->ws_tail;
+		m->ws_tail = ws;
+	}
+
+	log_info("Added workspace <%d> to monitor <%d>",
+			workspace_to_index(ws),
+			monitor_to_index(m));
+
+	workspace_cnt++;
+	xcb_ewmh_set_number_of_desktops(ewmh, 0, workspace_cnt);
+}
+
+/**
+ * @brief Remove a workspace and update the global state.
+ *
+ * @param m The monitor that the workspace is on.
+ * @param ws The workspace to be removed.
+ */
+void remove_ws(monitor_t *m, workspace_t *ws)
+{
+	/* TODO: Kill the workspace before we remove it. */
+	log_info("Removed workspace <%d>", workspace_to_index(ws));
+	/* Sort out the workspaces list */
+	if (ws->prev)
+		ws->prev->next = ws->next;
+	if (ws->next)
+		ws->next->prev = ws->prev;
+
+	/* Sort out the monitor list */
+	if (m->ws_head == ws)
+		m->ws_head = ws->next;
+	if (m->ws_tail == ws)
+		m->ws_tail = ws->prev;
+
+	ws->head = ws->prev_foc = ws->current = NULL;
+	ws->next = ws->prev = NULL;
+
+	workspace_cnt--;
+	ewmh_set_current_workspace();
+	xcb_ewmh_set_number_of_desktops(ewmh, 0, workspace_cnt);
+
+	free(ws);
 }

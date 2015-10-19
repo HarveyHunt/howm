@@ -8,7 +8,7 @@ SRC_EXT = c
 # Path to the source directory, relative to the makefile
 SRC_PATH = src
 # General compiler flags
-COMPILE_FLAGS = -std=c99 -Wall -Wextra
+COMPILE_FLAGS ?= -std=c99 -Wall -Wextra
 # Additional release-specific flags
 RCOMPILE_FLAGS = -D NDEBUG
 # Additional debug-specific flags

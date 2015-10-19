@@ -6,6 +6,7 @@
 #include "client.h"
 #include "helper.h"
 #include "howm.h"
+#include "workspace.h"
 #include "xcb_help.h"
 
 /**
@@ -238,3 +239,7 @@ void setup_ewmh_geom(void)
 	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
 }
 
+void ewmh_set_current_workspace(void)
+{
+	xcb_ewmh_set_current_desktop(ewmh, 0, workspace_to_index(mon->ws));
+}
