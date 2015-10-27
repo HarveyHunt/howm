@@ -84,7 +84,7 @@ void focus_last_ws(void)
  */
 void focus_next_ws(void)
 {
-	log_info("Focusing previous workspace");
+	log_info("Focusing next workspace");
 	change_ws(correct_ws(cw + 1));
 }
 
