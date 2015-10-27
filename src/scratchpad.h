@@ -30,14 +30,14 @@
  */
 struct stack {
 	unsigned int size; /**< The amount of items in the stack. */
-	Client **contents; /**< The contents is an array of linked lists. Storage
+	client_t **contents; /**< The contents is an array of linked lists. Storage
 			is malloced later as we don't know the size yet.*/
 };
 
 extern struct stack del_reg;
 
-void stack_push(struct stack *s, Client *c);
-Client *stack_pop(struct stack *s);
+void stack_push(struct stack *s, client_t *c);
+client_t *stack_pop(struct stack *s);
 void stack_init(struct stack *s);
 void stack_free(struct stack *s);
 void send_to_scratchpad(void);

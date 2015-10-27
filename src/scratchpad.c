@@ -19,7 +19,7 @@
  */
 
 struct stack del_reg;
-static Client *scratchpad;
+static client_t *scratchpad;
 
 /**
  * @brief Dynamically allocate space for the contents of the stack.
@@ -31,7 +31,7 @@ static Client *scratchpad;
  */
 void stack_init(struct stack *s)
 {
-	s->contents = (Client **)malloc(sizeof(Client) * conf.delete_register_size);
+	s->contents = (client_t **)malloc(sizeof(client_t) * conf.delete_register_size);
 	if (!s->contents) {
 		log_err("Failed to allocate memory for stack.");
 		exit(EXIT_FAILURE);
@@ -56,7 +56,7 @@ void stack_free(struct stack *s)
  * @param c The client to be pushed on. This client is treated as the head of a
  * linked list.
  */
-void stack_push(struct stack *s, Client *c)
+void stack_push(struct stack *s, client_t *c)
 {
 	if (!c || !s) {
 		return;
@@ -75,7 +75,7 @@ void stack_push(struct stack *s, Client *c)
  * @return The client that was at the top of the stack. It acts as the head of
  * the linked list of clients.
  */
-Client *stack_pop(struct stack *s)
+client_t *stack_pop(struct stack *s)
 {
 	if (!s) {
 		return NULL;
@@ -93,7 +93,7 @@ Client *stack_pop(struct stack *s)
  */
 void send_to_scratchpad(void)
 {
-	Client *c = wss[cw].current;
+	client_t *c = wss[cw].current;
 
 	if (scratchpad || !c)
 		return;

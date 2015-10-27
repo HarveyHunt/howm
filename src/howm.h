@@ -75,7 +75,7 @@ extern xcb_screen_t *screen;
 extern xcb_ewmh_connection_t *ewmh;
 extern bool running;
 
-extern Workspace wss[];
+extern workspace_t wss[];
 
 extern struct config conf;
 

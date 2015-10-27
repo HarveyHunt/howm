@@ -151,7 +151,7 @@ void op_grow_gaps(const unsigned int type, unsigned int cnt)
  */
 static void change_gaps(const unsigned int type, unsigned int cnt, int size)
 {
-	Client *c = NULL;
+	client_t *c = NULL;
 
 	if (type == WORKSPACE) {
 		while (cnt > 0) {
@@ -188,9 +188,9 @@ static void change_gaps(const unsigned int type, unsigned int cnt, int size)
  */
 void op_cut(const unsigned int type, unsigned int cnt)
 {
-	Client *tail = wss[cw].current;
-	Client *head = wss[cw].current;
-	Client *head_prev = prev_client(wss[cw].current, cw);
+	client_t *tail = wss[cw].current;
+	client_t *head = wss[cw].current;
+	client_t *head_prev = prev_client(wss[cw].current, cw);
 	bool wrap = false;
 
 	if (!head)

@@ -23,7 +23,7 @@
  * around in the client list.
  */
 
-static void move_down(Client *c);
+static void move_down(client_t *c);
 
 /**
  * @brief Search workspaces for a window, returning the client that it belongs
@@ -34,11 +34,11 @@ static void move_down(Client *c);
  *
  * @return The found client.
  */
-Client *find_client_by_win(xcb_window_t win)
+client_t *find_client_by_win(xcb_window_t win)
 {
 	bool found;
 	unsigned int w = 1;
-	Client *c = NULL;
+	client_t *c = NULL;
 
 	for (found = false; w <= WORKSPACES && !found; w++)
 		for (c = wss[w].head; c && !(found = (win == c->win)); c = c->next)
@@ -56,9 +56,9 @@ Client *find_client_by_win(xcb_window_t win)
  * @return The previous client, so long as the given client isn't NULL and
  * there is more than one client. Else, NULL.
  */
-Client *prev_client(Client *c, int ws)
+client_t *prev_client(client_t *c, int ws)
 {
-	Client *p = NULL;
+	client_t *p = NULL;
 
 	if (!c || !wss[ws].head || !wss[ws].head->next)
 		return NULL;
@@ -79,7 +79,7 @@ Client *prev_client(Client *c, int ws)
  * be head. If c is NULL or there is only one client in the client list, NULL
  * will be returned.
  */
-Client *next_client(Client *c)
+client_t *next_client(client_t *c)
 {
 	if (!c || !wss[cw].head	|| !wss[cw].head->next)
 		return NULL;
@@ -97,7 +97,7 @@ Client *next_client(Client *c)
  *
  * @param c The client that is currently in focus.
  */
-void update_focused_client(Client *c)
+void update_focused_client(client_t *c)
 {
 	unsigned int all = 0, fullscreen = 0, float_trans = 0;
 
@@ -156,7 +156,7 @@ void update_focused_client(Client *c)
 int get_non_tff_count(void)
 {
 	int n = 0;
-	Client *c = NULL;
+	client_t *c = NULL;
 
 	for (c = wss[cw].head; c; c = c->next)
 		if (!FFT(c))
@@ -170,9 +170,9 @@ int get_non_tff_count(void)
  *
  * @return The first client that isn't TFF. NULL if none.
  */
-Client *get_first_non_tff(void)
+client_t *get_first_non_tff(void)
 {
-	Client *c = NULL;
+	client_t *c = NULL;
 
 	for (c = wss[cw].head; c && FFT(c); c = c->next)
 		;
@@ -187,9 +187,9 @@ Client *get_first_non_tff(void)
  * @param refocus Whether the clients should be rearranged and focus be
  * updated.
  */
-void remove_client(Client *c, bool refocus)
+void remove_client(client_t *c, bool refocus)
 {
-	Client **temp = NULL;
+	client_t **temp = NULL;
 	unsigned int w = 1;
 
 	for (; w <= WORKSPACES; w++)
@@ -218,10 +218,10 @@ found:
  *
  * @param c The client to be moved.
  */
-static void move_down(Client *c)
+static void move_down(client_t *c)
 {
-	Client *prev = prev_client(c, cw);
-	Client *n = (c->next) ? c->next : wss[cw].head;
+	client_t *prev = prev_client(c, cw);
+	client_t *n = (c->next) ? c->next : wss[cw].head;
 
 	if (!c)
 		return;
@@ -245,10 +245,10 @@ static void move_down(Client *c)
  *
  * @param c The client to be moved down.
  */
-void move_up(Client *c)
+void move_up(client_t *c)
 {
-	Client *p = prev_client(c, cw);
-	Client *pp = NULL;
+	client_t *p = prev_client(c, cw);
+	client_t *pp = NULL;
 
 	if (!c)
 		return;
@@ -340,7 +340,7 @@ void kill_client(const int ws, bool arrange)
 void move_client(int cnt, bool up)
 {
 	int cntcopy;
-	Client *c;
+	client_t *c;
 
 	if (up) {
 		if (wss[cw].current == wss[cw].head)
@@ -388,10 +388,10 @@ void move_current_up(void)
  * @param ws The ws that the client should be moved to.
  * @param follow Should focus follow the client that has been moved?
  */
-void client_to_ws(Client *c, const int ws, bool follow)
+void client_to_ws(client_t *c, const int ws, bool follow)
 {
-	Client *last;
-	Client *prev = prev_client(c, cw);
+	client_t *last;
+	client_t *prev = prev_client(c, cw);
 
 	/* Performed for the current workspace. */
 	if (!c || ws == cw)
@@ -436,7 +436,7 @@ void client_to_ws(Client *c, const int ws, bool follow)
  */
 void draw_clients(void)
 {
-	Client *c = NULL;
+	client_t *c = NULL;
 
 	log_debug("Drawing clients");
 	for (c = wss[cw].head; c; c = c->next)
@@ -466,7 +466,7 @@ void draw_clients(void)
  * @param w The width of the client's window.
  * @param h The height of the client's window.
  */
-void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+void change_client_geom(client_t *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
 	log_debug("Changing geometry of client <%p> from {%d, %d, %d, %d} to {%d, %d, %d, %d}",
 			c, c->rect.x, c->rect.y, c->rect.width, c->rect.height, x, y, w, h);
@@ -479,7 +479,7 @@ void change_client_geom(Client *c, uint16_t x, uint16_t y, uint16_t w, uint16_t 
  * @param c The client who's gap size should be changed.
  * @param size The size by which the gap should be changed.
  */
-void change_client_gaps(Client *c, int size)
+void change_client_gaps(client_t *c, int size)
 {
 	if (c->is_fullscreen)
 		return;
@@ -502,10 +502,10 @@ void change_client_gaps(Client *c, int size)
  * @return A client that has already been inserted into the linked list of
  * clients.
  */
-Client *create_client(xcb_window_t w)
+client_t *create_client(xcb_window_t w)
 {
-	Client *c = (Client *)calloc(1, sizeof(Client));
-	Client *t = prev_client(wss[cw].head, cw); /* Get the last element. */
+	client_t *c = (client_t *)calloc(1, sizeof(client_t));
+	client_t *t = prev_client(wss[cw].head, cw); /* Get the last element. */
 	uint32_t vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
 				 (conf.focus_mouse ? XCB_EVENT_MASK_ENTER_WINDOW : 0)};
 
@@ -537,7 +537,7 @@ Client *create_client(xcb_window_t w)
  * @param c The client which should have its fullscreen state altered.
  * @param fscr The fullscreen state that the client should be changed to.
  */
-void set_fullscreen(Client *c, bool fscr)
+void set_fullscreen(client_t *c, bool fscr)
 {
 	long data[] = {fscr ? ewmh->_NET_WM_STATE_FULLSCREEN : XCB_NONE };
 
@@ -560,7 +560,7 @@ void set_fullscreen(Client *c, bool fscr)
 	}
 }
 
-void set_urgent(Client *c, bool urg)
+void set_urgent(client_t *c, bool urg)
 {
 	if (!c || urg == c->is_urgent)
 		return;
@@ -765,7 +765,7 @@ void toggle_fullscreen(void)
  */
 void focus_urgent(void)
 {
-	Client *c;
+	client_t *c;
 	unsigned int w;
 
 	for (w = 1; w <= WORKSPACES; w++)
@@ -811,8 +811,8 @@ void resize_master(const int ds)
  */
 void paste(void)
 {
-	Client *head = stack_pop(&del_reg);
-	Client *t, *c = head;
+	client_t *head = stack_pop(&del_reg);
+	client_t *t, *c = head;
 
 	if (!head) {
 		log_warn("No clients on stack.");

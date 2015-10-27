@@ -97,7 +97,7 @@ void focus_next_ws(void)
  */
 void change_ws(const int ws)
 {
-	Client *c = wss[ws].head;
+	client_t *c = wss[ws].head;
 
 	if ((unsigned int)ws > WORKSPACES || ws <= 0 || ws == cw)
 		return;

@@ -66,7 +66,7 @@ void move_resize(xcb_window_t win,
  *
  * @param c The client that needs to listen for button presses.
  */
-void grab_buttons(Client *c)
+void grab_buttons(client_t *c)
 {
 	xcb_ungrab_button(dpy, XCB_BUTTON_INDEX_ANY, c->win, XCB_GRAB_ANY);
 	xcb_grab_button(dpy, 1, c->win, XCB_EVENT_MASK_BUTTON_PRESS,
@@ -136,7 +136,7 @@ void get_atoms(const char **names, xcb_atom_t *atoms)
  */
 void focus_window(xcb_window_t win)
 {
-	Client *c = find_client_by_win(win);
+	client_t *c = find_client_by_win(win);
 
 	if (c && c != wss[cw].current)
 		update_focused_client(c);
@@ -175,7 +175,7 @@ void delete_win(xcb_window_t win)
  * @param a The atom representing which WM_STATE hint should be modified.
  * @param action Whether to remove, add or toggle the WM_STATE hint.
  */
-void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action)
+void ewmh_process_wm_state(client_t *c, xcb_atom_t a, int action)
 {
 	if (a == ewmh->_NET_WM_STATE_FULLSCREEN) {
 		if (action == _NET_WM_STATE_REMOVE)

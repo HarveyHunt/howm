@@ -48,7 +48,7 @@ void arrange_windows(void)
 static void grid(void)
 {
 	int n = get_non_tff_count();
-	Client *c = NULL;
+	client_t *c = NULL;
 	int cols, rows, i = -1, col_cnt = 0, row_cnt = 0;
 	uint16_t col_w;
 	uint16_t client_y = conf.bar_bottom ? 0 : wss[cw].bar_height;
@@ -92,7 +92,7 @@ static void grid(void)
  */
 static void zoom(void)
 {
-	Client *c;
+	client_t *c;
 
 	log_info("Arranging clients in zoom format");
 	/* When zoom is called because there aren't enough clients for other
@@ -114,7 +114,7 @@ static void zoom(void)
  */
 static void stack(void)
 {
-	Client *c = get_first_non_tff();
+	client_t *c = get_first_non_tff();
 	bool vert = (wss[cw].layout == VSTACK);
 	uint16_t h = screen_height - wss[cw].bar_height;
 	uint16_t w = screen_width;

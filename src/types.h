@@ -20,8 +20,8 @@
  *
  * All the attributes that are needed by howm for a client are stored here.
  */
-typedef struct Client {
-	struct Client *next; /**< Clients are stored in a linked list-
+typedef struct client_t {
+	struct client_t *next; /**< Clients are stored in a linked list-
 					* this represents the client after this one. */
 	bool is_fullscreen; /**< Is the client fullscreen? */
 	bool is_floating; /**< Is the client floating? */
@@ -32,7 +32,7 @@ typedef struct Client {
 	xcb_rectangle_t rect; /**< The size and location of the client. */
 	uint16_t gap; /**< The size of the useless gap between this client and
 			the others. */
-} Client;
+} client_t;
 
 /**
  * @brief Represents a workspace, which stores clients.
@@ -49,10 +49,10 @@ typedef struct {
 				 compared to the screen's size. */
 	uint16_t bar_height; /**< The height of the space left for a bar. Stored
 			      here so it can be toggled per ws. */
-	Client *head; /**< The start of the linked list. */
-	Client *prev_foc; /**< The last focused client. This is seperate to
+	client_t *head; /**< The start of the linked list. */
+	client_t *prev_foc; /**< The last focused client. This is seperate to
 				* the linked list structure. */
-	Client *current; /**< The client that is currently in focus. */
-} Workspace;
+	client_t *current; /**< The client that is currently in focus. */
+} workspace_t;
 
 #endif

@@ -73,7 +73,7 @@ static void map_event(xcb_generic_event_t *ev)
 	xcb_map_request_event_t *me = (xcb_map_request_event_t *)ev;
 	xcb_ewmh_get_atoms_reply_t type;
 	unsigned int i;
-	Client *c;
+	client_t *c;
 
 	wa = xcb_get_window_attributes_reply(dpy, xcb_get_window_attributes(dpy, me->window), NULL);
 	if (!wa || wa->override_redirect || find_client_by_win(me->window)) {
@@ -145,7 +145,7 @@ static void map_event(xcb_generic_event_t *ev)
 static void destroy_event(xcb_generic_event_t *ev)
 {
 	xcb_destroy_notify_event_t *de = (xcb_destroy_notify_event_t *)ev;
-	Client *c = find_client_by_win(de->window);
+	client_t *c = find_client_by_win(de->window);
 
 	if (!c)
 		return;
@@ -208,7 +208,7 @@ static void configure_event(xcb_generic_event_t *ev)
 static void unmap_event(xcb_generic_event_t *ev)
 {
 	xcb_unmap_notify_event_t *ue = (xcb_unmap_notify_event_t *)ev;
-	Client *c = find_client_by_win(ue->window);
+	client_t *c = find_client_by_win(ue->window);
 
 	if (!c)
 		return;
@@ -229,7 +229,7 @@ static void unmap_event(xcb_generic_event_t *ev)
 static void client_message_event(xcb_generic_event_t *ev)
 {
 	xcb_client_message_event_t *cm = (xcb_client_message_event_t *)ev;
-	Client *c = find_client_by_win(cm->window);
+	client_t *c = find_client_by_win(cm->window);
 
 	if (c && cm->type == ewmh->_NET_WM_STATE) {
 		ewmh_process_wm_state(c, (xcb_atom_t) cm->data.data32[1], cm->data.data32[0]);
