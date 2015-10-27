@@ -5,6 +5,7 @@ var searchData=
   ['ipc_5farg_5fto_5fbool',['ipc_arg_to_bool',['../ipc_8c.html#ade5be19de737b4931a982afbaf1e1deb',1,'ipc.c']]],
   ['ipc_5farg_5fto_5fint',['ipc_arg_to_int',['../ipc_8c.html#a107a5af77322d6d01aac05bd3a02b552',1,'ipc.c']]],
   ['ipc_5fbuf_5fsize',['IPC_BUF_SIZE',['../howm_8h.html#a3707ef00ae437e3aee053e6320c453c3',1,'howm.h']]],
+  ['ipc_5fcleanup',['ipc_cleanup',['../ipc_8c.html#a8261da6df9db0bdd1432828638164d7d',1,'ipc_cleanup(void):&#160;ipc.c'],['../ipc_8h.html#a8261da6df9db0bdd1432828638164d7d',1,'ipc_cleanup(void):&#160;ipc.c']]],
   ['ipc_5ferr_5falloc',['IPC_ERR_ALLOC',['../ipc_8h.html#ae048d5e637cb6226930092a89a798fe5a29d1bafa791ace6f86c4de55ea1157ab',1,'ipc.h']]],
   ['ipc_5ferr_5farg_5fnot_5fbool',['IPC_ERR_ARG_NOT_BOOL',['../ipc_8h.html#ae048d5e637cb6226930092a89a798fe5afdc7126a99d7daac8a5a8e65e7498bf6',1,'ipc.h']]],
   ['ipc_5ferr_5farg_5fnot_5fint',['IPC_ERR_ARG_NOT_INT',['../ipc_8h.html#ae048d5e637cb6226930092a89a798fe5add383e16cfd1b1fb8586f97c091f38e8',1,'ipc.h']]],
@@ -23,8 +24,8 @@ var searchData=
   ['ipc_5fprocess_5fargs',['ipc_process_args',['../ipc_8c.html#ab7725970cd03ac751251c81accc14a07',1,'ipc.c']]],
   ['ipc_5fprocess_5fconfig',['ipc_process_config',['../ipc_8c.html#a8ddcd657f58fa5b75ee206801ba321fd',1,'ipc.c']]],
   ['ipc_5fprocess_5ffunction',['ipc_process_function',['../ipc_8c.html#a0039f3c814cbfe7c5004d8b9cbecaedf',1,'ipc.c']]],
-  ['is_5ffloating',['is_floating',['../structClient.html#ae94f2af79c9f8e5d78fdf4d773e5c86a',1,'Client']]],
-  ['is_5ffullscreen',['is_fullscreen',['../structClient.html#a8404996cd607f0bd5a7b916af378d275',1,'Client']]],
-  ['is_5ftransient',['is_transient',['../structClient.html#a23bbc3f4ed5cd87bc791e72dfc51e73c',1,'Client']]],
-  ['is_5furgent',['is_urgent',['../structClient.html#ae8c4c491ba67c22e6e6eba8fe40e6270',1,'Client']]]
+  ['is_5ffloating',['is_floating',['../structclient__t.html#a9d4e0ccec785e1d683ab51e9b6340cf8',1,'client_t']]],
+  ['is_5ffullscreen',['is_fullscreen',['../structclient__t.html#afbff771cbebe19282c429400062e65d7',1,'client_t']]],
+  ['is_5ftransient',['is_transient',['../structclient__t.html#a2bd752e7110a224b7aeb3a4920007646',1,'client_t']]],
+  ['is_5furgent',['is_urgent',['../structclient__t.html#a21326e6bcdf9f53208dad4067843cb3a',1,'client_t']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['gap',['gap',['../structClient.html#a707d266b35086ab6fdbb758cfddac9c1',1,'Client::gap()'],['../structWorkspace.html#ac27a3b428bf8dc5083c27d25695f16d3',1,'Workspace::gap()']]]
+  ['gap',['gap',['../structclient__t.html#afc3ec37841e44ada276cd08711f655e2',1,'client_t::gap()'],['../structworkspace__t.html#aca7daa83735b9ddeaaf15de68c32452f',1,'workspace_t::gap()']]]
 ];

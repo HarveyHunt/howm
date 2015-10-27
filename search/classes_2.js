@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['workspace',['Workspace',['../structWorkspace.html',1,'']]]
+  ['workspace_5ft',['workspace_t',['../structworkspace__t.html',1,'']]]
 ];

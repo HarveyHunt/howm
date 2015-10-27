@@ -25,7 +25,6 @@ var group__commands =
     [ "resize_float_height", "group__commands.html#gaf6dd4f21201b88d84ccfc931165dcaf6", null ],
     [ "resize_float_width", "group__commands.html#gad76af9e320b284633e4c51ad71759038", null ],
     [ "resize_master", "group__commands.html#gaf1bf791f7eb01c1e9941051e0fd0325e", null ],
-    [ "restart_howm", "group__commands.html#gaef83169db2434cb149835f3e0cce7543", null ],
     [ "send_to_scratchpad", "group__commands.html#gaca99e54393b605b353a134c9006e46af", null ],
     [ "spawn", "group__commands.html#ga84f3c791332e2434198d49d5858faf7e", null ],
     [ "teleport_client", "group__commands.html#ga3d2ae6379c727bd9e2664f8167baab3e", null ],

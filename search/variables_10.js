@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['x',['x',['../structClient.html#a43343444ae783c3749dbcbb1475eb656',1,'Client']]]
+  ['zoom_5fgap',['zoom_gap',['../structconfig.html#a1f81741d90bf230660a0fd841a53b519',1,'config']]]
 ];

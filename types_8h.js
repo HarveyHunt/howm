@@ -1,6 +1,6 @@
 var types_8h =
 [
-    [ "Client", "structClient.html", "structClient" ],
-    [ "Workspace", "structWorkspace.html", "structWorkspace" ],
-    [ "Client", "types_8h.html#a278cc7b6338580ebf5be30328590480a", null ]
+    [ "client_t", "structclient__t.html", "structclient__t" ],
+    [ "workspace_t", "structworkspace__t.html", "structworkspace__t" ],
+    [ "client_t", "types_8h.html#a2413f0d44202f264550c6f749fae69f7", null ]
 ];

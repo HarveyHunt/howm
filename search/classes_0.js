@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['client',['Client',['../structClient.html',1,'']]],
+  ['client_5ft',['client_t',['../structclient__t.html',1,'']]],
   ['config',['config',['../structconfig.html',1,'']]]
 ];

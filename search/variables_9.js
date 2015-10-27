@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['master_5fratio',['master_ratio',['../structWorkspace.html#aa9a4cb16c33eb7f75d89794768981f72',1,'Workspace']]]
+  ['master_5fratio',['master_ratio',['../structworkspace__t.html#a7e1815438175047af0e385cb502ad3a2',1,'workspace_t']]]
 ];

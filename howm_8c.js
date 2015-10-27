@@ -6,7 +6,6 @@ var howm_8c =
     [ "howm_info", "howm_8c.html#ad3e9a50dca7e98460b9fc05b288b9c2e", null ],
     [ "main", "howm_8c.html#a0ddf1224851353fc92bfbff6f499fa97", null ],
     [ "quit_howm", "group__commands.html#gaaf775039f5eb65793b4a8844caaf99ac", null ],
-    [ "restart_howm", "group__commands.html#gaef83169db2434cb149835f3e0cce7543", null ],
     [ "setup", "howm_8c.html#a635bebcf1bdfa7de6f25c21a01451d64", null ],
     [ "spawn", "group__commands.html#ga84f3c791332e2434198d49d5858faf7e", null ],
     [ "border_focus", "howm_8c.html#a6fbebc1f8b374ea090a28d151c2ae7d1", null ],
@@ -22,7 +21,6 @@ var howm_8c =
     [ "last_ws", "howm_8c.html#ad9cdce4d561e999e5d5194cb98ac9f7d", null ],
     [ "numlockmask", "howm_8c.html#addc4d00de842e042008ccf5b5f2b32af", null ],
     [ "previous_layout", "howm_8c.html#a4f65d6ac085b798e73ce7ffd2ccdcbf8", null ],
-    [ "restart", "howm_8c.html#a8649fdfafe4f3ed5fa96bb5261379247", null ],
     [ "retval", "howm_8c.html#a7f345697df7eb20c9aba1ab6980cae8f", null ],
     [ "running", "howm_8c.html#a36f7b6be7108281af77939ceaec42fd6", null ],
     [ "screen", "howm_8c.html#ad78d99285ba21e2d98eddec45e60f2e3", null ],
@@ -30,5 +28,5 @@ var howm_8c =
     [ "screen_width", "howm_8c.html#ad2b9859dcd5621e0a431189d9e181876", null ],
     [ "WM_ATOM_NAMES", "howm_8c.html#afa5683cb383ac089703abb707869dec8", null ],
     [ "wm_atoms", "howm_8c.html#a9d057a15fa1b9277beb83eda649906bb", null ],
-    [ "wss", "howm_8c.html#a4ac1c9268a5b3f3241b6bee2edf62f05", null ]
+    [ "wss", "howm_8c.html#a467e9a855d06e3f4a7e84c1cd55c9a0c", null ]
 ];

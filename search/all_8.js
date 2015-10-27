@@ -1,10 +1,9 @@
 var searchData=
 [
-  ['h',['h',['../structClient.html#abd6a8cd0cb27c2f2cd7f016f1499cd53',1,'Client']]],
   ['handle_5fevent',['handle_event',['../handler_8c.html#aeb871da36c3ab7157638628db47655c1',1,'handle_event(xcb_generic_event_t *ev):&#160;handler.c'],['../handler_8h.html#aeb871da36c3ab7157638628db47655c1',1,'handle_event(xcb_generic_event_t *ev):&#160;handler.c']]],
   ['handler_2ec',['handler.c',['../handler_8c.html',1,'']]],
   ['handler_2eh',['handler.h',['../handler_8h.html',1,'']]],
-  ['head',['head',['../structWorkspace.html#a7fbd58a8406bbc296bc19f755483eb10',1,'Workspace']]],
+  ['head',['head',['../structworkspace__t.html#af2f82f8a144845b842f4a2a2d6c64b3d',1,'workspace_t']]],
   ['helper_2eh',['helper.h',['../helper_8h.html',1,'']]],
   ['howm_2ec',['howm.c',['../howm_8c.html',1,'']]],
   ['howm_2eh',['howm.h',['../howm_8h.html',1,'']]],

@@ -19,6 +19,7 @@ var ipc_8h =
       [ "IPC_ERR_UNKNOWN_TYPE", "ipc_8h.html#ae048d5e637cb6226930092a89a798fe5af441f4ed051d4dfc6c969c251f0878ab", null ],
       [ "IPC_ERR_NO_CONFIG", "ipc_8h.html#ae048d5e637cb6226930092a89a798fe5a2084cf6edbc13949fa6e312987e6d57c", null ]
     ] ],
+    [ "ipc_cleanup", "ipc_8h.html#a8261da6df9db0bdd1432828638164d7d", null ],
     [ "ipc_init", "ipc_8h.html#a8caf38e638f3674b01f8980e0b839219", null ],
     [ "ipc_process", "ipc_8h.html#a9b864b71e20ac99098acd537983ad179", null ]
 ];

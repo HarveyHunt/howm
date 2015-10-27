@@ -8,6 +8,6 @@ var searchData=
   ['env_5fsock_5fvar',['ENV_SOCK_VAR',['../howm_8h.html#a1e9b5dd3ae1d1208f44d5eb10f76e573',1,'howm.h']]],
   ['equalmods',['EQUALMODS',['../helper_8h.html#a918c8a9a844a1ede0c0f7837260ed4e9',1,'helper.h']]],
   ['ewmh',['ewmh',['../howm_8c.html#a9ff7518503929d6e1fdb1d7f41e9a118',1,'ewmh():&#160;howm.c'],['../howm_8h.html#a9ff7518503929d6e1fdb1d7f41e9a118',1,'ewmh():&#160;howm.c']]],
-  ['ewmh_5fprocess_5fwm_5fstate',['ewmh_process_wm_state',['../xcb__help_8c.html#a5a5c97d18d0d32f318ae5b5d9b79d61a',1,'ewmh_process_wm_state(Client *c, xcb_atom_t a, int action):&#160;xcb_help.c'],['../xcb__help_8h.html#a5a5c97d18d0d32f318ae5b5d9b79d61a',1,'ewmh_process_wm_state(Client *c, xcb_atom_t a, int action):&#160;xcb_help.c']]],
+  ['ewmh_5fprocess_5fwm_5fstate',['ewmh_process_wm_state',['../xcb__help_8c.html#a4447fdfc2628d0422db1a154fa5c076e',1,'ewmh_process_wm_state(client_t *c, xcb_atom_t a, int action):&#160;xcb_help.c'],['../xcb__help_8h.html#a4447fdfc2628d0422db1a154fa5c076e',1,'ewmh_process_wm_state(client_t *c, xcb_atom_t a, int action):&#160;xcb_help.c']]],
   ['exec_5fconfig',['exec_config',['../howm_8c.html#abe301f9d2d267cf043ed22b22f16bb35',1,'howm.c']]]
 ];
