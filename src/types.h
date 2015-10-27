@@ -56,7 +56,7 @@ struct workspace_t {
 	client_t *head; /**< The start of the linked list. */
 	client_t *prev_foc; /**< The last focused client. This is seperate to
 				* the linked list structure. */
-	client_t *current; /**< The client that is currently in focus. */
+	client_t *c; /**< The client that is currently in focus. */
 	workspace_t *next; /**< The next workspace in the linked list. */
 	workspace_t *prev; /**< The prev workspace in the linked list. */
 };
@@ -72,6 +72,7 @@ struct monitor_t {
 	workspace_t *ws; /**< The currently focused workspace. */
 	workspace_t *ws_head; /**< The first workspace. */
 	workspace_t *ws_tail; /**< The last workspace. */
+	workspace_t *last_ws; /**< The last workspace to be focused. */
 	monitor_t *next; /**< The next monitor. */
 	monitor_t *prev; /**< The previous monitor. */
 	xcb_rectangle_t rect; /**< The size and location of the monitor. */

@@ -122,7 +122,7 @@ static void map_event(xcb_generic_event_t *ev)
 			c->rect.width = geom->width > 1 ? geom->width : conf.float_spawn_width;
 			c->rect.height = geom->height > 1 ? geom->height : conf.float_spawn_height;
 			c->rect.x = conf.center_floating ? (screen_width / 2) - (c->rect.width / 2) : geom->x;
-			c->rect.y = conf.center_floating ? (screen_height - wss[cw].bar_height - c->rect.height) / 2 : geom->y;
+			c->rect.y = conf.center_floating ? (screen_height - mon->ws->bar_height - c->rect.height) / 2 : geom->y;
 		}
 		free(geom);
 	}
@@ -164,7 +164,7 @@ static void enter_event(xcb_generic_event_t *ev)
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *)ev;
 
 	log_debug("Enter event for window <0x%x>", ee->event);
-	if (conf.focus_mouse && wss[cw].layout != ZOOM)
+	if (conf.focus_mouse && mon->ws->layout != ZOOM)
 		focus_window(ee->event);
 }
 
@@ -185,7 +185,7 @@ static void configure_event(xcb_generic_event_t *ev)
 	if (XCB_CONFIG_WINDOW_X & ce->value_mask)
 		vals[i++] = ce->x;
 	if (XCB_CONFIG_WINDOW_Y & ce->value_mask)
-		vals[i++] = ce->y + (conf.bar_bottom ? 0 : wss[cw].bar_height);
+		vals[i++] = ce->y + (conf.bar_bottom ? 0 : mon->ws->bar_height);
 	if (XCB_CONFIG_WINDOW_WIDTH & ce->value_mask)
 		vals[i++] = (ce->width < screen_width - conf.border_px) ? ce->width : screen_width - conf.border_px;
 	if (XCB_CONFIG_WINDOW_HEIGHT & ce->value_mask)
@@ -245,7 +245,7 @@ static void client_message_event(xcb_generic_event_t *ev)
 	} else if (c && cm->type == ewmh->_NET_CURRENT_DESKTOP
 			&& cm->data.data32[0] < workspace_cnt) {
 		log_info("_NET_CURRENT_DESKTOP: Changing to workspace <%d>", cm->data.data32[0]);
-		change_ws(cm->data.data32[0]);
+		change_ws(index_to_workspace(mon, cm->data.data32[0]));
 	} else {
 		log_debug("Unhandled client message: %d", cm->type);
 	}

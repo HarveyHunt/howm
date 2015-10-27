@@ -61,9 +61,8 @@ struct config {
 enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
 
 extern int retval;
-extern int last_ws;
+extern workspace_t *last_ws;
 extern int previous_layout;
-extern int cw;
 extern xcb_connection_t *dpy;
 extern uint16_t screen_height;
 extern uint16_t screen_width;
@@ -78,8 +77,6 @@ extern unsigned int workspace_cnt;
 extern xcb_screen_t *screen;
 extern xcb_ewmh_connection_t *ewmh;
 extern bool running;
-
-extern workspace_t wss[];
 
 extern struct config conf;
 

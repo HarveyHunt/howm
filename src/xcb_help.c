@@ -139,7 +139,7 @@ void focus_window(xcb_window_t win)
 {
 	client_t *c = find_client_by_win(win);
 
-	if (c && c != wss[cw].current)
+	if (c && c != mon->ws->c)
 		update_focused_client(c);
 	else
 		/* We don't want warnings for clicking the root window... */

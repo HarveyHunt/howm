@@ -93,7 +93,7 @@ client_t *stack_pop(struct stack *s)
  */
 void send_to_scratchpad(void)
 {
-	client_t *c = wss[cw].current;
+	client_t *c = mon->ws->c;
 
 	if (scratchpad || !c)
 		return;
@@ -103,18 +103,18 @@ void send_to_scratchpad(void)
 		prev_client(c, cw)->next = c->next;
 
 	/* TODO: This should be in a reusable function. */
-	if (c == wss[cw].prev_foc)
-		wss[cw].prev_foc = prev_client(wss[cw].current, cw);
-	if (c == wss[cw].current || !wss[cw].head->next)
-		wss[cw].current = wss[cw].prev_foc ? wss[cw].prev_foc : wss[cw].head;
-	if (c == wss[cw].head) {
-		wss[cw].head = c->next;
-		wss[cw].current = c->next;
+	if (c == mon->ws->prev_foc)
+		mon->ws->prev_foc = prev_client(mon->ws->c, cw);
+	if (c == mon->ws->c || !mon->ws->head->next)
+		mon->ws->c = mon->ws->prev_foc ? mon->ws->prev_foc : mon->ws->head;
+	if (c == mon->ws->head) {
+		mon->ws->head = c->next;
+		mon->ws->c = c->next;
 	}
 
 	xcb_unmap_window(dpy, c->win);
-	wss[cw].client_cnt--;
-	update_focused_client(wss[cw].current);
+	mon->ws->client_cnt--;
+	update_focused_client(mon->ws->c);
 	scratchpad = c;
 }
 
@@ -129,25 +129,25 @@ void get_from_scratchpad(void)
 	if (!scratchpad)
 		return;
 	/* TODO: This should be in a reusable function. */
-	if (!wss[cw].head)
-		wss[cw].head = scratchpad;
-	else if (!wss[cw].head->next)
-		wss[cw].head->next = scratchpad;
+	if (!mon->ws->head)
+		mon->ws->head = scratchpad;
+	else if (!mon->ws->head->next)
+		mon->ws->head->next = scratchpad;
 	else
-		prev_client(wss[cw].head, cw)->next = scratchpad;
+		prev_client(mon->ws->head, cw)->next = scratchpad;
 
-	wss[cw].prev_foc = wss[cw].current;
-	wss[cw].current = scratchpad;
+	mon->ws->prev_foc = mon->ws->c;
+	mon->ws->c = scratchpad;
 
 	scratchpad = NULL;
-	wss[cw].client_cnt++;
+	mon->ws->client_cnt++;
 
-	wss[cw].current->is_floating = true;
-	wss[cw].current->rect.width = conf.scratchpad_width;
-	wss[cw].current->rect.height = conf.scratchpad_height;
-	wss[cw].current->rect.x = (screen_width / 2) - (wss[cw].current->rect.width / 2);
-	wss[cw].current->rect.y = (screen_height - wss[cw].bar_height - wss[cw].current->rect.height) / 2;
+	mon->ws->c->is_floating = true;
+	mon->ws->c->rect.width = conf.scratchpad_width;
+	mon->ws->c->rect.height = conf.scratchpad_height;
+	mon->ws->c->rect.x = (screen_width / 2) - (mon->ws->c->rect.width / 2);
+	mon->ws->c->rect.y = (screen_height - mon->ws->bar_height - mon->ws->c->rect.height) / 2;
 
-	xcb_map_window(dpy, wss[cw].current->win);
-	update_focused_client(wss[cw].current);
+	xcb_map_window(dpy, mon->ws->c->win);
+	update_focused_client(mon->ws->c);
 }

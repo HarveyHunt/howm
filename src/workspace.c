@@ -25,13 +25,13 @@
  *
  * @param ws The workspace to be killed.
  */
-void kill_ws(const int ws)
+void kill_ws(workspace_t *ws)
 {
-	if (!wss[ws].client_cnt)
+	if (!ws || !ws->client_cnt)
 		return;
 
-	while (wss[ws].head)
-		kill_client(ws, wss[ws].client_cnt == 1
+	while (mon->ws->head)
+		kill_client(ws, mon->ws->client_cnt == 1
 				&& cw == ws);
 
 	log_info("Killed off workspace <%d>", ws);
@@ -95,7 +95,7 @@ inline workspace_t *offset_ws(workspace_t *ws, int offset)
 void focus_prev_ws(void)
 {
 	log_info("Focusing previous workspace");
-	change_ws(correct_ws(cw - 1));
+	change_ws(mon->ws->prev);
 }
 
 /**
@@ -116,35 +116,40 @@ void focus_last_ws(void)
  */
 void focus_next_ws(void)
 {
-	log_info("Focusing next workspace");
-	change_ws(correct_ws(cw + 1));
+	log_info("Focusing previous workspace");
+	change_ws(mon->ws->next);
 }
 
 /**
  * @brief Change to a different workspace and map the correct windows.
  *
- * @param ws Indicates which workspace howm should change to.
+ * @param ws The workspace that howm should change to.
  *
  * @ingroup commands
  */
-void change_ws(const int ws)
+void change_ws(const workspace_t *ws)
 {
-	client_t *c = wss[ws].head;
-
-	if ((unsigned int)ws > workspace_cnt || ws <= 0 || ws == cw)
+	if (!ws)
 		return;
-	last_ws = cw;
-	log_info("Changing from workspace <%d> to <%d>.", last_ws, ws);
+
+	client_t *c = ws->head;
+
+	last_ws = mon->ws;
+	log_debug("Changing from workspace <%d> to <%d>.", workspace_to_index(last_ws),
+							workspace_to_index(ws));
+
 	for (; c; c = c->next)
 		xcb_map_window(dpy, c->win);
-	for (c = wss[last_ws].head; c; c = c->next)
+	for (c = last_ws->head; c; c = c->next)
 		xcb_unmap_window(dpy, c->win);
-	cw = ws;
-	update_focused_client(wss[cw].current);
 
-	xcb_ewmh_set_current_desktop(ewmh, 0, cw - 1);
-	xcb_ewmh_geometry_t workarea[] = { { 0, conf.bar_bottom ? 0 : wss[cw].bar_height,
-				screen_width, screen_height - wss[cw].bar_height } };
+	mon->ws = ws;
+
+	update_focused_client(mon->ws->c);
+
+	xcb_ewmh_set_current_desktop(ewmh, 0, workspace_to_index(ws) - 1);
+	xcb_ewmh_geometry_t workarea[] = { { 0, conf.bar_bottom ? 0 : ws->bar_height,
+				screen_width, screen_height - ws->bar_height } };
 	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 
 	howm_info();
@@ -245,7 +250,7 @@ void remove_ws(monitor_t *m, workspace_t *ws)
 	if (m->ws_tail == ws)
 		m->ws_tail = ws->prev;
 
-	ws->head = ws->prev_foc = ws->current = NULL;
+	ws->head = ws->prev_foc = ws->c = NULL;
 	ws->next = ws->prev = NULL;
 
 	workspace_cnt--;

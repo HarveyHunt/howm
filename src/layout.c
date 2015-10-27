@@ -35,10 +35,10 @@ static void(*layout_handler[]) (void) = {
  */
 void arrange_windows(void)
 {
-	if (!wss[cw].head)
+	if (!mon->ws->head)
 		return;
 	log_debug("Arranging windows");
-	layout_handler[wss[cw].head->next ? wss[cw].layout : ZOOM]();
+	layout_handler[mon->ws->head->next ? mon->ws->layout : ZOOM]();
 	howm_info();
 }
 
@@ -51,8 +51,8 @@ static void grid(void)
 	client_t *c = NULL;
 	int cols, rows, i = -1, col_cnt = 0, row_cnt = 0;
 	uint16_t col_w;
-	uint16_t client_y = conf.bar_bottom ? 0 : wss[cw].bar_height;
-	uint16_t col_h = screen_height - wss[cw].bar_height;
+	uint16_t client_y = conf.bar_bottom ? 0 : mon->ws->bar_height;
+	uint16_t col_h = screen_height - mon->ws->bar_height;
 
 	if (n <= 1) {
 		zoom();
@@ -66,7 +66,7 @@ static void grid(void)
 			break;
 	rows = n / cols;
 	col_w = screen_width / cols;
-	for (c = wss[cw].head; c; c = c->next) {
+	for (c = mon->ws->head; c; c = c->next) {
 		if (FFT(c))
 			continue;
 		else
@@ -98,13 +98,13 @@ static void zoom(void)
 	/* When zoom is called because there aren't enough clients for other
 	 * layouts to work, draw a border to be consistent with other layouts.
 	 * */
-	if (wss[cw].layout != ZOOM && !wss[cw].head->is_fullscreen)
-		set_border_width(wss[cw].head->win, conf.border_px);
+	if (mon->ws->layout != ZOOM && !mon->ws->head->is_fullscreen)
+		set_border_width(mon->ws->head->win, conf.border_px);
 
-	for (c = wss[cw].head; c; c = c->next)
+	for (c = mon->ws->head; c; c = c->next)
 		if (!FFT(c))
-			change_client_geom(c, 0, conf.bar_bottom ? 0 : wss[cw].bar_height,
-					screen_width, screen_height - wss[cw].bar_height);
+			change_client_geom(c, 0, conf.bar_bottom ? 0 : mon->ws->bar_height,
+					screen_width, screen_height - mon->ws->bar_height);
 	draw_clients();
 }
 
@@ -115,13 +115,13 @@ static void zoom(void)
 static void stack(void)
 {
 	client_t *c = get_first_non_tff();
-	bool vert = (wss[cw].layout == VSTACK);
-	uint16_t h = screen_height - wss[cw].bar_height;
+	bool vert = (mon->ws->layout == VSTACK);
+	uint16_t h = screen_height - mon->ws->bar_height;
 	uint16_t w = screen_width;
 	int n = get_non_tff_count();
 	uint16_t client_x = 0, client_span = 0;
-	uint16_t client_y = conf.bar_bottom ? 0 : wss[cw].bar_height;
-	uint16_t ms = (vert ? w : h) * wss[cw].master_ratio;
+	uint16_t client_y = conf.bar_bottom ? 0 : mon->ws->bar_height;
+	uint16_t ms = (vert ? w : h) * mon->ws->master_ratio;
 	/* The size of the direction the clients will be stacked in. e.g.
 	 *
 	 *+---------------------------+--------------+   +
@@ -157,7 +157,7 @@ static void stack(void)
 		change_client_geom(c, 0, client_y,
 			    ms, span);
 	} else {
-		change_client_geom(c, 0, conf.bar_bottom ? 0 : wss[cw].bar_height,
+		change_client_geom(c, 0, conf.bar_bottom ? 0 : mon->ws->bar_height,
 			span, ms);
 	}
 
@@ -172,7 +172,7 @@ static void stack(void)
 		} else {
 			change_client_geom(c, client_x, ms,
 				    client_span,
-				    screen_height - wss[cw].bar_height - ms);
+				    screen_height - mon->ws->bar_height - ms);
 			client_x += client_span;
 		}
 	}
@@ -186,12 +186,12 @@ static void stack(void)
  */
 void change_layout(const int layout)
 {
-	if (layout == wss[cw].layout || layout >= END_LAYOUT || layout < ZOOM)
+	if (layout == mon->ws->layout || layout >= END_LAYOUT || layout < ZOOM)
 		return;
-	wss[cw].layout = layout;
-	update_focused_client(wss[cw].current);
-	log_info("Changed layout from %d to %d", previous_layout,  wss[cw].layout);
-	previous_layout = wss[cw].layout;
+	mon->ws->layout = layout;
+	update_focused_client(mon->ws->c);
+	log_info("Changed layout from %d to %d", previous_layout,  mon->ws->layout);
+	previous_layout = mon->ws->layout;
 }
 
 /**
@@ -201,7 +201,7 @@ void change_layout(const int layout)
  */
 void prev_layout(void)
 {
-	int i = wss[cw].layout < 1 ? END_LAYOUT - 1 : wss[cw].layout - 1;
+	int i = mon->ws->layout < 1 ? END_LAYOUT - 1 : mon->ws->layout - 1;
 
 	log_info("Changing to previous layout (%d)", i);
 	change_layout(i);
@@ -214,7 +214,7 @@ void prev_layout(void)
  */
 void next_layout(void)
 {
-	int i = (wss[cw].layout + 1) % END_LAYOUT;
+	int i = (mon->ws->layout + 1) % END_LAYOUT;
 
 	log_info("Changing to layout (%d)", i);
 	change_layout(i);

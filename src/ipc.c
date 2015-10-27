@@ -428,7 +428,7 @@ static int ipc_process_config(char **args)
 		SET_COLOUR(conf.border_urgent, args[1]);
 	else
 		err = IPC_ERR_NO_CONFIG;
-	update_focused_client(wss[cw].current);
+	update_focused_client(mon->ws->c);
 	return err;
 #undef SET_COLOUR
 }

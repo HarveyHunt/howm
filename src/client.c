@@ -38,11 +38,11 @@ static void move_down(client_t *c);
 client_t *find_client_by_win(xcb_window_t win)
 {
 	bool found;
-	unsigned int w = 1;
+	workspace_t *ws;
 	client_t *c = NULL;
 
-	for (found = false; w <= workspace_cnt && !found; w++)
-		for (c = wss[w].head; c && !(found = (win == c->win)); c = c->next)
+	for (found = false, ws = mon->ws_head; ws != NULL && !found; ws = ws->next)
+		for (c = ws->head; c && !(found = (win == c->win)); c = c->next)
 			;
 	return c;
 }
@@ -52,18 +52,18 @@ client_t *find_client_by_win(xcb_window_t win)
  *
  * @param c The client which needs to have its previous found.
  *
- * @param ws The workspace that the client is on.
+ * @param w The workspace that the client is on.
  *
  * @return The previous client, so long as the given client isn't NULL and
  * there is more than one client. Else, NULL.
  */
-client_t *prev_client(client_t *c, int ws)
+client_t *prev_client(client_t *c, workspace_t *w)
 {
 	client_t *p = NULL;
 
-	if (!c || !wss[ws].head || !wss[ws].head->next)
+	if (!c || !w->head || !w->head->next)
 		return NULL;
-	for (p = wss[ws].head; p->next && p->next != c; p = p->next)
+	for (p = w->head; p->next && p->next != c; p = p->next)
 		;
 	return p;
 }
@@ -82,11 +82,11 @@ client_t *prev_client(client_t *c, int ws)
  */
 client_t *next_client(client_t *c)
 {
-	if (!c || !wss[cw].head	|| !wss[cw].head->next)
+	if (!c || !mon->ws->head	|| !mon->ws->head->next)
 		return NULL;
 	if (c->next)
 		return c->next;
-	return wss[cw].head;
+	return mon->ws->head;
 }
 
 /**
@@ -105,19 +105,19 @@ void update_focused_client(client_t *c)
 	if (!c)
 		return;
 
-	if (!wss[cw].head) {
-		wss[cw].prev_foc = wss[cw].current = NULL;
+	if (!mon->ws->head) {
+		mon->ws->prev_foc = mon->ws->c = NULL;
 		xcb_ewmh_set_active_window(ewmh, 0, XCB_NONE);
 		return;
-	} else if (c == wss[cw].prev_foc) {
-		wss[cw].prev_foc = prev_client(wss[cw].current = wss[cw].prev_foc, cw);
-	} else if (c != wss[cw].current) {
-		wss[cw].prev_foc = wss[cw].current;
-		wss[cw].current = c;
+	} else if (c == mon->ws->prev_foc) {
+		mon->ws->prev_foc = prev_client(mon->ws->c = mon->ws->prev_foc, mon->ws);
+	} else if (c != mon->ws->c) {
+		mon->ws->prev_foc = mon->ws->c;
+		mon->ws->c = c;
 	}
 
 	log_info("Focusing client <%p>", c);
-	for (c = wss[cw].head; c; c = c->next, ++all) {
+	for (c = mon->ws->head; c; c = c->next, ++all) {
 		if (FFT(c)) {
 			fullscreen++;
 			if (!c->is_fullscreen)
@@ -127,15 +127,15 @@ void update_focused_client(client_t *c)
 	xcb_window_t windows[all];
 	memset(windows, 0, sizeof(windows));
 
-	windows[(wss[cw].current->is_floating || wss[cw].current->is_transient) ? 0 : float_trans] = wss[cw].current->win;
-	c = wss[cw].head;
-	for (fullscreen += !FFT(wss[cw].current) ? 1 : 0; c; c = c->next) {
+	windows[(mon->ws->c->is_floating || mon->ws->c->is_transient) ? 0 : float_trans] = mon->ws->c->win;
+	c = mon->ws->head;
+	for (fullscreen += !FFT(mon->ws->c) ? 1 : 0; c; c = c->next) {
 		set_border_width(c->win, c->is_fullscreen ? 0 : conf.border_px);
 		xcb_change_window_attributes(dpy, c->win, XCB_CW_BORDER_PIXEL,
-					     (c == wss[cw].current ? &conf.border_focus :
-					      c == wss[cw].prev_foc ? &conf.border_prev_focus
+					     (c == mon->ws->c ? &conf.border_focus :
+					      c == mon->ws->prev_foc ? &conf.border_prev_focus
 					      : &conf.border_unfocus));
-		if (c != wss[cw].current)
+		if (c != mon->ws->c)
 			windows[c->is_fullscreen ? --fullscreen : FFT(c) ?
 				--float_trans : --all] = c->win;
 	}
@@ -143,9 +143,9 @@ void update_focused_client(client_t *c)
 	for (float_trans = 1; float_trans <= all; ++float_trans)
 		elevate_window(windows[all - float_trans]);
 
-	xcb_ewmh_set_active_window(ewmh, 0, wss[cw].current->win);
+	xcb_ewmh_set_active_window(ewmh, 0, mon->ws->c->win);
 
-	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, wss[cw].current->win,
+	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, mon->ws->c->win,
 			    XCB_CURRENT_TIME);
 	arrange_windows();
 }
@@ -160,7 +160,7 @@ int get_non_tff_count(void)
 	int n = 0;
 	client_t *c = NULL;
 
-	for (c = wss[cw].head; c; c = c->next)
+	for (c = mon->ws->head; c; c = c->next)
 		if (!FFT(c))
 			n++;
 	return n;
@@ -176,7 +176,7 @@ client_t *get_first_non_tff(void)
 {
 	client_t *c = NULL;
 
-	for (c = wss[cw].head; c && FFT(c); c = c->next)
+	for (c = mon->ws->head; c && FFT(c); c = c->next)
 		;
 	return c;
 }
@@ -192,10 +192,10 @@ client_t *get_first_non_tff(void)
 void remove_client(client_t *c, bool refocus)
 {
 	client_t **temp = NULL;
-	unsigned int w = 1;
+	workspace_t *w = mon->ws_head;
 
-	for (; w <= workspace_cnt; w++)
-		for (temp = &wss[w].head; *temp; temp = &(*temp)->next)
+	for (; w != NULL ; w = w->next)
+		for (temp = &w->head; *temp; temp = &(*temp)->next)
 			if (*temp == c)
 				goto found;
 	return;
@@ -203,16 +203,16 @@ void remove_client(client_t *c, bool refocus)
 found:
 	*temp = c->next;
 	log_info("Removing client <%p>", c);
-	if (c == wss[w].prev_foc)
-		wss[w].prev_foc = prev_client(wss[w].current, w);
-	if (c == wss[w].current || !wss[w].head->next) {
-		wss[w].current = wss[w].prev_foc ? wss[w].prev_foc : wss[w].head;
+	if (c == w->prev_foc)
+		w->prev_foc = prev_client(w->c, w);
+	if (c == w->c || !w->head->next) {
+		w->c = w->prev_foc ? w->prev_foc : w->head;
 		if (refocus)
-			update_focused_client(wss[w].current);
+			update_focused_client(w->c);
 	}
 	free(c);
 	c = NULL;
-	wss[w].client_cnt--;
+	w->client_cnt--;
 }
 
 /**
@@ -222,23 +222,24 @@ found:
  */
 static void move_down(client_t *c)
 {
-	client_t *prev = prev_client(c, cw);
-	client_t *n = (c->next) ? c->next : wss[cw].head;
+	client_t *prev = prev_client(c, mon->ws);
+	client_t *n = (c->next) ? c->next : mon->ws->head;
 
 	if (!c)
 		return;
 	if (!prev)
 		return;
-	if (wss[cw].head == c)
-		wss[cw].head = n;
+	if (mon->ws->head == c)
+		mon->ws->head = n;
 	else
 		prev->next = c->next;
 	c->next = (c->next) ? n->next : n;
 	if (n->next == c->next)
 		n->next = c;
 	else
-		wss[cw].head = c;
-	log_info("Moved client <%p> on workspace <%d> down", c, cw);
+		mon->ws->head = c;
+	log_info("Moved client <%p> on workspace <%d> down",
+				c, workspace_to_index(mon->ws));
 	arrange_windows();
 }
 
@@ -249,7 +250,7 @@ static void move_down(client_t *c)
  */
 void move_up(client_t *c)
 {
-	client_t *p = prev_client(c, cw);
+	client_t *p = prev_client(c, mon->ws);
 	client_t *pp = NULL;
 
 	if (!c)
@@ -257,15 +258,16 @@ void move_up(client_t *c)
 	if (!p)
 		return;
 	if (p->next)
-		for (pp = wss[cw].head; pp && pp->next != p; pp = pp->next)
+		for (pp = mon->ws->head; pp && pp->next != p; pp = pp->next)
 			;
 	if (pp)
 		pp->next = c;
 	else
-		wss[cw].head = (wss[cw].head == c) ? c->next : c;
-	p->next = (c->next == wss[cw].head) ? c : c->next;
-	c->next = (c->next == wss[cw].head) ? NULL : p;
-	log_info("Moved client <%p> on workspace <%d> down", c, cw);
+		mon->ws->head = (mon->ws->head == c) ? c->next : c;
+	p->next = (c->next == mon->ws->head) ? c : c->next;
+	c->next = (c->next == mon->ws->head) ? NULL : p;
+	log_info("Moved client <%p> on workspace <%d> down",
+				c, workspace_to_index(mon->ws));
 	arrange_windows();
 }
 
@@ -276,10 +278,10 @@ void move_up(client_t *c)
  */
 void focus_next_client(void)
 {
-	if (!wss[cw].current || !wss[cw].head->next)
+	if (!mon->ws->c || !mon->ws->head->next)
 		return;
 	log_info("Focusing next client");
-	update_focused_client(wss[cw].current->next ? wss[cw].current->next : wss[cw].head);
+	update_focused_client(mon->ws->c->next ? mon->ws->c->next : mon->ws->head);
 }
 
 /**
@@ -289,45 +291,45 @@ void focus_next_client(void)
  */
 void focus_prev_client(void)
 {
-	if (!wss[cw].current || !wss[cw].head->next)
+	if (!mon->ws->c || !mon->ws->head->next)
 		return;
 	log_info("Focusing previous client");
-	wss[cw].prev_foc = wss[cw].current;
-	update_focused_client(prev_client(wss[cw].prev_foc, cw));
+	mon->ws->prev_foc = mon->ws->c;
+	update_focused_client(prev_client(mon->ws->prev_foc, mon->ws));
 }
 
 /**
- * @brief Kills the current client on the workspace ws.
+ * @brief Kills the current client on the workspace w.
  *
- * @param ws The workspace that the current client to be killed is on.
+ * @param w The workspace that the current client to be killed is on.
  *
  * @param arrange Whether the windows should be rearranged.
  */
-void kill_client(const int ws, bool arrange)
+void kill_client(workspace_t *w, bool arrange)
 {
 	xcb_icccm_get_wm_protocols_reply_t rep;
 	unsigned int i;
 	bool found = false;
 
-	if (!wss[ws].current)
+	if (!w->c)
 		return;
 
 	if (xcb_icccm_get_wm_protocols_reply(dpy,
 				xcb_icccm_get_wm_protocols(dpy,
-					wss[ws].current->win,
+					w->c->win,
 					wm_atoms[WM_PROTOCOLS]), &rep, NULL)) {
 		for (i = 0; i < rep.atoms_len; ++i)
 			if (rep.atoms[i] == wm_atoms[WM_DELETE_WINDOW]) {
-				delete_win(wss[ws].current->win);
+				delete_win(w->c->win);
 				found = true;
 				break;
 			}
 		xcb_icccm_get_wm_protocols_reply_wipe(&rep);
 	}
 	if (!found)
-		xcb_kill_client(dpy, wss[ws].current->win);
-	log_info("Killing Client <%p>", wss[ws].current);
-	remove_client(wss[ws].current, arrange);
+		xcb_kill_client(dpy, w->c->win);
+	log_info("Killing Client <%p>", w->c);
+	remove_client(w->c, arrange);
 }
 
 /**
@@ -345,18 +347,18 @@ void move_client(int cnt, bool up)
 	client_t *c;
 
 	if (up) {
-		if (wss[cw].current == wss[cw].head)
+		if (mon->ws->c == mon->ws->head)
 			return;
-		c = prev_client(wss[cw].current, cw);
+		c = prev_client(mon->ws->c, mon->ws);
 		/* TODO optimise this by inserting the client only once
 			* and in the correct location.*/
 		for (; cnt > 0; move_down(c), cnt--)
 			;
 	} else {
-		if (wss[cw].current == prev_client(wss[cw].head, cw))
+		if (mon->ws->c == prev_client(mon->ws->head, mon->ws))
 			return;
 		cntcopy = cnt;
-		for (c = wss[cw].current; cntcopy > 0; c = next_client(c), cntcopy--)
+		for (c = mon->ws->c; cntcopy > 0; c = next_client(c), cntcopy--)
 			;
 		for (; cnt > 0; move_up(c), cnt--)
 			;
@@ -370,7 +372,7 @@ void move_client(int cnt, bool up)
  */
 void move_current_down(void)
 {
-	move_down(wss[cw].current);
+	move_down(mon->ws->c);
 }
 
 /**
@@ -380,7 +382,7 @@ void move_current_down(void)
  */
 void move_current_up(void)
 {
-	move_up(wss[cw].current);
+	move_up(mon->ws->c);
 }
 
 /**
@@ -390,39 +392,41 @@ void move_current_up(void)
  * @param ws The ws that the client should be moved to.
  * @param follow Should focus follow the client that has been moved?
  */
-void client_to_ws(client_t *c, const int ws, bool follow)
+void client_to_ws(client_t *c, workspace_t *ws, bool follow)
 {
 	client_t *last;
-	client_t *prev = prev_client(c, cw);
+	client_t *prev = prev_client(c, mon->ws);
 
 	/* Performed for the current workspace. */
-	if (!c || ws == cw)
+	if (!c || ws == mon->ws)
 		return;
 	/* Target workspace. */
-	last = prev_client(wss[ws].head, ws);
-	if (!wss[ws].head)
-		wss[ws].head = c;
+	last = prev_client(ws->head, ws);
+	if (!ws->head)
+		ws->head = c;
 	else if (last)
 		last->next = c;
 	else
-		wss[ws].head->next = c;
-	wss[ws].current = c;
-	wss[ws].client_cnt++;
+		ws->head->next = c;
+	ws->c = c;
+	ws->client_cnt++;
 
 	/* Current workspace. */
-	if (c == wss[cw].head || !prev)
-		wss[cw].head = c->next;
+	if (c == mon->ws->head || !prev)
+		mon->ws->head = c->next;
 	else
 		prev->next = c->next;
-	wss[cw].current = prev;
-	wss[cw].client_cnt--;
+	mon->ws->c = prev;
+	mon->ws->client_cnt--;
 
 	c->next = NULL;
 	xcb_unmap_window(dpy, c->win);
 
-	log_info("Moved client <%p> from <%d> to <%d>", c, cw, ws);
+	log_info("Moved client <%p> from <%d> to <%d>", c,
+			workspace_to_index(mon->ws),
+			workspace_to_index(ws));
 	if (follow) {
-		wss[ws].current = c;
+		ws->c = c;
 		change_ws(ws);
 	} else {
 		update_focused_client(prev);
@@ -441,15 +445,15 @@ void draw_clients(void)
 	client_t *c = NULL;
 
 	log_debug("Drawing clients");
-	for (c = wss[cw].head; c; c = c->next)
-		if (wss[cw].layout == ZOOM && conf.zoom_gap && !c->is_floating) {
+	for (c = mon->ws->head; c; c = c->next)
+		if (mon->ws->layout == ZOOM && conf.zoom_gap && !c->is_floating) {
 			set_border_width(c->win, 0);
 			move_resize(c->win, c->rect.x + c->gap, c->rect.y + c->gap,
 					c->rect.width - (2 * c->gap), c->rect.height - (2 * c->gap));
 		} else if (c->is_floating && !c->is_fullscreen) {
 			set_border_width(c->win, conf.border_px);
 			move_resize(c->win, c->rect.x, c->rect.y, c->rect.width, c->rect.height);
-		} else if (c->is_fullscreen || wss[cw].layout == ZOOM) {
+		} else if (c->is_fullscreen || mon->ws->layout == ZOOM) {
 			set_border_width(c->win, 0);
 			move_resize(c->win, c->rect.x, c->rect.y, c->rect.width, c->rect.height);
 		} else {
@@ -507,7 +511,7 @@ void change_client_gaps(client_t *c, int size)
 client_t *create_client(xcb_window_t w)
 {
 	client_t *c = (client_t *)calloc(1, sizeof(client_t));
-	client_t *t = prev_client(wss[cw].head, cw); /* Get the last element. */
+	client_t *t = prev_client(mon->ws->head, mon->ws); /* Get the last element. */
 	uint32_t vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
 				 (conf.focus_mouse ? XCB_EVENT_MASK_ENTER_WINDOW : 0)};
 
@@ -515,20 +519,20 @@ client_t *create_client(xcb_window_t w)
 		log_err("Can't allocate memory for client.");
 		exit(EXIT_FAILURE);
 	}
-	if (!wss[cw].head)
-		wss[cw].head = c;
+	if (!mon->ws->head)
+		mon->ws->head = c;
 	else if (t)
 		t->next = c;
 	else
-		wss[cw].head->next = c;
+		mon->ws->head->next = c;
 	c->win = w;
-	c->gap = wss[cw].gap;
+	c->gap = mon->ws->gap;
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_EVENT_MASK, vals);
 	uint32_t space = c->gap + conf.border_px;
 
 	xcb_ewmh_set_frame_extents(ewmh, c->win, space, space, space, space);
 	log_info("Created client <%p>", c);
-	wss[cw].client_cnt++;
+	mon->ws->client_cnt++;
 	return c;
 }
 
@@ -556,7 +560,7 @@ void set_fullscreen(client_t *c, bool fscr)
 		change_client_geom(c, 0, 0, screen_width, screen_height);
 		draw_clients();
 	} else {
-		set_border_width(c->win, !wss[cw].head->next ? 0 : conf.border_px);
+		set_border_width(c->win, !mon->ws->head->next ? 0 : conf.border_px);
 		arrange_windows();
 		draw_clients();
 	}
@@ -569,7 +573,7 @@ void set_urgent(client_t *c, bool urg)
 
 	c->is_urgent = urg;
 	xcb_change_window_attributes(dpy, c->win, XCB_CW_BORDER_PIXEL,
-			urg ? &conf.border_urgent : c == wss[cw].current
+			urg ? &conf.border_urgent : c == mon->ws->c
 			? &conf.border_focus : &conf.border_unfocus);
 }
 
@@ -582,44 +586,44 @@ void set_urgent(client_t *c, bool urg)
  */
 void teleport_client(const int direction)
 {
-	if (!wss[cw].current || !wss[cw].current->is_floating
-			|| wss[cw].current->is_transient)
+	if (!mon->ws->c || !mon->ws->c->is_floating
+			|| mon->ws->c->is_transient)
 		return;
 
 	/* A bit naughty, but it looks nicer- doesn't it?*/
-	uint16_t g = wss[cw].current->gap;
-	uint16_t w = wss[cw].current->rect.width;
-	uint16_t h = wss[cw].current->rect.height;
-	uint16_t bh = wss[cw].bar_height;
+	uint16_t g = mon->ws->c->gap;
+	uint16_t w = mon->ws->c->rect.width;
+	uint16_t h = mon->ws->c->rect.height;
+	uint16_t bh = mon->ws->bar_height;
 
 	switch (direction) {
 	case TOP_LEFT:
-		wss[cw].current->rect.x = g;
-		wss[cw].current->rect.y = (conf.bar_bottom ? 0 : bh) + g;
+		mon->ws->c->rect.x = g;
+		mon->ws->c->rect.y = (conf.bar_bottom ? 0 : bh) + g;
 		break;
 	case TOP_CENTER:
-		wss[cw].current->rect.x = (screen_width - w) / 2;
-		wss[cw].current->rect.y = (conf.bar_bottom ? 0 : bh) + g;
+		mon->ws->c->rect.x = (screen_width - w) / 2;
+		mon->ws->c->rect.y = (conf.bar_bottom ? 0 : bh) + g;
 		break;
 	case TOP_RIGHT:
-		wss[cw].current->rect.x = screen_width - w - g - (2 * conf.border_px);
-		wss[cw].current->rect.y = (conf.bar_bottom ? 0 : bh) + g;
+		mon->ws->c->rect.x = screen_width - w - g - (2 * conf.border_px);
+		mon->ws->c->rect.y = (conf.bar_bottom ? 0 : bh) + g;
 		break;
 	case CENTER:
-		wss[cw].current->rect.x = (screen_width - w) / 2;
-		wss[cw].current->rect.y = (screen_height - bh - h) / 2;
+		mon->ws->c->rect.x = (screen_width - w) / 2;
+		mon->ws->c->rect.y = (screen_height - bh - h) / 2;
 		break;
 	case BOTTOM_LEFT:
-		wss[cw].current->rect.x = g;
-		wss[cw].current->rect.y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
+		mon->ws->c->rect.x = g;
+		mon->ws->c->rect.y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
 		break;
 	case BOTTOM_CENTER:
-		wss[cw].current->rect.x = (screen_width / 2) - (w / 2);
-		wss[cw].current->rect.y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
+		mon->ws->c->rect.x = (screen_width / 2) - (w / 2);
+		mon->ws->c->rect.y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
 		break;
 	case BOTTOM_RIGHT:
-		wss[cw].current->rect.x = screen_width - w - g - (2 * conf.border_px);
-		wss[cw].current->rect.y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
+		mon->ws->c->rect.x = screen_width - w - g - (2 * conf.border_px);
+		mon->ws->c->rect.y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
 		break;
 	};
 	draw_clients();
@@ -632,9 +636,9 @@ void teleport_client(const int direction)
  *
  * @ingroup commands
  */
-void current_to_ws(const int ws)
+void current_to_ws(workspace_t *ws)
 {
-	client_to_ws(wss[cw].current, ws, conf.follow_move);
+	client_to_ws(mon->ws->c, ws, conf.follow_move);
 }
 
 /**
@@ -644,14 +648,14 @@ void current_to_ws(const int ws)
  */
 void toggle_float(void)
 {
-	if (!wss[cw].current)
+	if (!mon->ws->c)
 		return;
-	log_info("Toggling floating state of client <%p>", wss[cw].current);
-	wss[cw].current->is_floating = !wss[cw].current->is_floating;
-	if (wss[cw].current->is_floating && conf.center_floating) {
-		wss[cw].current->rect.x = (screen_width / 2) - (wss[cw].current->rect.width / 2);
-		wss[cw].current->rect.y = (screen_height - wss[cw].bar_height - wss[cw].current->rect.height) / 2;
-		log_info("Centering client <%p>", wss[cw].current);
+	log_info("Toggling floating state of client <%p>", mon->ws->c);
+	mon->ws->c->is_floating = !mon->ws->c->is_floating;
+	if (mon->ws->c->is_floating && conf.center_floating) {
+		mon->ws->c->rect.x = (screen_width / 2) - (mon->ws->c->rect.width / 2);
+		mon->ws->c->rect.y = (screen_height - mon->ws->bar_height - mon->ws->c->rect.height) / 2;
+		log_info("Centering client <%p>", mon->ws->c);
 	}
 	arrange_windows();
 }
@@ -668,10 +672,10 @@ void toggle_float(void)
  */
 void resize_float_width(const int dw)
 {
-	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->rect.width + dw <= 0)
+	if (!mon->ws->c || !mon->ws->c->is_floating || (int)mon->ws->c->rect.width + dw <= 0)
 		return;
-	log_info("Resizing width of client <%p> from %d by %d", wss[cw].current, wss[cw].current->rect.width, dw);
-	wss[cw].current->rect.width += dw;
+	log_info("Resizing width of client <%p> from %d by %d", mon->ws->c, mon->ws->c->rect.width, dw);
+	mon->ws->c->rect.width += dw;
 	draw_clients();
 }
 
@@ -687,10 +691,10 @@ void resize_float_width(const int dw)
  */
 void resize_float_height(const int dh)
 {
-	if (!wss[cw].current || !wss[cw].current->is_floating || (int)wss[cw].current->rect.height + dh <= 0)
+	if (!mon->ws->c || !mon->ws->c->is_floating || (int)mon->ws->c->rect.height + dh <= 0)
 		return;
-	log_info("Resizing height of client <%p> from %d to %d", wss[cw].current, wss[cw].current->rect.height, dh);
-	wss[cw].current->rect.height += dh;
+	log_info("Resizing height of client <%p> from %d to %d", mon->ws->c, mon->ws->c->rect.height, dh);
+	mon->ws->c->rect.height += dh;
 	draw_clients();
 }
 
@@ -706,10 +710,10 @@ void resize_float_height(const int dh)
  */
 void move_float_y(const int dy)
 {
-	if (!wss[cw].current || !wss[cw].current->is_floating)
+	if (!mon->ws->c || !mon->ws->c->is_floating)
 		return;
-	log_info("Changing y of client <%p> from %d to %d", wss[cw].current, wss[cw].current->rect.y, dy);
-	wss[cw].current->rect.y += dy;
+	log_info("Changing y of client <%p> from %d to %d", mon->ws->c, mon->ws->c->rect.y, dy);
+	mon->ws->c->rect.y += dy;
 	draw_clients();
 }
 
@@ -725,10 +729,10 @@ void move_float_y(const int dy)
  */
 void move_float_x(const int dx)
 {
-	if (!wss[cw].current || !wss[cw].current->is_floating)
+	if (!mon->ws->c || !mon->ws->c->is_floating)
 		return;
-	log_info("Changing x of client <%p> from %d to %d", wss[cw].current, wss[cw].current->rect.x, dx);
-	wss[cw].current->rect.x += dx;
+	log_info("Changing x of client <%p> from %d to %d", mon->ws->c, mon->ws->c->rect.x, dx);
+	mon->ws->c->rect.x += dx;
 	draw_clients();
 }
 
@@ -739,14 +743,14 @@ void move_float_x(const int dx)
  */
 void make_master(void)
 {
-	if (!wss[cw].current || !wss[cw].head->next
-			|| wss[cw].head == wss[cw].current
-			|| !(wss[cw].layout == HSTACK
-			|| wss[cw].layout == VSTACK))
+	if (!mon->ws->c || !mon->ws->head->next
+			|| mon->ws->head == mon->ws->c
+			|| !(mon->ws->layout == HSTACK
+			|| mon->ws->layout == VSTACK))
 		return;
-	while (wss[cw].current != wss[cw].head)
-		move_up(wss[cw].current);
-	update_focused_client(wss[cw].head);
+	while (mon->ws->c != mon->ws->head)
+		move_up(mon->ws->c);
+	update_focused_client(mon->ws->head);
 }
 
 /**
@@ -756,8 +760,8 @@ void make_master(void)
  */
 void toggle_fullscreen(void)
 {
-	if (wss[cw].current != NULL)
-		set_fullscreen(wss[cw].current, !wss[cw].current->is_fullscreen);
+	if (mon->ws->c != NULL)
+		set_fullscreen(mon->ws->c, !mon->ws->c->is_fullscreen);
 }
 
 /**
@@ -767,14 +771,15 @@ void toggle_fullscreen(void)
  */
 void focus_urgent(void)
 {
-	client_t *c;
-	unsigned int w;
+	client_t *c = NULL;
+	workspace_t *w;
 
-	for (w = 1; w <= workspace_cnt; w++)
-		for (c = wss[w].head; c && !c->is_urgent; c = c->next)
+	for (w = mon->ws_head; w != NULL; w = w->next)
+		for (c = w->head; c && !c->is_urgent; c = c->next)
 			;
 	if (c) {
-		log_info("Focusing urgent client <%p> on workspace <%d>", c, w);
+		log_info("Focusing urgent client <%p> on workspace <%d>",
+						c, workspace_to_index(w));
 		change_ws(w);
 		update_focused_client(c);
 	}
@@ -792,16 +797,16 @@ void focus_urgent(void)
 void resize_master(const int ds)
 {
 	/* Resize master only when resizing is visible (i.e. in Stack layouts). */
-	if (wss[cw].layout != HSTACK && wss[cw].layout != VSTACK)
+	if (mon->ws->layout != HSTACK && mon->ws->layout != VSTACK)
 		return;
 
 	float change = ((float)ds) / 100;
 
-	if (wss[cw].master_ratio + change >= 1
-			|| wss[cw].master_ratio + change <= 0.1)
+	if (mon->ws->master_ratio + change >= 1
+			|| mon->ws->master_ratio + change <= 0.1)
 		return;
-	log_info("Resizing master_ratio from <%.2f> to <%.2f>", wss[cw].master_ratio, wss[cw].master_ratio + change);
-	wss[cw].master_ratio += change;
+	log_info("Resizing master_ratio from <%.2f> to <%.2f>", mon->ws->master_ratio, mon->ws->master_ratio + change);
+	mon->ws->master_ratio += change;
 	arrange_windows();
 }
 
@@ -821,40 +826,40 @@ void paste(void)
 		return;
 	}
 
-	if (!wss[cw].current) {
-		wss[cw].head = head;
-		wss[cw].current = head;
+	if (!mon->ws->c) {
+		mon->ws->head = head;
+		mon->ws->c = head;
 		while (c) {
 			xcb_map_window(dpy, c->win);
-			wss[cw].current = c;
+			mon->ws->c = c;
 			c = c->next;
-			wss[cw].client_cnt++;
+			mon->ws->client_cnt++;
 		}
-	} else if (!wss[cw].current->next) {
-		wss[cw].current->next = head;
+	} else if (!mon->ws->c->next) {
+		mon->ws->c->next = head;
 		while (c) {
 			xcb_map_window(dpy, c->win);
-			wss[cw].current = c;
+			mon->ws->c = c;
 			c = c->next;
-			wss[cw].client_cnt++;
+			mon->ws->client_cnt++;
 		}
 	} else {
-		t = wss[cw].current->next;
-		wss[cw].current->next = head;
+		t = mon->ws->c->next;
+		mon->ws->c->next = head;
 		while (c) {
 			xcb_map_window(dpy, c->win);
-			wss[cw].client_cnt++;
+			mon->ws->client_cnt++;
 			if (!c->next) {
 				c->next = t;
-				wss[cw].current = c;
+				mon->ws->c = c;
 				break;
 			} else {
-				wss[cw].current = c;
+				mon->ws->c = c;
 				c = c->next;
 			}
 		}
 	}
-	update_focused_client(wss[cw].current);
+	update_focused_client(mon->ws->c);
 }
 
 /**
@@ -864,17 +869,17 @@ void paste(void)
  */
 void toggle_bar(void)
 {
-	if (wss[cw].bar_height == 0 && conf.bar_height > 0) {
-		wss[cw].bar_height = conf.bar_height;
+	if (mon->ws->bar_height == 0 && conf.bar_height > 0) {
+		mon->ws->bar_height = conf.bar_height;
 		log_info("Toggled bar to shown");
-	} else if (wss[cw].bar_height == conf.bar_height) {
-		wss[cw].bar_height = 0;
+	} else if (mon->ws->bar_height == conf.bar_height) {
+		mon->ws->bar_height = 0;
 		log_info("Toggled bar to hidden");
 	} else {
 		return;
 	}
-	xcb_ewmh_geometry_t workarea[] = { { 0, conf.bar_bottom ? 0 : wss[cw].bar_height,
-				screen_width, screen_height - wss[cw].bar_height } };
+	xcb_ewmh_geometry_t workarea[] = { { 0, conf.bar_bottom ? 0 : mon->ws->bar_height,
+				screen_width, screen_height - mon->ws->bar_height } };
 	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 	arrange_windows();
 }
