@@ -163,6 +163,18 @@ static int ipc_process_function(char **args)
 	} else if (strncmp(args[0], "count", strlen("count")) == 0) {
 		CALL_INT(count, args[1], 1, 9);
 #undef CALL_INT
+
+/*TODO: Don't do this - we should have a neat wrapper function
+ * for functions requiring a workspace pointer.
+ */
+#define CALL_WORKSPACE(func, arg, lower, upper) \
+	do { \
+		i = ipc_arg_to_int(arg, &err, lower, upper); \
+		if (err == IPC_ERR_NONE) { \
+			func(index_to_workspace(mon, i)); \
+		} \
+	} while (0)
+#undef CALL_WORKSPACE
 	} else if (strncmp(args[0], "move_current_down", strlen("move_current_down")) == 0) {
 		move_current_down();
 	} else if (strncmp(args[0], "move_current_up", strlen("move_current_up")) == 0) {
