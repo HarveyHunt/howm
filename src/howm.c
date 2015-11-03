@@ -71,7 +71,6 @@ const char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 
 int retval = EXIT_FAILURE;
-workspace_t *last_ws = NULL;
 int previous_layout = 0;
 uint32_t border_focus = 0;
 uint32_t border_unfocus = 0;
@@ -111,9 +110,8 @@ static void setup(void)
 
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
 	setup_ewmh();
-	setup_ewmh_geom();
-
 	scan_monitors();
+	setup_ewmh_geom();
 
 	conf.border_focus = get_colour(DEF_BORDER_FOCUS);
 	conf.border_unfocus = get_colour(DEF_BORDER_UNFOCUS);
@@ -256,12 +254,12 @@ void howm_info(void)
  */
 static void cleanup(void)
 {
-	unsigned int i;
+	workspace_t *ws = mon->ws;
 
 	log_warn("Cleaning up");
 
-	for (i = 1; i < workspace_cnt; i++)
-		kill_ws(i);
+	for (; ws->next != NULL; ws = ws->next)
+		kill_ws(ws);
 
 	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, screen->root,
 			XCB_CURRENT_TIME);

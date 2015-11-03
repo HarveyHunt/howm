@@ -30,11 +30,11 @@ void kill_ws(workspace_t *ws)
 	if (!ws || !ws->client_cnt)
 		return;
 
-	while (mon->ws->head)
-		kill_client(ws, mon->ws->client_cnt == 1
-				&& cw == ws);
+	while (ws->head)
+		kill_client(ws, ws->client_cnt == 1
+				&& mon->ws == ws);
 
-	log_info("Killed off workspace <%d>", ws);
+	log_info("Killed off workspace <%d>", workspace_to_index(ws));
 }
 
 /**
@@ -106,7 +106,7 @@ void focus_prev_ws(void)
 void focus_last_ws(void)
 {
 	log_info("Focusing last workspace");
-	change_ws(last_ws);
+	change_ws(mon->last_ws);
 }
 
 /**
@@ -134,13 +134,13 @@ void change_ws(const workspace_t *ws)
 
 	client_t *c = ws->head;
 
-	last_ws = mon->ws;
-	log_debug("Changing from workspace <%d> to <%d>.", workspace_to_index(last_ws),
+	mon->last_ws = mon->ws;
+	log_debug("Changing from workspace <%d> to <%d>.", workspace_to_index(mon->last_ws),
 							workspace_to_index(ws));
 
 	for (; c; c = c->next)
 		xcb_map_window(dpy, c->win);
-	for (c = last_ws->head; c; c = c->next)
+	for (c = mon->last_ws->head; c; c = c->next)
 		xcb_unmap_window(dpy, c->win);
 
 	mon->ws = ws;
@@ -252,6 +252,10 @@ void remove_ws(monitor_t *m, workspace_t *ws)
 
 	ws->head = ws->prev_foc = ws->c = NULL;
 	ws->next = ws->prev = NULL;
+
+	/* It seems reasonable to fall back to the first workspace */
+	if (m->last_ws == ws)
+		m->last_ws = m->ws_head;
 
 	workspace_cnt--;
 	ewmh_set_current_workspace();

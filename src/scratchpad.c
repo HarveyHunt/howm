@@ -99,12 +99,12 @@ void send_to_scratchpad(void)
 		return;
 
 	log_info("Sending client <%p> to scratchpad", c);
-	if (prev_client(c, cw))
-		prev_client(c, cw)->next = c->next;
+	if (prev_client(c, mon->ws))
+		prev_client(c, mon->ws)->next = c->next;
 
 	/* TODO: This should be in a reusable function. */
 	if (c == mon->ws->prev_foc)
-		mon->ws->prev_foc = prev_client(mon->ws->c, cw);
+		mon->ws->prev_foc = prev_client(mon->ws->c, mon->ws);
 	if (c == mon->ws->c || !mon->ws->head->next)
 		mon->ws->c = mon->ws->prev_foc ? mon->ws->prev_foc : mon->ws->head;
 	if (c == mon->ws->head) {
@@ -134,7 +134,7 @@ void get_from_scratchpad(void)
 	else if (!mon->ws->head->next)
 		mon->ws->head->next = scratchpad;
 	else
-		prev_client(mon->ws->head, cw)->next = scratchpad;
+		prev_client(mon->ws->head, mon->ws)->next = scratchpad;
 
 	mon->ws->prev_foc = mon->ws->c;
 	mon->ws->c = scratchpad;

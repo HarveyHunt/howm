@@ -190,7 +190,7 @@ void op_cut(const unsigned int type, unsigned int cnt)
 {
 	client_t *tail = mon->ws->c;
 	client_t *head = mon->ws->c;
-	client_t *head_prev = prev_client(mon->ws->c, cw);
+	client_t *head_prev = prev_client(mon->ws->c, mon->ws);
 	bool wrap = false;
 
 	if (!head)

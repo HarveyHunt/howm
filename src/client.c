@@ -94,7 +94,7 @@ client_t *next_client(client_t *c)
  * border colours as well.
  *
  * WARNING: Do NOT use this to focus a client on another workspace. Instead,
- * set wss[ws].current to the client that you want focused.
+ * set ws->c to the client that you want focused.
  *
  * @param c The client that is currently in focus.
  */
