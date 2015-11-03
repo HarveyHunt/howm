@@ -120,6 +120,7 @@ static void setup(void)
 
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
 	setup_ewmh();
+	setup_ewmh_geom();
 
 	conf.border_focus = get_colour(DEF_BORDER_FOCUS);
 	conf.border_unfocus = get_colour(DEF_BORDER_UNFOCUS);

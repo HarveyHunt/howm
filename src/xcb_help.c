@@ -202,9 +202,6 @@ void ewmh_process_wm_state(client_t *c, xcb_atom_t a, int action)
 */
 void setup_ewmh(void)
 {
-	xcb_ewmh_coordinates_t viewport[] = { {0, 0} };
-	xcb_ewmh_geometry_t workarea[] = { {0, conf.bar_bottom ? 0 : wss[cw].bar_height,
-	screen_width, screen_height - wss[cw].bar_height} };
 	ewmh = calloc(1, sizeof(xcb_ewmh_connection_t));
 	if (!ewmh) {
 		log_err("Unable to create ewmh connection\n");
@@ -226,10 +223,17 @@ void setup_ewmh(void)
 					ewmh->_NET_ACTIVE_WINDOW };
 	xcb_ewmh_set_supported(ewmh, 0, LENGTH(ewmh_net_atoms), ewmh_net_atoms);
 	xcb_ewmh_set_supporting_wm_check(ewmh, 0, screen->root);
-	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewport), viewport);
 	xcb_ewmh_set_wm_name(ewmh, 0, strlen("howm"), "howm");
-	xcb_ewmh_set_current_desktop(ewmh, 0, cw);
-	xcb_ewmh_set_number_of_desktops(ewmh, 0, workspace_cnt);
+}
+
+void setup_ewmh_geom(void)
+{
+	xcb_ewmh_coordinates_t viewport[] = { {0, 0} };
+	xcb_ewmh_geometry_t workarea[] = { {0, conf.bar_bottom ? 0
+						: mon->ws->bar_height, screen_width,
+						screen_height - mon->ws->bar_height} };
+
+	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewport), viewport);
 	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
 }

@@ -37,6 +37,7 @@ void focus_window(xcb_window_t win);
 void grab_buttons(client_t *c);
 void delete_win(xcb_window_t win);
 void setup_ewmh(void);
+void setup_ewmh_geom(void);
 void ewmh_process_wm_state(client_t *c, xcb_atom_t a, int action);
 
 #endif
