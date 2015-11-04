@@ -176,6 +176,12 @@ static int ipc_process_function(char **args)
 	} else if (strncmp(args[0], "current_to_ws", strlen("current_to_ws")) == 0) {
 		CALL_WORKSPACE(current_to_ws, *(args + 1), 0, workspace_cnt - 1);
 #undef CALL_WORKSPACE
+	} else if (strncmp(args[0], "add_ws", strlen("add_ws")) == 0) {
+		add_ws(mon);
+	} else if (strncmp(args[0], "remove_ws", strlen("remove_ws")) == 0) {
+		i = ipc_arg_to_int(args[1], &err, 0, workspace_cnt - 1);
+		if (err == IPC_ERR_NONE)
+			remove_ws(mon, index_to_workspace(mon, i));
 	} else if (strncmp(args[0], "move_current_down", strlen("move_current_down")) == 0) {
 		move_current_down();
 	} else if (strncmp(args[0], "move_current_up", strlen("move_current_up")) == 0) {
