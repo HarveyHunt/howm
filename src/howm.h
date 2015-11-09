@@ -18,7 +18,6 @@
 #define DEF_SOCK_PATH "/tmp/howm"
 #define IPC_BUF_SIZE 1024
 
-#define WORKSPACES 5
 #define WS_DEF_LAYOUT HSTACK
 #define MASTER_RATIO 0.6
 #define DEF_BORDER_FOCUS "#FFFFFF"
