@@ -20,11 +20,6 @@
  * window. */
 #define MOVE_RESIZE_MASK (XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y | \
 			  XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT)
-/** Ensures that the number lock doesn't intefere with checking the equality
- * of two modifier masks.*/
-#define CLEANMASK(mask) (mask & ~(numlockmask | XCB_MOD_MASK_LOCK))
-/** Wraps up the comparison of modifier masks into a neat package. */
-#define EQUALMODS(mask, omask) (CLEANMASK(mask) == CLEANMASK(omask))
 /** Calculates the length of an array. */
 #define LENGTH(x) (unsigned int)(sizeof(x) / sizeof(*x))
 /** Checks to see if a client is floating, fullscreen or transient. */

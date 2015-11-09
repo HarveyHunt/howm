@@ -70,7 +70,6 @@ workspace_t wss[WORKSPACES + 1];
 const char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 
-int numlockmask = 0;
 int retval = EXIT_FAILURE;
 int last_ws = 0;
 int previous_layout = 0;
