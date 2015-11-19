@@ -62,7 +62,6 @@ struct config conf = {
 	.scratchpad_width = 500,
 };
 
-
 bool running = true;
 xcb_connection_t *dpy = NULL;
 xcb_screen_t *screen = NULL;
