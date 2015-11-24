@@ -236,7 +236,10 @@ void add_ws(monitor_t *m)
  */
 void remove_ws(monitor_t *m, workspace_t *ws)
 {
-	/* TODO: Kill the workspace before we remove it. */
+	kill_ws(ws);
+	if (m->ws == ws)
+		change_ws(m->last_ws ? m->last_ws : m->ws_head);
+
 	log_info("Removed workspace <%d>", workspace_to_index(ws));
 	/* Sort out the workspaces list */
 	if (ws->prev)
