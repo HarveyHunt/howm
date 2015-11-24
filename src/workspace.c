@@ -147,7 +147,7 @@ void change_ws(const workspace_t *ws)
 
 	update_focused_client(mon->ws->c);
 
-	xcb_ewmh_set_current_desktop(ewmh, 0, workspace_to_index(ws) - 1);
+	xcb_ewmh_set_current_desktop(ewmh, 0, workspace_to_index(ws));
 	xcb_ewmh_geometry_t workarea[] = { { 0, conf.bar_bottom ? 0 : ws->bar_height,
 				screen_width, screen_height - ws->bar_height } };
 	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
