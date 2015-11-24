@@ -190,8 +190,8 @@ void change_layout(const int layout)
 		return;
 	mon->ws->layout = layout;
 	update_focused_client(mon->ws->c);
-	log_info("Changed layout from %d to %d", previous_layout,  mon->ws->layout);
-	previous_layout = mon->ws->layout;
+	log_info("Changed layout from %d to %d", mon->ws->last_layout,  mon->ws->layout);
+	mon->ws->last_layout = mon->ws->layout;
 }
 
 /**
@@ -227,6 +227,6 @@ void next_layout(void)
  */
 void last_layout(void)
 {
-	log_info("Changing to last layout (%d)", previous_layout);
-	change_layout(previous_layout);
+	log_info("Changing to last layout (%d)", mon->ws->last_layout);
+	change_layout(mon->ws->last_layout);
 }

@@ -59,6 +59,7 @@ struct workspace_t {
 	client_t *c; /**< The client that is currently in focus. */
 	workspace_t *next; /**< The next workspace in the linked list. */
 	workspace_t *prev; /**< The prev workspace in the linked list. */
+	unsigned int last_layout; /**< The last layout used. */
 };
 
 /**

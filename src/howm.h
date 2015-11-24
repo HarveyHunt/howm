@@ -61,7 +61,6 @@ struct config {
 enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
 
 extern int retval;
-extern int previous_layout;
 extern xcb_connection_t *dpy;
 extern uint16_t screen_height;
 extern uint16_t screen_width;

@@ -71,7 +71,6 @@ const char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 
 int retval = EXIT_FAILURE;
-int previous_layout = 0;
 uint32_t border_focus = 0;
 uint32_t border_unfocus = 0;
 uint32_t border_prev_focus = 0;
