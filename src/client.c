@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 #include <xcb/xcb_icccm.h>
@@ -124,6 +125,7 @@ void update_focused_client(client_t *c)
 		}
 	}
 	xcb_window_t windows[all];
+	memset(windows, 0, sizeof(windows));
 
 	windows[(wss[cw].current->is_floating || wss[cw].current->is_transient) ? 0 : float_trans] = wss[cw].current->win;
 	c = wss[cw].head;
