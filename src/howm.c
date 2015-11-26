@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <xcb/xcb.h>
+#include <xcb/randr.h>
 #include <xcb/xcb_ewmh.h>
 
 #include "handler.h"
@@ -110,6 +111,8 @@ static void setup(void)
 	setup_ewmh();
 	scan_monitors();
 	setup_ewmh_geom();
+
+	xcb_prefetch_extension_data(dpy, &xcb_randr_id);
 
 	conf.border_focus = get_colour(DEF_BORDER_FOCUS);
 	conf.border_unfocus = get_colour(DEF_BORDER_UNFOCUS);

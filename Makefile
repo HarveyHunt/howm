@@ -16,7 +16,7 @@ DCOMPILE_FLAGS = -g3
 # Add additional include paths
 INCLUDES = -I $(SRC_PATH)/
 # General linker settings
-LINK_FLAGS = -lxcb -lxcb-icccm -lxcb-ewmh
+LINK_FLAGS = -lxcb -lxcb-icccm -lxcb-ewmh -lxcb-randr
 # Additional release-specific linker settings
 RLINK_FLAGS =
 # Additional debug-specific linker settings
