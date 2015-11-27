@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <xcb/randr.h>
 
 #include "monitor.h"
 #include "helper.h"
@@ -152,11 +153,67 @@ static void scan_x11_monitor(void)
 /**
  * @brief Detect and initialise monitors for each Xrandr output.
  *
+ * We loop through outputs and then go "backwards" to find their CRTCs.
+ * This means we can skip CRTCs with no outputs.
+ *
+ * XXX: I was sleep deprived when I wrote this, so I can imagine there being
+ * lots of memory leaks etc...
+ *
  * @return True if Xrandr is detected and monitors are created.
  */
-static inline bool scan_xrandr_monitors(void)
+static bool scan_xrandr_monitors(void)
 {
-	return false;
+	xcb_randr_output_t *outputs;
+	monitor_t *m;
+	unsigned int i, nr_outputs = 0;
+	xcb_randr_get_output_info_reply_t *oir;
+	xcb_rectangle_t rect;
+
+	outputs = randr_get_outputs(&nr_outputs);
+
+	xcb_randr_get_output_info_cookie_t cookies[nr_outputs];
+
+	for (i = 0; i < nr_outputs; i++)
+		cookies[i] = xcb_randr_get_output_info(dpy, outputs[i], XCB_CURRENT_TIME);
+
+	for (i = 0; i < nr_outputs; i++) {
+		oir = xcb_randr_get_output_info_reply(dpy, cookies[i], NULL);
+		if (!oir || oir->crtc == XCB_NONE) {
+			free(oir);
+			continue;
+		}
+
+		rect = output_reply_to_rect(oir);
+		free(oir);
+
+		if (rect.x == -1 && rect.y == -1)
+			continue;
+
+
+		m = create_monitor(rect);
+		add_ws(m);
+		m->output = outputs[i];
+	}
+
+	/* TODO: Focus the primary monitor. */
+	return !!mon_head;
+}
+
+/**
+ * @brief Convert an xcb output to a monitor.
+ *
+ * @param output The xcb output to be searched for.
+ *
+ * @return The monitor with an xcb output id matching the param.
+ */
+static monitor_t *randr_output_to_monitor(xcb_randr_output_t output)
+{
+	monitor_t *m;
+
+	for (m = mon_head; m; m = m->next)
+		if (m->output == output)
+			return m;
+	return NULL;
 }
 
 /**
