@@ -127,7 +127,7 @@ check:
 .PHONY: analyse
 analyse:
 	@echo "Running scan-build to look for bugs."
-	@scan-build -v -o analyse make debug
+	@scan-build -v -o analyse make clean debug
 
 # Removes all build files
 .PHONY: clean
