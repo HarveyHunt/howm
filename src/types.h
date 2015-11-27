@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <xcb/randr.h>
 #include <xcb/xproto.h>
 
 /**
@@ -77,6 +78,7 @@ struct monitor_t {
 	monitor_t *next; /**< The next monitor. */
 	monitor_t *prev; /**< The previous monitor. */
 	xcb_rectangle_t rect; /**< The size and location of the monitor. */
+	xcb_randr_output_t output; /**< The ID of the randr output. */
 };
 
 #endif
