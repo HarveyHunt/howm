@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <xcb/randr.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 
@@ -242,4 +243,69 @@ void setup_ewmh_geom(void)
 void ewmh_set_current_workspace(void)
 {
 	xcb_ewmh_set_current_desktop(ewmh, 0, workspace_to_index(mon->ws));
+}
+
+xcb_randr_output_t *randr_get_outputs(unsigned int *nr_outputs)
+{
+	xcb_randr_get_screen_resources_reply_t *sresr;
+	xcb_randr_get_screen_resources_cookie_t sresc;
+	xcb_randr_output_t *outputs;
+	const xcb_query_extension_reply_t *qer = xcb_get_extension_data(dpy,
+								&xcb_randr_id);
+
+	if (!qer || !qer->present)
+		return false;
+
+	sresc = xcb_randr_get_screen_resources(dpy, screen->root);
+	sresr = xcb_randr_get_screen_resources_reply(dpy, sresc, NULL);
+	*nr_outputs = xcb_randr_get_screen_resources_outputs_length(sresr);
+
+	if (!sresr || *nr_outputs < 1)
+		goto free_sresr;
+
+	outputs = xcb_randr_get_screen_resources_outputs(sresr);
+
+	return outputs;
+
+free_sresr:
+	free(sresr);
+	return NULL;
+}
+
+xcb_rectangle_t output_reply_to_rect(xcb_randr_get_output_info_reply_t *output)
+{
+	xcb_randr_get_crtc_info_cookie_t cinfoc;
+	xcb_randr_get_crtc_info_reply_t *cinfor;
+	xcb_rectangle_t rect = {-1, -1, -1, -1};
+
+	if (!output || output->crtc == XCB_NONE)
+		return rect;
+
+	cinfoc = xcb_randr_get_crtc_info(dpy, output->crtc, XCB_CURRENT_TIME);
+	cinfor = xcb_randr_get_crtc_info_reply(dpy, cinfoc, NULL);
+
+	if (cinfor)
+		rect = (xcb_rectangle_t){cinfor->x, cinfor->y,
+				cinfor->width, cinfor->height};
+
+	free(cinfor);
+	return rect;
+}
+
+xcb_randr_output_t randr_get_primary_output(void)
+{
+	xcb_randr_get_output_primary_cookie_t gopc;
+	xcb_randr_get_output_primary_reply_t *gopr;
+	xcb_randr_output_t out;
+
+	gopc = xcb_randr_get_output_primary(dpy, screen->root);
+	gopr = xcb_randr_get_output_primary_reply(dpy, gopc, NULL);
+
+	if (gopr)
+		out = gopr->output;
+	else
+		out = -1;
+
+	free(gopr);
+	return out;
 }

@@ -2,6 +2,7 @@
 #define XCB_HELP_H
 
 #include <stdint.h>
+#include <xcb/randr.h>
 #include <xcb/xproto.h>
 
 #include "types.h"
@@ -40,5 +41,8 @@ void setup_ewmh(void);
 void setup_ewmh_geom(void);
 void ewmh_process_wm_state(client_t *c, xcb_atom_t a, int action);
 void ewmh_set_current_workspace(void);
+xcb_randr_output_t *randr_get_outputs(unsigned int *nr_outputs);
+xcb_rectangle_t output_reply_to_rect(xcb_randr_get_output_info_reply_t *output);
+xcb_randr_output_t randr_get_primary_output(void);
 
 #endif
