@@ -11,6 +11,7 @@
 #include "howm.h"
 #include "ipc.h"
 #include "layout.h"
+#include "monitor.h"
 #include "op.h"
 #include "scratchpad.h"
 #include "types.h"
@@ -186,6 +187,10 @@ static int ipc_process_function(char **args)
 		move_current_down();
 	} else if (strncmp(args[0], "move_current_up", strlen("move_current_up")) == 0) {
 		move_current_up();
+	} else if (strncmp(args[0], "focus_monitor", strlen("focus_monitor")) == 0) {
+		i = ipc_arg_to_int(args[1], &err, 0, mon_cnt - 1);
+		if (err == IPC_ERR_NONE)
+			focus_monitor(index_to_monitor(i));
 	} else if (strncmp(args[0], "focus_next_client", strlen("focus_next_client")) == 0) {
 		focus_next_client();
 	} else if (strncmp(args[0], "focus_prev_client", strlen("focus_prev_client")) == 0) {
