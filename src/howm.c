@@ -255,12 +255,10 @@ void howm_info(void)
  */
 static void cleanup(void)
 {
-	workspace_t *ws = mon->ws;
-
 	log_warn("Cleaning up");
 
-	for (; ws->next != NULL; ws = ws->next)
-		kill_ws(ws);
+	while (mon)
+		remove_monitor(mon);
 
 	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, screen->root,
 			XCB_CURRENT_TIME);
