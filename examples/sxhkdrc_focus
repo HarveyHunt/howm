@@ -11,7 +11,6 @@ super + shift + {k, j}
     cottage -f {move_current_up, move_current_down}
 
 super + Escape
-    cottage -f change_mode 0; \
     rm ~/.config/sxhkd/sxhkdrc; \
     ln -s ~/.config/sxhkd/sxhkdrc_normal ~/.config/sxhkd/sxhkdrc; \
     pkill -USR1 -x sxhkd
@@ -29,7 +28,6 @@ super + shift + {1, 2, 3, 4, 5}
     cottage -f current_to_ws {1, 2, 3, 4, 5}
 
 super + shift + f
-    cottage -f change_mode 2; \
     rm ~/.config/sxhkd/sxhkdrc; \
     ln -s ~/.config/sxhkd/sxhkdrc_floating ~/.config/sxhkd/sxhkdrc; \
     pkill -USR1 -x sxhkd

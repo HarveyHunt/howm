@@ -14,13 +14,11 @@ super + shift + n
     cottage -f previous_layout
 
 super + f
-    cottage -f change_mode 1; \
     rm ~/.config/sxhkd/sxhkdrc; \
     ln -s ~/.config/sxhkd/sxhkdrc_focus ~/.config/sxhkd/sxhkdrc; \
     pkill -USR1 -x sxhkd
 
 super + shift + f
-    cottage -f change_mode 2; \
     rm ~/.config/sxhkd/sxhkdrc; \
     ln -s ~/.config/sxhkd/sxhkdrc_floating ~/.config/sxhkd/sxhkdrc; \
     pkill -USR1 -x sxhkd

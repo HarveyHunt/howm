@@ -65,7 +65,6 @@ extern int last_ws;
 extern int previous_layout;
 extern int cw;
 extern xcb_connection_t *dpy;
-extern unsigned int cur_mode;
 extern uint16_t screen_height;
 extern uint16_t screen_width;
 extern int cur_state;

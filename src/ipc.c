@@ -11,7 +11,6 @@
 #include "howm.h"
 #include "ipc.h"
 #include "layout.h"
-#include "mode.h"
 #include "op.h"
 #include "scratchpad.h"
 #include "types.h"
@@ -159,8 +158,6 @@ static int ipc_process_function(char **args)
 		CALL_INT(resize_master, *(args + 1), -100, 100);
 	} else if (strncmp(*args, "change_ws", strlen("change_ws")) == 0) {
 		CALL_INT(change_ws, *(args + 1), 1, WORKSPACES);
-	} else if (strncmp(*args, "change_mode", strlen("change_mode")) == 0) {
-		CALL_INT(change_mode, *(args + 1), NORMAL, END_MODES - 1);
 	} else if (strncmp(*args, "change_layout", strlen("change_layout")) == 0) {
 		CALL_INT(change_layout, *(args + 1), ZOOM, END_LAYOUT - 1);
 	} else if (strncmp(*args, "count", strlen("count")) == 0) {

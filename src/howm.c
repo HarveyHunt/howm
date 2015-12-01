@@ -78,7 +78,6 @@ uint32_t border_focus = 0;
 uint32_t border_unfocus = 0;
 uint32_t border_prev_focus = 0;
 uint32_t border_urgent = 0;
-unsigned int cur_mode = 0;
 uint16_t screen_height = 0;
 uint16_t screen_width = 0;
 int cur_state = OPERATOR_STATE;
@@ -236,14 +235,14 @@ void howm_info(void)
 	unsigned int w = 0;
 #if DEBUG_ENABLE
 	for (w = 1; w <= WORKSPACES; w++) {
-		fprintf(stdout, "%u:%d:%u:%d:%u\n", cur_mode,
-		       wss[w].layout, w, cur_state, wss[w].client_cnt);
+		fprintf(stdout, "%d:%u:%d:%u\n", wss[w].layout, w,
+					cur_state, wss[w].client_cnt);
 	}
 	fflush(stdout);
 #else
 	UNUSED(w);
-	fprintf(stdout, "%u:%d:%d:%d:%u\n", cur_mode,
-		wss[cw].layout, cw, cur_state, wss[cw].client_cnt);
+	fprintf(stdout, "%d:%d:%d:%u\n", wss[cw].layout, cw,
+					cur_state, wss[cw].client_cnt);
 	fflush(stdout);
 #endif
 }
