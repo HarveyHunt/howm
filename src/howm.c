@@ -236,7 +236,8 @@ void howm_info(void)
 
 	for (ws = mon->ws_head; ws != NULL; ws = ws->next) {
 		fprintf(stdout, "%d:%u:%d:%u:%u\n",  ws->layout,
-			workspace_to_index(ws), cur_state, ws->client_cnt);
+			workspace_to_index(ws), cur_state,
+			ws->client_cnt, monitor_to_index(mon));
 	}
 	fflush(stdout);
 #else

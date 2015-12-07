@@ -247,21 +247,21 @@ When debug mode is disabled, howm outputs information about its current state an
 The format for the output is as follows:
 
 ```
-Layout:Workspace:State:NumberofClients
+Layout:Workspace:State:NumberofClients:MonitorIndex
 ```
 
 An example output can be seen below:
 
 ```
-2:1:0:1
+2:1:0:1:0
 ```
 
 The information outputted at the same time as the example above, but with debugging mode turned on is shown below:
 
 ```
-2:1:0:1
-2:2:0:0
-2:3:0:0
-2:4:0:0
-2:5:0:0
+2:1:0:1:0
+2:2:0:0:0
+2:3:0:0:0
+2:4:0:0:0
+2:5:0:0:0
 ```
