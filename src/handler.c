@@ -11,6 +11,7 @@
 #include "helper.h"
 #include "howm.h"
 #include "layout.h"
+#include "monitor.h"
 #include "types.h"
 #include "workspace.h"
 #include "xcb_help.h"
@@ -160,8 +161,15 @@ static void destroy_event(xcb_generic_event_t *ev)
 static void enter_event(xcb_generic_event_t *ev)
 {
 	xcb_enter_notify_event_t *ee = (xcb_enter_notify_event_t *)ev;
+	/* TODO: Maybe this needs to go into a motion event, as we might not be
+	 * able to focus another monitor without there being a window there?
+	 */
+	xcb_point_t point = {ee->root_x, ee->root_y};
 
 	log_debug("Enter event for window <0x%x>", ee->event);
+
+	focus_monitor(point_to_monitor(point));
+
 	if (conf.focus_mouse && mon->ws->layout != ZOOM)
 		focus_window(ee->event);
 }
