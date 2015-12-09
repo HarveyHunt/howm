@@ -27,8 +27,8 @@
 static void move_down(client_t *c);
 
 /**
- * @brief Search workspaces for a window, returning the client that it belongs
- * to.
+ * @brief Search all workspaces on all monitors for a window,
+ * returning the client that it belongs to.
  *
  * @param win A valid XCB window that is used when searching all clients across
  * all desktops.
@@ -38,12 +38,14 @@ static void move_down(client_t *c);
 client_t *find_client_by_win(xcb_window_t win)
 {
 	bool found;
+	monitor_t *m;
 	workspace_t *ws;
 	client_t *c = NULL;
 
-	for (found = false, ws = mon->ws_head; ws != NULL && !found; ws = ws->next)
-		for (c = ws->head; c && !(found = (win == c->win)); c = c->next)
-			;
+	for (m = mon_head; m != NULL; m = m->next)
+		for (found = false, ws = mon->ws_head; ws != NULL && !found; ws = ws->next)
+			for (c = ws->head; c && !(found = (win == c->win)); c = c->next)
+				;
 	return c;
 }
 
