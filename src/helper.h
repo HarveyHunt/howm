@@ -46,15 +46,6 @@
  * macros.
  */
 /*@ignore@*/
-#ifdef DEBUG_ENABLE
-/** Output debugging information using puts. */
-#       define DEBUG(x) puts(x)
-/** Output debugging information using printf to allow for formatting. */
-#	define DEBUGP(M, ...) fprintf(stderr, "[DBG] %s:%d: " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
-#else
-#       define DEBUG(x) do {} while (0)
-#       define DEBUGP(x, ...) do {} while (0)
-#endif
 
 #define LOG_DEBUG 1
 #define LOG_INFO 2
