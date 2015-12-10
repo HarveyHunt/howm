@@ -224,8 +224,8 @@ void add_ws(monitor_t *m)
 			workspace_to_index(ws),
 			monitor_to_index(m));
 
-	workspace_cnt++;
-	xcb_ewmh_set_number_of_desktops(ewmh, 0, workspace_cnt);
+	m->workspace_cnt++;
+	xcb_ewmh_set_number_of_desktops(ewmh, 0, m->workspace_cnt);
 }
 
 /**
@@ -260,9 +260,9 @@ void remove_ws(monitor_t *m, workspace_t *ws)
 	if (m->last_ws == ws)
 		m->last_ws = m->ws_head;
 
-	workspace_cnt--;
+	m->workspace_cnt--;
 	ewmh_set_current_workspace();
-	xcb_ewmh_set_number_of_desktops(ewmh, 0, workspace_cnt);
+	xcb_ewmh_set_number_of_desktops(ewmh, 0, m->workspace_cnt);
 
 	free(ws);
 }

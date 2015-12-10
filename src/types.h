@@ -71,6 +71,7 @@ struct workspace_t {
  */
 typedef struct monitor_t monitor_t;
 struct monitor_t {
+	unsigned int workspace_cnt; /**< The amount of workspaces on this monitor. */
 	workspace_t *ws; /**< The currently focused workspace. */
 	workspace_t *ws_head; /**< The first workspace. */
 	workspace_t *ws_tail; /**< The last workspace. */
