@@ -216,7 +216,6 @@ int main(int argc, char *argv[])
 	}
 
 	cleanup();
-	xcb_disconnect(dpy);
 	close(sock_fd);
 	free(data);
 
@@ -269,6 +268,7 @@ static void cleanup(void)
 		free(ewmh);
 	stack_free(&del_reg);
 	ipc_cleanup();
+	xcb_disconnect(dpy);
 }
 
 /**
