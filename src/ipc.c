@@ -142,8 +142,8 @@ static int ipc_process_function(char **args)
 
 	if (strncmp(args[0], "teleport_client", strlen("teleport_client")) == 0) {
 		CALL_INT(teleport_client, args[1], TOP_LEFT, BOTTOM_RIGHT);
-	} else if (strncmp(args[0], "quit_howm", strlen("quit_howm")) == 0) {
-		CALL_INT(quit_howm, args[1], EXIT_SUCCESS, EXIT_FAILURE);
+	} else if (strncmp(args[0], "quit", strlen("quit")) == 0) {
+		CALL_INT(quit, args[1], EXIT_SUCCESS, EXIT_FAILURE);
 	} else if (strncmp(args[0], "current_to_ws", strlen("current_to_ws")) == 0) {
 		CALL_INT(current_to_ws, args[1], 1, WORKSPACES);
 	} else if (strncmp(args[0], "resize_float_width", strlen("resize_float_width")) == 0) {

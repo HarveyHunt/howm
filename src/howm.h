@@ -82,7 +82,7 @@ extern xcb_atom_t wm_atoms[];
 
 void howm_info(void);
 uint32_t get_colour(char *colour);
-void quit_howm(const int exit_status);
+void quit(const int exit_status);
 void spawn(char *cmd[]);
 
 #endif

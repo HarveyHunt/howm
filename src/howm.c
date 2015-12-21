@@ -323,7 +323,7 @@ static void exec_config(char *conf_path)
  *
  * @ingroup commands
  */
-void quit_howm(const int exit_status)
+void quit(const int exit_status)
 {
 	log_warn("Quitting");
 	retval = exit_status;
