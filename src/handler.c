@@ -120,8 +120,8 @@ static void map_event(xcb_generic_event_t *ev)
 		if (c->is_floating) {
 			c->rect.width = geom->width > 1 ? geom->width : conf.float_spawn_width;
 			c->rect.height = geom->height > 1 ? geom->height : conf.float_spawn_height;
-			c->rect.x = conf.center_floating ? (screen_width / 2) - (c->rect.width / 2) : geom->x;
-			c->rect.y = conf.center_floating ? (screen_height - mon->ws->bar_height - c->rect.height) / 2 : geom->y;
+			c->rect.x = conf.center_floating ? (mon->rect.width / 2) - (c->rect.width / 2) : geom->x;
+			c->rect.y = conf.center_floating ? (mon->rect.height - mon->ws->bar_height - c->rect.height) / 2 : geom->y;
 		}
 		free(geom);
 	}
@@ -193,9 +193,9 @@ static void configure_event(xcb_generic_event_t *ev)
 	if (XCB_CONFIG_WINDOW_Y & ce->value_mask)
 		vals[i++] = ce->y + (conf.bar_bottom ? 0 : mon->ws->bar_height);
 	if (XCB_CONFIG_WINDOW_WIDTH & ce->value_mask)
-		vals[i++] = (ce->width < screen_width - conf.border_px) ? ce->width : screen_width - conf.border_px;
+		vals[i++] = (ce->width < mon->rect.width - conf.border_px) ? ce->width : mon->rect.width - conf.border_px;
 	if (XCB_CONFIG_WINDOW_HEIGHT & ce->value_mask)
-		vals[i++] = (ce->height < screen_height - conf.border_px) ? ce->height : screen_height - conf.border_px;
+		vals[i++] = (ce->height < mon->rect.height - conf.border_px) ? ce->height : mon->rect.height - conf.border_px;
 	if (XCB_CONFIG_WINDOW_BORDER_WIDTH & ce->value_mask)
 		vals[i++] = ce->border_width;
 	if (XCB_CONFIG_WINDOW_SIBLING & ce->value_mask)

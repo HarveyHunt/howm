@@ -104,9 +104,6 @@ static void setup(void)
 	screen_height = screen->height_in_pixels;
 	screen_width = screen->width_in_pixels;
 
-	log_info("Screen's height is: %d", screen_height);
-	log_info("Screen's width is: %d", screen_width);
-
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
 	setup_ewmh();
 	scan_monitors();

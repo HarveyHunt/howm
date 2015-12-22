@@ -52,7 +52,7 @@ static void grid(void)
 	int cols, rows, i = -1, col_cnt = 0, row_cnt = 0;
 	uint16_t col_w;
 	uint16_t client_y = conf.bar_bottom ? 0 : mon->ws->bar_height;
-	uint16_t col_h = screen_height - mon->ws->bar_height;
+	uint16_t col_h = mon->rect.height - mon->ws->bar_height;
 
 	if (n <= 1) {
 		zoom();
@@ -65,7 +65,7 @@ static void grid(void)
 		if (cols * cols >= n)
 			break;
 	rows = n / cols;
-	col_w = screen_width / cols;
+	col_w = mon->rect.width / cols;
 	for (c = mon->ws->head; c; c = c->next) {
 		if (FFT(c))
 			continue;
@@ -104,7 +104,7 @@ static void zoom(void)
 	for (c = mon->ws->head; c; c = c->next)
 		if (!FFT(c))
 			change_client_geom(c, 0, conf.bar_bottom ? 0 : mon->ws->bar_height,
-					screen_width, screen_height - mon->ws->bar_height);
+					mon->rect.width, mon->rect.height - mon->ws->bar_height);
 	draw_clients();
 }
 
@@ -116,8 +116,8 @@ static void stack(void)
 {
 	client_t *c = get_first_non_tff();
 	bool vert = (mon->ws->layout == VSTACK);
-	uint16_t h = screen_height - mon->ws->bar_height;
-	uint16_t w = screen_width;
+	uint16_t h = mon->rect.height - mon->ws->bar_height;
+	uint16_t w = mon->rect.width;
 	int n = get_non_tff_count();
 	uint16_t client_x = 0, client_span = 0;
 	uint16_t client_y = conf.bar_bottom ? 0 : mon->ws->bar_height;
@@ -166,13 +166,13 @@ static void stack(void)
 			continue;
 		if (vert) {
 			change_client_geom(c, ms, client_y,
-				    screen_width - ms,
+				    mon->rect.width - ms,
 				    client_span);
 			client_y += client_span;
 		} else {
 			change_client_geom(c, client_x, ms,
 				    client_span,
-				    screen_height - mon->ws->bar_height - ms);
+				    mon->rect.height - mon->ws->bar_height - ms);
 			client_x += client_span;
 		}
 	}

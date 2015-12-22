@@ -559,7 +559,7 @@ void set_fullscreen(client_t *c, bool fscr)
 			fscr, data);
 	if (fscr) {
 		set_border_width(c->win, 0);
-		change_client_geom(c, 0, 0, screen_width, screen_height);
+		change_client_geom(c, 0, 0, mon->rect.width, mon->rect.height);
 		draw_clients();
 	} else {
 		set_border_width(c->win, !mon->ws->head->next ? 0 : conf.border_px);
@@ -604,28 +604,28 @@ void teleport_client(const int direction)
 		mon->ws->c->rect.y = (conf.bar_bottom ? 0 : bh) + g;
 		break;
 	case TOP_CENTER:
-		mon->ws->c->rect.x = (screen_width - w) / 2;
+		mon->ws->c->rect.x = (mon->rect.width - w) / 2;
 		mon->ws->c->rect.y = (conf.bar_bottom ? 0 : bh) + g;
 		break;
 	case TOP_RIGHT:
-		mon->ws->c->rect.x = screen_width - w - g - (2 * conf.border_px);
+		mon->ws->c->rect.x = mon->rect.width - w - g - (2 * conf.border_px);
 		mon->ws->c->rect.y = (conf.bar_bottom ? 0 : bh) + g;
 		break;
 	case CENTER:
-		mon->ws->c->rect.x = (screen_width - w) / 2;
-		mon->ws->c->rect.y = (screen_height - bh - h) / 2;
+		mon->ws->c->rect.x = (mon->rect.width - w) / 2;
+		mon->ws->c->rect.y = (mon->rect.height - bh - h) / 2;
 		break;
 	case BOTTOM_LEFT:
 		mon->ws->c->rect.x = g;
-		mon->ws->c->rect.y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
+		mon->ws->c->rect.y = (conf.bar_bottom ? mon->rect.height - bh : mon->rect.height) - h - g - (2 * conf.border_px);
 		break;
 	case BOTTOM_CENTER:
-		mon->ws->c->rect.x = (screen_width / 2) - (w / 2);
-		mon->ws->c->rect.y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
+		mon->ws->c->rect.x = (mon->rect.width / 2) - (w / 2);
+		mon->ws->c->rect.y = (conf.bar_bottom ? mon->rect.height - bh : mon->rect.height) - h - g - (2 * conf.border_px);
 		break;
 	case BOTTOM_RIGHT:
-		mon->ws->c->rect.x = screen_width - w - g - (2 * conf.border_px);
-		mon->ws->c->rect.y = (conf.bar_bottom ? screen_height - bh : screen_height) - h - g - (2 * conf.border_px);
+		mon->ws->c->rect.x = mon->rect.width - w - g - (2 * conf.border_px);
+		mon->ws->c->rect.y = (conf.bar_bottom ? mon->rect.height - bh : mon->rect.height) - h - g - (2 * conf.border_px);
 		break;
 	};
 	draw_clients();
@@ -655,8 +655,8 @@ void toggle_float(void)
 	log_info("Toggling floating state of client <%p>", mon->ws->c);
 	mon->ws->c->is_floating = !mon->ws->c->is_floating;
 	if (mon->ws->c->is_floating && conf.center_floating) {
-		mon->ws->c->rect.x = (screen_width / 2) - (mon->ws->c->rect.width / 2);
-		mon->ws->c->rect.y = (screen_height - mon->ws->bar_height - mon->ws->c->rect.height) / 2;
+		mon->ws->c->rect.x = (mon->rect.width / 2) - (mon->ws->c->rect.width / 2);
+		mon->ws->c->rect.y = (mon->rect.height - mon->ws->bar_height - mon->ws->c->rect.height) / 2;
 		log_info("Centering client <%p>", mon->ws->c);
 	}
 	arrange_windows();
@@ -881,7 +881,7 @@ void toggle_bar(void)
 		return;
 	}
 	xcb_ewmh_geometry_t workarea[] = { { 0, conf.bar_bottom ? 0 : mon->ws->bar_height,
-				screen_width, screen_height - mon->ws->bar_height } };
+				mon->rect.width, mon->rect.height - mon->ws->bar_height } };
 	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
 	arrange_windows();
 }

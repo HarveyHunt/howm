@@ -145,8 +145,8 @@ void get_from_scratchpad(void)
 	mon->ws->c->is_floating = true;
 	mon->ws->c->rect.width = conf.scratchpad_width;
 	mon->ws->c->rect.height = conf.scratchpad_height;
-	mon->ws->c->rect.x = (screen_width / 2) - (mon->ws->c->rect.width / 2);
-	mon->ws->c->rect.y = (screen_height - mon->ws->bar_height - mon->ws->c->rect.height) / 2;
+	mon->ws->c->rect.x = (mon->rect.width / 2) - (mon->ws->c->rect.width / 2);
+	mon->ws->c->rect.y = (mon->rect.height - mon->ws->bar_height - mon->ws->c->rect.height) / 2;
 
 	xcb_map_window(dpy, mon->ws->c->win);
 	update_focused_client(mon->ws->c);

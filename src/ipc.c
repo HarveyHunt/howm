@@ -389,17 +389,17 @@ static int ipc_process_config(char **args)
 	if (strcmp("border_px", args[0]) == 0)
 		SET_INT(conf.border_px, args[1], 0, 32);
 	else if (strcmp("float_spawn_height", args[0]) == 0)
-		SET_INT(conf.float_spawn_height, args[1], 1, screen_height);
+		SET_INT(conf.float_spawn_height, args[1], 1, mon->rect.height);
 	else if (strcmp("float_spawn_width", args[0]) == 0)
-		SET_INT(conf.float_spawn_width, args[1], 1, screen_width);
+		SET_INT(conf.float_spawn_width, args[1], 1, mon->rect.width);
 	else if (strcmp("scratchpad_height", args[0]) == 0)
-		SET_INT(conf.scratchpad_height, args[1], 1, screen_height);
+		SET_INT(conf.scratchpad_height, args[1], 1, mon->rect.height);
 	else if (strcmp("scratchpad_width", args[0]) == 0)
-		SET_INT(conf.scratchpad_width, args[1], 1, screen_width);
+		SET_INT(conf.scratchpad_width, args[1], 1, mon->rect.width);
 	else if (strcmp("op_gap_size", args[0]) == 0)
 		SET_INT(conf.op_gap_size, args[1], 0, 32);
 	else if (strcmp("bar_height", args[0]) == 0)
-		SET_INT(conf.bar_height, args[1], 0, screen_height);
+		SET_INT(conf.bar_height, args[1], 0, mon->rect.height);
 #undef SET_INT
 #define SET_BOOL(opt, arg) \
 	do { \

@@ -232,12 +232,12 @@ void setup_ewmh_geom(void)
 {
 	xcb_ewmh_coordinates_t viewport[] = { {0, 0} };
 	xcb_ewmh_geometry_t workarea[] = { {0, conf.bar_bottom ? 0
-						: mon->ws->bar_height, screen_width,
-						screen_height - mon->ws->bar_height} };
+						: mon->ws->bar_height, mon->rect.width,
+						mon->rect.height - mon->ws->bar_height} };
 
 	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewport), viewport);
 	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
-	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
+	xcb_ewmh_set_desktop_geometry(ewmh, 0, mon->rect.width, mon->rect.height);
 }
 
 void ewmh_set_current_workspace(void)
