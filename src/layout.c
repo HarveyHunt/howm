@@ -51,7 +51,7 @@ static void grid(void)
 	client_t *c = NULL;
 	int cols, rows, i = -1, col_cnt = 0, row_cnt = 0;
 	uint16_t col_w;
-	uint16_t client_y = conf.bar_bottom ? 0 : mon->ws->bar_height;
+	uint16_t client_y = conf.bar_bottom ? mon->rect.y : mon->rect.y + mon->ws->bar_height;
 	uint16_t col_h = mon->rect.height - mon->ws->bar_height;
 
 	if (n <= 1) {
@@ -64,6 +64,7 @@ static void grid(void)
 	for (cols = 1; cols <= n / 2; cols++)
 		if (cols * cols >= n)
 			break;
+
 	rows = n / cols;
 	col_w = mon->rect.width / cols;
 	for (c = mon->ws->head; c; c = c->next) {
@@ -74,7 +75,8 @@ static void grid(void)
 
 		if (cols - (n % cols) < (i / rows) + 1)
 			rows = n / cols + 1;
-		change_client_geom(c, col_cnt * col_w, client_y + (row_cnt * col_h / rows),
+		change_client_geom(c, (col_cnt * col_w) + mon->rect.x,
+				client_y + (row_cnt * col_h / rows),
 				col_w, (col_h / rows));
 		if (++row_cnt >= rows) {
 			row_cnt = 0;
@@ -103,7 +105,8 @@ static void zoom(void)
 
 	for (c = mon->ws->head; c; c = c->next)
 		if (!FFT(c))
-			change_client_geom(c, 0, conf.bar_bottom ? 0 : mon->ws->bar_height,
+			change_client_geom(c, mon->rect.x, conf.bar_bottom
+					? mon->rect.y : mon->rect.y + mon->ws->bar_height,
 					mon->rect.width, mon->rect.height - mon->ws->bar_height);
 	draw_clients();
 }
@@ -119,8 +122,8 @@ static void stack(void)
 	uint16_t h = mon->rect.height - mon->ws->bar_height;
 	uint16_t w = mon->rect.width;
 	int n = get_non_tff_count();
-	uint16_t client_x = 0, client_span = 0;
-	uint16_t client_y = conf.bar_bottom ? 0 : mon->ws->bar_height;
+	uint16_t client_x = mon->rect.x, client_span = 0;
+	uint16_t client_y = conf.bar_bottom ? mon->rect.y : mon->rect.y + mon->ws->bar_height;
 	uint16_t ms = (vert ? w : h) * mon->ws->master_ratio;
 	/* The size of the direction the clients will be stacked in. e.g.
 	 *
@@ -154,10 +157,10 @@ static void stack(void)
 
 	log_info("Arranging %d clients in %sstack layout", n, vert ? "v" : "h");
 	if (vert) {
-		change_client_geom(c, 0, client_y,
+		change_client_geom(c, mon->rect.x, client_y,
 			    ms, span);
 	} else {
-		change_client_geom(c, 0, conf.bar_bottom ? 0 : mon->ws->bar_height,
+		change_client_geom(c, mon->rect.x, conf.bar_bottom ? mon->rect.y : mon->rect.y + mon->ws->bar_height,
 			span, ms);
 	}
 
@@ -165,12 +168,12 @@ static void stack(void)
 		if (FFT(c))
 			continue;
 		if (vert) {
-			change_client_geom(c, ms, client_y,
+			change_client_geom(c, mon->rect.x + ms, client_y,
 				    mon->rect.width - ms,
 				    client_span);
 			client_y += client_span;
 		} else {
-			change_client_geom(c, client_x, ms,
+			change_client_geom(c, client_x, mon->rect.y + ms,
 				    client_span,
 				    mon->rect.height - mon->ws->bar_height - ms);
 			client_x += client_span;
