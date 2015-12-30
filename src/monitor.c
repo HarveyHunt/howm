@@ -98,6 +98,8 @@ void focus_monitor(monitor_t *m)
 
 	log_info("Focusing monitor <%d>", monitor_to_index(mon));
 
+	center_pointer(m->rect);
+
 	if (mon->ws && mon->ws->c)
 		xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, mon->ws->c->win,
 			    XCB_CURRENT_TIME);

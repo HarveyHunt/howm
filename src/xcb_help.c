@@ -309,3 +309,13 @@ xcb_randr_output_t randr_get_primary_output(void)
 	free(gopr);
 	return out;
 }
+
+void warp_pointer(int16_t x, int16_t y)
+{
+	xcb_warp_pointer(dpy, XCB_NONE, screen->root, 0, 0, 0, 0, x, y);
+}
+
+void center_pointer(xcb_rectangle_t rect)
+{
+	warp_pointer(rect.x + (rect.width / 2), rect.y + (rect.height / 2));
+}

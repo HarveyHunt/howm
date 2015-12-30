@@ -44,5 +44,7 @@ void ewmh_set_current_workspace(void);
 xcb_randr_output_t *randr_get_outputs(unsigned int *nr_outputs);
 xcb_rectangle_t output_reply_to_rect(xcb_randr_get_output_info_reply_t *output);
 xcb_randr_output_t randr_get_primary_output(void);
+void center_pointer(xcb_rectangle_t rect);
+void warp_pointer(int16_t x, int16_t y);
 
 #endif
