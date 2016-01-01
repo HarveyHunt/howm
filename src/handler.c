@@ -247,7 +247,7 @@ static void client_message_event(xcb_generic_event_t *ev)
 		arrange_windows();
 	} else if (c && cm->type == ewmh->_NET_ACTIVE_WINDOW) {
 		log_info("_NET_ACTIVE_WINDOW: Focusing client <%p>", c);
-		update_focused_client(find_client_by_win(cm->window));
+		update_focused_client(c);
 	} else if (c && cm->type == ewmh->_NET_CURRENT_DESKTOP
 			&& cm->data.data32[0] < mon->workspace_cnt) {
 		log_info("_NET_CURRENT_DESKTOP: Changing to workspace <%d>", cm->data.data32[0]);
