@@ -280,9 +280,9 @@ static int ipc_arg_to_int(char *arg, int *err, int lower, int upper)
 	if (!arg) {
 		*err = IPC_ERR_TOO_FEW_ARGS;
 		return ret;
-	} else {
-		ret = atoi(arg);
 	}
+
+	ret = atoi(arg);
 
 	if (ret > upper)
 		*err = IPC_ERR_ARG_TOO_LARGE;
