@@ -180,18 +180,18 @@ void delete_win(xcb_window_t win)
 void ewmh_process_wm_state(client_t *c, xcb_atom_t a, int action)
 {
 	if (a == ewmh->_NET_WM_STATE_FULLSCREEN) {
-		if (action == _NET_WM_STATE_REMOVE)
+		if (action == XCB_EWMH_WM_STATE_REMOVE)
 			set_fullscreen(c, false);
-		else if (action == _NET_WM_STATE_ADD)
+		else if (action == XCB_EWMH_WM_STATE_ADD)
 			set_fullscreen(c, true);
-		else if (action == _NET_WM_STATE_TOGGLE)
+		else if (action == XCB_EWMH_WM_STATE_TOGGLE)
 			set_fullscreen(c, !c->is_fullscreen);
 	} else if (a == ewmh->_NET_WM_STATE_DEMANDS_ATTENTION) {
-		if (action == _NET_WM_STATE_REMOVE)
+		if (action == XCB_EWMH_WM_STATE_REMOVE)
 			set_urgent(c, false);
-		else if (action == _NET_WM_STATE_ADD)
+		else if (action == XCB_EWMH_WM_STATE_ADD)
 			set_urgent(c, true);
-		else if (action == _NET_WM_STATE_TOGGLE)
+		else if (action == XCB_EWMH_WM_STATE_TOGGLE)
 			set_urgent(c, !c->is_urgent);
 	} else {
 		log_warn("Unhandled wm state <%d> with action <%d>.", a, action);

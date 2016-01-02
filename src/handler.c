@@ -237,21 +237,26 @@ static void client_message_event(xcb_generic_event_t *ev)
 	xcb_client_message_event_t *cm = (xcb_client_message_event_t *)ev;
 	client_t *c = find_client_by_win(cm->window);
 
-	if (c && cm->type == ewmh->_NET_WM_STATE) {
-		ewmh_process_wm_state(c, (xcb_atom_t) cm->data.data32[1], cm->data.data32[0]);
-		if (cm->data.data32[2])
-			ewmh_process_wm_state(c, (xcb_atom_t) cm->data.data32[2], cm->data.data32[0]);
-	} else if (c && cm->type == ewmh->_NET_CLOSE_WINDOW) {
-		log_info("_NET_CLOSE_WINDOW: Removing client <%p>", c);
-		remove_client(c, true);
-		arrange_windows();
-	} else if (c && cm->type == ewmh->_NET_ACTIVE_WINDOW) {
-		log_info("_NET_ACTIVE_WINDOW: Focusing client <%p>", c);
-		update_focused_client(c);
-	} else if (c && cm->type == ewmh->_NET_CURRENT_DESKTOP
+	if (cm->type == ewmh->_NET_CURRENT_DESKTOP
 			&& cm->data.data32[0] < mon->workspace_cnt) {
 		log_info("_NET_CURRENT_DESKTOP: Changing to workspace <%d>", cm->data.data32[0]);
 		change_ws(index_to_workspace(mon, cm->data.data32[0]));
+	}
+
+	if (!c)
+		return;
+
+	if (cm->type == ewmh->_NET_WM_STATE) {
+		ewmh_process_wm_state(c, (xcb_atom_t) cm->data.data32[1], cm->data.data32[0]);
+		if (cm->data.data32[2])
+			ewmh_process_wm_state(c, (xcb_atom_t) cm->data.data32[2], cm->data.data32[0]);
+	} else if (cm->type == ewmh->_NET_CLOSE_WINDOW) {
+		log_info("_NET_CLOSE_WINDOW: Removing client <%p>", c);
+		remove_client(c, true);
+		arrange_windows();
+	} else if (cm->type == ewmh->_NET_ACTIVE_WINDOW) {
+		log_info("_NET_ACTIVE_WINDOW: Focusing client <%p>", c);
+		update_focused_client(c);
 	} else {
 		log_debug("Unhandled client message: %d", cm->type);
 	}
