@@ -82,4 +82,10 @@ struct monitor_t {
 	xcb_randr_output_t output; /**< The ID of the randr output. */
 };
 
+typedef struct {
+	monitor_t *mon;
+	workspace_t *ws;
+	client_t *c;
+} location_t;
+
 #endif
