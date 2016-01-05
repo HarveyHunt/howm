@@ -23,13 +23,13 @@ enum teleport_locations { TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, 
 int get_non_tff_count(void);
 client_t *get_first_non_tff(void);
 void change_client_gaps(client_t *c, int size);
-void kill_client(workspace_t *w, bool arrange);
+void kill_client(monitor_t *m, workspace_t *w, client_t *c);
 void move_up(client_t *c);
 client_t *next_client(client_t *c);
 void update_focused_client(client_t *c);
 client_t *prev_client(client_t *c, workspace_t *w);
 client_t *create_client(xcb_window_t w);
-void remove_client(client_t *c, bool refocus);
+void remove_client(monitor_t *m, workspace_t *w, client_t *c);
 void client_to_ws(client_t *c, workspace_t *ws, bool follow);
 void draw_clients(void);
 void change_client_geom(client_t *c, uint16_t x, uint16_t y, uint16_t w, uint16_t h);

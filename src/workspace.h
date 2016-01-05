@@ -13,7 +13,7 @@
  * @brief howm
  */
 
-void kill_ws(workspace_t *ws);
+void kill_ws(monitor_t *m, workspace_t *ws);
 void focus_next_ws(void);
 workspace_t *offset_ws(workspace_t *ws, int offset);
 void focus_prev_ws(void);

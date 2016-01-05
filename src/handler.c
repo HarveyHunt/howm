@@ -97,7 +97,7 @@ static void map_event(xcb_generic_event_t *ev)
 			if (a == ewmh->_NET_WM_WINDOW_TYPE_DOCK
 				|| a == ewmh->_NET_WM_WINDOW_TYPE_TOOLBAR) {
 				xcb_map_window(dpy, c->win);
-				remove_client(c, false);
+				remove_client(mon, mon->ws, c);
 				return;
 			} else if (a == ewmh->_NET_WM_WINDOW_TYPE_NOTIFICATION
 				|| a == ewmh->_NET_WM_WINDOW_TYPE_DROPDOWN_MENU
@@ -151,7 +151,7 @@ static void destroy_event(xcb_generic_event_t *ev)
 	if (!loc_win(&loc, de->window))
 		return;
 	log_info("Client <%p> wants to be destroyed", loc.c);
-	remove_client(loc.c, true);
+	remove_client(loc.mon, loc.ws, loc.c);
 	arrange_windows();
 }
 
@@ -223,7 +223,7 @@ static void unmap_event(xcb_generic_event_t *ev)
 	log_info("Received unmap request for client <%p>", loc.c);
 
 	if (ue->event != screen->root) {
-		remove_client(loc.c, true);
+		remove_client(loc.mon, loc.ws, loc.c);
 		arrange_windows();
 	}
 	howm_info();
@@ -254,7 +254,7 @@ static void client_message_event(xcb_generic_event_t *ev)
 			ewmh_process_wm_state(loc.c, (xcb_atom_t) cm->data.data32[2], cm->data.data32[0]);
 	} else if (cm->type == ewmh->_NET_CLOSE_WINDOW) {
 		log_info("_NET_CLOSE_WINDOW: Removing client <%p>", loc.c);
-		remove_client(loc.c, true);
+		remove_client(loc.mon, loc.ws, loc.c);
 		arrange_windows();
 	} else if (cm->type == ewmh->_NET_ACTIVE_WINDOW) {
 		log_info("_NET_ACTIVE_WINDOW: Focusing client <%p>", loc.c);

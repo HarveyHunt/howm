@@ -163,30 +163,28 @@ client_t *get_first_non_tff(void)
 /**
  * @brief Remove a client from its workspace client list.
  *
+ * @param m The monitor that the client to be removed is on.
+ * @param w The workspace that the client to be removed is on.
  * @param c The client to be removed.
- *
- * @param refocus Whether the clients should be rearranged and focus be
- * updated.
  */
-void remove_client(client_t *c, bool refocus)
+void remove_client(monitor_t *m, workspace_t *w, client_t *c)
 {
 	client_t **temp = NULL;
-	workspace_t *w = mon->ws_head;
 
-	for (; w != NULL ; w = w->next)
-		for (temp = &w->head; *temp; temp = &(*temp)->next)
-			if (*temp == c)
-				goto found;
+	for (temp = &w->head; *temp; temp = &(*temp)->next)
+		if (*temp == c)
+			goto found;
 	return;
 
 found:
 	*temp = c->next;
+
 	log_info("Removing client <%p>", c);
 	if (c == w->prev_foc)
 		w->prev_foc = prev_client(w->c, w);
 	if (c == w->c || !w->head->next) {
 		w->c = w->prev_foc ? w->prev_foc : w->head;
-		if (refocus)
+		if (m->ws == w)
 			update_focused_client(w->c);
 	}
 	free(c);
@@ -278,37 +276,37 @@ void focus_prev_client(void)
 }
 
 /**
- * @brief Kills the current client on the workspace w.
+ * @brief Kill a client.
  *
- * @param w The workspace that the current client to be killed is on.
- *
- * @param arrange Whether the windows should be rearranged.
+ * @param m The monitor that the client to be killed is on.
+ * @param w The workspace that the client to be killed is on.
+ * @param c The client to be killed.
  */
-void kill_client(workspace_t *w, bool arrange)
+void kill_client(monitor_t *m, workspace_t *w, client_t *c)
 {
 	xcb_icccm_get_wm_protocols_reply_t rep;
 	unsigned int i;
 	bool found = false;
 
-	if (!w->c)
+	if (!c)
 		return;
 
 	if (xcb_icccm_get_wm_protocols_reply(dpy,
 				xcb_icccm_get_wm_protocols(dpy,
-					w->c->win,
+					c->win,
 					wm_atoms[WM_PROTOCOLS]), &rep, NULL)) {
 		for (i = 0; i < rep.atoms_len; ++i)
 			if (rep.atoms[i] == wm_atoms[WM_DELETE_WINDOW]) {
-				delete_win(w->c->win);
+				delete_win(c->win);
 				found = true;
 				break;
 			}
 		xcb_icccm_get_wm_protocols_reply_wipe(&rep);
 	}
 	if (!found)
-		xcb_kill_client(dpy, w->c->win);
-	log_info("Killing Client <%p>", w->c);
-	remove_client(w->c, arrange);
+		xcb_kill_client(dpy, c->win);
+	log_info("Killing Client <%p>", c);
+	remove_client(m, w, c);
 }
 
 /**

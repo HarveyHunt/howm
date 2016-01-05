@@ -23,16 +23,16 @@
 /**
  * @brief Kills the given workspace.
  *
+ * @param m The monitor that the workspace to be killed is on.
  * @param ws The workspace to be killed.
  */
-void kill_ws(workspace_t *ws)
+void kill_ws(monitor_t *m, workspace_t *ws)
 {
 	if (!ws || !ws->client_cnt)
 		return;
 
 	while (ws->head)
-		kill_client(ws, ws->client_cnt == 1
-				&& mon->ws == ws);
+		kill_client(m, ws, m->ws->head);
 
 	log_info("Killed off workspace <%d>", workspace_to_index(ws));
 }
@@ -236,7 +236,7 @@ void add_ws(monitor_t *m)
  */
 void remove_ws(monitor_t *m, workspace_t *ws)
 {
-	kill_ws(ws);
+	kill_ws(m, ws);
 	if (m->ws == ws)
 		change_ws(m->last_ws ? m->last_ws : m->ws_head);
 

@@ -37,13 +37,13 @@ void op_kill(const unsigned int type, unsigned int cnt)
 	if (type == WORKSPACE) {
 		log_info("Killing %d workspaces", cnt);
 		while (cnt > 0) {
-			kill_ws(offset_ws(mon->ws, cnt - 1));
+			kill_ws(mon, offset_ws(mon->ws, cnt - 1));
 			cnt--;
 		}
 	} else if (type == CLIENT) {
 		log_info("Killing %d clients", cnt);
 		while (cnt > 0) {
-			kill_client(mon->ws, cnt == 1);
+			kill_client(mon, mon->ws, mon->ws->c);
 			cnt--;
 		}
 	}
