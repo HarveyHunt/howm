@@ -11,6 +11,7 @@
 #include "helper.h"
 #include "howm.h"
 #include "layout.h"
+#include "location.h"
 #include "monitor.h"
 #include "types.h"
 #include "workspace.h"
@@ -74,9 +75,10 @@ static void map_event(xcb_generic_event_t *ev)
 	xcb_ewmh_get_atoms_reply_t type;
 	unsigned int i;
 	client_t *c;
+	location_t loc;
 
 	wa = xcb_get_window_attributes_reply(dpy, xcb_get_window_attributes(dpy, me->window), NULL);
-	if (!wa || wa->override_redirect || find_client_by_win(me->window)) {
+	if (!wa || wa->override_redirect || loc_win(&loc, me->window)) {
 		free(wa);
 		return;
 	}
@@ -144,12 +146,12 @@ static void map_event(xcb_generic_event_t *ev)
 static void destroy_event(xcb_generic_event_t *ev)
 {
 	xcb_destroy_notify_event_t *de = (xcb_destroy_notify_event_t *)ev;
-	client_t *c = find_client_by_win(de->window);
+	location_t loc;
 
-	if (!c)
+	if (!loc_win(&loc, de->window))
 		return;
-	log_info("Client <%p> wants to be destroyed", c);
-	remove_client(c, true);
+	log_info("Client <%p> wants to be destroyed", loc.c);
+	remove_client(loc.c, true);
 	arrange_windows();
 }
 
@@ -214,14 +216,14 @@ static void configure_event(xcb_generic_event_t *ev)
 static void unmap_event(xcb_generic_event_t *ev)
 {
 	xcb_unmap_notify_event_t *ue = (xcb_unmap_notify_event_t *)ev;
-	client_t *c = find_client_by_win(ue->window);
+	location_t loc;
 
-	if (!c)
+	if (!loc_win(&loc, ue->window))
 		return;
-	log_info("Received unmap request for client <%p>", c);
+	log_info("Received unmap request for client <%p>", loc.c);
 
 	if (ue->event != screen->root) {
-		remove_client(c, true);
+		remove_client(loc.c, true);
 		arrange_windows();
 	}
 	howm_info();
@@ -235,7 +237,7 @@ static void unmap_event(xcb_generic_event_t *ev)
 static void client_message_event(xcb_generic_event_t *ev)
 {
 	xcb_client_message_event_t *cm = (xcb_client_message_event_t *)ev;
-	client_t *c = find_client_by_win(cm->window);
+	location_t loc;
 
 	if (cm->type == ewmh->_NET_CURRENT_DESKTOP
 			&& cm->data.data32[0] < mon->workspace_cnt) {
@@ -243,20 +245,20 @@ static void client_message_event(xcb_generic_event_t *ev)
 		change_ws(index_to_workspace(mon, cm->data.data32[0]));
 	}
 
-	if (!c)
+	if (!loc_win(&loc, cm->window))
 		return;
 
 	if (cm->type == ewmh->_NET_WM_STATE) {
-		ewmh_process_wm_state(c, (xcb_atom_t) cm->data.data32[1], cm->data.data32[0]);
+		ewmh_process_wm_state(loc.c, (xcb_atom_t) cm->data.data32[1], cm->data.data32[0]);
 		if (cm->data.data32[2])
-			ewmh_process_wm_state(c, (xcb_atom_t) cm->data.data32[2], cm->data.data32[0]);
+			ewmh_process_wm_state(loc.c, (xcb_atom_t) cm->data.data32[2], cm->data.data32[0]);
 	} else if (cm->type == ewmh->_NET_CLOSE_WINDOW) {
-		log_info("_NET_CLOSE_WINDOW: Removing client <%p>", c);
-		remove_client(c, true);
+		log_info("_NET_CLOSE_WINDOW: Removing client <%p>", loc.c);
+		remove_client(loc.c, true);
 		arrange_windows();
 	} else if (cm->type == ewmh->_NET_ACTIVE_WINDOW) {
-		log_info("_NET_ACTIVE_WINDOW: Focusing client <%p>", c);
-		update_focused_client(c);
+		log_info("_NET_ACTIVE_WINDOW: Focusing client <%p>", loc.c);
+		update_focused_client(loc.c);
 	} else {
 		log_debug("Unhandled client message: %d", cm->type);
 	}

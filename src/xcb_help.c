@@ -7,6 +7,7 @@
 #include "client.h"
 #include "helper.h"
 #include "howm.h"
+#include "location.h"
 #include "workspace.h"
 #include "xcb_help.h"
 
@@ -138,10 +139,10 @@ void get_atoms(const char **names, xcb_atom_t *atoms)
  */
 void focus_window(xcb_window_t win)
 {
-	client_t *c = find_client_by_win(win);
+	location_t loc;
 
-	if (c && c != mon->ws->c)
-		update_focused_client(c);
+	if (loc_win(&loc, win) && loc.c != mon->ws->c)
+		update_focused_client(loc.c);
 	else
 		/* We don't want warnings for clicking the root window... */
 		if (win != screen->root)
