@@ -128,7 +128,7 @@ static void map_event(xcb_generic_event_t *ev)
 		free(geom);
 	}
 
-	arrange_windows();
+	arrange_windows(mon);
 	xcb_map_window(dpy, c->win);
 	update_focused_client(c);
 	grab_buttons(c);
@@ -152,7 +152,7 @@ static void destroy_event(xcb_generic_event_t *ev)
 		return;
 	log_info("Client <%p> wants to be destroyed", loc.c);
 	remove_client(loc.mon, loc.ws, loc.c);
-	arrange_windows();
+	arrange_windows(loc.mon);
 }
 
 /**
@@ -185,7 +185,10 @@ static void configure_event(xcb_generic_event_t *ev)
 {
 	xcb_configure_request_event_t *ce = (xcb_configure_request_event_t *)ev;
 	uint32_t vals[7] = {0}, i = 0;
+	location_t loc;
+	bool found;
 
+	found = loc_win(&loc, ce->window);
 	log_info("Received configure request for window <0x%x>", ce->window);
 
 	/* TODO: Need to test whether gaps etc need to be taken into account
@@ -205,7 +208,8 @@ static void configure_event(xcb_generic_event_t *ev)
 	if (XCB_CONFIG_WINDOW_STACK_MODE & ce->value_mask)
 		vals[i++] = ce->stack_mode;
 	xcb_configure_window(dpy, ce->window, ce->value_mask, vals);
-	arrange_windows();
+	if (found)
+		arrange_windows(loc.mon);
 }
 
 /**
@@ -220,11 +224,12 @@ static void unmap_event(xcb_generic_event_t *ev)
 
 	if (!loc_win(&loc, ue->window))
 		return;
+
 	log_info("Received unmap request for client <%p>", loc.c);
 
 	if (ue->event != screen->root) {
 		remove_client(loc.mon, loc.ws, loc.c);
-		arrange_windows();
+		arrange_windows(loc.mon);
 	}
 	howm_info();
 }
@@ -255,7 +260,7 @@ static void client_message_event(xcb_generic_event_t *ev)
 	} else if (cm->type == ewmh->_NET_CLOSE_WINDOW) {
 		log_info("_NET_CLOSE_WINDOW: Removing client <%p>", loc.c);
 		remove_client(loc.mon, loc.ws, loc.c);
-		arrange_windows();
+		arrange_windows(loc.mon);
 	} else if (cm->type == ewmh->_NET_ACTIVE_WINDOW) {
 		log_info("_NET_ACTIVE_WINDOW: Focusing client <%p>", loc.c);
 		update_focused_client(loc.c);

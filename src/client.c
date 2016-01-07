@@ -126,7 +126,7 @@ void update_focused_client(client_t *c)
 
 	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, mon->ws->c->win,
 			    XCB_CURRENT_TIME);
-	arrange_windows();
+	arrange_windows(mon);
 }
 
 /**
@@ -217,7 +217,7 @@ static void move_down(client_t *c)
 		mon->ws->head = c;
 	log_info("Moved client <%p> on workspace <%d> down",
 				c, workspace_to_index(mon->ws));
-	arrange_windows();
+	arrange_windows(mon);
 }
 
 /**
@@ -245,7 +245,7 @@ void move_up(client_t *c)
 	c->next = (c->next == mon->ws->head) ? NULL : p;
 	log_info("Moved client <%p> on workspace <%d> down",
 				c, workspace_to_index(mon->ws));
-	arrange_windows();
+	arrange_windows(mon);
 }
 
 /**
@@ -538,7 +538,7 @@ void set_fullscreen(client_t *c, bool fscr)
 		draw_clients();
 	} else {
 		set_border_width(c->win, !mon->ws->head->next ? 0 : conf.border_px);
-		arrange_windows();
+		arrange_windows(mon);
 		draw_clients();
 	}
 }
@@ -634,7 +634,7 @@ void toggle_float(void)
 		mon->ws->c->rect.y = (mon->rect.height - mon->ws->bar_height - mon->ws->c->rect.height) / 2;
 		log_info("Centering client <%p>", mon->ws->c);
 	}
-	arrange_windows();
+	arrange_windows(mon);
 }
 
 /**
@@ -784,7 +784,7 @@ void resize_master(const int ds)
 		return;
 	log_info("Resizing master_ratio from <%.2f> to <%.2f>", mon->ws->master_ratio, mon->ws->master_ratio + change);
 	mon->ws->master_ratio += change;
-	arrange_windows();
+	arrange_windows(mon);
 }
 
 /**
@@ -858,6 +858,6 @@ void toggle_bar(void)
 	xcb_ewmh_geometry_t workarea[] = { { 0, conf.bar_bottom ? 0 : mon->ws->bar_height,
 				mon->rect.width, mon->rect.height - mon->ws->bar_height } };
 	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
-	arrange_windows();
+	arrange_windows(mon);
 }
 

@@ -155,8 +155,6 @@ static int ipc_process_function(char **args)
 		CALL_INT(move_float_y, args[1], -100, 100);
 	} else if (strncmp(args[0], "resize_master", strlen("resize_master")) == 0) {
 		CALL_INT(resize_master, args[1], -100, 100);
-	} else if (strncmp(args[0], "change_layout", strlen("change_layout")) == 0) {
-		CALL_INT(change_layout, args[1], ZOOM, END_LAYOUT - 1);
 	} else if (strncmp(args[0], "count", strlen("count")) == 0) {
 		CALL_INT(count, args[1], 1, 9);
 #undef CALL_INT
@@ -217,12 +215,18 @@ static int ipc_process_function(char **args)
 		focus_last_ws();
 	} else if (strncmp(args[0], "paste", strlen("paste")) == 0) {
 		paste();
+	} else if (strncmp(args[0], "change_layout", strlen("change_layout")) == 0) {
+		/* TODO: Allow the layout of an arbitrary monitor to be changed
+		 * without having to focus it. */
+		i = ipc_arg_to_int(args[0], &err, ZOOM, END_LAYOUT - 1);
+		if (err == IPC_ERR_NONE)
+			change_layout(mon, i);
 	} else if (strncmp(args[0], "next_layout", strlen("next_layout")) == 0) {
-		next_layout();
+		next_layout(mon);
 	} else if (strncmp(args[0], "prev_layout", strlen("prev_layout")) == 0) {
-		prev_layout();
+		prev_layout(mon);
 	} else if (strncmp(args[0], "last_layout", strlen("last_layout")) == 0) {
-		last_layout();
+		last_layout(mon);
 	} else if (strncmp(args[0], "spawn", strlen("spawn")) == 0) {
 		spawn(args + 1);
 	} else if (strncmp(args[0], "motion", strlen("motion")) == 0) {
