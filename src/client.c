@@ -491,8 +491,8 @@ client_t *create_client(xcb_window_t w)
 {
 	client_t *c = (client_t *)calloc(1, sizeof(client_t));
 	client_t *t = prev_client(mon->ws->head, mon->ws); /* Get the last element. */
-	uint32_t vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE |
-				 (conf.focus_mouse ? XCB_EVENT_MASK_ENTER_WINDOW : 0)};
+	uint32_t vals[1] = { XCB_EVENT_MASK_PROPERTY_CHANGE
+				| XCB_EVENT_MASK_ENTER_WINDOW };
 
 	if (!c) {
 		log_err("Can't allocate memory for client.");
