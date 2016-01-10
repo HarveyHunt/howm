@@ -132,14 +132,15 @@ void update_focused_client(client_t *c)
 /**
  * @brief Count how many clients aren't Transient, Floating or Fullscreen.
  *
+ * @param m The monitor to be searched.
  * @return The amount of clients in the current workspace that aren't TFF.
  */
-int get_non_tff_count(void)
+int get_non_tff_count(monitor_t *m)
 {
 	int n = 0;
 	client_t *c = NULL;
 
-	for (c = mon->ws->head; c; c = c->next)
+	for (c = m->ws->head; c; c = c->next)
 		if (!FFT(c))
 			n++;
 	return n;
@@ -149,13 +150,14 @@ int get_non_tff_count(void)
  * @brief Returns the first client that isn't transient, floating or
  * fullscreen.
  *
+ * @param m The monitor to be searched.
  * @return The first client that isn't TFF. NULL if none.
  */
-client_t *get_first_non_tff(void)
+client_t *get_first_non_tff(monitor_t *m)
 {
 	client_t *c = NULL;
 
-	for (c = mon->ws->head; c && FFT(c); c = c->next)
+	for (c = m->ws->head; c && FFT(c); c = c->next)
 		;
 	return c;
 }

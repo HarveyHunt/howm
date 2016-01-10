@@ -51,7 +51,7 @@ void arrange_windows(monitor_t *m)
  */
 static void grid(monitor_t *m)
 {
-	int n = get_non_tff_count();
+	int n = get_non_tff_count(m);
 	client_t *c = NULL;
 	int cols, rows, i = -1, col_cnt = 0, row_cnt = 0;
 	uint16_t col_w;
@@ -125,11 +125,11 @@ static void zoom(monitor_t *m)
  */
 static void stack(monitor_t *m)
 {
-	client_t *c = get_first_non_tff();
+	client_t *c = get_first_non_tff(m);
 	bool vert = (m->ws->layout == VSTACK);
 	uint16_t h = m->rect.height - m->ws->bar_height;
 	uint16_t w = m->rect.width;
-	int n = get_non_tff_count();
+	int n = get_non_tff_count(m);
 	uint16_t client_x = m->rect.x, client_span = 0;
 	uint16_t client_y = conf.bar_bottom ? m->rect.y : m->rect.y + m->ws->bar_height;
 	uint16_t ms = (vert ? w : h) * m->ws->master_ratio;

@@ -20,8 +20,8 @@
 
 enum teleport_locations { TOP_LEFT, TOP_CENTER, TOP_RIGHT, CENTER, BOTTOM_LEFT, BOTTOM_CENTER, BOTTOM_RIGHT };
 
-int get_non_tff_count(void);
-client_t *get_first_non_tff(void);
+int get_non_tff_count(monitor_t *m);
+client_t *get_first_non_tff(monitor_t *m);
 void change_client_gaps(client_t *c, int size);
 void kill_client(monitor_t *m, workspace_t *w, client_t *c);
 void move_up(client_t *c);
