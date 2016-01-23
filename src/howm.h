@@ -18,7 +18,6 @@
 #define DEF_SOCK_PATH "/tmp/howm"
 #define IPC_BUF_SIZE 1024
 
-#define WORKSPACES 5
 #define WS_DEF_LAYOUT HSTACK
 #define MASTER_RATIO 0.6
 #define DEF_BORDER_FOCUS "#FFFFFF"
@@ -61,19 +60,20 @@ struct config {
 enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
 
 extern int retval;
-extern int last_ws;
-extern int previous_layout;
-extern int cw;
 extern xcb_connection_t *dpy;
 extern uint16_t screen_height;
 extern uint16_t screen_width;
 extern int cur_state;
+extern unsigned int mon_cnt;
+
+extern monitor_t *mon;
+extern monitor_t *mon_head;
+extern monitor_t *mon_tail;
+extern unsigned int workspace_cnt;
 
 extern xcb_screen_t *screen;
 extern xcb_ewmh_connection_t *ewmh;
 extern bool running;
-
-extern workspace_t wss[];
 
 extern struct config conf;
 

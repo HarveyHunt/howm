@@ -11,6 +11,7 @@
 #include "howm.h"
 #include "ipc.h"
 #include "layout.h"
+#include "monitor.h"
 #include "op.h"
 #include "scratchpad.h"
 #include "types.h"
@@ -144,8 +145,6 @@ static int ipc_process_function(char **args)
 		CALL_INT(teleport_client, args[1], TOP_LEFT, BOTTOM_RIGHT);
 	} else if (strncmp(args[0], "quit", strlen("quit")) == 0) {
 		CALL_INT(quit, args[1], EXIT_SUCCESS, EXIT_FAILURE);
-	} else if (strncmp(args[0], "current_to_ws", strlen("current_to_ws")) == 0) {
-		CALL_INT(current_to_ws, args[1], 1, WORKSPACES);
 	} else if (strncmp(args[0], "resize_float_width", strlen("resize_float_width")) == 0) {
 		CALL_INT(resize_float_width, args[1], -100, 100);
 	} else if (strncmp(args[0], "resize_float_height", strlen("resize_float_height")) == 0) {
@@ -156,17 +155,40 @@ static int ipc_process_function(char **args)
 		CALL_INT(move_float_y, args[1], -100, 100);
 	} else if (strncmp(args[0], "resize_master", strlen("resize_master")) == 0) {
 		CALL_INT(resize_master, args[1], -100, 100);
-	} else if (strncmp(args[0], "change_ws", strlen("change_ws")) == 0) {
-		CALL_INT(change_ws, args[1], 1, WORKSPACES);
-	} else if (strncmp(args[0], "change_layout", strlen("change_layout")) == 0) {
-		CALL_INT(change_layout, args[1], ZOOM, END_LAYOUT - 1);
 	} else if (strncmp(args[0], "count", strlen("count")) == 0) {
 		CALL_INT(count, args[1], 1, 9);
 #undef CALL_INT
+
+/*TODO: Don't do this - we should have a neat wrapper function
+ * for functions requiring a workspace pointer.
+ */
+#define CALL_WORKSPACE(func, arg, lower, upper) \
+	do { \
+		i = ipc_arg_to_int(arg, &err, lower, upper); \
+		if (err == IPC_ERR_NONE) { \
+			func(index_to_workspace(mon, i)); \
+		} \
+	} while (0)
+
+	} else if (strncmp(args[0], "change_ws", strlen("change_ws")) == 0) {
+		CALL_WORKSPACE(change_ws, args[1], 0, mon->workspace_cnt - 1);
+	} else if (strncmp(args[0], "current_to_ws", strlen("current_to_ws")) == 0) {
+		CALL_WORKSPACE(current_to_ws, args[1], 0, mon->workspace_cnt - 1);
+#undef CALL_WORKSPACE
+	} else if (strncmp(args[0], "add_ws", strlen("add_ws")) == 0) {
+		add_ws(mon);
+	} else if (strncmp(args[0], "remove_ws", strlen("remove_ws")) == 0) {
+		i = ipc_arg_to_int(args[1], &err, 0, mon->workspace_cnt - 1);
+		if (err == IPC_ERR_NONE)
+			remove_ws(mon, index_to_workspace(mon, i));
 	} else if (strncmp(args[0], "move_current_down", strlen("move_current_down")) == 0) {
 		move_current_down();
 	} else if (strncmp(args[0], "move_current_up", strlen("move_current_up")) == 0) {
 		move_current_up();
+	} else if (strncmp(args[0], "focus_monitor", strlen("focus_monitor")) == 0) {
+		i = ipc_arg_to_int(args[1], &err, 0, mon_cnt - 1);
+		if (err == IPC_ERR_NONE)
+			focus_monitor(index_to_monitor(i));
 	} else if (strncmp(args[0], "focus_next_client", strlen("focus_next_client")) == 0) {
 		focus_next_client();
 	} else if (strncmp(args[0], "focus_prev_client", strlen("focus_prev_client")) == 0) {
@@ -193,12 +215,18 @@ static int ipc_process_function(char **args)
 		focus_last_ws();
 	} else if (strncmp(args[0], "paste", strlen("paste")) == 0) {
 		paste();
+	} else if (strncmp(args[0], "change_layout", strlen("change_layout")) == 0) {
+		/* TODO: Allow the layout of an arbitrary monitor to be changed
+		 * without having to focus it. */
+		i = ipc_arg_to_int(args[0], &err, ZOOM, END_LAYOUT - 1);
+		if (err == IPC_ERR_NONE)
+			change_layout(mon, i);
 	} else if (strncmp(args[0], "next_layout", strlen("next_layout")) == 0) {
-		next_layout();
+		next_layout(mon);
 	} else if (strncmp(args[0], "prev_layout", strlen("prev_layout")) == 0) {
-		prev_layout();
+		prev_layout(mon);
 	} else if (strncmp(args[0], "last_layout", strlen("last_layout")) == 0) {
-		last_layout();
+		last_layout(mon);
 	} else if (strncmp(args[0], "spawn", strlen("spawn")) == 0) {
 		spawn(args + 1);
 	} else if (strncmp(args[0], "motion", strlen("motion")) == 0) {
@@ -256,9 +284,9 @@ static int ipc_arg_to_int(char *arg, int *err, int lower, int upper)
 	if (!arg) {
 		*err = IPC_ERR_TOO_FEW_ARGS;
 		return ret;
-	} else {
-		ret = atoi(arg);
 	}
+
+	ret = atoi(arg);
 
 	if (ret > upper)
 		*err = IPC_ERR_ARG_TOO_LARGE;
@@ -365,17 +393,17 @@ static int ipc_process_config(char **args)
 	if (strcmp("border_px", args[0]) == 0)
 		SET_INT(conf.border_px, args[1], 0, 32);
 	else if (strcmp("float_spawn_height", args[0]) == 0)
-		SET_INT(conf.float_spawn_height, args[1], 1, screen_height);
+		SET_INT(conf.float_spawn_height, args[1], 1, mon->rect.height);
 	else if (strcmp("float_spawn_width", args[0]) == 0)
-		SET_INT(conf.float_spawn_width, args[1], 1, screen_width);
+		SET_INT(conf.float_spawn_width, args[1], 1, mon->rect.width);
 	else if (strcmp("scratchpad_height", args[0]) == 0)
-		SET_INT(conf.scratchpad_height, args[1], 1, screen_height);
+		SET_INT(conf.scratchpad_height, args[1], 1, mon->rect.height);
 	else if (strcmp("scratchpad_width", args[0]) == 0)
-		SET_INT(conf.scratchpad_width, args[1], 1, screen_width);
+		SET_INT(conf.scratchpad_width, args[1], 1, mon->rect.width);
 	else if (strcmp("op_gap_size", args[0]) == 0)
 		SET_INT(conf.op_gap_size, args[1], 0, 32);
 	else if (strcmp("bar_height", args[0]) == 0)
-		SET_INT(conf.bar_height, args[1], 0, screen_height);
+		SET_INT(conf.bar_height, args[1], 0, mon->rect.height);
 #undef SET_INT
 #define SET_BOOL(opt, arg) \
 	do { \
@@ -416,7 +444,7 @@ static int ipc_process_config(char **args)
 		SET_COLOUR(conf.border_urgent, args[1]);
 	else
 		err = IPC_ERR_NO_CONFIG;
-	update_focused_client(wss[cw].current);
+	update_focused_client(mon->ws->c);
 	return err;
 #undef SET_COLOUR
 }

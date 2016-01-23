@@ -7,12 +7,14 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <xcb/xcb.h>
+#include <xcb/randr.h>
 #include <xcb/xcb_ewmh.h>
 
 #include "handler.h"
 #include "helper.h"
 #include "howm.h"
 #include "ipc.h"
+#include "monitor.h"
 #include "scratchpad.h"
 #include "xcb_help.h"
 #include "workspace.h"
@@ -61,19 +63,14 @@ struct config conf = {
 	.scratchpad_width = 500,
 };
 
-
 bool running = true;
 xcb_connection_t *dpy = NULL;
 xcb_screen_t *screen = NULL;
 xcb_ewmh_connection_t *ewmh = NULL;
-workspace_t wss[WORKSPACES + 1];
 const char *WM_ATOM_NAMES[] = { "WM_DELETE_WINDOW", "WM_PROTOCOLS" };
 xcb_atom_t wm_atoms[LENGTH(WM_ATOM_NAMES)];
 
 int retval = EXIT_FAILURE;
-int last_ws = 0;
-int previous_layout = 0;
-int cw = 1;
 uint32_t border_focus = 0;
 uint32_t border_unfocus = 0;
 uint32_t border_prev_focus = 0;
@@ -81,6 +78,12 @@ uint32_t border_urgent = 0;
 uint16_t screen_height = 0;
 uint16_t screen_width = 0;
 int cur_state = OPERATOR_STATE;
+unsigned int mon_cnt = 0;
+unsigned int workspace_cnt;
+
+monitor_t *mon = NULL;
+monitor_t *mon_head = NULL;
+monitor_t *mon_tail = NULL;
 
 /**
  * @brief Occurs when howm first starts.
@@ -92,14 +95,6 @@ int cur_state = OPERATOR_STATE;
  */
 static void setup(void)
 {
-	unsigned int i;
-
-	for (i = 1; i <= WORKSPACES; i++) {
-		wss[i].layout = WS_DEF_LAYOUT;
-		wss[i].bar_height = conf.bar_height;
-		wss[i].master_ratio = MASTER_RATIO;
-		wss[i].gap = GAP;
-	}
 	screen = xcb_setup_roots_iterator(xcb_get_setup(dpy)).data;
 	if (!screen) {
 		log_err("Can't acquire the default screen.");
@@ -109,11 +104,12 @@ static void setup(void)
 	screen_height = screen->height_in_pixels;
 	screen_width = screen->width_in_pixels;
 
-	log_info("Screen's height is: %d", screen_height);
-	log_info("Screen's width is: %d", screen_width);
-
 	get_atoms(WM_ATOM_NAMES, wm_atoms);
 	setup_ewmh();
+	scan_monitors();
+	setup_ewmh_geom();
+
+	xcb_prefetch_extension_data(dpy, &xcb_randr_id);
 
 	conf.border_focus = get_colour(DEF_BORDER_FOCUS);
 	conf.border_unfocus = get_colour(DEF_BORDER_UNFOCUS);
@@ -231,17 +227,19 @@ int main(int argc, char *argv[])
  */
 void howm_info(void)
 {
-	unsigned int w = 0;
 #if DEBUG_ENABLE
-	for (w = 1; w <= WORKSPACES; w++) {
-		fprintf(stdout, "%d:%u:%d:%u\n", wss[w].layout, w,
-					cur_state, wss[w].client_cnt);
+	const workspace_t *ws;
+
+	for (ws = mon->ws_head; ws != NULL; ws = ws->next) {
+		fprintf(stdout, "%d:%u:%d:%u:%u\n",  ws->layout,
+			workspace_to_index(ws), cur_state,
+			ws->client_cnt, monitor_to_index(mon));
 	}
 	fflush(stdout);
 #else
-	UNUSED(w);
-	fprintf(stdout, "%d:%d:%d:%u\n", wss[cw].layout, cw,
-					cur_state, wss[cw].client_cnt);
+	fprintf(stdout, "%d:%d:%d:%u:%u\n",  mon->ws->layout,
+		workspace_to_index(mon->ws), cur_state,
+		mon->ws->client_cnt, monitor_to_index(mon));
 	fflush(stdout);
 #endif
 }
@@ -254,12 +252,10 @@ void howm_info(void)
  */
 static void cleanup(void)
 {
-	int i;
-
 	log_warn("Cleaning up");
 
-	for (i = 1; i < WORKSPACES; i++)
-		kill_ws(i);
+	while (mon)
+		remove_monitor(mon);
 
 	xcb_set_input_focus(dpy, XCB_INPUT_FOCUS_POINTER_ROOT, screen->root,
 			XCB_CURRENT_TIME);
