@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <xcb/xcb.h>
 #include <xcb/xproto.h>
 
 #include "scratchpad.h"
@@ -11,14 +12,14 @@
  *
  * @author Harvey Hunt
  *
- * @date 2014
+ * @date 2015
  *
  * @brief The stack implementation and appropriate functions required for
  * sending clients (or groups of clients) to the scratchpad.
  */
 
 struct stack del_reg;
-static Client *scratchpad;
+static client_t *scratchpad;
 
 /**
  * @brief Dynamically allocate space for the contents of the stack.
@@ -30,7 +31,7 @@ static Client *scratchpad;
  */
 void stack_init(struct stack *s)
 {
-	s->contents = (Client **)malloc(sizeof(Client) * conf.delete_register_size);
+	s->contents = (client_t **)malloc(sizeof(client_t) * conf.delete_register_size);
 	if (!s->contents) {
 		log_err("Failed to allocate memory for stack.");
 		exit(EXIT_FAILURE);
@@ -55,7 +56,7 @@ void stack_free(struct stack *s)
  * @param c The client to be pushed on. This client is treated as the head of a
  * linked list.
  */
-void stack_push(struct stack *s, Client *c)
+void stack_push(struct stack *s, client_t *c)
 {
 	if (!c || !s) {
 		return;
@@ -74,7 +75,7 @@ void stack_push(struct stack *s, Client *c)
  * @return The client that was at the top of the stack. It acts as the head of
  * the linked list of clients.
  */
-Client *stack_pop(struct stack *s)
+client_t *stack_pop(struct stack *s)
 {
 	if (!s) {
 		return NULL;
@@ -92,28 +93,28 @@ Client *stack_pop(struct stack *s)
  */
 void send_to_scratchpad(void)
 {
-	Client *c = wss[cw].current;
+	client_t *c = mon->ws->c;
 
 	if (scratchpad || !c)
 		return;
 
 	log_info("Sending client <%p> to scratchpad", c);
-	if (prev_client(c, cw))
-		prev_client(c, cw)->next = c->next;
+	if (prev_client(c, mon->ws))
+		prev_client(c, mon->ws)->next = c->next;
 
 	/* TODO: This should be in a reusable function. */
-	if (c == wss[cw].prev_foc)
-		wss[cw].prev_foc = prev_client(wss[cw].current, cw);
-	if (c == wss[cw].current || !wss[cw].head->next)
-		wss[cw].current = wss[cw].prev_foc ? wss[cw].prev_foc : wss[cw].head;
-	if (c == wss[cw].head) {
-		wss[cw].head = c->next;
-		wss[cw].current = c->next;
+	if (c == mon->ws->prev_foc)
+		mon->ws->prev_foc = prev_client(mon->ws->c, mon->ws);
+	if (c == mon->ws->c || !mon->ws->head->next)
+		mon->ws->c = mon->ws->prev_foc ? mon->ws->prev_foc : mon->ws->head;
+	if (c == mon->ws->head) {
+		mon->ws->head = c->next;
+		mon->ws->c = c->next;
 	}
 
 	xcb_unmap_window(dpy, c->win);
-	wss[cw].client_cnt--;
-	update_focused_client(wss[cw].current);
+	mon->ws->client_cnt--;
+	update_focused_client(mon->ws->c);
 	scratchpad = c;
 }
 
@@ -128,25 +129,25 @@ void get_from_scratchpad(void)
 	if (!scratchpad)
 		return;
 	/* TODO: This should be in a reusable function. */
-	if (!wss[cw].head)
-		wss[cw].head = scratchpad;
-	else if (!wss[cw].head->next)
-		wss[cw].head->next = scratchpad;
+	if (!mon->ws->head)
+		mon->ws->head = scratchpad;
+	else if (!mon->ws->head->next)
+		mon->ws->head->next = scratchpad;
 	else
-		prev_client(wss[cw].head, cw)->next = scratchpad;
+		prev_client(mon->ws->head, mon->ws)->next = scratchpad;
 
-	wss[cw].prev_foc = wss[cw].current;
-	wss[cw].current = scratchpad;
+	mon->ws->prev_foc = mon->ws->c;
+	mon->ws->c = scratchpad;
 
 	scratchpad = NULL;
-	wss[cw].client_cnt++;
+	mon->ws->client_cnt++;
 
-	wss[cw].current->is_floating = true;
-	wss[cw].current->w = conf.scratchpad_width;
-	wss[cw].current->h = conf.scratchpad_height;
-	wss[cw].current->x = (screen_width / 2) - (wss[cw].current->w / 2);
-	wss[cw].current->y = (screen_height - wss[cw].bar_height - wss[cw].current->h) / 2;
+	mon->ws->c->is_floating = true;
+	mon->ws->c->rect.width = conf.scratchpad_width;
+	mon->ws->c->rect.height = conf.scratchpad_height;
+	mon->ws->c->rect.x = (mon->rect.width / 2) - (mon->ws->c->rect.width / 2);
+	mon->ws->c->rect.y = (mon->rect.height - mon->ws->bar_height - mon->ws->c->rect.height) / 2;
 
-	xcb_map_window(dpy, wss[cw].current->win);
-	update_focused_client(wss[cw].current);
+	xcb_map_window(dpy, mon->ws->c->win);
+	update_focused_client(mon->ws->c);
 }

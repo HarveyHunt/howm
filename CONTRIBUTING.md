@@ -2,6 +2,8 @@
 
 Contributions are always welcomed, so start sending some PRs!
 
+**Beginner issues are marked on the issues page - check there if you want to get started.**
+
 ## Getting Started
 
 Clone the repository:

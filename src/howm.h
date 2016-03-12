@@ -18,12 +18,11 @@
 #define DEF_SOCK_PATH "/tmp/howm"
 #define IPC_BUF_SIZE 1024
 
-#define WORKSPACES 5
 #define WS_DEF_LAYOUT HSTACK
 #define MASTER_RATIO 0.6
-#define DEF_BORDER_FOCUS "#70898F"
-#define DEF_BORDER_UNFOCUS "#55555"
-#define DEF_BORDER_PREV_FOCUS "#74718E"
+#define DEF_BORDER_FOCUS "#FFFFFF"
+#define DEF_BORDER_UNFOCUS "#333333"
+#define DEF_BORDER_PREV_FOCUS "#444444"
 #define DEF_BORDER_URGENT "#FF0000"
 #define GAP 0
 
@@ -32,7 +31,7 @@
  *
  * @author Harvey Hunt
  *
- * @date 2014
+ * @date 2015
  *
  * @brief howm
  */
@@ -60,23 +59,21 @@ struct config {
 
 enum states { OPERATOR_STATE, COUNT_STATE, MOTION_STATE, END_STATE };
 
-extern int numlockmask;
 extern int retval;
-extern int last_ws;
-extern int previous_layout;
-extern int cw;
 extern xcb_connection_t *dpy;
-extern unsigned int cur_mode;
 extern uint16_t screen_height;
 extern uint16_t screen_width;
 extern int cur_state;
+extern unsigned int mon_cnt;
+
+extern monitor_t *mon;
+extern monitor_t *mon_head;
+extern monitor_t *mon_tail;
+extern unsigned int workspace_cnt;
 
 extern xcb_screen_t *screen;
 extern xcb_ewmh_connection_t *ewmh;
 extern bool running;
-extern bool restart;
-
-extern Workspace wss[];
 
 extern struct config conf;
 
@@ -85,8 +82,7 @@ extern xcb_atom_t wm_atoms[];
 
 void howm_info(void);
 uint32_t get_colour(char *colour);
-void quit_howm(const int exit_status);
-void restart_howm(void);
+void quit(const int exit_status);
 void spawn(char *cmd[]);
 
 #endif

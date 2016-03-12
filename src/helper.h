@@ -8,7 +8,7 @@
  *
  * @author Harvey Hunt
  *
- * @date 2014
+ * @date 2015
  *
  * @brief howm
  */
@@ -20,11 +20,6 @@
  * window. */
 #define MOVE_RESIZE_MASK (XCB_CONFIG_WINDOW_X | XCB_CONFIG_WINDOW_Y | \
 			  XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT)
-/** Ensures that the number lock doesn't intefere with checking the equality
- * of two modifier masks.*/
-#define CLEANMASK(mask) (mask & ~(numlockmask | XCB_MOD_MASK_LOCK))
-/** Wraps up the comparison of modifier masks into a neat package. */
-#define EQUALMODS(mask, omask) (CLEANMASK(mask) == CLEANMASK(omask))
 /** Calculates the length of an array. */
 #define LENGTH(x) (unsigned int)(sizeof(x) / sizeof(*x))
 /** Checks to see if a client is floating, fullscreen or transient. */
@@ -51,15 +46,6 @@
  * macros.
  */
 /*@ignore@*/
-#ifdef DEBUG_ENABLE
-/** Output debugging information using puts. */
-#       define DEBUG(x) puts(x)
-/** Output debugging information using printf to allow for formatting. */
-#	define DEBUGP(M, ...) fprintf(stderr, "[DBG] %s:%d: " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
-#else
-#       define DEBUG(x) do {} while (0)
-#       define DEBUGP(x, ...) do {} while (0)
-#endif
 
 #define LOG_DEBUG 1
 #define LOG_INFO 2

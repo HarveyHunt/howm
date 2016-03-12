@@ -7,17 +7,12 @@ ws=("term" "vim" "www" "chat" "media")
 
 lay=("▣" "▦" "▥" "▤")
 
-mbg=("#333333" "#5F5F87" "#AFD7AF")
-mfg=("#DDDDDD" "#333333" "#333333")
-
 bg="#333333"
 
 while read -t 10 -r howmout || true; do
     if [[ $howmout =~ ^(([[:digit:]]+:)+[[:digit:]]+ ?)+$ ]]; then
         unset r
-        IFS=':' read -r m l w s c <<< "$howmout"
-        r+='^fg('"${mfg[$m]}"')'
-        r+='^bg('"${mbg[$m]}"')'
+        IFS=':' read -r l w s c <<< "$howmout"
         r+=" ${lay[$l]} | "
         r+="${ws[$w - 1]}"
         r="${r%::*}"

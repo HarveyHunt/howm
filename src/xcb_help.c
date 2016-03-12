@@ -1,11 +1,14 @@
 #include <stdlib.h>
 #include <string.h>
+#include <xcb/randr.h>
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
 
 #include "client.h"
 #include "helper.h"
 #include "howm.h"
+#include "location.h"
+#include "workspace.h"
 #include "xcb_help.h"
 
 /**
@@ -13,7 +16,7 @@
  *
  * @author Harvey Hunt
  *
- * @date 2014
+ * @date 2015
  *
  * @brief The portion of howm that interacts with the X server. Perhaps this
  * could be conditionally included if we decide to use wayland as well.
@@ -31,6 +34,7 @@ void check_other_wm(void)
 	uint32_t values[1] = { XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT |
 			       XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
 			       XCB_EVENT_MASK_BUTTON_PRESS |
+			       XCB_EVENT_MASK_ENTER_WINDOW |
 			       XCB_EVENT_MASK_PROPERTY_CHANGE
 			     };
 
@@ -66,7 +70,7 @@ void move_resize(xcb_window_t win,
  *
  * @param c The client that needs to listen for button presses.
  */
-void grab_buttons(Client *c)
+void grab_buttons(client_t *c)
 {
 	xcb_ungrab_button(dpy, XCB_BUTTON_INDEX_ANY, c->win, XCB_GRAB_ANY);
 	xcb_grab_button(dpy, 1, c->win, XCB_EVENT_MASK_BUTTON_PRESS,
@@ -136,13 +140,13 @@ void get_atoms(const char **names, xcb_atom_t *atoms)
  */
 void focus_window(xcb_window_t win)
 {
-	Client *c = find_client_by_win(win);
+	location_t loc;
 
-	if (c && c != wss[cw].current)
-		update_focused_client(c);
+	if (loc_win(&loc, win) && loc.c != mon->ws->c)
+		update_focused_client(loc.c);
 	else
 		/* We don't want warnings for clicking the root window... */
-		if (!win == screen->root)
+		if (win != screen->root)
 			log_warn("No client owns the window <0x%x>", win);
 }
 
@@ -175,21 +179,21 @@ void delete_win(xcb_window_t win)
  * @param a The atom representing which WM_STATE hint should be modified.
  * @param action Whether to remove, add or toggle the WM_STATE hint.
  */
-void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action)
+void ewmh_process_wm_state(client_t *c, xcb_atom_t a, int action)
 {
 	if (a == ewmh->_NET_WM_STATE_FULLSCREEN) {
-		if (action == _NET_WM_STATE_REMOVE)
+		if (action == XCB_EWMH_WM_STATE_REMOVE)
 			set_fullscreen(c, false);
-		else if (action == _NET_WM_STATE_ADD)
+		else if (action == XCB_EWMH_WM_STATE_ADD)
 			set_fullscreen(c, true);
-		else if (action == _NET_WM_STATE_TOGGLE)
+		else if (action == XCB_EWMH_WM_STATE_TOGGLE)
 			set_fullscreen(c, !c->is_fullscreen);
 	} else if (a == ewmh->_NET_WM_STATE_DEMANDS_ATTENTION) {
-		if (action == _NET_WM_STATE_REMOVE)
+		if (action == XCB_EWMH_WM_STATE_REMOVE)
 			set_urgent(c, false);
-		else if (action == _NET_WM_STATE_ADD)
+		else if (action == XCB_EWMH_WM_STATE_ADD)
 			set_urgent(c, true);
-		else if (action == _NET_WM_STATE_TOGGLE)
+		else if (action == XCB_EWMH_WM_STATE_TOGGLE)
 			set_urgent(c, !c->is_urgent);
 	} else {
 		log_warn("Unhandled wm state <%d> with action <%d>.", a, action);
@@ -202,9 +206,6 @@ void ewmh_process_wm_state(Client *c, xcb_atom_t a, int action)
 */
 void setup_ewmh(void)
 {
-	xcb_ewmh_coordinates_t viewport[] = { {0, 0} };
-	xcb_ewmh_geometry_t workarea[] = { {0, conf.bar_bottom ? 0 : wss[cw].bar_height,
-	screen_width, screen_height - wss[cw].bar_height} };
 	ewmh = calloc(1, sizeof(xcb_ewmh_connection_t));
 	if (!ewmh) {
 		log_err("Unable to create ewmh connection\n");
@@ -226,11 +227,97 @@ void setup_ewmh(void)
 					ewmh->_NET_ACTIVE_WINDOW };
 	xcb_ewmh_set_supported(ewmh, 0, LENGTH(ewmh_net_atoms), ewmh_net_atoms);
 	xcb_ewmh_set_supporting_wm_check(ewmh, 0, screen->root);
-	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewport), viewport);
 	xcb_ewmh_set_wm_name(ewmh, 0, strlen("howm"), "howm");
-	xcb_ewmh_set_current_desktop(ewmh, 0, cw);
-	xcb_ewmh_set_number_of_desktops(ewmh, 0, WORKSPACES);
-	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
-	xcb_ewmh_set_desktop_geometry(ewmh, 0, screen_width, screen_height);
 }
 
+void setup_ewmh_geom(void)
+{
+	xcb_ewmh_coordinates_t viewport[] = { {0, 0} };
+	xcb_ewmh_geometry_t workarea[] = { {0, conf.bar_bottom ? 0
+						: mon->ws->bar_height, mon->rect.width,
+						mon->rect.height - mon->ws->bar_height} };
+
+	xcb_ewmh_set_desktop_viewport(ewmh, 0, LENGTH(viewport), viewport);
+	xcb_ewmh_set_workarea(ewmh, 0, LENGTH(workarea), workarea);
+	xcb_ewmh_set_desktop_geometry(ewmh, 0, mon->rect.width, mon->rect.height);
+}
+
+void ewmh_set_current_workspace(void)
+{
+	xcb_ewmh_set_current_desktop(ewmh, 0, workspace_to_index(mon->ws));
+}
+
+xcb_randr_output_t *randr_get_outputs(unsigned int *nr_outputs)
+{
+	xcb_randr_get_screen_resources_reply_t *sresr;
+	xcb_randr_get_screen_resources_cookie_t sresc;
+	xcb_randr_output_t *outputs;
+	const xcb_query_extension_reply_t *qer = xcb_get_extension_data(dpy,
+								&xcb_randr_id);
+
+	if (!qer || !qer->present)
+		return false;
+
+	sresc = xcb_randr_get_screen_resources(dpy, screen->root);
+	sresr = xcb_randr_get_screen_resources_reply(dpy, sresc, NULL);
+	*nr_outputs = xcb_randr_get_screen_resources_outputs_length(sresr);
+
+	if (!sresr || *nr_outputs < 1)
+		goto free_sresr;
+
+	outputs = xcb_randr_get_screen_resources_outputs(sresr);
+
+	return outputs;
+
+free_sresr:
+	free(sresr);
+	return NULL;
+}
+
+xcb_rectangle_t output_reply_to_rect(xcb_randr_get_output_info_reply_t *output)
+{
+	xcb_randr_get_crtc_info_cookie_t cinfoc;
+	xcb_randr_get_crtc_info_reply_t *cinfor;
+	xcb_rectangle_t rect = {-1, -1, -1, -1};
+
+	if (!output || output->crtc == XCB_NONE)
+		return rect;
+
+	cinfoc = xcb_randr_get_crtc_info(dpy, output->crtc, XCB_CURRENT_TIME);
+	cinfor = xcb_randr_get_crtc_info_reply(dpy, cinfoc, NULL);
+
+	if (cinfor)
+		rect = (xcb_rectangle_t){cinfor->x, cinfor->y,
+				cinfor->width, cinfor->height};
+
+	free(cinfor);
+	return rect;
+}
+
+xcb_randr_output_t randr_get_primary_output(void)
+{
+	xcb_randr_get_output_primary_cookie_t gopc;
+	xcb_randr_get_output_primary_reply_t *gopr;
+	xcb_randr_output_t out;
+
+	gopc = xcb_randr_get_output_primary(dpy, screen->root);
+	gopr = xcb_randr_get_output_primary_reply(dpy, gopc, NULL);
+
+	if (gopr)
+		out = gopr->output;
+	else
+		out = -1;
+
+	free(gopr);
+	return out;
+}
+
+void warp_pointer(int16_t x, int16_t y)
+{
+	xcb_warp_pointer(dpy, XCB_NONE, screen->root, 0, 0, 0, 0, x, y);
+}
+
+void center_pointer(xcb_rectangle_t rect)
+{
+	warp_pointer(rect.x + (rect.width / 2), rect.y + (rect.height / 2));
+}

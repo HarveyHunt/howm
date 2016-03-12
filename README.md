@@ -238,6 +238,9 @@ The above command will cut 2 clients and place them onto the delete register sta
 
 A good primer on modes is available [here](http://vimdoc.sourceforge.net/htmldoc/intro.html#vim-modes-intro).
 
+**Note**: Modes used to be implemented in howm itself, but are now in the sxhkd
+configuration file.
+
 In howm, modes are used to allow the same keys to be bound to multiple functions. Modes also help to logically separate what needs to be done to a window. The available modes are as follows:
 
 * **Normal**: This mode is the one that you will spend most of your time in. It is used for executing commands and most of the operators are designed to work in this mode. This mode behaves similarly to how other WMs behave, but without focusing or dealing with floating windows.
@@ -249,26 +252,26 @@ In howm, modes are used to allow the same keys to be bound to multiple functions
 
 ##Parsing Output
 
-When debug mode is disabled, howm outputs information about its current state and the current workspace whenever something changes (such as adding a new window or changing mode). When debug mode is enabled, information is outputted for each workspace (placed on a new line).
+When debug mode is disabled, howm outputs information about its current state and the current workspace whenever something changes (such as adding a new window). When debug mode is enabled, information is outputted for each workspace (placed on a new line).
 
 The format for the output is as follows:
 
 ```
-Mode:Layout:Workspace:State:NumberofClients
+Layout:Workspace:State:NumberofClients:MonitorIndex
 ```
 
 An example output can be seen below:
 
 ```
-0:2:1:0:1
+2:1:0:1:0
 ```
 
 The information outputted at the same time as the example above, but with debugging mode turned on is shown below:
 
 ```
-0:2:1:0:1
-0:2:2:0:0
-0:2:3:0:0
-0:2:4:0:0
-0:2:5:0:0
+2:1:0:1:0
+2:2:0:0:0
+2:3:0:0:0
+2:4:0:0:0
+2:5:0:0:0
 ```

@@ -8,7 +8,7 @@ SRC_EXT = c
 # Path to the source directory, relative to the makefile
 SRC_PATH = src
 # General compiler flags
-COMPILE_FLAGS = -std=c99 -Wall -Wextra
+COMPILE_FLAGS ?= -std=c99 -Wall -Wextra
 # Additional release-specific flags
 RCOMPILE_FLAGS = -D NDEBUG
 # Additional debug-specific flags
@@ -16,7 +16,7 @@ DCOMPILE_FLAGS = -g3
 # Add additional include paths
 INCLUDES = -I $(SRC_PATH)/
 # General linker settings
-LINK_FLAGS = -lxcb -lxcb-icccm -lxcb-ewmh
+LINK_FLAGS = -lxcb -lxcb-icccm -lxcb-ewmh -lxcb-randr
 # Additional release-specific linker settings
 RLINK_FLAGS =
 # Additional debug-specific linker settings
@@ -121,13 +121,13 @@ install:
 .PHONY: check
 check:
 	@echo "Using checkpatch.pl to check style."
-	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE,MACRO_WITH_FLOW_CONTROL -f src/*.c
-	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE,MACRO_WITH_FLOW_CONTROL -f src/*.h
+	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE,MACRO_WITH_FLOW_CONTROL,GLOBAL_INITIALISERS -f src/*.c
+	@./checkpatch.pl --no-tree --ignore LONG_LINE,NEW_TYPEDEFS,UNNECESSARY_ELSE,MACRO_WITH_FLOW_CONTROL,GLOBAL_INITIALISERS -f src/*.h
 	
 .PHONY: analyse
 analyse:
 	@echo "Running scan-build to look for bugs."
-	@scan-build -v -o analyse make debug
+	@scan-build -v -o analyse make clean debug
 
 # Removes all build files
 .PHONY: clean
