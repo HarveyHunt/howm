@@ -1,6 +1,7 @@
 var ipc_8c =
 [
     [ "CALL_INT", "ipc_8c.html#aa21232392de7161443be5fdf72adaf70", null ],
+    [ "CALL_WORKSPACE", "ipc_8c.html#ab9e493da2f14da420dbcf95209ebc61a", null ],
     [ "SET_BOOL", "ipc_8c.html#af0db57919e5f62f86d206d5a615945f4", null ],
     [ "SET_COLOUR", "ipc_8c.html#a889a0c88879c94998ed8d4ee8d82ea8d", null ],
     [ "SET_INT", "ipc_8c.html#a3702ee65a63305551c0b55ab51ddff5d", null ],

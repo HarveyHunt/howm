@@ -1,17 +1,9 @@
 var searchData=
 [
-  ['op_2ec',['op.c',['../op_8c.html',1,'']]],
-  ['op_2eh',['op.h',['../op_8h.html',1,'']]],
-  ['op_5fcut',['op_cut',['../group__operators.html#ga4f6e6bb68eb5221773509e8c3d9a09f2',1,'op_cut(const unsigned int type, unsigned int cnt):&#160;op.c'],['../group__operators.html#ga4f6e6bb68eb5221773509e8c3d9a09f2',1,'op_cut(const unsigned int type, unsigned int cnt):&#160;op.c']]],
-  ['op_5ffocus_5fdown',['op_focus_down',['../group__operators.html#ga8b05f382006c4d614fc3f306d41ebd64',1,'op_focus_down(const unsigned int type, unsigned int cnt):&#160;op.c'],['../group__operators.html#ga8b05f382006c4d614fc3f306d41ebd64',1,'op_focus_down(const unsigned int type, unsigned int cnt):&#160;op.c']]],
-  ['op_5ffocus_5fup',['op_focus_up',['../group__operators.html#gaec81d86b1e26639f1a324873aac95d31',1,'op_focus_up(const unsigned int type, unsigned int cnt):&#160;op.c'],['../group__operators.html#gaec81d86b1e26639f1a324873aac95d31',1,'op_focus_up(const unsigned int type, unsigned int cnt):&#160;op.c']]],
-  ['op_5fgap_5fsize',['op_gap_size',['../structconfig.html#a215ce2c2b1d6dd61df9f775ddbb25faa',1,'config']]],
-  ['op_5fgrow_5fgaps',['op_grow_gaps',['../group__operators.html#gaf8ab0857475baaa6659f50fe970dad45',1,'op_grow_gaps(const unsigned int type, unsigned int cnt):&#160;op.c'],['../group__operators.html#gaf8ab0857475baaa6659f50fe970dad45',1,'op_grow_gaps(const unsigned int type, unsigned int cnt):&#160;op.c']]],
-  ['op_5fkill',['op_kill',['../group__operators.html#ga4b59aa60ffb29b70fc1e843556e50cf1',1,'op_kill(const unsigned int type, unsigned int cnt):&#160;op.c'],['../group__operators.html#ga4b59aa60ffb29b70fc1e843556e50cf1',1,'op_kill(const unsigned int type, unsigned int cnt):&#160;op.c']]],
-  ['op_5fmove_5fdown',['op_move_down',['../group__operators.html#ga255b87a4597872353137c60f7089c552',1,'op_move_down(const unsigned int type, unsigned int cnt):&#160;op.c'],['../group__operators.html#ga255b87a4597872353137c60f7089c552',1,'op_move_down(const unsigned int type, unsigned int cnt):&#160;op.c']]],
-  ['op_5fmove_5fup',['op_move_up',['../group__operators.html#gaef50a0d6ca4051a60b0eb6c622ac75b6',1,'op_move_up(const unsigned int type, unsigned int cnt):&#160;op.c'],['../group__operators.html#gaef50a0d6ca4051a60b0eb6c622ac75b6',1,'op_move_up(const unsigned int type, unsigned int cnt):&#160;op.c']]],
-  ['op_5fshrink_5fgaps',['op_shrink_gaps',['../group__operators.html#gae3df2d19740cb29edc58e3fe93e7667e',1,'op_shrink_gaps(const unsigned int type, unsigned int cnt):&#160;op.c'],['../group__operators.html#gae3df2d19740cb29edc58e3fe93e7667e',1,'op_shrink_gaps(const unsigned int type, unsigned int cnt):&#160;op.c']]],
-  ['operator_5ffunc',['operator_func',['../op_8h.html#a0e15f1afe2d9f2d2dfc12c5ef4e452ce',1,'op.h']]],
-  ['operator_5fstate',['OPERATOR_STATE',['../howm_8h.html#aa19be6305a5a4485e1e70de70ed7d677ac7f3dae94e45131a6f791bfa2f672430',1,'howm.h']]],
-  ['operators',['Operators',['../group__operators.html',1,'']]]
+  ['paste',['paste',['../group__commands.html#ga7d58643b1bcfb3eb74a40b8ceafd8bb0',1,'paste(void):&#160;client.c'],['../group__commands.html#ga7d58643b1bcfb3eb74a40b8ceafd8bb0',1,'paste(void):&#160;client.c']]],
+  ['point_5fto_5fmonitor',['point_to_monitor',['../monitor_8c.html#afe9ac72515d6ccc3e01c121f7ee48a67',1,'point_to_monitor(xcb_point_t point):&#160;monitor.c'],['../monitor_8h.html#afe9ac72515d6ccc3e01c121f7ee48a67',1,'point_to_monitor(xcb_point_t point):&#160;monitor.c']]],
+  ['prev',['prev',['../structworkspace__t.html#ab8f6a7a1b2537e4979919a4cac503da1',1,'workspace_t::prev()'],['../structmonitor__t.html#ad3b224870692b3dec466b76990516268',1,'monitor_t::prev()']]],
+  ['prev_5fclient',['prev_client',['../client_8c.html#a3a27847832d92f206dc381110dac9b05',1,'prev_client(client_t *c, workspace_t *w):&#160;client.c'],['../client_8h.html#a3a27847832d92f206dc381110dac9b05',1,'prev_client(client_t *c, workspace_t *w):&#160;client.c']]],
+  ['prev_5ffoc',['prev_foc',['../structworkspace__t.html#a9ea79ff525828d194a940e4d38355532',1,'workspace_t']]],
+  ['prev_5flayout',['prev_layout',['../group__commands.html#ga9c371b6803f3b6f4e5fa9d4287c14440',1,'prev_layout(monitor_t *m):&#160;layout.c'],['../group__commands.html#ga9c371b6803f3b6f4e5fa9d4287c14440',1,'prev_layout(monitor_t *m):&#160;layout.c']]]
 ];

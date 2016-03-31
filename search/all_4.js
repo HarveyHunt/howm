@@ -1,17 +1,12 @@
 var searchData=
 [
-  ['debug',['DEBUG',['../helper_8h.html#a3dfa58b1c5c2943dd49d8aa1981d377d',1,'helper.h']]],
-  ['debug_5fenable',['DEBUG_ENABLE',['../helper_8h.html#a92f1452fef4b184124fa2334beb53a60',1,'helper.h']]],
-  ['debugp',['DEBUGP',['../helper_8h.html#ad4fa1248b75846c1d3039c028672d69a',1,'helper.h']]],
-  ['def_5fborder_5ffocus',['DEF_BORDER_FOCUS',['../howm_8h.html#a2223f1079e8641cf3f8cb7739def0bd0',1,'howm.h']]],
-  ['def_5fborder_5fprev_5ffocus',['DEF_BORDER_PREV_FOCUS',['../howm_8h.html#a0826be96c35302c767b433a2ee12bcee',1,'howm.h']]],
-  ['def_5fborder_5funfocus',['DEF_BORDER_UNFOCUS',['../howm_8h.html#aff5dbb16c1a94fd7ac31dcc57e9732c7',1,'howm.h']]],
-  ['def_5fborder_5furgent',['DEF_BORDER_URGENT',['../howm_8h.html#ab9907c396ad0f96c827730639b53727b',1,'howm.h']]],
-  ['def_5fsock_5fpath',['DEF_SOCK_PATH',['../howm_8h.html#a12bb4ba924d3bb8ef013f610f8812a92',1,'howm.h']]],
-  ['del_5freg',['del_reg',['../scratchpad_8c.html#a37639c27cc1514fddabd4a972b317331',1,'del_reg():&#160;scratchpad.c'],['../scratchpad_8h.html#a37639c27cc1514fddabd4a972b317331',1,'del_reg():&#160;scratchpad.c']]],
-  ['delete_5fregister_5fsize',['delete_register_size',['../structconfig.html#a08da720c0e1ea8827021d55e29e50a21',1,'config']]],
-  ['delete_5fwin',['delete_win',['../xcb__help_8c.html#ad882e8e5d9f036cd48527a766bc49b46',1,'delete_win(xcb_window_t win):&#160;xcb_help.c'],['../xcb__help_8h.html#ad882e8e5d9f036cd48527a766bc49b46',1,'delete_win(xcb_window_t win):&#160;xcb_help.c']]],
-  ['destroy_5fevent',['destroy_event',['../handler_8c.html#a684d0310329b08d4cd744a548f3bc352',1,'handler.c']]],
-  ['dpy',['dpy',['../howm_8c.html#a502c62a5c7817d977e6700fb0cb4db0e',1,'dpy():&#160;howm.c'],['../howm_8h.html#a502c62a5c7817d977e6700fb0cb4db0e',1,'dpy():&#160;howm.c']]],
-  ['draw_5fclients',['draw_clients',['../client_8c.html#a776b0942e0f25214cf930b3bf1cd6238',1,'draw_clients(void):&#160;client.c'],['../client_8h.html#a776b0942e0f25214cf930b3bf1cd6238',1,'draw_clients(void):&#160;client.c']]]
+  ['elevate_5fwindow',['elevate_window',['../xcb__help_8c.html#aaad900b918475f6802fcf31938c1b168',1,'elevate_window(xcb_window_t win):&#160;xcb_help.c'],['../xcb__help_8h.html#aaad900b918475f6802fcf31938c1b168',1,'elevate_window(xcb_window_t win):&#160;xcb_help.c']]],
+  ['end_5flayout',['END_LAYOUT',['../layout_8h.html#a83aced0fc8f07bf0028fdc9881bef8d6a0fab96667cb113395cf9fe4b20a9d1f8',1,'layout.h']]],
+  ['end_5fstate',['END_STATE',['../howm_8h.html#aa19be6305a5a4485e1e70de70ed7d677a3b8fcb01cbfafaacda7074a210e8b1de',1,'howm.h']]],
+  ['enter_5fevent',['enter_event',['../handler_8c.html#a9e3dbb1f625f857dbac39bb6cd3835c7',1,'handler.c']]],
+  ['env_5fsock_5fvar',['ENV_SOCK_VAR',['../howm_8h.html#a1e9b5dd3ae1d1208f44d5eb10f76e573',1,'howm.h']]],
+  ['ewmh',['ewmh',['../howm_8c.html#a9ff7518503929d6e1fdb1d7f41e9a118',1,'ewmh():&#160;howm.c'],['../howm_8h.html#a9ff7518503929d6e1fdb1d7f41e9a118',1,'ewmh():&#160;howm.c']]],
+  ['ewmh_5fprocess_5fwm_5fstate',['ewmh_process_wm_state',['../xcb__help_8c.html#a4447fdfc2628d0422db1a154fa5c076e',1,'ewmh_process_wm_state(client_t *c, xcb_atom_t a, int action):&#160;xcb_help.c'],['../xcb__help_8h.html#a4447fdfc2628d0422db1a154fa5c076e',1,'ewmh_process_wm_state(client_t *c, xcb_atom_t a, int action):&#160;xcb_help.c']]],
+  ['ewmh_5fset_5fcurrent_5fworkspace',['ewmh_set_current_workspace',['../xcb__help_8c.html#ac6dbc3f3256b592d2f05468a7e823880',1,'ewmh_set_current_workspace(void):&#160;xcb_help.c'],['../xcb__help_8h.html#ac6dbc3f3256b592d2f05468a7e823880',1,'ewmh_set_current_workspace(void):&#160;xcb_help.c']]],
+  ['exec_5fconfig',['exec_config',['../howm_8c.html#abe301f9d2d267cf043ed22b22f16bb35',1,'howm.c']]]
 ];

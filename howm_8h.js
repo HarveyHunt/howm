@@ -14,7 +14,6 @@ var howm_8h =
     [ "MASTER_RATIO", "howm_8h.html#ac6b6a7dcda6464ab1bb02cdc549f8043", null ],
     [ "VERSION", "howm_8h.html#a1c6d5de492ac61ad29aec7aa9a436bbf", null ],
     [ "WM_NAME", "howm_8h.html#af473e2b8b0c151f2aba16200da439168", null ],
-    [ "WORKSPACES", "howm_8h.html#a9915a00a52379231ab1f623e4eef07da", null ],
     [ "WS_DEF_LAYOUT", "howm_8h.html#ace8aafd5a2cf0feb727effce371a8ea6", null ],
     [ "states", "howm_8h.html#aa19be6305a5a4485e1e70de70ed7d677", [
       [ "OPERATOR_STATE", "howm_8h.html#aa19be6305a5a4485e1e70de70ed7d677ac7f3dae94e45131a6f791bfa2f672430", null ],
@@ -24,17 +23,16 @@ var howm_8h =
     ] ],
     [ "get_colour", "howm_8h.html#a85e0bbafd9d22e881df3a09d09a94c55", null ],
     [ "howm_info", "howm_8h.html#ad3e9a50dca7e98460b9fc05b288b9c2e", null ],
-    [ "quit_howm", "group__commands.html#gaaf775039f5eb65793b4a8844caaf99ac", null ],
+    [ "quit", "group__commands.html#ga9a4a2fd20da5ebbc168214a007110f8e", null ],
     [ "spawn", "group__commands.html#ga84f3c791332e2434198d49d5858faf7e", null ],
     [ "conf", "howm_8h.html#a8f8d2202627dae2751082b95cad16909", null ],
-    [ "cur_mode", "howm_8h.html#a942cc80c5323121f36b9df7960978aa9", null ],
     [ "cur_state", "howm_8h.html#a8dae6ee4b13f5a7860eceb6099fa4ab1", null ],
-    [ "cw", "howm_8h.html#a0e234074dd9e6208d65dcd4230827898", null ],
     [ "dpy", "howm_8h.html#a502c62a5c7817d977e6700fb0cb4db0e", null ],
     [ "ewmh", "howm_8h.html#a9ff7518503929d6e1fdb1d7f41e9a118", null ],
-    [ "last_ws", "howm_8h.html#ad9cdce4d561e999e5d5194cb98ac9f7d", null ],
-    [ "numlockmask", "howm_8h.html#addc4d00de842e042008ccf5b5f2b32af", null ],
-    [ "previous_layout", "howm_8h.html#a4f65d6ac085b798e73ce7ffd2ccdcbf8", null ],
+    [ "mon", "howm_8h.html#a320c073655a651121b508c03ca96fddf", null ],
+    [ "mon_cnt", "howm_8h.html#a81977aa2a9947335f90f44e84e044ff1", null ],
+    [ "mon_head", "howm_8h.html#ac49f12626012048d0e913ad571e668dc", null ],
+    [ "mon_tail", "howm_8h.html#a1c4c92721ed66d217c33dd415c20161a", null ],
     [ "retval", "howm_8h.html#a7f345697df7eb20c9aba1ab6980cae8f", null ],
     [ "running", "howm_8h.html#a36f7b6be7108281af77939ceaec42fd6", null ],
     [ "screen", "howm_8h.html#ad78d99285ba21e2d98eddec45e60f2e3", null ],
@@ -42,5 +40,5 @@ var howm_8h =
     [ "screen_width", "howm_8h.html#ad2b9859dcd5621e0a431189d9e181876", null ],
     [ "WM_ATOM_NAMES", "howm_8h.html#afa5683cb383ac089703abb707869dec8", null ],
     [ "wm_atoms", "howm_8h.html#a3362a240fb66c4568d791c7a930af0d5", null ],
-    [ "wss", "howm_8h.html#a79de804aadee58af99166ea3b3d841d7", null ]
+    [ "workspace_cnt", "howm_8h.html#a526ca55cb69c50778667b3cc2a850607", null ]
 ];

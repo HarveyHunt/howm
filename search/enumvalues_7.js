@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['motion_5fstate',['MOTION_STATE',['../howm_8h.html#aa19be6305a5a4485e1e70de70ed7d677aa2b24250e93a31be352eb1bce2a40c90',1,'howm.h']]],
-  ['msg_5fconfig',['MSG_CONFIG',['../ipc_8c.html#a35822c953540e9ad193309b6d4f65011aa76f18ac4fd6e013a62d7ac04fba4edf',1,'ipc.c']]],
-  ['msg_5ffunction',['MSG_FUNCTION',['../ipc_8c.html#a35822c953540e9ad193309b6d4f65011ad7f4c695092e637ccaa502074d35b36d',1,'ipc.c']]]
+  ['net_5factive_5fwindow',['NET_ACTIVE_WINDOW',['../xcb__help_8h.html#abb9728c05efa28b2276c14ebd16a27efa461c9a37953f29f55d3d18c09772ca05',1,'xcb_help.h']]],
+  ['net_5fsupported',['NET_SUPPORTED',['../xcb__help_8h.html#abb9728c05efa28b2276c14ebd16a27efa4ba3363dfed9500fe60c17aecbc590f5',1,'xcb_help.h']]],
+  ['net_5fwm_5fstate',['NET_WM_STATE',['../xcb__help_8h.html#abb9728c05efa28b2276c14ebd16a27efa6da0739df11d11c7cce17c62f0a21551',1,'xcb_help.h']]],
+  ['net_5fwm_5fstate_5ffullscreen',['NET_WM_STATE_FULLSCREEN',['../xcb__help_8h.html#abb9728c05efa28b2276c14ebd16a27efa113d21874d46ae8366b5362b1f2d7430',1,'xcb_help.h']]]
 ];

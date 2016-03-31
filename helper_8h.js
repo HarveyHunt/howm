@@ -1,10 +1,6 @@
 var helper_8h =
 [
-    [ "CLEANMASK", "helper_8h.html#a02e75104c38a5869d0082a74c51e2d85", null ],
-    [ "DEBUG", "helper_8h.html#a3dfa58b1c5c2943dd49d8aa1981d377d", null ],
     [ "DEBUG_ENABLE", "helper_8h.html#a92f1452fef4b184124fa2334beb53a60", null ],
-    [ "DEBUGP", "helper_8h.html#ad4fa1248b75846c1d3039c028672d69a", null ],
-    [ "EQUALMODS", "helper_8h.html#a918c8a9a844a1ede0c0f7837260ed4e9", null ],
     [ "FFT", "helper_8h.html#a21498a6edb8bcb29fb257e202c8c4e18", null ],
     [ "LENGTH", "helper_8h.html#a33c8dff98e7a3a432e8f8d26714c31fe", null ],
     [ "LOG_DEBUG", "helper_8h.html#a6ff63e8955665c4a58b1598f2b07c51a", null ],

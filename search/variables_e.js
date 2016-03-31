@@ -6,5 +6,6 @@ var searchData=
   ['screen',['screen',['../howm_8c.html#ad78d99285ba21e2d98eddec45e60f2e3',1,'screen():&#160;howm.c'],['../howm_8h.html#ad78d99285ba21e2d98eddec45e60f2e3',1,'screen():&#160;howm.c']]],
   ['screen_5fheight',['screen_height',['../howm_8c.html#ae144b821695827ec01ceb52f3220b07d',1,'screen_height():&#160;howm.c'],['../howm_8h.html#ae144b821695827ec01ceb52f3220b07d',1,'screen_height():&#160;howm.c']]],
   ['screen_5fwidth',['screen_width',['../howm_8c.html#ad2b9859dcd5621e0a431189d9e181876',1,'screen_width():&#160;howm.c'],['../howm_8h.html#ad2b9859dcd5621e0a431189d9e181876',1,'screen_width():&#160;howm.c']]],
-  ['size',['size',['../structstack.html#acba32886504fb2d759031717a3334e77',1,'stack']]]
+  ['size',['size',['../structstack.html#acba32886504fb2d759031717a3334e77',1,'stack']]],
+  ['spawn',['spawn',['../bugs_8txt.html#ad280aba82f09b259e7a9ca2908430bfb',1,'bugs.txt']]]
 ];
