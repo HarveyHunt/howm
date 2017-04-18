@@ -1,9 +1,9 @@
-#howm (Beta)
+# howm (Beta)
 
 [![Build Status](https://travis-ci.org/HarveyHunt/howm.svg?branch=develop)](https://travis-ci.org/HarveyHunt/howm)
 [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=harveyhunt&url=https://github.com/HarveyHunt/howm&title=howm&language=&tags=github&category=software)
 
-###A lightweight, tiling X11 window manager that mimics vi by offering operators, motions and modes.
+### A lightweight, tiling X11 window manager that mimics vi by offering operators, motions and modes.
 
 ![](http://i.imgur.com/4sW6RlT.gif)
 ![](http://i.imgur.com/tyiZcLx.gif)
@@ -30,12 +30,12 @@ Contents
 * [Modes](#modes)
 * [Parsing Output](#parsing-output)
 
-##Requirements
+## Requirements
 
 * [Cottage](https://www.github.com/HarveyHunt/cottage) is required for configuration and interacting with howm.
 * [sxhkd](https://www.github.com/baskerville/sxhkd) is required for binding cottage commands to keypress.
 
-##Installation
+## Installation
 Howm is on the [AUR](https://aur.archlinux.org/), there are two packages for it:
 * [howm-git](https://aur.archlinux.org/packages/howm-x11-git/) is the bleeding edge package.
 * [howm-x11](https://aur.archlinux.org/packages/howm-x11/) is the package based off of stable releases.
@@ -62,14 +62,14 @@ Then take a look at the example [xinitrc](examples/xinitrc) for ideas on how to 
 
 Be sure to install [cottage](https://github.com/HarveyHunt/cottage) and [sxhkd](https://github.com/baskerville/sxhkd).
 
-##Commandline Arguments
+## Commandline Arguments
 
 * **-c**: The path that points to an executable howmrc file.
 ```
 howm -c ~/.config/howm/howmrc
 ```
 
-##Configuration
+## Configuration
 
 Configuration is done through the use of cottage. Any element [in this structure](http://harveyhunt.github.io/howm/structconfig.html) can be changed using cottage. The syntax is as follows:
 
@@ -91,14 +91,14 @@ Note: When configuring colours in ```howmrc```, enclose the colour in quotes, su
 cottage -c border_focus "#343434"
 ```
 
-##Changing Socket Path
+## Changing Socket Path
 By default, howm will attempt to create a socket at ```/tmp/howm```, this can be overwritten by setting the environment variable ```HOWM_SOCK```. For example:
 
 ```
 export HOWM_SOCK=/tmp/howm_test
 ```
 
-##Keybinds
+## Keybinds
 
 Keybinds are now placed in multiple [sxhkd](https://github.com/baskerville/sxhkd) files.
 
@@ -111,13 +111,13 @@ cottage -f func_name <args>
 All of the available functions can be found [here](http://harveyhunt.github.io/howm/group__commands.html).
 Take a look at the [example sxhkdrcs](examples).
 
-##Scratchpad
+## Scratchpad
 
 The scratchpad is a location to store a single client out of view. When requesting a client back from the scratchpad, it will float in the center of the screen. This is useful for keeping a terminal handy or hiding your music player- only displaying it when it is really needed.
 
 The size of the scratchpad's client is defined by SCRATCHPAD_WIDTH and SCRATCHPAD_HEIGHT.
 
-##Motions
+## Motions
 
 For a good primer on motions, vim's [documentation](http://vimdoc.sourceforge.net/htmldoc/motion.html) explains them well.
 
@@ -129,7 +129,7 @@ Operators and motions are combined so that an operation can be performed on mult
 
 * **Client**: Perform an operation on one or more clients.
 
-##Counts
+## Counts
 
 Counts be applied to a motion, to make an operator affect multiple things. For example, you can add a 3 before a motion, meaning that the operator will affect 3 of the motions. The modifier that is used is defined by COUNT_MOD.
 
@@ -141,7 +141,7 @@ q2w
 
 Will kill 2 workspaces (assuming the correct modifier keys are pressed and default keybindings are being used).
 
-##Operators
+## Operators
 
 Operators perform an action upon one or more targets (identified by motions).
 
@@ -234,7 +234,7 @@ d2c
 The above command will cut 2 clients and place them onto the delete register stack. One use of the cut operation takes up one place on the stack.
 
 
-##Modes
+## Modes
 
 A good primer on modes is available [here](http://vimdoc.sourceforge.net/htmldoc/intro.html#vim-modes-intro).
 
@@ -250,7 +250,7 @@ In howm, modes are used to allow the same keys to be bound to multiple functions
 * **Floating**: This mode is designed to deal with all things floating. Moving, resizing and teleporting floating windows are all available in this mode.
 
 
-##Parsing Output
+## Parsing Output
 
 When debug mode is disabled, howm outputs information about its current state and the current workspace whenever something changes (such as adding a new window). When debug mode is enabled, information is outputted for each workspace (placed on a new line).
 
