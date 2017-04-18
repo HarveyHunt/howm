@@ -1,16 +1,17 @@
+sudo: false
 language: c
+addons:
+    apt:
+        packages:
+            - libxcb1-dev
+            - libxcb-util0-dev
+            - libxcb-icccm4-dev
+            - xcb-proto
+            - libxcb-ewmh1-dev
+            - libxcb-randr0-dev
 compiler:
     - clang
     - gcc
-before_install:
-    - sudo apt-get update -qq
-install:
-    - sudo apt-get install -y libxcb1-dev
-    - sudo apt-get install -y libxcb-util0-dev
-    - sudo apt-get install -y libxcb-icccm4-dev
-    - sudo apt-get install -y libxcb-ewmh1-dev
-    - sudo apt-get install -y libxcb-randr0-dev
-    - sudo apt-get install -y xcb-proto
 script: make debug
 notifications:
     irc:
