@@ -8,6 +8,10 @@
 ![](http://i.imgur.com/4sW6RlT.gif)
 ![](http://i.imgur.com/tyiZcLx.gif)
 
+Howm is on the [AUR](https://aur.archlinux.org/), there are two packages for it:
+* [howm-x11-git](https://aur.archlinux.org/packages/howm-x11-git/) is the bleeding edge package.
+* [howm-x11](https://aur.archlinux.org/packages/howm-x11/) is the package based off of stable releases.
+
 Come and join us on Freenode in the channel #howm
 
 Contents
@@ -80,6 +84,12 @@ cottage -c bar_height 20
 ```
 
 To override howm's default values at startup, cottage commands can be placed in a shell script and then executed by howm. Take a look at the [example howmrc](examples/howmrc) for ideas.
+
+Note: When configuring colours in ```howmrc```, enclose the colour in quotes, such as:
+
+```
+cottage -c border_focus "#343434"
+```
 
 ##Changing Socket Path
 By default, howm will attempt to create a socket at ```/tmp/howm```, this can be overwritten by setting the environment variable ```HOWM_SOCK```. For example:
