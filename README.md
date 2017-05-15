@@ -28,6 +28,7 @@ Contents
 * [Counts](#counts)
 * [Operators](#operators)
 * [Modes](#modes)
+* [Code Documentation](#code-documentation)
 * [Parsing Output](#parsing-output)
 
 ## Requirements
@@ -249,6 +250,9 @@ In howm, modes are used to allow the same keys to be bound to multiple functions
 
 * **Floating**: This mode is designed to deal with all things floating. Moving, resizing and teleporting floating windows are all available in this mode.
 
+## Code Documentation
+
+howm uses [doxygen](http://www.stack.nl/~dimitri/doxygen/) throughout the entire codebase. The generated documentation is [available here](https://harveyhunt.github.io/howm/).
 
 ## Parsing Output
 
