@@ -114,9 +114,8 @@ dirs:
 .PHONY: install
 install:
 	@echo "Installing to $(DESTDIR)$(INSTALL_PREFIX)/bin"
-	@install -m 0755 $(BIN_PATH)/$(BIN_NAME) $(DESTDIR)$(INSTALL_PREFIX)/bin
-	@install -d -m 0755 $(DESTDIR)$(XSESSION_PREFIX)/xsessions
-	@install -m 0644 howm.xsession.desktop $(DESTDIR)$(XSESSION_PREFIX)/xsessions/howm.desktop
+	@install -Dm 0755 $(BIN_PATH)/$(BIN_NAME) -t $(DESTDIR)$(INSTALL_PREFIX)/bin
+	@install -Dm 0644 howm.xsession.desktop $(DESTDIR)$(XSESSION_PREFIX)/xsessions/howm.desktop
 
 .PHONY: check
 check:
