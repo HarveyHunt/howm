@@ -7,7 +7,7 @@ addons:
             - libxcb-util0-dev
             - libxcb-icccm4-dev
             - xcb-proto
-            - libxcb-ewmh1-dev
+            - libxcb-ewmh-dev
             - libxcb-randr0-dev
 compiler:
     - clang
