@@ -45,7 +45,7 @@ If you can't use the AUR, then there may be a package available for your distro.
 
 As a last resort install xcb's libraries and then, do the following:
 
-```
+```bash
 git clone https://github.com/HarveyHunt/howm
 cd howm
 make
@@ -54,7 +54,7 @@ sudo make install
 
 After howm is installed, you'll want to copy over some configuration files.
 
-```
+```bash
 cp examples/sxhkdrc_* ~/.config/sxhkd
 cp examples/howmrc ~/.config/howmrc
 ```
@@ -95,7 +95,7 @@ cottage -c border_focus "#343434"
 ## Changing Socket Path
 By default, howm will attempt to create a socket at ```/tmp/howm```, this can be overwritten by setting the environment variable ```HOWM_SOCK```. For example:
 
-```
+```bash
 export HOWM_SOCK=/tmp/howm_test
 ```
 
