@@ -20,6 +20,8 @@
  * @brief All of howm's operators are implemented here.
  */
 
+void (*operator_func)(const unsigned int type, unsigned int cnt);
+
 static int cur_cnt = 1;
 
 static void change_gaps(const unsigned int type, unsigned int cnt, int size);
