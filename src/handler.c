@@ -139,7 +139,7 @@ static void map_event(xcb_generic_event_t *ev)
  *
  * Used when a window sends a destroy event, signalling that it wants to be
  * unmapped. The client that the window belongs to is then removed from the
- * client list for its repective workspace.
+ * client list for its respective workspace.
  *
  * @param ev The destroy event.
  */
