@@ -13,7 +13,7 @@
 
 enum motions { CLIENT, WORKSPACE };
 
-void (*operator_func)(const unsigned int type, unsigned int cnt);
+extern void (*operator_func)(const unsigned int type, unsigned int cnt);
 
 void op_kill(const unsigned int type, unsigned int cnt);
 void op_move_up(const unsigned int type, unsigned int cnt);
