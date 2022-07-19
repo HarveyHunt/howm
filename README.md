@@ -37,9 +37,8 @@ Contents
 * [sxhkd](https://www.github.com/baskerville/sxhkd) is required for binding cottage commands to keypress.
 
 ## Installation
-Howm is on the [AUR](https://aur.archlinux.org/), there are two packages for it:
-* [howm-git](https://aur.archlinux.org/packages/howm-x11-git/) is the bleeding edge package.
-* [howm-x11](https://aur.archlinux.org/packages/howm-x11/) is the package based off of stable releases.
+Howm is on the [AUR](https://aur.archlinux.org/), there is a bleeding edge package for it:
+* [howm-x11-git](https://aur.archlinux.org/packages/howm-x11-git/)
 
 If you can't use the AUR, then there may be a package available for your distro.
 
